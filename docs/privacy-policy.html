@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bond - Privacy Policy</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 700px; margin: 0 auto; padding: 24px; line-height: 1.6; color: #333; }
+        h1 { font-size: 28px; margin-bottom: 4px; }
+        h2 { font-size: 20px; margin-top: 32px; }
+        .date { color: #888; font-size: 14px; margin-bottom: 32px; }
+        ul { padding-left: 20px; }
+        li { margin-bottom: 8px; }
+        .contact { background: #f5f5f7; padding: 16px; border-radius: 12px; margin-top: 32px; }
+    </style>
+</head>
+<body>
+    <h1>Bond Privacy Policy</h1>
+    <p class="date">Last updated: May 12, 2026</p>
+
+    <h2>Overview</h2>
+    <p>Bond is a couples' love-language reminder app for iPhone and Apple Watch. It helps partners stay connected through thoughtful reminders, shared milestones, and relationship insights. Your privacy and the privacy of your relationship are fundamental to how this app is built.</p>
+
+    <h2>Data Collection</h2>
+    <p><strong>Bond collects only the data necessary for the app to function as a shared couples experience.</strong></p>
+    <ul>
+        <li>Account information: email address (from Sign in with Apple) used solely for authentication</li>
+        <li>Profile data: your display name, love language preferences, and partner pairing status</li>
+        <li>Reminders: love-language reminder content you and your partner create for each other</li>
+        <li>Milestones: dates and descriptions of relationship moments you choose to track</li>
+        <li>Usage data: limited to what's needed for push notifications and syncing between devices</li>
+    </ul>
+    <p>Bond does not sell, rent, or share your data with third parties. Your relationship data is yours alone.</p>
+
+    <h2>Data Storage</h2>
+    <p>Bond uses <strong>Supabase</strong> as its backend infrastructure. Your data — profile information, reminders, milestones, and pairing records — is stored in a secure Postgres database managed by Supabase. Data is encrypted in transit (TLS) and at rest.</p>
+    <p>Supabase's infrastructure runs on AWS and is SOC 2 compliant. You can read more about Supabase's security practices at <a href="https://supabase.com/security">supabase.com/security</a>.</p>
+
+    <h2>Authentication</h2>
+    <p>Bond uses <strong>Sign in with Apple</strong> for authentication. Apple handles the authentication process and provides Bond with a unique, anonymous identifier. Bond can request your email address (which you can choose to share or hide via Apple's Private Email Relay). Bond never receives your Apple ID password.</p>
+    <p>You can sign out at any time from within the app. Signing out removes your local session but does not delete your stored data (see Data Retention below).</p>
+
+    <h2>Pairing &amp; Partner Data</h2>
+    <p>Bond uses invite codes to pair couples. When you create or accept an invite code, your account is linked to your partner's account. Both partners can see shared reminders and milestones. Each partner's profile data (name, love language) is visible to the other partner within the app.</p>
+    <p>You can leave a pairing at any time. When you leave, your partner will no longer see your reminders or profile, and you will no longer see theirs.</p>
+
+    <h2>Push Notifications</h2>
+    <p>Bond sends push notifications for new reminders, milestone anniversaries, and pairing events. Push notifications are delivered through Apple Push Notification service (APNs) and Supabase's edge functions. Notification tokens are stored in Supabase and are not shared with any third party.</p>
+    <p>You can disable push notifications at any time through iOS Settings &gt; Notifications &gt; Bond.</p>
+
+    <h2>Analytics &amp; Tracking</h2>
+    <p>Bond does not include any third-party analytics, advertising, or tracking SDKs. The app does not use cookies or tracking pixels. No data is collected about how you use the app beyond what is necessary for core functionality.</p>
+
+    <h2>Purchases &amp; Subscriptions</h2>
+    <p>Bond may offer optional premium features through in-app purchases. All payments are processed exclusively by Apple through StoreKit. Bond never receives, stores, or has access to your payment information — including credit card details, billing address, or Apple ID credentials.</p>
+
+    <h2>Third-Party Services</h2>
+    <p>Bond relies on the following third-party services for core functionality:</p>
+    <ul>
+        <li><strong>Supabase</strong> — backend database, authentication, and edge functions</li>
+        <li><strong>Apple</strong> — Sign in with Apple authentication, push notifications (APNs), and in-app purchases (StoreKit)</li>
+        <li><strong>RevenueCat</strong> — purchase management and subscription state tracking</li>
+    </ul>
+    <p>Each service processes data according to its own privacy policy: <a href="https://supabase.com/privacy">Supabase Privacy</a>, <a href="https://www.apple.com/legal/privacy/">Apple Privacy</a>, <a href="https://www.revenuecat.com/privacy">RevenueCat Privacy</a>.</p>
+
+    <h2>Data Retention &amp; Deletion</h2>
+    <p>Your data is retained in Supabase as long as your account exists. To request deletion of your data, contact <strong>jackwallner@gmail.com</strong>. Upon request, all of your profile data, reminders, milestones, and pairing records will be permanently deleted from the database within 30 days.</p>
+    <p>You can also delete your account and all associated data directly from within the Bond app.</p>
+
+    <h2>Children's Privacy</h2>
+    <p>Bond is not intended for children under 13. The app requires Sign in with Apple, which has its own age requirements. Bond does not knowingly collect information from children under 13.</p>
+
+    <h2>Changes to This Policy</h2>
+    <p>If this privacy policy is updated, the changes will be reflected on this page with an updated date.</p>
+
+    <div class="contact">
+        <h2 style="margin-top: 0;">Contact</h2>
+        <p>If you have questions about this privacy policy, contact:<br>
+        <strong>jackwallner@gmail.com</strong></p>
+        <p>For other legal information, read the <a href="terms-of-service.html">Terms of Service</a>.</p>
+    </div>
+</body>
+</html>

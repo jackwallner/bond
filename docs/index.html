@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bond — Love Language Reminders for Couples</title>
+    <meta name="description" content="Bond helps couples stay connected through love-language reminders, shared milestones, and relationship insights. Free for iPhone &amp; Apple Watch.">
+    <link rel="canonical" href="https://jackwallner.github.io/bond/">
+    <meta name="apple-itunes-app" content="app-id=com.jackwallner.bond">
+    <meta name="keywords" content="couples app, love language, relationship reminders, couple reminders, milestones, relationship tracker, iPhone, Apple Watch, private">
+    <meta property="og:title" content="Bond — Love Language Reminders for Couples">
+    <meta property="og:description" content="Stay connected with thoughtful reminders, shared milestones, and relationship insights. Free for iPhone &amp; Apple Watch.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://jackwallner.github.io/bond/">
+    <meta property="og:site_name" content="Bond">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Bond — Love Language Reminders for Couples">
+    <meta name="twitter:description" content="Stay connected with thoughtful reminders, shared milestones, and relationship insights. Free for iPhone &amp; Apple Watch.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", sans-serif;
+            color: #1d1d1f;
+            background: #fafafa;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .container {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Nav */
+        nav {
+            padding: 16px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+            background: rgba(250,250,250,0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        nav .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: #1d1d1f;
+        }
+
+        .nav-brand span {
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .nav-link {
+            font-size: 14px;
+            text-decoration: none;
+            background: #1d1d1f;
+            color: #fff;
+            padding: 8px 18px;
+            border-radius: 980px;
+            font-weight: 500;
+            transition: opacity 0.15s;
+        }
+
+        .nav-link:hover { opacity: 0.85; }
+
+        /* Hero */
+        .hero {
+            text-align: center;
+            padding: 100px 24px 64px;
+        }
+
+        .hero h1 {
+            font-size: 52px;
+            font-weight: 700;
+            letter-spacing: -1.5px;
+            line-height: 1.08;
+            margin-bottom: 16px;
+        }
+
+        .hero h1 span {
+            background: linear-gradient(135deg, #ff6b8a, #ff8fab);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero .tagline {
+            font-size: 19px;
+            color: #6e6e73;
+            line-height: 1.5;
+            max-width: 440px;
+            margin: 0 auto 12px;
+        }
+
+        .hero .platforms {
+            font-size: 13px;
+            color: #86868b;
+            letter-spacing: 0.3px;
+            margin-bottom: 36px;
+        }
+
+        .download-btn {
+            display: inline-block;
+            background: #1d1d1f;
+            color: #fff;
+            font-size: 15px;
+            font-weight: 500;
+            padding: 14px 36px;
+            border-radius: 980px;
+            text-decoration: none;
+            transition: opacity 0.15s;
+        }
+
+        .download-btn:hover { opacity: 0.85; }
+
+        /* Features */
+        .features {
+            padding: 80px 0;
+            background: #fff;
+            border-top: 1px solid rgba(0,0,0,0.06);
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+        }
+
+        .features-header {
+            text-align: center;
+            margin-bottom: 56px;
+        }
+
+        .features-header h2 {
+            font-size: 36px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 8px;
+        }
+
+        .features-header p {
+            font-size: 17px;
+            color: #6e6e73;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1px;
+            background: rgba(0,0,0,0.06);
+            border-top: 1px solid rgba(0,0,0,0.06);
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+        }
+
+        .feature-card {
+            background: #fff;
+            padding: 36px 32px;
+        }
+
+        .feature-card .label {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: #86868b;
+            margin-bottom: 10px;
+        }
+
+        .feature-card h3 {
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: -0.2px;
+            margin-bottom: 8px;
+        }
+
+        .feature-card p {
+            font-size: 14px;
+            color: #6e6e73;
+            line-height: 1.55;
+        }
+
+        /* Privacy */
+        .privacy {
+            padding: 80px 0;
+        }
+
+        .privacy .container {
+            max-width: 640px;
+            text-align: center;
+        }
+
+        .privacy .lockup {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: #f5f5f7;
+            margin-bottom: 20px;
+        }
+
+        .privacy .lockup svg {
+            width: 22px;
+            height: 22px;
+            fill: none;
+            stroke: #1d1d1f;
+            stroke-width: 1.8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .privacy h2 {
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 12px;
+        }
+
+        .privacy p {
+            font-size: 17px;
+            color: #6e6e73;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .privacy a {
+            font-size: 15px;
+            color: #0066cc;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .privacy a:hover { text-decoration: underline; }
+
+        /* How It Works */
+        .how-it-works {
+            padding: 80px 0;
+            background: #fff;
+            border-top: 1px solid rgba(0,0,0,0.06);
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+        }
+
+        .how-header {
+            text-align: center;
+            margin-bottom: 56px;
+        }
+
+        .how-header h2 {
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 8px;
+        }
+
+        .how-header p {
+            font-size: 17px;
+            color: #6e6e73;
+        }
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 48px;
+        }
+
+        .step {
+            text-align: center;
+        }
+
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 20px;
+            background: #f5f5f7;
+            font-size: 18px;
+            font-weight: 600;
+            color: #1d1d1f;
+            margin-bottom: 16px;
+        }
+
+        .step h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .step p {
+            font-size: 14px;
+            color: #6e6e73;
+            line-height: 1.55;
+        }
+
+        /* CTA */
+        .cta {
+            text-align: center;
+            padding: 64px 24px 80px;
+            background: #fff;
+            border-top: 1px solid rgba(0,0,0,0.06);
+        }
+
+        .cta h2 {
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 6px;
+        }
+
+        .cta p {
+            font-size: 15px;
+            color: #86868b;
+            margin-bottom: 28px;
+        }
+
+        .privacy-links {
+            text-align: center;
+            padding: 0 24px 40px;
+            background: #fff;
+            font-size: 14px;
+            color: #86868b;
+        }
+
+        .privacy-links a {
+            color: #0066cc;
+            text-decoration: none;
+            margin: 0 12px;
+        }
+
+        .privacy-links a:hover { text-decoration: underline; }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px 24px 32px;
+            font-size: 12px;
+            color: #86868b;
+        }
+
+        footer a {
+            color: #86868b;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        footer a:hover { color: #1d1d1f; }
+
+        footer .divider { margin-bottom: 4px; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero { padding: 72px 20px 48px; }
+            .hero h1 { font-size: 36px; letter-spacing: -1px; }
+            .hero .tagline { font-size: 17px; }
+
+            .features-grid { grid-template-columns: 1fr; }
+            .steps { grid-template-columns: 1fr; gap: 32px; }
+
+            .features-header h2 { font-size: 28px; }
+            .privacy h2, .cta h2, .how-header h2 { font-size: 26px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="container">
+            <a class="nav-brand" href="./">
+                <span>Bond</span>
+            </a>
+            <a class="nav-link" href="#">Coming to App Store</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <h1>Stay <span>connected</span></h1>
+        <p class="tagline">Love-language reminders, shared milestones, and relationship insights &mdash; for couples who want to be intentional about showing they care.</p>
+        <p class="platforms">iPhone &middot; Apple Watch &middot; Widgets</p>
+        <a class="download-btn" href="#">Coming soon</a>
+    </section>
+
+    <section class="features">
+        <div class="container">
+            <div class="features-header">
+                <h2>Built for couples, not algorithms</h2>
+                <p>No social feeds, no ads, no noise. Just the two of you.</p>
+            </div>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <span class="label">Reminders</span>
+                <h3>Love-language nudges</h3>
+                <p>Create reminders based on the five love languages — words of affirmation, acts of service, receiving gifts, quality time, and physical touch — so you never miss a chance to show up for your partner.</p>
+            </div>
+            <div class="feature-card">
+                <span class="label">Milestones</span>
+                <h3>Shared moments</h3>
+                <p>Track the moments that matter. First dates, anniversaries, inside jokes, and personal wins. Both partners see the same timeline.</p>
+            </div>
+            <div class="feature-card">
+                <span class="label">Stats</span>
+                <h3>Relationship insights</h3>
+                <p>See how you and your partner show love over time. Which love languages do you use most? How has your connection grown?</p>
+            </div>
+            <div class="feature-card">
+                <span class="label">Pairing</span>
+                <h3>One invite code</h3>
+                <p>Send your partner an invite link. They tap it, and you're paired. No usernames, no searching, no complexity.</p>
+            </div>
+            <div class="feature-card">
+                <span class="label">Apple Watch</span>
+                <h3>Wrist-friendly</h3>
+                <p>Get reminders and check your shared milestones right from your watch. Complications keep Bond one tap away.</p>
+            </div>
+            <div class="feature-card">
+                <span class="label">Widgets</span>
+                <h3>Home screen</h3>
+                <p>Upcoming reminders and milestone countdowns on your home screen and lock screen. No need to open the app.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="how-it-works">
+        <div class="container">
+            <div class="how-header">
+                <h2>How it works</h2>
+                <p>Start connecting in under a minute.</p>
+            </div>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Sign in</h3>
+                    <p>Use Sign in with Apple. No passwords, no social media, one tap.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Pair up</h3>
+                    <p>Share your invite link with your partner. They tap, they're in. That's it.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Show you care</h3>
+                    <p>Create reminders, track milestones, and build a habit of intentional love.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="privacy">
+        <div class="container">
+            <div class="lockup">
+                <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </div>
+            <h2>Private by design</h2>
+            <p>Your relationship data is yours. Bond uses Sign in with Apple for authentication and Supabase for secure storage. No ads, no data sharing, no third-party analytics. Your reminders and milestones stay between you and your partner.</p>
+            <a href="privacy-policy.html">Privacy Policy &rarr;</a>
+        </div>
+    </section>
+
+    <section class="cta">
+        <h2>Be more intentional together</h2>
+        <p>Coming soon to the App Store. Free to start.</p>
+        <a class="download-btn" href="#">Coming soon</a>
+    </section>
+
+    <div class="privacy-links">
+        <a href="privacy-policy.html">Privacy Policy</a>
+        <a href="terms-of-service.html">Terms of Service</a>
+    </div>
+
+    <footer>
+        <div class="divider">&copy; 2026 Jack Wallner</div>
+    </footer>
+
+</body>
+</html>
