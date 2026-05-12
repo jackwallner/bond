@@ -33,6 +33,7 @@
 		62CD4EA4E0A59DBC6E22AE4C /* WidgetSnapshotPump.swift in Sources */ = {isa = PBXBuildFile; fileRef = F90568721DDE1134D8589429 /* WidgetSnapshotPump.swift */; };
 		6782BCD1DA14CFA28E8B63DD /* PaywallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D805023C4E04450F773363ED /* PaywallView.swift */; };
 		6EB1C7BDDF8E1A60572C72C0 /* ReminderDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 585D1A7C6799459199130E5B /* ReminderDTO.swift */; };
+		6F1FEEB089EFB8F9BCD20E29 /* PreferenceChoiceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1B20DA5B893C061E647A350 /* PreferenceChoiceView.swift */; };
 		6F6C2CB3F5A0CF9120D0AAA9 /* BondWidgetsBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = B67A2D6BC9AC30CDB4726850 /* BondWidgetsBundle.swift */; };
 		71AEF9419BAA21E69F7A012F /* BondWatch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 902B35CB888AF0397097702E /* BondWatch.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		7411F1A8C72A107812C597EB /* ReminderTrigger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94FA6F604A0AE177F1E53E19 /* ReminderTrigger.swift */; };
@@ -154,6 +155,7 @@
 		D805023C4E04450F773363ED /* PaywallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaywallView.swift; sourceTree = "<group>"; };
 		E532B78A2FDF72771E0852A0 /* StatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsView.swift; sourceTree = "<group>"; };
 		EEC2380E22745DECC51B7942 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		F1B20DA5B893C061E647A350 /* PreferenceChoiceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferenceChoiceView.swift; sourceTree = "<group>"; };
 		F49157A02B5BD4DD60E4D6A9 /* BondWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BondWatchApp.swift; sourceTree = "<group>"; };
 		F90568721DDE1134D8589429 /* WidgetSnapshotPump.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetSnapshotPump.swift; sourceTree = "<group>"; };
 		FF58AA7D81DFDBBF4E3D941F /* LoveLanguage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoveLanguage.swift; sourceTree = "<group>"; };
@@ -198,6 +200,7 @@
 			isa = PBXGroup;
 			children = (
 				B4ECCA9463B20E0BF3A735F1 /* OnboardingView.swift */,
+				F1B20DA5B893C061E647A350 /* PreferenceChoiceView.swift */,
 			);
 			path = Onboarding;
 			sourceTree = "<group>";
@@ -537,6 +540,7 @@
 				FE1B9776FA4A29DDCFC59E82 /* PairingService.swift in Sources */,
 				0ED8EEED9492C17B5A9C0D64 /* PairingView.swift in Sources */,
 				6782BCD1DA14CFA28E8B63DD /* PaywallView.swift in Sources */,
+				6F1FEEB089EFB8F9BCD20E29 /* PreferenceChoiceView.swift in Sources */,
 				5FEE1E878E0187DE2EC0F5A6 /* ProfileDTO.swift in Sources */,
 				919EB3DE7409BA035B414E2A /* PurchasesService.swift in Sources */,
 				C936D494989E30796DF97085 /* RecurrencePreset.swift in Sources */,
@@ -654,7 +658,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 11;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = YXG4MP6W39;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -722,7 +726,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 11;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = YXG4MP6W39;
 				ENABLE_NS_ASSERTIONS = NO;

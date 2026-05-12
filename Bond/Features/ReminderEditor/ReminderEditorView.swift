@@ -78,12 +78,19 @@ struct ReminderEditorView: View {
                 }
 
                 Section("Who is this for?") {
-                    Picker("Target", selection: $target) {
-                        ForEach(ReminderTarget.allCases) { Text($0.title).tag($0) }
-                    }
-                    .pickerStyle(.segmented)
-                    if target == .partner {
-                        Toggle("Keep secret from partner (surprise)", isOn: $surpriseHidden)
+                    if pairing.solo {
+                        // Solo users only target themselves.
+                        Text("Reminders are just for you.")
+                            .font(.callout)
+                            .foregroundStyle(.secondary)
+                    } else {
+                        Picker("Target", selection: $target) {
+                            ForEach(ReminderTarget.allCases) { Text($0.title).tag($0) }
+                        }
+                        .pickerStyle(.segmented)
+                        if target == .partner {
+                            Toggle("Keep secret from partner (surprise)", isOn: $surpriseHidden)
+                        }
                     }
                 }
 
@@ -224,7 +231,7 @@ struct ReminderEditorView: View {
         guard let me = supabase.currentUserId,
               let coupleId = pairing.coupleId
         else {
-            errorMessage = "Not paired yet."
+            errorMessage = "Not set up yet. Please finish setup first."
             return
         }
         let partnerId = pairing.partnerProfile?.id

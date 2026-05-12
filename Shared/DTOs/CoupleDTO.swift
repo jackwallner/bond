@@ -5,12 +5,14 @@ public struct CoupleDTO: Codable, Sendable, Identifiable, Hashable {
     public let partnerA: UUID
     public let partnerB: UUID
     public let pairedAt: Date?
+    public let solo: Bool
 
     enum CodingKeys: String, CodingKey {
         case id
         case partnerA = "partner_a"
         case partnerB = "partner_b"
         case pairedAt = "paired_at"
+        case solo
     }
 
     public func partnerId(forSelf userId: UUID) -> UUID? {

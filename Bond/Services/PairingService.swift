@@ -8,12 +8,14 @@ final class PairingService {
 
     var coupleId: UUID?
     var partnerProfile: ProfileDTO?
+    var solo: Bool = false
     var pendingInviteCode: String?
     var lastError: String?
+    var needsPreferenceChoice = false
 
     private let inviteCodeLength = 6
     private let inviteCodeAlphabet = Array("ABCDEFGHJKMNPQRSTUVWXYZ23456789")
-    private let universalLinkHost = "jackwallner.com"
+    private let universalLinkHost = "bond.jackwallner.com"
 
     func loadCouple() async {
         guard let me = supabase.currentUserId else { return }
@@ -27,7 +29,8 @@ final class PairingService {
                 .execute()
                 .value
             coupleId = row?.id
-            if let partnerUUID = row?.partnerId(forSelf: me) {
+            solo = row?.solo ?? false
+            if let partnerUUID = row?.partnerId(forSelf: me), partnerUUID != me {
                 partnerProfile = try await supabase.client
                     .from("profiles")
                     .select()
@@ -35,10 +38,29 @@ final class PairingService {
                     .single()
                     .execute()
                     .value
+            } else {
+                partnerProfile = nil
             }
+            needsPreferenceChoice = false
         } catch {
-            // No couple yet — expected for new users.
             coupleId = nil
+            solo = false
+            needsPreferenceChoice = true
+        }
+    }
+
+    func createSoloCouple() async {
+        guard let me = supabase.currentUserId else {
+            lastError = "Sign in first."
+            return
+        }
+        do {
+            try await supabase.client
+                .rpc("create_solo_couple", params: ["p_user": me.uuidString])
+                .execute()
+            await loadCouple()
+        } catch {
+            lastError = error.localizedDescription
         }
     }
 

@@ -55,6 +55,8 @@ struct RootView: View {
         Group {
             if !supabase.isAuthenticated {
                 OnboardingView()
+            } else if pairing.needsPreferenceChoice {
+                PreferenceChoiceView()
             } else if pairing.coupleId == nil {
                 PairingView()
             } else {
@@ -63,6 +65,11 @@ struct RootView: View {
         }
         .task {
             await pairing.loadCouple()
+        }
+        .onChange(of: supabase.isAuthenticated) { _, authenticated in
+            if authenticated {
+                Task { await pairing.loadCouple() }
+            }
         }
     }
 }
