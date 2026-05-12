@@ -1,0 +1,88 @@
+name: Bond
+options:
+  bundleIdPrefix: com.jackwallner
+  deploymentTarget:
+    iOS: "18.0"
+    watchOS: "11.0"
+  xcodeVersion: "16.0"
+  minimumXcodeGenVersion: "2.38"
+
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    DEVELOPMENT_TEAM: YXG4MP6W39
+    CODE_SIGN_STYLE: Automatic
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    GENERATE_INFOPLIST_FILE: NO
+
+packages:
+  Supabase:
+    url: https://github.com/supabase/supabase-swift.git
+    from: 2.24.0
+
+schemes:
+  Bond:
+    build:
+      targets:
+        Bond: all
+        BondWatch: all
+        BondWidgets: all
+    run:
+      config: Debug
+  BondWatch:
+    build:
+      targets:
+        BondWatch: all
+    run:
+      config: Debug
+
+targets:
+  Bond:
+    type: application
+    platform: iOS
+    sources:
+      - path: Bond
+      - path: Shared
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.jackwallner.bond
+        INFOPLIST_FILE: Bond/Info.plist
+        CODE_SIGN_ENTITLEMENTS: Bond/Bond.entitlements
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        TARGETED_DEVICE_FAMILY: "1"
+    dependencies:
+      - package: Supabase
+        product: Supabase
+      - target: BondWidgets
+      - target: BondWatch
+        embed: true
+
+  BondWatch:
+    type: application
+    platform: watchOS
+    sources:
+      - path: BondWatch
+      - path: Shared
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.jackwallner.bond.watch
+        INFOPLIST_FILE: BondWatch/Info.plist
+        CODE_SIGN_ENTITLEMENTS: BondWatch/BondWatch.entitlements
+        WATCHOS_DEPLOYMENT_TARGET: "11.0"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+    dependencies:
+      - package: Supabase
+        product: Supabase
+
+  BondWidgets:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: BondWidgets
+      - path: Shared
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.jackwallner.bond.widgets
+        INFOPLIST_FILE: BondWidgets/Info.plist
+        CODE_SIGN_ENTITLEMENTS: BondWidgets/BondWidgets.entitlements

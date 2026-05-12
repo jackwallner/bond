@@ -1,0 +1,28 @@
+## Xcode
+build/
+DerivedData/
+*.xcuserdatad/
+xcuserdata/
+*.xcuserstate
+*.xcscheme
+
+## XcodeGen-generated project — uncomment if you prefer to ignore.
+## We keep it tracked so other tools (Codex review) can see the structure.
+# Bond.xcodeproj/
+
+## SPM
+.build/
+.swiftpm/
+
+## macOS
+.DS_Store
+
+## Editor
+*.swp
+.vscode/
+.idea/
+
+## Secrets / env
+*.env
+Secrets.xcconfig
+*.entitlements.local

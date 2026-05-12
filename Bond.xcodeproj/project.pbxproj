@@ -1,0 +1,748 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0ED8EEED9492C17B5A9C0D64 /* PairingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4651927088C4AF8826E38EE /* PairingView.swift */; };
+		14271AAE2B1B55F6F1300DA3 /* CoupleDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 614F6A4AF63E9073387D83DA /* CoupleDTO.swift */; };
+		15F323D3A66EDD111C27312C /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = 79DA0CE0B85E6A75ACD31F75 /* Supabase */; };
+		27F0B2AF1AE96E58B63A4F3A /* ReminderTrigger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94FA6F604A0AE177F1E53E19 /* ReminderTrigger.swift */; };
+		2813CCAF01B9B86418F73CEC /* CoupleDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 614F6A4AF63E9073387D83DA /* CoupleDTO.swift */; };
+		3226DA024CFAFDA32F294D31 /* ProfileDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = C76495F38E8EC32C13087CAC /* ProfileDTO.swift */; };
+		346E3CA160F86EC6A841A71D /* BondWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 2D2331EDA51A63F2314DDB32 /* BondWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		35460CE84004F5686F3D5F10 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A42CD9882E06FC36B7BAC844 /* Assets.xcassets */; };
+		3B838DF1DB360C572EA4A91F /* CoupleDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 614F6A4AF63E9073387D83DA /* CoupleDTO.swift */; };
+		4423CE637C6D08B8C5EC785F /* ReminderDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 585D1A7C6799459199130E5B /* ReminderDTO.swift */; };
+		4A1FFC7369BB4120070D2C6D /* ProfileDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = C76495F38E8EC32C13087CAC /* ProfileDTO.swift */; };
+		4E5B7E7C7B7C2FAF0E18EFE1 /* AppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E49B51523219D78344AB9A8 /* AppGroup.swift */; };
+		52F1860A269EF29ACE6EE0A3 /* AppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E49B51523219D78344AB9A8 /* AppGroup.swift */; };
+		56281E60F20B712539F957FF /* LoveLanguage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF58AA7D81DFDBBF4E3D941F /* LoveLanguage.swift */; };
+		5E95FA191A93BEB0EA23D220 /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = 04DB1D81058B6E8FF4DBF480 /* Supabase */; };
+		5FEE1E878E0187DE2EC0F5A6 /* ProfileDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = C76495F38E8EC32C13087CAC /* ProfileDTO.swift */; };
+		6EB1C7BDDF8E1A60572C72C0 /* ReminderDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 585D1A7C6799459199130E5B /* ReminderDTO.swift */; };
+		6F6C2CB3F5A0CF9120D0AAA9 /* BondWidgetsBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = B67A2D6BC9AC30CDB4726850 /* BondWidgetsBundle.swift */; };
+		71AEF9419BAA21E69F7A012F /* BondWatch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 902B35CB888AF0397097702E /* BondWatch.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		7411F1A8C72A107812C597EB /* ReminderTrigger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94FA6F604A0AE177F1E53E19 /* ReminderTrigger.swift */; };
+		8408C38ED1DBEDDFB1944904 /* LoveLanguage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF58AA7D81DFDBBF4E3D941F /* LoveLanguage.swift */; };
+		9A2F69C5EDACC56A8920B26F /* SupabaseConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 939CEC163F261084A4635A51 /* SupabaseConfig.swift */; };
+		A1A3E41F08D94F63493F5F39 /* LoveLanguage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF58AA7D81DFDBBF4E3D941F /* LoveLanguage.swift */; };
+		AE772874A114CC2B5E4C2739 /* AppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E49B51523219D78344AB9A8 /* AppGroup.swift */; };
+		BC6A2BB0AAC48DDE56E8BEE6 /* BondWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F49157A02B5BD4DD60E4D6A9 /* BondWatchApp.swift */; };
+		C455C1D4B733D81132787827 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4ECCA9463B20E0BF3A735F1 /* OnboardingView.swift */; };
+		C7C6BF0E9FFB89D1127E90DD /* SupabaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12B0502E3CD2A5CE2602DE00 /* SupabaseService.swift */; };
+		C85B4C6B1B7AC5597C83FA4C /* AppleSignInHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FD98197BFD6CA378B6E5EE2 /* AppleSignInHelper.swift */; };
+		E1B0AFF57064F67A389FA982 /* BondApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C93F203FD44AA24FC52C1EF /* BondApp.swift */; };
+		F5CBECF630BB9C0454F80650 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4749EF61AE27675A3976D9E8 /* Assets.xcassets */; };
+		F8591164C8A77D09DECE3911 /* ReminderTrigger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94FA6F604A0AE177F1E53E19 /* ReminderTrigger.swift */; };
+		FD652D967BE346A7833D4461 /* ReminderDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 585D1A7C6799459199130E5B /* ReminderDTO.swift */; };
+		FE1B9776FA4A29DDCFC59E82 /* PairingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 167CA752300A93B733B1F99B /* PairingService.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		56BC0229A3B69F89FFDF22B9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EEC45BA88290345E9A4B1004 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 71BA1EE73B231085ADD03089;
+			remoteInfo = BondWatch;
+		};
+		75C1C2245A5A7C5B83ECD3F7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EEC45BA88290345E9A4B1004 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = DA1B9B252D28DF4638EB38AB;
+			remoteInfo = BondWidgets;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		27935014A4EC856544C965B8 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				346E3CA160F86EC6A841A71D /* BondWidgets.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8528664331D085C875F34670 /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				71AEF9419BAA21E69F7A012F /* BondWatch.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		12B0502E3CD2A5CE2602DE00 /* SupabaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseService.swift; sourceTree = "<group>"; };
+		167CA752300A93B733B1F99B /* PairingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PairingService.swift; sourceTree = "<group>"; };
+		278C29A0A919288DF213F74A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		27C794277EBC08A83545480C /* BondWatch.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BondWatch.entitlements; sourceTree = "<group>"; };
+		2C93F203FD44AA24FC52C1EF /* BondApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BondApp.swift; sourceTree = "<group>"; };
+		2D2331EDA51A63F2314DDB32 /* BondWidgets.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = BondWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		381B819C3EFFEEF1F7BCF87A /* Bond.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Bond.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		4749EF61AE27675A3976D9E8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		585D1A7C6799459199130E5B /* ReminderDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderDTO.swift; sourceTree = "<group>"; };
+		5E49B51523219D78344AB9A8 /* AppGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGroup.swift; sourceTree = "<group>"; };
+		614F6A4AF63E9073387D83DA /* CoupleDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoupleDTO.swift; sourceTree = "<group>"; };
+		675148F7F28D41E44B500502 /* Bond.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Bond.entitlements; sourceTree = "<group>"; };
+		75B9135257B219360C5756D1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		8FD98197BFD6CA378B6E5EE2 /* AppleSignInHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleSignInHelper.swift; sourceTree = "<group>"; };
+		902B35CB888AF0397097702E /* BondWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BondWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		922EDFFF7306B8D113F47F36 /* BondWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BondWidgets.entitlements; sourceTree = "<group>"; };
+		939CEC163F261084A4635A51 /* SupabaseConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseConfig.swift; sourceTree = "<group>"; };
+		94FA6F604A0AE177F1E53E19 /* ReminderTrigger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderTrigger.swift; sourceTree = "<group>"; };
+		A42CD9882E06FC36B7BAC844 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		B4651927088C4AF8826E38EE /* PairingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PairingView.swift; sourceTree = "<group>"; };
+		B4ECCA9463B20E0BF3A735F1 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		B67A2D6BC9AC30CDB4726850 /* BondWidgetsBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BondWidgetsBundle.swift; sourceTree = "<group>"; };
+		C76495F38E8EC32C13087CAC /* ProfileDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileDTO.swift; sourceTree = "<group>"; };
+		EEC2380E22745DECC51B7942 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		F49157A02B5BD4DD60E4D6A9 /* BondWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BondWatchApp.swift; sourceTree = "<group>"; };
+		FF58AA7D81DFDBBF4E3D941F /* LoveLanguage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoveLanguage.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		1A1BA4F7D15EFE143B933623 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5E95FA191A93BEB0EA23D220 /* Supabase in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2656B31032035CA270E01DA4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				15F323D3A66EDD111C27312C /* Supabase in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0409B24F53BAB15E34888D9D /* BondWatch */ = {
+			isa = PBXGroup;
+			children = (
+				A42CD9882E06FC36B7BAC844 /* Assets.xcassets */,
+				27C794277EBC08A83545480C /* BondWatch.entitlements */,
+				F49157A02B5BD4DD60E4D6A9 /* BondWatchApp.swift */,
+				75B9135257B219360C5756D1 /* Info.plist */,
+			);
+			path = BondWatch;
+			sourceTree = "<group>";
+		};
+		0CAC98D4759D65A96676DDE9 /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				B4ECCA9463B20E0BF3A735F1 /* OnboardingView.swift */,
+			);
+			path = Onboarding;
+			sourceTree = "<group>";
+		};
+		181F3037FDDCB872B298C861 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				8FD98197BFD6CA378B6E5EE2 /* AppleSignInHelper.swift */,
+				167CA752300A93B733B1F99B /* PairingService.swift */,
+				939CEC163F261084A4635A51 /* SupabaseConfig.swift */,
+				12B0502E3CD2A5CE2602DE00 /* SupabaseService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		22E151673E904F86E5F85C0A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				381B819C3EFFEEF1F7BCF87A /* Bond.app */,
+				902B35CB888AF0397097702E /* BondWatch.app */,
+				2D2331EDA51A63F2314DDB32 /* BondWidgets.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		2D57FDDB6360A6350DA05900 /* Bond */ = {
+			isa = PBXGroup;
+			children = (
+				4749EF61AE27675A3976D9E8 /* Assets.xcassets */,
+				675148F7F28D41E44B500502 /* Bond.entitlements */,
+				2C93F203FD44AA24FC52C1EF /* BondApp.swift */,
+				278C29A0A919288DF213F74A /* Info.plist */,
+				DA1520EAE05057CE75397FDE /* Features */,
+				181F3037FDDCB872B298C861 /* Services */,
+			);
+			path = Bond;
+			sourceTree = "<group>";
+		};
+		37BA39ED18C231C7A2BB9CF8 /* DTOs */ = {
+			isa = PBXGroup;
+			children = (
+				614F6A4AF63E9073387D83DA /* CoupleDTO.swift */,
+				C76495F38E8EC32C13087CAC /* ProfileDTO.swift */,
+				585D1A7C6799459199130E5B /* ReminderDTO.swift */,
+			);
+			path = DTOs;
+			sourceTree = "<group>";
+		};
+		384DC4EA0BDAE77BFFB9EEC9 = {
+			isa = PBXGroup;
+			children = (
+				2D57FDDB6360A6350DA05900 /* Bond */,
+				0409B24F53BAB15E34888D9D /* BondWatch */,
+				B897F2680C88444499C5EB72 /* BondWidgets */,
+				BFCC780BB03A1C1637566A77 /* Shared */,
+				22E151673E904F86E5F85C0A /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		968CCB8EDDF6E5B40A2212B2 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				FF58AA7D81DFDBBF4E3D941F /* LoveLanguage.swift */,
+				94FA6F604A0AE177F1E53E19 /* ReminderTrigger.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		9EE6B4FEC25EF5FE4B587CEF /* Pairing */ = {
+			isa = PBXGroup;
+			children = (
+				B4651927088C4AF8826E38EE /* PairingView.swift */,
+			);
+			path = Pairing;
+			sourceTree = "<group>";
+		};
+		B897F2680C88444499C5EB72 /* BondWidgets */ = {
+			isa = PBXGroup;
+			children = (
+				922EDFFF7306B8D113F47F36 /* BondWidgets.entitlements */,
+				B67A2D6BC9AC30CDB4726850 /* BondWidgetsBundle.swift */,
+				EEC2380E22745DECC51B7942 /* Info.plist */,
+			);
+			path = BondWidgets;
+			sourceTree = "<group>";
+		};
+		BFCC780BB03A1C1637566A77 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				37BA39ED18C231C7A2BB9CF8 /* DTOs */,
+				968CCB8EDDF6E5B40A2212B2 /* Models */,
+				C1A9D47F8C742A61A14D3072 /* Utilities */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		C1A9D47F8C742A61A14D3072 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				5E49B51523219D78344AB9A8 /* AppGroup.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		DA1520EAE05057CE75397FDE /* Features */ = {
+			isa = PBXGroup;
+			children = (
+				0CAC98D4759D65A96676DDE9 /* Onboarding */,
+				9EE6B4FEC25EF5FE4B587CEF /* Pairing */,
+			);
+			path = Features;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		50522AFA470C7496132750D0 /* Bond */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D5C6433B61A95D55AEF5600B /* Build configuration list for PBXNativeTarget "Bond" */;
+			buildPhases = (
+				CDC5BE84299338BB996CFCE6 /* Sources */,
+				AD00B683DD1EA81869A2547E /* Resources */,
+				2656B31032035CA270E01DA4 /* Frameworks */,
+				27935014A4EC856544C965B8 /* Embed Foundation Extensions */,
+				8528664331D085C875F34670 /* Embed Watch Content */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				85B7FC293F32B0A89F87B427 /* PBXTargetDependency */,
+				92FE73E1394721440FA3645C /* PBXTargetDependency */,
+			);
+			name = Bond;
+			packageProductDependencies = (
+				79DA0CE0B85E6A75ACD31F75 /* Supabase */,
+			);
+			productName = Bond;
+			productReference = 381B819C3EFFEEF1F7BCF87A /* Bond.app */;
+			productType = "com.apple.product-type.application";
+		};
+		71BA1EE73B231085ADD03089 /* BondWatch */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B7A422E75FF2C23220650953 /* Build configuration list for PBXNativeTarget "BondWatch" */;
+			buildPhases = (
+				F678E3827F61365C677DC09A /* Sources */,
+				E95A8EFF7C61FAD905A5A181 /* Resources */,
+				1A1BA4F7D15EFE143B933623 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = BondWatch;
+			packageProductDependencies = (
+				04DB1D81058B6E8FF4DBF480 /* Supabase */,
+			);
+			productName = BondWatch;
+			productReference = 902B35CB888AF0397097702E /* BondWatch.app */;
+			productType = "com.apple.product-type.application";
+		};
+		DA1B9B252D28DF4638EB38AB /* BondWidgets */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 74DE7FE610A7B7168A0373D4 /* Build configuration list for PBXNativeTarget "BondWidgets" */;
+			buildPhases = (
+				336ACDBF54E47908D80FCF99 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = BondWidgets;
+			packageProductDependencies = (
+			);
+			productName = BondWidgets;
+			productReference = 2D2331EDA51A63F2314DDB32 /* BondWidgets.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		EEC45BA88290345E9A4B1004 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1600;
+				TargetAttributes = {
+					50522AFA470C7496132750D0 = {
+						DevelopmentTeam = YXG4MP6W39;
+						ProvisioningStyle = Automatic;
+					};
+					71BA1EE73B231085ADD03089 = {
+						DevelopmentTeam = YXG4MP6W39;
+						ProvisioningStyle = Automatic;
+					};
+					DA1B9B252D28DF4638EB38AB = {
+						DevelopmentTeam = YXG4MP6W39;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = A2B87A8093FF0E2168AEFF93 /* Build configuration list for PBXProject "Bond" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 384DC4EA0BDAE77BFFB9EEC9;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				AA5E2A22F04AB60DB712C2AA /* XCRemoteSwiftPackageReference "supabase-swift" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 22E151673E904F86E5F85C0A /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				50522AFA470C7496132750D0 /* Bond */,
+				71BA1EE73B231085ADD03089 /* BondWatch */,
+				DA1B9B252D28DF4638EB38AB /* BondWidgets */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		AD00B683DD1EA81869A2547E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F5CBECF630BB9C0454F80650 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E95A8EFF7C61FAD905A5A181 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				35460CE84004F5686F3D5F10 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		336ACDBF54E47908D80FCF99 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AE772874A114CC2B5E4C2739 /* AppGroup.swift in Sources */,
+				6F6C2CB3F5A0CF9120D0AAA9 /* BondWidgetsBundle.swift in Sources */,
+				2813CCAF01B9B86418F73CEC /* CoupleDTO.swift in Sources */,
+				56281E60F20B712539F957FF /* LoveLanguage.swift in Sources */,
+				4A1FFC7369BB4120070D2C6D /* ProfileDTO.swift in Sources */,
+				FD652D967BE346A7833D4461 /* ReminderDTO.swift in Sources */,
+				7411F1A8C72A107812C597EB /* ReminderTrigger.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CDC5BE84299338BB996CFCE6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				52F1860A269EF29ACE6EE0A3 /* AppGroup.swift in Sources */,
+				C85B4C6B1B7AC5597C83FA4C /* AppleSignInHelper.swift in Sources */,
+				E1B0AFF57064F67A389FA982 /* BondApp.swift in Sources */,
+				3B838DF1DB360C572EA4A91F /* CoupleDTO.swift in Sources */,
+				8408C38ED1DBEDDFB1944904 /* LoveLanguage.swift in Sources */,
+				C455C1D4B733D81132787827 /* OnboardingView.swift in Sources */,
+				FE1B9776FA4A29DDCFC59E82 /* PairingService.swift in Sources */,
+				0ED8EEED9492C17B5A9C0D64 /* PairingView.swift in Sources */,
+				5FEE1E878E0187DE2EC0F5A6 /* ProfileDTO.swift in Sources */,
+				6EB1C7BDDF8E1A60572C72C0 /* ReminderDTO.swift in Sources */,
+				27F0B2AF1AE96E58B63A4F3A /* ReminderTrigger.swift in Sources */,
+				9A2F69C5EDACC56A8920B26F /* SupabaseConfig.swift in Sources */,
+				C7C6BF0E9FFB89D1127E90DD /* SupabaseService.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F678E3827F61365C677DC09A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4E5B7E7C7B7C2FAF0E18EFE1 /* AppGroup.swift in Sources */,
+				BC6A2BB0AAC48DDE56E8BEE6 /* BondWatchApp.swift in Sources */,
+				14271AAE2B1B55F6F1300DA3 /* CoupleDTO.swift in Sources */,
+				A1A3E41F08D94F63493F5F39 /* LoveLanguage.swift in Sources */,
+				3226DA024CFAFDA32F294D31 /* ProfileDTO.swift in Sources */,
+				4423CE637C6D08B8C5EC785F /* ReminderDTO.swift in Sources */,
+				F8591164C8A77D09DECE3911 /* ReminderTrigger.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		85B7FC293F32B0A89F87B427 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = DA1B9B252D28DF4638EB38AB /* BondWidgets */;
+			targetProxy = 75C1C2245A5A7C5B83ECD3F7 /* PBXContainerItemProxy */;
+		};
+		92FE73E1394721440FA3645C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 71BA1EE73B231085ADD03089 /* BondWatch */;
+			targetProxy = 56BC0229A3B69F89FFDF22B9 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		06820EBC065A7FF499F812F6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = BondWatch/BondWatch.entitlements;
+				INFOPLIST_FILE = BondWatch/Info.plist;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jackwallner.bond.watch;
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 11.0;
+			};
+			name = Release;
+		};
+		2490BDF6BD1042DFE8C19290 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = BondWatch/BondWatch.entitlements;
+				INFOPLIST_FILE = BondWatch/Info.plist;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jackwallner.bond.watch;
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 11.0;
+			};
+			name = Debug;
+		};
+		68463DE4544D3CB691D40E8D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = YXG4MP6W39;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MARKETING_VERSION = 0.1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
+				WATCHOS_DEPLOYMENT_TARGET = 11.0;
+			};
+			name = Debug;
+		};
+		7512FAE93945B93EBDE2272C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = YXG4MP6W39;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MARKETING_VERSION = 0.1.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 6.0;
+				WATCHOS_DEPLOYMENT_TARGET = 11.0;
+			};
+			name = Release;
+		};
+		7DD701F29402BB5396549D11 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = BondWidgets/BondWidgets.entitlements;
+				INFOPLIST_FILE = BondWidgets/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.jackwallner.bond.widgets;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		9671980AB4DE00EC80B8A5F3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = BondWidgets/BondWidgets.entitlements;
+				INFOPLIST_FILE = BondWidgets/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.jackwallner.bond.widgets;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		9DD0B18CEE18170E71B3D2C3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Bond/Bond.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_FILE = Bond/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.jackwallner.bond;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		AEB057E99699D0B91A8887C8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Bond/Bond.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_FILE = Bond/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.jackwallner.bond;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		74DE7FE610A7B7168A0373D4 /* Build configuration list for PBXNativeTarget "BondWidgets" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9671980AB4DE00EC80B8A5F3 /* Debug */,
+				7DD701F29402BB5396549D11 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		A2B87A8093FF0E2168AEFF93 /* Build configuration list for PBXProject "Bond" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				68463DE4544D3CB691D40E8D /* Debug */,
+				7512FAE93945B93EBDE2272C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		B7A422E75FF2C23220650953 /* Build configuration list for PBXNativeTarget "BondWatch" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2490BDF6BD1042DFE8C19290 /* Debug */,
+				06820EBC065A7FF499F812F6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		D5C6433B61A95D55AEF5600B /* Build configuration list for PBXNativeTarget "Bond" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9DD0B18CEE18170E71B3D2C3 /* Debug */,
+				AEB057E99699D0B91A8887C8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		AA5E2A22F04AB60DB712C2AA /* XCRemoteSwiftPackageReference "supabase-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/supabase/supabase-swift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.24.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		04DB1D81058B6E8FF4DBF480 /* Supabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AA5E2A22F04AB60DB712C2AA /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Supabase;
+		};
+		79DA0CE0B85E6A75ACD31F75 /* Supabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AA5E2A22F04AB60DB712C2AA /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Supabase;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = EEC45BA88290345E9A4B1004 /* Project object */;
+}
