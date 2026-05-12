@@ -23,10 +23,20 @@ public struct MilestoneDTO: Codable, Sendable, Identifiable, Hashable {
         guard recur else { return date }
         var comps = calendar.dateComponents([.month, .day], from: date)
         comps.year = calendar.component(.year, from: reference)
-        guard var next = calendar.date(from: comps) else { return date }
-        if next < calendar.startOfDay(for: reference) {
-            next = calendar.date(byAdding: .year, value: 1, to: next) ?? next
+
+        // Feb 29 in non-leap years → roll to Mar 1
+        var next = calendar.date(from: comps)
+        if next == nil {
+            comps.month = 3
+            comps.day = 1
+            next = calendar.date(from: comps)
         }
-        return next
+
+        guard var result = next else { return date }
+        if result < reference {
+            comps.year! += 1
+            result = calendar.date(from: comps) ?? result
+        }
+        return result
     }
 }

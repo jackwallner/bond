@@ -50,71 +50,91 @@ interface WebhookPayload {
 }
 
 Deno.serve(async (req) => {
-  if (req.method !== "POST") {
-    return new Response("method not allowed", { status: 405 });
-  }
+  try {
+    if (req.method !== "POST") {
+      return new Response("method not allowed", { status: 405 });
+    }
 
-  const payload = (await req.json()) as WebhookPayload;
-  if (payload.type === "DELETE" || !payload.record) {
-    return jsonOK({ skipped: "delete or empty record" });
-  }
-  const reminder = payload.record;
+    // Verify the request is from Supabase (has service role key).
+    const authHeader = req.headers.get("authorization");
+    const expected = `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}`;
+    if (authHeader !== expected) {
+      return new Response("unauthorized", { status: 401 });
+    }
 
-  // Only push when the target is the partner (i.e. not the author).
-  // Self-targeted reminders are handled locally on the author's device.
-  if (reminder.target_id === reminder.author_id) {
-    return jsonOK({ skipped: "self-targeted" });
-  }
+    const payload = (await req.json()) as WebhookPayload;
+    if (payload.type === "DELETE" || !payload.record) {
+      return jsonOK({ skipped: "delete or empty record" });
+    }
+    const reminder = payload.record;
 
-  // Fetch the target's APNs token.
-  const { data: profile, error: profileErr } = await supabase
-    .from("profiles")
-    .select("apns_token")
-    .eq("id", reminder.target_id)
-    .single();
+    // Only push when the target is the partner (i.e. not the author).
+    if (reminder.target_id === reminder.author_id) {
+      return jsonOK({ skipped: "self-targeted" });
+    }
 
-  if (profileErr || !profile?.apns_token) {
-    return jsonOK({ skipped: "no apns_token for target", error: profileErr?.message });
-  }
+    // Fetch the target's APNs token.
+    const { data: profile, error: profileErr } = await supabase
+      .from("profiles")
+      .select("apns_token")
+      .eq("id", reminder.target_id)
+      .single();
 
-  const token = await mintProviderToken();
+    if (profileErr || !profile?.apns_token) {
+      return jsonOK({ skipped: "no apns_token for target", error: profileErr?.message });
+    }
 
-  const apnsBody = {
-    aps: {
-      alert: {
-        title: reminder.title,
-        body: reminder.body ?? "",
+    const token = await mintProviderToken();
+
+    const apnsBody = {
+      aps: {
+        alert: {
+          title: reminder.title,
+          body: reminder.body ?? "",
+        },
+        sound: "default",
+        "thread-id": reminder.love_language,
+        "interruption-level": "active",
       },
-      sound: "default",
-      "thread-id": reminder.love_language,
-      "interruption-level": "active",
-    },
-    reminder_id: reminder.id,
-    couple_id: reminder.couple_id,
-    love_language: reminder.love_language,
-  };
+      reminder_id: reminder.id,
+      couple_id: reminder.couple_id,
+      love_language: reminder.love_language,
+    };
 
-  const apnsRes = await fetch(`${APNS_HOST}/3/device/${profile.apns_token}`, {
-    method: "POST",
-    headers: {
-      "authorization": `bearer ${token}`,
-      "apns-topic": TOPIC,
-      "apns-push-type": "alert",
-      "apns-priority": "10",
-      "content-type": "application/json",
-    },
-    body: JSON.stringify(apnsBody),
-  });
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 5000);
 
-  if (!apnsRes.ok) {
-    const text = await apnsRes.text();
+    const apnsRes = await fetch(`${APNS_HOST}/3/device/${profile.apns_token}`, {
+      method: "POST",
+      headers: {
+        "authorization": `bearer ${token}`,
+        "apns-topic": TOPIC,
+        "apns-push-type": "alert",
+        "apns-priority": "10",
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(apnsBody),
+      signal: controller.signal,
+    });
+
+    clearTimeout(timeout);
+
+    if (!apnsRes.ok) {
+      const text = await apnsRes.text();
+      return new Response(
+        JSON.stringify({ ok: false, status: apnsRes.status, body: text }),
+        { status: 502, headers: { "content-type": "application/json" } },
+      );
+    }
+
+    return jsonOK({ pushed: true });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
     return new Response(
-      JSON.stringify({ ok: false, status: apnsRes.status, body: text }),
-      { status: 502, headers: { "content-type": "application/json" } },
+      JSON.stringify({ ok: false, error: message }),
+      { status: 500, headers: { "content-type": "application/json" } },
     );
   }
-
-  return jsonOK({ pushed: true });
 });
 
 // ---------- helpers ----------

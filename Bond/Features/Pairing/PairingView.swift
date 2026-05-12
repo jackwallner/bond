@@ -26,7 +26,11 @@ struct PairingView: View {
                                 .font(.title.monospaced().bold())
                                 .frame(maxWidth: .infinity)
                         }
-                        ShareLink(item: inviteURL) {
+                        ShareLink(
+                            item: inviteURL,
+                            subject: Text("You've been invited to Bond 💕"),
+                            message: Text("Someone special wants to pair up with you on Bond! Open the link and let the love reminders begin. 💌")
+                        ) {
                             Label("Share with partner", systemImage: "square.and.arrow.up")
                         }
                     } else {
@@ -51,7 +55,7 @@ struct PairingView: View {
                     Button("Pair") {
                         Task { await pairing.consumeInviteCode(manualCode.uppercased()) }
                     }
-                    .disabled(manualCode.count < 4)
+                    .disabled(manualCode.count < 6)
                 }
 
                 if let lastError = pairing.lastError {

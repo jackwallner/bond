@@ -72,7 +72,7 @@ final class NotificationScheduler {
             let region = CLCircularRegion(
                 center: center,
                 radius: geofence.radiusMeters,
-                identifier: "bond.\(geofence.label)"
+                identifier: "bond.\(reminder.id.uuidString)"
             )
             region.notifyOnEntry = onEntry
             region.notifyOnExit = !onEntry
@@ -99,6 +99,12 @@ final class NotificationScheduler {
             return cal.dateComponents([.weekday, .hour, .minute], from: anchor)
         case .monthly:
             return cal.dateComponents([.day, .hour, .minute], from: anchor)
+        case .yearly:
+            return cal.dateComponents([.month, .day, .hour, .minute], from: anchor)
+        }
+    }
+}
+  return cal.dateComponents([.day, .hour, .minute], from: anchor)
         case .yearly:
             return cal.dateComponents([.month, .day, .hour, .minute], from: anchor)
         }

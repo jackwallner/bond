@@ -13,7 +13,7 @@ final class PairingService {
 
     private let inviteCodeLength = 6
     private let inviteCodeAlphabet = Array("ABCDEFGHJKMNPQRSTUVWXYZ23456789")
-    private let universalLinkHost = "bond.jackwallner.com"
+    private let universalLinkHost = "jackwallner.com"
 
     func loadCouple() async {
         guard let me = supabase.currentUserId else { return }

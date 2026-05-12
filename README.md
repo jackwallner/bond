@@ -58,17 +58,7 @@ Not yet wired:
    <key>SUPABASE_ANON_KEY</key>
    <string>eyJ...</string>
    ```
-5. Configure the **associated domain** `bond.jackwallner.com` (or whatever host you pick) and host an AASA file at `https://<host>/.well-known/apple-app-site-association`:
-   ```json
-   {
-     "applinks": {
-       "details": [{
-         "appIDs": ["YXG4MP6W39.com.jackwallner.bond"],
-         "components": [{ "/": "/pair/*" }]
-       }]
-     }
-   }
-   ```
+5. Universal links use `jackwallner.com` (the portfolio site). The AASA file is hosted at `https://jackwallner.com/.well-known/apple-app-site-association` (committed in the portfolio repo under `docs/.well-known/`).
 
 ## APNs (Phase 2)
 

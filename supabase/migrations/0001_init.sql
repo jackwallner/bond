@@ -117,6 +117,13 @@ begin
         raise exception 'cannot pair with yourself';
     end if;
 
+    if exists (select 1 from public.couples where partner_a = v_inviter or partner_b = v_inviter) then
+        raise exception 'inviter already in a couple';
+    end if;
+    if exists (select 1 from public.couples where partner_a = p_user or partner_b = p_user) then
+        raise exception 'you are already in a couple';
+    end if;
+
     insert into public.couples (partner_a, partner_b)
     values (v_inviter, p_user)
     returning id into v_couple_id;
@@ -241,7 +248,7 @@ create policy "milestones_member_rw"
 -- ============================================================
 create table public.subscriptions (
     user_id       uuid primary key references public.profiles(id) on delete cascade,
-    tier          text not null default 'free',
+    tier          text not null default 'free' check (tier in ('free', 'premium')),
     expires_at    timestamptz,
     store_txn_id  text,
     updated_at    timestamptz not null default now()
