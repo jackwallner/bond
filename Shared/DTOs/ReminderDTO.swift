@@ -4,7 +4,7 @@ public struct ReminderDTO: Codable, Sendable, Identifiable, Hashable {
     public let id: UUID
     public let coupleId: UUID
     public let authorId: UUID
-    public let targetId: UUID
+    public var targetId: UUID
     public var title: String
     public var body: String?
     public var loveLanguage: LoveLanguage

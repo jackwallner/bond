@@ -26,3 +26,4 @@ xcuserdata/
 *.env
 Secrets.xcconfig
 *.entitlements.local
+supabase/.temp/

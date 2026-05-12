@@ -3,13 +3,21 @@ import SwiftUI
 @main
 struct BondApp: App {
     @State private var supabase = SupabaseService.shared
-    @State private var pairingService = PairingService()
+    @State private var pairingService: PairingService
+    @State private var reminderRepo: ReminderRepository
+
+    init() {
+        let pairing = PairingService()
+        _pairingService = State(initialValue: pairing)
+        _reminderRepo = State(initialValue: ReminderRepository(pairing: pairing))
+    }
 
     var body: some Scene {
         WindowGroup {
             RootView()
                 .environment(supabase)
                 .environment(pairingService)
+                .environment(reminderRepo)
                 .onOpenURL { url in
                     pairingService.handleIncomingURL(url)
                 }
@@ -28,24 +36,11 @@ struct RootView: View {
             } else if pairing.coupleId == nil {
                 PairingView()
             } else {
-                HomeView()
+                ReminderListView()
             }
         }
         .task {
             await pairing.loadCouple()
-        }
-    }
-}
-
-struct HomeView: View {
-    var body: some View {
-        NavigationStack {
-            ContentUnavailableView(
-                "You're paired",
-                systemImage: "heart.fill",
-                description: Text("Reminder list lands here in Phase 2.")
-            )
-            .navigationTitle("Bond")
         }
     }
 }
