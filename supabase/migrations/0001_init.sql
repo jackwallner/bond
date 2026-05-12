@@ -16,21 +16,11 @@ create table public.profiles (
 
 alter table public.profiles enable row level security;
 
-create policy "profiles_self_select"
-    on public.profiles for select
-    using (
-        id = auth.uid()
-        or id in (
-            select case when partner_a = auth.uid() then partner_b else partner_a end
-            from public.couples
-            where partner_a = auth.uid() or partner_b = auth.uid()
-        )
-    );
-
 create policy "profiles_self_upsert"
     on public.profiles for insert with check (id = auth.uid());
 create policy "profiles_self_update"
     on public.profiles for update using (id = auth.uid());
+-- "profiles_self_select" is defined after `couples` exists (below).
 
 -- Auto-create a profile row when a new auth user signs up.
 create or replace function public.handle_new_user()
@@ -69,6 +59,18 @@ alter table public.couples enable row level security;
 create policy "couples_members_select"
     on public.couples for select
     using (partner_a = auth.uid() or partner_b = auth.uid());
+
+-- Now that `couples` exists, the partner-visible profile policy can reference it.
+create policy "profiles_self_select"
+    on public.profiles for select
+    using (
+        id = auth.uid()
+        or id in (
+            select case when partner_a = auth.uid() then partner_b else partner_a end
+            from public.couples
+            where partner_a = auth.uid() or partner_b = auth.uid()
+        )
+    );
 
 -- ============================================================
 -- Invite codes (pairing)
