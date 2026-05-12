@@ -20,6 +20,9 @@ packages:
   Supabase:
     url: https://github.com/supabase/supabase-swift.git
     from: 2.24.0
+  RevenueCat:
+    url: https://github.com/RevenueCat/purchases-ios-spm.git
+    from: 5.14.0
 
 schemes:
   Bond:
@@ -54,6 +57,10 @@ targets:
     dependencies:
       - package: Supabase
         product: Supabase
+      - package: RevenueCat
+        product: RevenueCat
+      - package: RevenueCat
+        product: RevenueCatUI
       - target: BondWidgets
       - target: BondWatch
         embed: true

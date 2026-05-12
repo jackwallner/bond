@@ -1,3 +1,4 @@
+import CoreLocation
 import Foundation
 import UserNotifications
 
@@ -64,8 +65,25 @@ final class NotificationScheduler {
             let comps = recurrenceComponents(for: preset, anchor: nextFire)
             return UNCalendarNotificationTrigger(dateMatching: comps, repeats: true)
 
-        case .randomWindow, .location, .none:
-            // Phase 4 — location + random-window are premium and handled separately.
+        case .location(let geofence, let onEntry):
+            let center = CLLocationCoordinate2D(
+                latitude: geofence.latitude, longitude: geofence.longitude
+            )
+            let region = CLCircularRegion(
+                center: center,
+                radius: geofence.radiusMeters,
+                identifier: "bond.\(geofence.label)"
+            )
+            region.notifyOnEntry = onEntry
+            region.notifyOnExit = !onEntry
+            return UNLocationNotificationTrigger(region: region, repeats: false)
+
+        case .randomWindow:
+            // Treat random-window as one-time: a random fireAt within the window
+            // is computed at save time (see ReminderEditorView) and stored in fire_at.
+            return nil
+
+        case .none:
             return nil
         }
     }

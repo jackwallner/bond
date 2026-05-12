@@ -3,6 +3,7 @@ import SwiftUI
 
 struct OnboardingView: View {
     @Environment(SupabaseService.self) private var supabase
+    @Environment(PurchasesService.self) private var purchases
     @State private var appleHelper = AppleSignInHelper()
     @State private var errorMessage: String?
     @State private var isSigningIn = false
@@ -60,6 +61,9 @@ struct OnboardingView: View {
         do {
             let result = try await appleHelper.performSignIn()
             try await supabase.signInWithApple(idToken: result.idToken, nonce: result.nonce)
+            if let me = supabase.currentUserId {
+                await purchases.identify(supabaseUserId: me)
+            }
         } catch {
             errorMessage = error.localizedDescription
         }

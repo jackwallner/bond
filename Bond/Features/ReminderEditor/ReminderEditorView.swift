@@ -1,3 +1,4 @@
+import CoreLocation
 import SwiftUI
 
 enum ReminderTarget: String, CaseIterable, Identifiable {
@@ -11,15 +12,31 @@ enum ReminderTarget: String, CaseIterable, Identifiable {
 enum TriggerKind: String, CaseIterable, Identifiable {
     case oneTime
     case recurring
+    case location
+    case randomWindow
 
     var id: String { rawValue }
-    var title: String { self == .oneTime ? "One time" : "Recurring" }
+    var title: String {
+        switch self {
+        case .oneTime:      "One time"
+        case .recurring:    "Recurring"
+        case .location:     "At a place"
+        case .randomWindow: "Random surprise"
+        }
+    }
+    var isPremium: Bool {
+        switch self {
+        case .oneTime, .recurring: false
+        case .location, .randomWindow: true
+        }
+    }
 }
 
 struct ReminderEditorView: View {
     @Environment(SupabaseService.self) private var supabase
     @Environment(PairingService.self) private var pairing
     @Environment(ReminderRepository.self) private var repo
+    @Environment(PurchasesService.self) private var store
     @Environment(\.dismiss) private var dismiss
 
     var existing: ReminderDTO?
@@ -32,8 +49,15 @@ struct ReminderEditorView: View {
     @State private var fireAt: Date = Date().addingTimeInterval(60 * 60)
     @State private var recurrence: RecurrencePreset = .weekly
     @State private var surpriseHidden = false
+    @State private var windowStart = Date().addingTimeInterval(60 * 60)
+    @State private var windowEnd = Date().addingTimeInterval(60 * 60 * 24)
+    @State private var geofenceLatitude: Double = 0
+    @State private var geofenceLongitude: Double = 0
+    @State private var geofenceLabel: String = "Home"
+    @State private var geofenceConfigured = false
     @State private var isSaving = false
     @State private var errorMessage: String?
+    @State private var isPaywallPresented = false
 
     var body: some View {
         NavigationStack {
@@ -47,8 +71,7 @@ struct ReminderEditorView: View {
                 Section("Love language") {
                     Picker("Love language", selection: $loveLanguage) {
                         ForEach(LoveLanguage.allCases) { lang in
-                            Label(lang.title, systemImage: lang.symbolName)
-                                .tag(lang)
+                            Label(lang.title, systemImage: lang.symbolName).tag(lang)
                         }
                     }
                     .pickerStyle(.menu)
@@ -56,9 +79,7 @@ struct ReminderEditorView: View {
 
                 Section("Who is this for?") {
                     Picker("Target", selection: $target) {
-                        ForEach(ReminderTarget.allCases) { t in
-                            Text(t.title).tag(t)
-                        }
+                        ForEach(ReminderTarget.allCases) { Text($0.title).tag($0) }
                     }
                     .pickerStyle(.segmented)
                     if target == .partner {
@@ -68,24 +89,27 @@ struct ReminderEditorView: View {
 
                 Section("When") {
                     Picker("Trigger", selection: $triggerKind) {
-                        ForEach(TriggerKind.allCases) { t in
-                            Text(t.title).tag(t)
-                        }
-                    }
-                    .pickerStyle(.segmented)
-
-                    DatePicker(
-                        triggerKind == .oneTime ? "Date & time" : "Starting",
-                        selection: $fireAt
-                    )
-
-                    if triggerKind == .recurring {
-                        Picker("Repeat", selection: $recurrence) {
-                            ForEach(RecurrencePreset.allCases) { p in
-                                Text(p.title).tag(p)
+                        ForEach(TriggerKind.allCases) { kind in
+                            HStack {
+                                Text(kind.title)
+                                if kind.isPremium && !store.isPremium {
+                                    Spacer()
+                                    Image(systemName: "lock.fill")
+                                        .foregroundStyle(.secondary)
+                                        .font(.caption2)
+                                }
                             }
+                            .tag(kind)
                         }
                     }
+                    .onChange(of: triggerKind) { _, newValue in
+                        if newValue.isPremium && !store.isPremium {
+                            isPaywallPresented = true
+                            triggerKind = .oneTime
+                        }
+                    }
+
+                    triggerDetail
                 }
 
                 if let errorMessage {
@@ -108,7 +132,61 @@ struct ReminderEditorView: View {
                     .disabled(title.trimmingCharacters(in: .whitespaces).isEmpty || isSaving)
                 }
             }
+            .sheet(isPresented: $isPaywallPresented) {
+                PaywallView()
+            }
             .onAppear(perform: hydrate)
+        }
+    }
+
+    @ViewBuilder
+    private var triggerDetail: some View {
+        switch triggerKind {
+        case .oneTime:
+            DatePicker("Date & time", selection: $fireAt)
+        case .recurring:
+            DatePicker("Starting", selection: $fireAt)
+            Picker("Repeat", selection: $recurrence) {
+                ForEach(RecurrencePreset.allCases) { Text($0.title).tag($0) }
+            }
+        case .location:
+            HStack {
+                TextField("Place name", text: $geofenceLabel)
+                Spacer()
+                if geofenceConfigured {
+                    Image(systemName: "checkmark.circle.fill").foregroundStyle(.green)
+                }
+            }
+            Button {
+                Task { await captureCurrentLocation() }
+            } label: {
+                Label(
+                    geofenceConfigured ? "Update to current location" : "Use current location",
+                    systemImage: "location.fill"
+                )
+            }
+            if geofenceConfigured {
+                Text(String(format: "%.4f, %.4f (200m radius)", geofenceLatitude, geofenceLongitude))
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+            }
+        case .randomWindow:
+            DatePicker("Earliest", selection: $windowStart)
+            DatePicker("Latest", selection: $windowEnd)
+            Text("Bond will pick a random moment in this window.")
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+        }
+    }
+
+    private func captureCurrentLocation() async {
+        do {
+            let loc = try await LocationService.shared.currentLocation()
+            geofenceLatitude = loc.coordinate.latitude
+            geofenceLongitude = loc.coordinate.longitude
+            geofenceConfigured = true
+        } catch {
+            errorMessage = error.localizedDescription
         }
     }
 
@@ -128,6 +206,16 @@ struct ReminderEditorView: View {
             triggerKind = .recurring
             fireAt = d
             if let p = RecurrencePreset(rrule: r) { recurrence = p }
+        case .location(let g, _):
+            triggerKind = .location
+            geofenceLabel = g.label
+            geofenceLatitude = g.latitude
+            geofenceLongitude = g.longitude
+            geofenceConfigured = true
+        case .randomWindow(let s, let e):
+            triggerKind = .randomWindow
+            windowStart = s
+            windowEnd = e
         default: break
         }
     }
@@ -143,6 +231,11 @@ struct ReminderEditorView: View {
         let targetId: UUID = switch target {
         case .me:      me
         case .partner: partnerId ?? me
+        }
+
+        if triggerKind.isPremium && !store.isPremium {
+            isPaywallPresented = true
+            return
         }
 
         isSaving = true
@@ -177,10 +270,45 @@ struct ReminderEditorView: View {
             draft.triggerType = "one_time"
             draft.fireAt = fireAt
             draft.rrule = nil
+            draft.geofence = nil
+            draft.windowStart = nil
+            draft.windowEnd = nil
         case .recurring:
             draft.triggerType = "recurring"
             draft.fireAt = fireAt
             draft.rrule = recurrence.rrule
+            draft.geofence = nil
+            draft.windowStart = nil
+            draft.windowEnd = nil
+        case .location:
+            guard geofenceConfigured else {
+                errorMessage = "Pick a location first."
+                return
+            }
+            draft.triggerType = "location"
+            draft.geofence = Geofence(
+                latitude: geofenceLatitude,
+                longitude: geofenceLongitude,
+                radiusMeters: 200,
+                label: geofenceLabel
+            )
+            draft.fireAt = nil
+            draft.rrule = nil
+            draft.windowStart = nil
+            draft.windowEnd = nil
+        case .randomWindow:
+            guard windowEnd > windowStart else {
+                errorMessage = "Window end must be after start."
+                return
+            }
+            let interval = windowEnd.timeIntervalSince(windowStart)
+            let pick = windowStart.addingTimeInterval(.random(in: 0...interval))
+            draft.triggerType = "random_window"
+            draft.fireAt = pick
+            draft.windowStart = windowStart
+            draft.windowEnd = windowEnd
+            draft.rrule = nil
+            draft.geofence = nil
         }
 
         do {

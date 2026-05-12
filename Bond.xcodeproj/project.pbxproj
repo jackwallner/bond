@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		03A4658CD638D6C07E34600F /* DictateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BF6AA28F3907997D62C23E1 /* DictateView.swift */; };
+		083DC3AE75FF0273E8FD73FB /* RevenueCatUI in Frameworks */ = {isa = PBXBuildFile; productRef = 0E0189BDBF4D7010F39727C5 /* RevenueCatUI */; };
 		0ED8EEED9492C17B5A9C0D64 /* PairingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4651927088C4AF8826E38EE /* PairingView.swift */; };
 		14271AAE2B1B55F6F1300DA3 /* CoupleDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 614F6A4AF63E9073387D83DA /* CoupleDTO.swift */; };
 		15F323D3A66EDD111C27312C /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = 79DA0CE0B85E6A75ACD31F75 /* Supabase */; };
@@ -23,28 +25,47 @@
 		4E5B7E7C7B7C2FAF0E18EFE1 /* AppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E49B51523219D78344AB9A8 /* AppGroup.swift */; };
 		52F1860A269EF29ACE6EE0A3 /* AppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E49B51523219D78344AB9A8 /* AppGroup.swift */; };
 		56281E60F20B712539F957FF /* LoveLanguage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF58AA7D81DFDBBF4E3D941F /* LoveLanguage.swift */; };
+		57BC2289724538457316CAB4 /* MilestonesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72C9DDB7D721FC614C52CF6E /* MilestonesView.swift */; };
+		5D94D2F96EDDD2FF55327F9F /* MilestoneDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9691537350F5E42C03E679 /* MilestoneDTO.swift */; };
 		5E95FA191A93BEB0EA23D220 /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = 04DB1D81058B6E8FF4DBF480 /* Supabase */; };
 		5F2AAFCE2DDEC7E0A254A5C5 /* ReminderRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D57F25AA26A85B46F6A8446 /* ReminderRepository.swift */; };
 		5FEE1E878E0187DE2EC0F5A6 /* ProfileDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = C76495F38E8EC32C13087CAC /* ProfileDTO.swift */; };
+		62CD4EA4E0A59DBC6E22AE4C /* WidgetSnapshotPump.swift in Sources */ = {isa = PBXBuildFile; fileRef = F90568721DDE1134D8589429 /* WidgetSnapshotPump.swift */; };
+		6782BCD1DA14CFA28E8B63DD /* PaywallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D805023C4E04450F773363ED /* PaywallView.swift */; };
 		6EB1C7BDDF8E1A60572C72C0 /* ReminderDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 585D1A7C6799459199130E5B /* ReminderDTO.swift */; };
 		6F6C2CB3F5A0CF9120D0AAA9 /* BondWidgetsBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = B67A2D6BC9AC30CDB4726850 /* BondWidgetsBundle.swift */; };
 		71AEF9419BAA21E69F7A012F /* BondWatch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 902B35CB888AF0397097702E /* BondWatch.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		7411F1A8C72A107812C597EB /* ReminderTrigger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94FA6F604A0AE177F1E53E19 /* ReminderTrigger.swift */; };
+		7A63C76588E01152BAE592FC /* WatchConnectivitySender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046ACADF7DDF5DD6D6E4F7DD /* WatchConnectivitySender.swift */; };
 		804E3B0744B2FFA6F7D63C93 /* ReminderListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92E29E1FE9B88C15260E348F /* ReminderListView.swift */; };
 		8408C38ED1DBEDDFB1944904 /* LoveLanguage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF58AA7D81DFDBBF4E3D941F /* LoveLanguage.swift */; };
+		919EB3DE7409BA035B414E2A /* PurchasesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C5718ADF6D126CFA618BD62 /* PurchasesService.swift */; };
+		92CDAEDF1F9D98BDD8F2628F /* WidgetSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCC41155EF6A2E9443D8990A /* WidgetSnapshot.swift */; };
 		992C2457DC8B5C6B9EFE5FAE /* NotificationScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16A3D4EC5485B89310FB3815 /* NotificationScheduler.swift */; };
 		9A2F69C5EDACC56A8920B26F /* SupabaseConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 939CEC163F261084A4635A51 /* SupabaseConfig.swift */; };
 		A1A3E41F08D94F63493F5F39 /* LoveLanguage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF58AA7D81DFDBBF4E3D941F /* LoveLanguage.swift */; };
 		AE772874A114CC2B5E4C2739 /* AppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E49B51523219D78344AB9A8 /* AppGroup.swift */; };
+		B42C73BC3E1E71858F9531DE /* WatchPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD85E0386762BF4BEEBA39E7 /* WatchPayload.swift */; };
 		BC6A2BB0AAC48DDE56E8BEE6 /* BondWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F49157A02B5BD4DD60E4D6A9 /* BondWatchApp.swift */; };
 		C455C1D4B733D81132787827 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4ECCA9463B20E0BF3A735F1 /* OnboardingView.swift */; };
 		C7C6BF0E9FFB89D1127E90DD /* SupabaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12B0502E3CD2A5CE2602DE00 /* SupabaseService.swift */; };
 		C85B4C6B1B7AC5597C83FA4C /* AppleSignInHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FD98197BFD6CA378B6E5EE2 /* AppleSignInHelper.swift */; };
 		C936D494989E30796DF97085 /* RecurrencePreset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34C0EC429765DBD636FD8D72 /* RecurrencePreset.swift */; };
+		CF93F136AAA77D09B5932D29 /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = 7644CAA47A3A1207F2301EE4 /* RevenueCat */; };
+		D44DC594E39222BF724D26D6 /* WatchConnectivityBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A157DD27E1A47C5DB812074 /* WatchConnectivityBridge.swift */; };
 		D6F1179E8055F1C971A04654 /* RecurrencePreset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34C0EC429765DBD636FD8D72 /* RecurrencePreset.swift */; };
+		D901243B3926F226062C57E2 /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E532B78A2FDF72771E0852A0 /* StatsView.swift */; };
 		E1B0AFF57064F67A389FA982 /* BondApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C93F203FD44AA24FC52C1EF /* BondApp.swift */; };
+		E307A29AE38CBC7DE32C8BE6 /* MilestoneDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9691537350F5E42C03E679 /* MilestoneDTO.swift */; };
+		E5743F3B95401D7F92110EAB /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEC67EF3AE529FDFBF5C96C /* LocationService.swift */; };
+		E979CADB843AA4BC1E0799A8 /* WidgetSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCC41155EF6A2E9443D8990A /* WidgetSnapshot.swift */; };
+		EB9512343521D9C53C7DA522 /* MilestonesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113F2620C6CB170BE5DFAC2C /* MilestonesService.swift */; };
+		EF70E5BED32B37B8E03B5BBF /* WatchPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD85E0386762BF4BEEBA39E7 /* WatchPayload.swift */; };
+		F2D531BF71A180F993CD06A7 /* WidgetSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCC41155EF6A2E9443D8990A /* WidgetSnapshot.swift */; };
 		F5CBECF630BB9C0454F80650 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4749EF61AE27675A3976D9E8 /* Assets.xcassets */; };
+		F6941DD7FCB6341653A886E4 /* WatchPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD85E0386762BF4BEEBA39E7 /* WatchPayload.swift */; };
 		F8591164C8A77D09DECE3911 /* ReminderTrigger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94FA6F604A0AE177F1E53E19 /* ReminderTrigger.swift */; };
+		FD11FDB9F1B6727650955C04 /* MilestoneDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9691537350F5E42C03E679 /* MilestoneDTO.swift */; };
 		FD652D967BE346A7833D4461 /* ReminderDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 585D1A7C6799459199130E5B /* ReminderDTO.swift */; };
 		FE1B9776FA4A29DDCFC59E82 /* PairingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 167CA752300A93B733B1F99B /* PairingService.swift */; };
 /* End PBXBuildFile section */
@@ -92,21 +113,29 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		046ACADF7DDF5DD6D6E4F7DD /* WatchConnectivitySender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConnectivitySender.swift; sourceTree = "<group>"; };
+		113F2620C6CB170BE5DFAC2C /* MilestonesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MilestonesService.swift; sourceTree = "<group>"; };
 		12B0502E3CD2A5CE2602DE00 /* SupabaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseService.swift; sourceTree = "<group>"; };
 		167CA752300A93B733B1F99B /* PairingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PairingService.swift; sourceTree = "<group>"; };
 		16A3D4EC5485B89310FB3815 /* NotificationScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationScheduler.swift; sourceTree = "<group>"; };
+		1BF6AA28F3907997D62C23E1 /* DictateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictateView.swift; sourceTree = "<group>"; };
 		278C29A0A919288DF213F74A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		27C794277EBC08A83545480C /* BondWatch.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BondWatch.entitlements; sourceTree = "<group>"; };
 		2C93F203FD44AA24FC52C1EF /* BondApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BondApp.swift; sourceTree = "<group>"; };
 		2D2331EDA51A63F2314DDB32 /* BondWidgets.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = BondWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		2EEC67EF3AE529FDFBF5C96C /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
 		34C0EC429765DBD636FD8D72 /* RecurrencePreset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecurrencePreset.swift; sourceTree = "<group>"; };
 		381B819C3EFFEEF1F7BCF87A /* Bond.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Bond.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3A9691537350F5E42C03E679 /* MilestoneDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MilestoneDTO.swift; sourceTree = "<group>"; };
 		4749EF61AE27675A3976D9E8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		4A157DD27E1A47C5DB812074 /* WatchConnectivityBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConnectivityBridge.swift; sourceTree = "<group>"; };
 		4E1C46FF806BE5F4CFA6483B /* ReminderEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderEditorView.swift; sourceTree = "<group>"; };
 		585D1A7C6799459199130E5B /* ReminderDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderDTO.swift; sourceTree = "<group>"; };
 		5E49B51523219D78344AB9A8 /* AppGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGroup.swift; sourceTree = "<group>"; };
 		614F6A4AF63E9073387D83DA /* CoupleDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoupleDTO.swift; sourceTree = "<group>"; };
 		675148F7F28D41E44B500502 /* Bond.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Bond.entitlements; sourceTree = "<group>"; };
+		6C5718ADF6D126CFA618BD62 /* PurchasesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchasesService.swift; sourceTree = "<group>"; };
+		72C9DDB7D721FC614C52CF6E /* MilestonesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MilestonesView.swift; sourceTree = "<group>"; };
 		75B9135257B219360C5756D1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		7D57F25AA26A85B46F6A8446 /* ReminderRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderRepository.swift; sourceTree = "<group>"; };
 		8FD98197BFD6CA378B6E5EE2 /* AppleSignInHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleSignInHelper.swift; sourceTree = "<group>"; };
@@ -120,8 +149,13 @@
 		B4ECCA9463B20E0BF3A735F1 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		B67A2D6BC9AC30CDB4726850 /* BondWidgetsBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BondWidgetsBundle.swift; sourceTree = "<group>"; };
 		C76495F38E8EC32C13087CAC /* ProfileDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileDTO.swift; sourceTree = "<group>"; };
+		CCC41155EF6A2E9443D8990A /* WidgetSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetSnapshot.swift; sourceTree = "<group>"; };
+		CD85E0386762BF4BEEBA39E7 /* WatchPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchPayload.swift; sourceTree = "<group>"; };
+		D805023C4E04450F773363ED /* PaywallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaywallView.swift; sourceTree = "<group>"; };
+		E532B78A2FDF72771E0852A0 /* StatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsView.swift; sourceTree = "<group>"; };
 		EEC2380E22745DECC51B7942 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		F49157A02B5BD4DD60E4D6A9 /* BondWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BondWatchApp.swift; sourceTree = "<group>"; };
+		F90568721DDE1134D8589429 /* WidgetSnapshotPump.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetSnapshotPump.swift; sourceTree = "<group>"; };
 		FF58AA7D81DFDBBF4E3D941F /* LoveLanguage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoveLanguage.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -139,6 +173,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				15F323D3A66EDD111C27312C /* Supabase in Frameworks */,
+				CF93F136AAA77D09B5932D29 /* RevenueCat in Frameworks */,
+				083DC3AE75FF0273E8FD73FB /* RevenueCatUI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -151,7 +187,9 @@
 				A42CD9882E06FC36B7BAC844 /* Assets.xcassets */,
 				27C794277EBC08A83545480C /* BondWatch.entitlements */,
 				F49157A02B5BD4DD60E4D6A9 /* BondWatchApp.swift */,
+				1BF6AA28F3907997D62C23E1 /* DictateView.swift */,
 				75B9135257B219360C5756D1 /* Info.plist */,
+				046ACADF7DDF5DD6D6E4F7DD /* WatchConnectivitySender.swift */,
 			);
 			path = BondWatch;
 			sourceTree = "<group>";
@@ -168,11 +206,16 @@
 			isa = PBXGroup;
 			children = (
 				8FD98197BFD6CA378B6E5EE2 /* AppleSignInHelper.swift */,
+				2EEC67EF3AE529FDFBF5C96C /* LocationService.swift */,
+				113F2620C6CB170BE5DFAC2C /* MilestonesService.swift */,
 				16A3D4EC5485B89310FB3815 /* NotificationScheduler.swift */,
 				167CA752300A93B733B1F99B /* PairingService.swift */,
+				6C5718ADF6D126CFA618BD62 /* PurchasesService.swift */,
 				7D57F25AA26A85B46F6A8446 /* ReminderRepository.swift */,
 				939CEC163F261084A4635A51 /* SupabaseConfig.swift */,
 				12B0502E3CD2A5CE2602DE00 /* SupabaseService.swift */,
+				4A157DD27E1A47C5DB812074 /* WatchConnectivityBridge.swift */,
+				F90568721DDE1134D8589429 /* WidgetSnapshotPump.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -233,10 +276,19 @@
 			isa = PBXGroup;
 			children = (
 				FF58AA7D81DFDBBF4E3D941F /* LoveLanguage.swift */,
+				3A9691537350F5E42C03E679 /* MilestoneDTO.swift */,
 				34C0EC429765DBD636FD8D72 /* RecurrencePreset.swift */,
 				94FA6F604A0AE177F1E53E19 /* ReminderTrigger.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		9E074D2E52E6F995F29DBC7B /* Stats */ = {
+			isa = PBXGroup;
+			children = (
+				E532B78A2FDF72771E0852A0 /* StatsView.swift */,
+			);
+			path = Stats;
 			sourceTree = "<group>";
 		};
 		9EE6B4FEC25EF5FE4B587CEF /* Pairing */ = {
@@ -279,19 +331,40 @@
 			isa = PBXGroup;
 			children = (
 				5E49B51523219D78344AB9A8 /* AppGroup.swift */,
+				CD85E0386762BF4BEEBA39E7 /* WatchPayload.swift */,
+				CCC41155EF6A2E9443D8990A /* WidgetSnapshot.swift */,
 			);
 			path = Utilities;
+			sourceTree = "<group>";
+		};
+		C561270B6F58BA0276007B29 /* Paywall */ = {
+			isa = PBXGroup;
+			children = (
+				D805023C4E04450F773363ED /* PaywallView.swift */,
+			);
+			path = Paywall;
 			sourceTree = "<group>";
 		};
 		DA1520EAE05057CE75397FDE /* Features */ = {
 			isa = PBXGroup;
 			children = (
+				F9F79FA340ECCBE7B36F4917 /* Milestones */,
 				0CAC98D4759D65A96676DDE9 /* Onboarding */,
 				9EE6B4FEC25EF5FE4B587CEF /* Pairing */,
+				C561270B6F58BA0276007B29 /* Paywall */,
 				A7C3BE35BC3AA10A5C6E7232 /* ReminderEditor */,
 				718E99AAE0CB74E56B210C8F /* ReminderList */,
+				9E074D2E52E6F995F29DBC7B /* Stats */,
 			);
 			path = Features;
+			sourceTree = "<group>";
+		};
+		F9F79FA340ECCBE7B36F4917 /* Milestones */ = {
+			isa = PBXGroup;
+			children = (
+				72C9DDB7D721FC614C52CF6E /* MilestonesView.swift */,
+			);
+			path = Milestones;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -316,6 +389,8 @@
 			name = Bond;
 			packageProductDependencies = (
 				79DA0CE0B85E6A75ACD31F75 /* Supabase */,
+				7644CAA47A3A1207F2301EE4 /* RevenueCat */,
+				0E0189BDBF4D7010F39727C5 /* RevenueCatUI */,
 			);
 			productName = Bond;
 			productReference = 381B819C3EFFEEF1F7BCF87A /* Bond.app */;
@@ -391,6 +466,7 @@
 			mainGroup = 384DC4EA0BDAE77BFFB9EEC9;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
+				BA074C06368293E27756CE63 /* XCRemoteSwiftPackageReference "purchases-ios-spm" */,
 				AA5E2A22F04AB60DB712C2AA /* XCRemoteSwiftPackageReference "supabase-swift" */,
 			);
 			preferredProjectObjectVersion = 77;
@@ -433,10 +509,13 @@
 				6F6C2CB3F5A0CF9120D0AAA9 /* BondWidgetsBundle.swift in Sources */,
 				2813CCAF01B9B86418F73CEC /* CoupleDTO.swift in Sources */,
 				56281E60F20B712539F957FF /* LoveLanguage.swift in Sources */,
+				FD11FDB9F1B6727650955C04 /* MilestoneDTO.swift in Sources */,
 				4A1FFC7369BB4120070D2C6D /* ProfileDTO.swift in Sources */,
 				470C83BD28F7511C14F4CCC1 /* RecurrencePreset.swift in Sources */,
 				FD652D967BE346A7833D4461 /* ReminderDTO.swift in Sources */,
 				7411F1A8C72A107812C597EB /* ReminderTrigger.swift in Sources */,
+				F6941DD7FCB6341653A886E4 /* WatchPayload.swift in Sources */,
+				F2D531BF71A180F993CD06A7 /* WidgetSnapshot.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -448,20 +527,31 @@
 				C85B4C6B1B7AC5597C83FA4C /* AppleSignInHelper.swift in Sources */,
 				E1B0AFF57064F67A389FA982 /* BondApp.swift in Sources */,
 				3B838DF1DB360C572EA4A91F /* CoupleDTO.swift in Sources */,
+				E5743F3B95401D7F92110EAB /* LocationService.swift in Sources */,
 				8408C38ED1DBEDDFB1944904 /* LoveLanguage.swift in Sources */,
+				5D94D2F96EDDD2FF55327F9F /* MilestoneDTO.swift in Sources */,
+				EB9512343521D9C53C7DA522 /* MilestonesService.swift in Sources */,
+				57BC2289724538457316CAB4 /* MilestonesView.swift in Sources */,
 				992C2457DC8B5C6B9EFE5FAE /* NotificationScheduler.swift in Sources */,
 				C455C1D4B733D81132787827 /* OnboardingView.swift in Sources */,
 				FE1B9776FA4A29DDCFC59E82 /* PairingService.swift in Sources */,
 				0ED8EEED9492C17B5A9C0D64 /* PairingView.swift in Sources */,
+				6782BCD1DA14CFA28E8B63DD /* PaywallView.swift in Sources */,
 				5FEE1E878E0187DE2EC0F5A6 /* ProfileDTO.swift in Sources */,
+				919EB3DE7409BA035B414E2A /* PurchasesService.swift in Sources */,
 				C936D494989E30796DF97085 /* RecurrencePreset.swift in Sources */,
 				6EB1C7BDDF8E1A60572C72C0 /* ReminderDTO.swift in Sources */,
 				19CC6DAF32A9EAEB84D31290 /* ReminderEditorView.swift in Sources */,
 				804E3B0744B2FFA6F7D63C93 /* ReminderListView.swift in Sources */,
 				5F2AAFCE2DDEC7E0A254A5C5 /* ReminderRepository.swift in Sources */,
 				27F0B2AF1AE96E58B63A4F3A /* ReminderTrigger.swift in Sources */,
+				D901243B3926F226062C57E2 /* StatsView.swift in Sources */,
 				9A2F69C5EDACC56A8920B26F /* SupabaseConfig.swift in Sources */,
 				C7C6BF0E9FFB89D1127E90DD /* SupabaseService.swift in Sources */,
+				D44DC594E39222BF724D26D6 /* WatchConnectivityBridge.swift in Sources */,
+				B42C73BC3E1E71858F9531DE /* WatchPayload.swift in Sources */,
+				E979CADB843AA4BC1E0799A8 /* WidgetSnapshot.swift in Sources */,
+				62CD4EA4E0A59DBC6E22AE4C /* WidgetSnapshotPump.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -472,11 +562,16 @@
 				4E5B7E7C7B7C2FAF0E18EFE1 /* AppGroup.swift in Sources */,
 				BC6A2BB0AAC48DDE56E8BEE6 /* BondWatchApp.swift in Sources */,
 				14271AAE2B1B55F6F1300DA3 /* CoupleDTO.swift in Sources */,
+				03A4658CD638D6C07E34600F /* DictateView.swift in Sources */,
 				A1A3E41F08D94F63493F5F39 /* LoveLanguage.swift in Sources */,
+				E307A29AE38CBC7DE32C8BE6 /* MilestoneDTO.swift in Sources */,
 				3226DA024CFAFDA32F294D31 /* ProfileDTO.swift in Sources */,
 				D6F1179E8055F1C971A04654 /* RecurrencePreset.swift in Sources */,
 				4423CE637C6D08B8C5EC785F /* ReminderDTO.swift in Sources */,
 				F8591164C8A77D09DECE3911 /* ReminderTrigger.swift in Sources */,
+				7A63C76588E01152BAE592FC /* WatchConnectivitySender.swift in Sources */,
+				EF70E5BED32B37B8E03B5BBF /* WatchPayload.swift in Sources */,
+				92CDAEDF1F9D98BDD8F2628F /* WidgetSnapshot.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -769,6 +864,14 @@
 				minimumVersion = 2.24.0;
 			};
 		};
+		BA074C06368293E27756CE63 /* XCRemoteSwiftPackageReference "purchases-ios-spm" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/RevenueCat/purchases-ios-spm.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.14.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -776,6 +879,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = AA5E2A22F04AB60DB712C2AA /* XCRemoteSwiftPackageReference "supabase-swift" */;
 			productName = Supabase;
+		};
+		0E0189BDBF4D7010F39727C5 /* RevenueCatUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BA074C06368293E27756CE63 /* XCRemoteSwiftPackageReference "purchases-ios-spm" */;
+			productName = RevenueCatUI;
+		};
+		7644CAA47A3A1207F2301EE4 /* RevenueCat */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BA074C06368293E27756CE63 /* XCRemoteSwiftPackageReference "purchases-ios-spm" */;
+			productName = RevenueCat;
 		};
 		79DA0CE0B85E6A75ACD31F75 /* Supabase */ = {
 			isa = XCSwiftPackageProductDependency;
