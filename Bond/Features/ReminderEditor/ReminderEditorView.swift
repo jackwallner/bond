@@ -37,7 +37,6 @@ struct ReminderEditorView: View {
     @Environment(PairingService.self) private var pairing
     @Environment(ReminderRepository.self) private var repo
     @Environment(PurchasesService.self) private var store
-    @Environment(AIService.self) private var ai
     @Environment(\.dismiss) private var dismiss
 
     var existing: ReminderDTO?
@@ -59,27 +58,12 @@ struct ReminderEditorView: View {
     @State private var isSaving = false
     @State private var errorMessage: String?
     @State private var isPaywallPresented = false
-    @State private var isRewriting = false
 
     var body: some View {
         NavigationStack {
             Form {
                 Section {
-                    HStack {
-                        TextField("Title", text: $title)
-                        if isRewriting {
-                            ProgressView().controlSize(.small)
-                        } else {
-                            Button {
-                                Task { await rewrite() }
-                            } label: {
-                                Image(systemName: "sparkles")
-                                    .foregroundStyle(.pink)
-                            }
-                            .buttonStyle(.borderless)
-                            .disabled(title.trimmingCharacters(in: .whitespaces).isEmpty)
-                        }
-                    }
+                    TextField("Title", text: $title)
                     TextField("Note (optional)", text: $noteText, axis: .vertical)
                         .lineLimit(2...5)
                 }
@@ -192,23 +176,6 @@ struct ReminderEditorView: View {
             Text("Bond will pick a random moment in this window.")
                 .font(.caption2)
                 .foregroundStyle(.secondary)
-        }
-    }
-
-    private func rewrite() async {
-        if !store.isPremium {
-            isPaywallPresented = true
-            return
-        }
-        let seed = title.trimmingCharacters(in: .whitespaces)
-        guard !seed.isEmpty else { return }
-        isRewriting = true
-        defer { isRewriting = false }
-        do {
-            let polished = try await ai.rewrite(note: seed, language: loveLanguage)
-            title = polished
-        } catch {
-            errorMessage = error.localizedDescription
         }
     }
 

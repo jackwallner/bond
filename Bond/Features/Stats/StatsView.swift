@@ -4,12 +4,7 @@ import SwiftUI
 struct StatsView: View {
     @Environment(ReminderRepository.self) private var repo
     @Environment(PurchasesService.self) private var store
-    @Environment(AIService.self) private var ai
-    @Environment(PairingService.self) private var pairing
     @State private var isPaywallPresented = false
-    @State private var digestText: String?
-    @State private var isLoadingDigest = false
-    @State private var digestError: String?
 
     var body: some View {
         NavigationStack {
@@ -83,41 +78,6 @@ struct StatsView: View {
                     value: "\(repo.reminders.filter { $0.triggerType == "recurring" }.count)"
                 )
             }
-
-            Section {
-                if let digestText {
-                    Text(digestText)
-                        .font(.callout)
-                } else if isLoadingDigest {
-                    HStack { ProgressView().controlSize(.small); Text("Writing…") }
-                } else {
-                    Button {
-                        Task { await loadDigest() }
-                    } label: {
-                        Label("Generate monthly digest", systemImage: "sparkles")
-                    }
-                }
-                if let digestError {
-                    Text(digestError).font(.footnote).foregroundStyle(.red)
-                }
-            } header: {
-                Text("AI digest")
-            } footer: {
-                Text("Bond reads your last 30 days and writes a short reflection.")
-                    .font(.caption2)
-            }
-        }
-    }
-
-    private func loadDigest() async {
-        guard let coupleId = pairing.coupleId else { return }
-        isLoadingDigest = true
-        digestError = nil
-        defer { isLoadingDigest = false }
-        do {
-            digestText = try await ai.digest(coupleId: coupleId)
-        } catch {
-            digestError = error.localizedDescription
         }
     }
 }
