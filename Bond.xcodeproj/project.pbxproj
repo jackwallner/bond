@@ -23,6 +23,7 @@
 		470C83BD28F7511C14F4CCC1 /* RecurrencePreset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34C0EC429765DBD636FD8D72 /* RecurrencePreset.swift */; };
 		4A1FFC7369BB4120070D2C6D /* ProfileDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = C76495F38E8EC32C13087CAC /* ProfileDTO.swift */; };
 		4E5B7E7C7B7C2FAF0E18EFE1 /* AppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E49B51523219D78344AB9A8 /* AppGroup.swift */; };
+		50B949C9A9EF94A99E3C8DDF /* SuggestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CF7791534AB0D6FD0E25833 /* SuggestView.swift */; };
 		52F1860A269EF29ACE6EE0A3 /* AppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E49B51523219D78344AB9A8 /* AppGroup.swift */; };
 		56281E60F20B712539F957FF /* LoveLanguage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF58AA7D81DFDBBF4E3D941F /* LoveLanguage.swift */; };
 		57BC2289724538457316CAB4 /* MilestonesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72C9DDB7D721FC614C52CF6E /* MilestonesView.swift */; };
@@ -64,6 +65,7 @@
 		F2D531BF71A180F993CD06A7 /* WidgetSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCC41155EF6A2E9443D8990A /* WidgetSnapshot.swift */; };
 		F5CBECF630BB9C0454F80650 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4749EF61AE27675A3976D9E8 /* Assets.xcassets */; };
 		F6941DD7FCB6341653A886E4 /* WatchPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD85E0386762BF4BEEBA39E7 /* WatchPayload.swift */; };
+		F6E5F47333ADF0EF21FACE30 /* AIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD31B8F2466AE74A0D42AC8E /* AIService.swift */; };
 		F8591164C8A77D09DECE3911 /* ReminderTrigger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94FA6F604A0AE177F1E53E19 /* ReminderTrigger.swift */; };
 		FD11FDB9F1B6727650955C04 /* MilestoneDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9691537350F5E42C03E679 /* MilestoneDTO.swift */; };
 		FD652D967BE346A7833D4461 /* ReminderDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 585D1A7C6799459199130E5B /* ReminderDTO.swift */; };
@@ -138,6 +140,7 @@
 		72C9DDB7D721FC614C52CF6E /* MilestonesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MilestonesView.swift; sourceTree = "<group>"; };
 		75B9135257B219360C5756D1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		7D57F25AA26A85B46F6A8446 /* ReminderRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderRepository.swift; sourceTree = "<group>"; };
+		8CF7791534AB0D6FD0E25833 /* SuggestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestView.swift; sourceTree = "<group>"; };
 		8FD98197BFD6CA378B6E5EE2 /* AppleSignInHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleSignInHelper.swift; sourceTree = "<group>"; };
 		902B35CB888AF0397097702E /* BondWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BondWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		922EDFFF7306B8D113F47F36 /* BondWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BondWidgets.entitlements; sourceTree = "<group>"; };
@@ -156,6 +159,7 @@
 		EEC2380E22745DECC51B7942 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		F49157A02B5BD4DD60E4D6A9 /* BondWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BondWatchApp.swift; sourceTree = "<group>"; };
 		F90568721DDE1134D8589429 /* WidgetSnapshotPump.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetSnapshotPump.swift; sourceTree = "<group>"; };
+		FD31B8F2466AE74A0D42AC8E /* AIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIService.swift; sourceTree = "<group>"; };
 		FF58AA7D81DFDBBF4E3D941F /* LoveLanguage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoveLanguage.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -205,6 +209,7 @@
 		181F3037FDDCB872B298C861 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				FD31B8F2466AE74A0D42AC8E /* AIService.swift */,
 				8FD98197BFD6CA378B6E5EE2 /* AppleSignInHelper.swift */,
 				2EEC67EF3AE529FDFBF5C96C /* LocationService.swift */,
 				113F2620C6CB170BE5DFAC2C /* MilestonesService.swift */,
@@ -345,6 +350,14 @@
 			path = Paywall;
 			sourceTree = "<group>";
 		};
+		D6ECE82BB58F9C8173A1525F /* Suggest */ = {
+			isa = PBXGroup;
+			children = (
+				8CF7791534AB0D6FD0E25833 /* SuggestView.swift */,
+			);
+			path = Suggest;
+			sourceTree = "<group>";
+		};
 		DA1520EAE05057CE75397FDE /* Features */ = {
 			isa = PBXGroup;
 			children = (
@@ -355,6 +368,7 @@
 				A7C3BE35BC3AA10A5C6E7232 /* ReminderEditor */,
 				718E99AAE0CB74E56B210C8F /* ReminderList */,
 				9E074D2E52E6F995F29DBC7B /* Stats */,
+				D6ECE82BB58F9C8173A1525F /* Suggest */,
 			);
 			path = Features;
 			sourceTree = "<group>";
@@ -523,6 +537,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F6E5F47333ADF0EF21FACE30 /* AIService.swift in Sources */,
 				52F1860A269EF29ACE6EE0A3 /* AppGroup.swift in Sources */,
 				C85B4C6B1B7AC5597C83FA4C /* AppleSignInHelper.swift in Sources */,
 				E1B0AFF57064F67A389FA982 /* BondApp.swift in Sources */,
@@ -546,6 +561,7 @@
 				5F2AAFCE2DDEC7E0A254A5C5 /* ReminderRepository.swift in Sources */,
 				27F0B2AF1AE96E58B63A4F3A /* ReminderTrigger.swift in Sources */,
 				D901243B3926F226062C57E2 /* StatsView.swift in Sources */,
+				50B949C9A9EF94A99E3C8DDF /* SuggestView.swift in Sources */,
 				9A2F69C5EDACC56A8920B26F /* SupabaseConfig.swift in Sources */,
 				C7C6BF0E9FFB89D1127E90DD /* SupabaseService.swift in Sources */,
 				D44DC594E39222BF724D26D6 /* WatchConnectivityBridge.swift in Sources */,

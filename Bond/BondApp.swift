@@ -4,6 +4,7 @@ import SwiftUI
 struct BondApp: App {
     @State private var supabase = SupabaseService.shared
     @State private var store = PurchasesService.shared
+    @State private var ai = AIService()
     @State private var pairingService: PairingService
     @State private var reminderRepo: ReminderRepository
     @State private var milestonesService: MilestonesService
@@ -23,6 +24,7 @@ struct BondApp: App {
             RootView()
                 .environment(supabase)
                 .environment(store)
+                .environment(ai)
                 .environment(pairingService)
                 .environment(reminderRepo)
                 .environment(milestonesService)

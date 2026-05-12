@@ -6,6 +6,7 @@ struct ReminderListView: View {
 
     @State private var isEditorPresented = false
     @State private var editingReminder: ReminderDTO?
+    @State private var isSuggestPresented = false
 
     var body: some View {
         NavigationStack {
@@ -22,6 +23,13 @@ struct ReminderListView: View {
             }
             .navigationTitle("Bond")
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button {
+                        isSuggestPresented = true
+                    } label: {
+                        Image(systemName: "sparkles")
+                    }
+                }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
                         editingReminder = nil
@@ -33,6 +41,9 @@ struct ReminderListView: View {
             }
             .sheet(isPresented: $isEditorPresented) {
                 ReminderEditorView(existing: editingReminder)
+            }
+            .sheet(isPresented: $isSuggestPresented) {
+                SuggestView()
             }
             .refreshable {
                 await repo.refresh()
