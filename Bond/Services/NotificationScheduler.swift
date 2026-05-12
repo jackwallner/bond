@@ -79,9 +79,12 @@ final class NotificationScheduler {
             return UNLocationNotificationTrigger(region: region, repeats: false)
 
         case .randomWindow:
-            // Treat random-window as one-time: a random fireAt within the window
-            // is computed at save time (see ReminderEditorView) and stored in fire_at.
-            return nil
+            // fireAt was already randomized at save time — schedule as one-time.
+            guard let fireAt = reminder.fireAt, fireAt > .now else { return nil }
+            let comps = Calendar.current.dateComponents(
+                [.year, .month, .day, .hour, .minute], from: fireAt
+            )
+            return UNCalendarNotificationTrigger(dateMatching: comps, repeats: false)
 
         case .none:
             return nil
@@ -99,12 +102,6 @@ final class NotificationScheduler {
             return cal.dateComponents([.weekday, .hour, .minute], from: anchor)
         case .monthly:
             return cal.dateComponents([.day, .hour, .minute], from: anchor)
-        case .yearly:
-            return cal.dateComponents([.month, .day, .hour, .minute], from: anchor)
-        }
-    }
-}
-  return cal.dateComponents([.day, .hour, .minute], from: anchor)
         case .yearly:
             return cal.dateComponents([.month, .day, .hour, .minute], from: anchor)
         }
