@@ -50,27 +50,66 @@ struct BondApp: App {
 struct RootView: View {
     @Environment(SupabaseService.self) private var supabase
     @Environment(PairingService.self) private var pairing
+    @State private var isTransitioning = false
 
     var body: some View {
         Group {
-            if !supabase.isAuthenticated {
+            switch currentDestination {
+            case .onboarding:
                 OnboardingView()
-            } else if pairing.needsPreferenceChoice {
+                    .transition(.opacity)
+            case .preference:
                 PreferenceChoiceView()
-            } else if pairing.coupleId == nil {
+                    .transition(.opacity.combined(with: .move(edge: .trailing)))
+            case .pairing:
                 PairingView()
-            } else {
+                    .transition(.opacity.combined(with: .move(edge: .trailing)))
+            case .home:
                 HomeTabs()
+                    .transition(.opacity)
+            case .loading:
+                ZStack {
+                    Color(.systemBackground).ignoresSafeArea()
+                    ProgressView()
+                        .controlSize(.large)
+                }
+                .transition(.opacity)
             }
         }
+        .animation(.easeOut(duration: 0.35), value: currentDestination)
         .task {
+            if supabase.isAuthenticated {
+                isTransitioning = true
+            }
             await pairing.loadCouple()
+            isTransitioning = false
         }
         .onChange(of: supabase.isAuthenticated) { _, authenticated in
-            if authenticated {
-                Task { await pairing.loadCouple() }
+            guard authenticated else { return }
+            isTransitioning = true
+            Task {
+                await pairing.loadCouple()
+                isTransitioning = false
             }
         }
+    }
+
+    private enum Destination { case onboarding, loading, preference, pairing, home }
+
+    private var currentDestination: Destination {
+        if isTransitioning {
+            return .loading
+        }
+        if !supabase.isAuthenticated {
+            return .onboarding
+        }
+        if pairing.needsPreferenceChoice {
+            return .preference
+        }
+        if pairing.coupleId == nil {
+            return .pairing
+        }
+        return .home
     }
 }
 
