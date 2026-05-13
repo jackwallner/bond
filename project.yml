@@ -13,7 +13,7 @@ settings:
     DEVELOPMENT_TEAM: YXG4MP6W39
     CODE_SIGN_STYLE: Automatic
     MARKETING_VERSION: "0.1.0"
-    CURRENT_PROJECT_VERSION: "13"
+    CURRENT_PROJECT_VERSION: "15"
     GENERATE_INFOPLIST_FILE: NO
 
 packages:
@@ -29,10 +29,15 @@ schemes:
     build:
       targets:
         Bond: all
-        BondWatch: all
         BondWidgets: all
+      config: Debug
     run:
       config: Debug
+    test:
+      config: Debug
+      gatherCoverageData: true
+      targets:
+        - BondTests
   BondWatch:
     build:
       targets:
@@ -41,6 +46,17 @@ schemes:
       config: Debug
 
 targets:
+  BondTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: BondTests
+    dependencies:
+      - target: Bond
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.jackwallner.bond.tests
+
   Bond:
     type: application
     platform: iOS
@@ -62,8 +78,6 @@ targets:
       - package: RevenueCat
         product: RevenueCatUI
       - target: BondWidgets
-      - target: BondWatch
-        embed: true
 
   BondWatch:
     type: application
