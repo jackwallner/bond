@@ -12,7 +12,9 @@ struct DailyCheckInView: View {
         NavigationStack {
             Group {
                 if !store.isPremium {
-                    gate
+                    BondGatePreview(feature: .checkIn, isPaywallPresented: $isPaywallPresented) {
+                        CheckInGateContent()
+                    }
                 } else if pairing.solo {
                     soloState
                 } else if checkIn.isLoading && checkIn.todaysQuestion == nil {
@@ -29,23 +31,6 @@ struct DailyCheckInView: View {
                 }
             }
         }
-    }
-
-    private var gate: some View {
-        VStack(spacing: 16) {
-            Image(systemName: "questionmark.bubble")
-                .font(.system(size: 56))
-                .foregroundStyle(.pink)
-            Text("Daily Check-In is a premium feature")
-                .font(.headline)
-            Text("Answer a daily question together with your partner and discover what makes your relationship stronger.")
-                .multilineTextAlignment(.center)
-                .foregroundStyle(.secondary)
-                .padding(.horizontal)
-            Button("Unlock Premium") { isPaywallPresented = true }
-                .buttonStyle(.borderedProminent)
-        }
-        .padding()
     }
 
     private var soloState: some View {

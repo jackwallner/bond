@@ -11,7 +11,9 @@ struct MilestonesView: View {
         NavigationStack {
             Group {
                 if !store.isPremium {
-                    premiumGate
+                    BondGatePreview(feature: .milestones, isPaywallPresented: $isPaywallPresented) {
+                        MilestonesGateContent()
+                    }
                 } else if milestones.milestones.isEmpty {
                     ContentUnavailableView {
                         Label("No milestones", systemImage: "calendar.badge.plus")
@@ -41,23 +43,6 @@ struct MilestonesView: View {
             .paywallSheet(isPresented: $isPaywallPresented)
             .task { await milestones.refresh() }
         }
-    }
-
-    private var premiumGate: some View {
-        VStack(spacing: 16) {
-            Image(systemName: "calendar.badge.exclamationmark")
-                .font(.system(size: 56))
-                .foregroundStyle(.pink)
-            Text("Milestones is a premium feature")
-                .font(.headline)
-            Text("Track anniversaries, birthdays, and other dates that matter — with a countdown widget on your home screen.")
-                .multilineTextAlignment(.center)
-                .foregroundStyle(.secondary)
-                .padding(.horizontal)
-            Button("Unlock Premium") { isPaywallPresented = true }
-                .buttonStyle(.borderedProminent)
-        }
-        .padding()
     }
 
     private var list: some View {

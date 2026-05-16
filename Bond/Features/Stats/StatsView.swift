@@ -15,7 +15,9 @@ struct StatsView: View {
         NavigationStack {
             Group {
                 if !store.isPremium {
-                    gate
+                    BondGatePreview(feature: .insights, isPaywallPresented: $isPaywallPresented) {
+                        InsightsGateContent()
+                    }
                 } else if repo.reminders.isEmpty {
                     ContentUnavailableView(
                         "No data yet",
@@ -30,23 +32,6 @@ struct StatsView: View {
             .paywallSheet(isPresented: $isPaywallPresented)
             .task { await eventsRepo.refresh() }
         }
-    }
-
-    private var gate: some View {
-        VStack(spacing: 16) {
-            Image(systemName: "chart.bar.xaxis")
-                .font(.system(size: 56))
-                .foregroundStyle(.pink)
-            Text("Insights is a premium feature")
-                .font(.headline)
-            Text("See your love language balance, track trends over time, and discover which areas of your relationship are thriving.")
-                .multilineTextAlignment(.center)
-                .foregroundStyle(.secondary)
-                .padding(.horizontal)
-            Button("Unlock Premium") { isPaywallPresented = true }
-                .buttonStyle(.borderedProminent)
-        }
-        .padding()
     }
 
     private var content: some View {

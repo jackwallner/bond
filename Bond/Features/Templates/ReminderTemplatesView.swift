@@ -9,7 +9,9 @@ struct ReminderTemplatesView: View {
         NavigationStack {
             Group {
                 if !store.isPremium {
-                    gate
+                    BondGatePreview(feature: .templates, isPaywallPresented: $isPaywallPresented) {
+                        TemplatesGateContent()
+                    }
                 } else {
                     list
                 }
@@ -22,23 +24,6 @@ struct ReminderTemplatesView: View {
             }
             .paywallSheet(isPresented: $isPaywallPresented)
         }
-    }
-
-    private var gate: some View {
-        VStack(spacing: 16) {
-            Image(systemName: "square.grid.2x2")
-                .font(.system(size: 56))
-                .foregroundStyle(.pink)
-            Text("Templates is a premium feature")
-                .font(.headline)
-            Text("Get pre-built reminder packs for every relationship stage — daily affirmations, date nights, long-distance love, and more.")
-                .multilineTextAlignment(.center)
-                .foregroundStyle(.secondary)
-                .padding(.horizontal)
-            Button("Unlock Premium") { isPaywallPresented = true }
-                .buttonStyle(.borderedProminent)
-        }
-        .padding()
     }
 
     private var list: some View {
