@@ -90,6 +90,9 @@ extension WatchConnectivitySender: WCSessionDelegate {
         }
     }
 
+    // These two are iOS-only WCSessionDelegate requirements — they are
+    // marked unavailable on watchOS, so the watch target must not declare them.
+    #if os(iOS)
     nonisolated func sessionDidBecomeInactive(_ session: WCSession) {
         let reachable = session.isReachable
         Task { @MainActor in self.isReachable = reachable }
@@ -99,6 +102,7 @@ extension WatchConnectivitySender: WCSessionDelegate {
         let reachable = session.isReachable
         Task { @MainActor in self.isReachable = reachable }
     }
+    #endif
 
     nonisolated func sessionReachabilityDidChange(_ session: WCSession) {
         let reachable = session.isReachable

@@ -10,7 +10,11 @@ import UIKit
 // on watchOS).
 extension Color {
     init(light: Color, dark: Color) {
-        #if canImport(UIKit)
+        #if os(watchOS)
+        // watchOS has no dynamic UIColor provider and its UI is always
+        // presented on black — use the dark variant.
+        self = dark
+        #elseif canImport(UIKit)
         self.init(UIColor { trait in
             trait.userInterfaceStyle == .dark ? UIColor(dark) : UIColor(light)
         })
