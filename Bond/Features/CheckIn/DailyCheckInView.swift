@@ -1,12 +1,17 @@
 import SwiftUI
+import UIKit
 
 struct DailyCheckInView: View {
     @Environment(DailyCheckInService.self) private var checkIn
     @Environment(PurchasesService.self) private var store
     @Environment(PairingService.self) private var pairing
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var responseText = ""
     @State private var isPaywallPresented = false
     @State private var hasSubmitted = false
+    @State private var revealPhase: RevealPhase = .sealed
+
+    enum RevealPhase { case sealed, revealing, revealed }
 
     var body: some View {
         NavigationStack {
@@ -43,113 +48,160 @@ struct DailyCheckInView: View {
 
     private var content: some View {
         ScrollView {
-            VStack(spacing: 24) {
-                // Question card
-                VStack(spacing: 12) {
-                    if let question = checkIn.todaysQuestion {
-                        if let lang = question.loveLanguage {
-                            Image(systemName: lang.symbolName)
-                                .font(.title)
-                                .foregroundStyle(lang.tint)
-                        }
+            VStack(spacing: BondSpacing.xl) {
+                questionCard
 
-                        Text(question.question)
-                            .font(.title3)
-                            .multilineTextAlignment(.center)
-                            .padding(.horizontal)
-
-                        if let lang = question.loveLanguage {
-                            Text(lang.title)
-                                .font(.caption)
-                                .foregroundStyle(lang.tint)
-                                .padding(.horizontal, 12)
-                                .padding(.vertical, 4)
-                                .background(lang.tint.opacity(0.12), in: Capsule())
-                        }
-                    }
-                }
-                .padding()
-                .frame(maxWidth: .infinity)
-                .background(Color.gray.opacity(0.08), in: RoundedRectangle(cornerRadius: 16))
-
-                // My response
                 if let myResponse = checkIn.myResponse {
-                    VStack(alignment: .leading, spacing: 8) {
-                        HStack {
-                            Image(systemName: "person.circle.fill")
-                                .foregroundStyle(.blue)
-                            Text("Your answer")
-                                .font(.subheadline.bold())
-                        }
-                        Text(myResponse.response)
-                            .font(.body)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding()
-                            .background(Color.blue.opacity(0.08), in: RoundedRectangle(cornerRadius: 10))
-                    }
+                    answerBlock(
+                        title: "Your answer",
+                        icon: "person.circle.fill",
+                        tint: .blue,
+                        text: myResponse.response
+                    )
 
-                    // Partner response
                     if let partnerResponse = checkIn.partnerResponse {
-                        Divider()
-
-                        VStack(alignment: .leading, spacing: 8) {
-                            HStack {
-                                Image(systemName: "person.circle.fill")
-                                    .foregroundStyle(.pink)
-                                Text("Your partner's answer")
-                                    .font(.subheadline.bold())
-                            }
-                            Text(partnerResponse.response)
-                                .font(.body)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .padding()
-                                .background(Color.pink.opacity(0.08), in: RoundedRectangle(cornerRadius: 10))
-                        }
+                        partnerCard(partnerResponse.response)
                     } else {
-                        HStack {
-                            ProgressView()
-                                .scaleEffect(0.8)
-                            Text("Waiting for your partner to answer...")
-                                .font(.subheadline)
-                                .foregroundStyle(.secondary)
-                        }
-                        .padding(.vertical, 8)
+                        BondSealedCard(
+                            title: "Their answer",
+                            hint: "Sealed until they answer"
+                        )
                     }
                 } else {
-                    // Answer input
-                    VStack(spacing: 12) {
-                        TextField("Type your answer...", text: $responseText, axis: .vertical)
-                            .textFieldStyle(.plain)
-                            .lineLimit(3...6)
-                            .padding()
-                            .background(Color.gray.opacity(0.08), in: RoundedRectangle(cornerRadius: 10))
-
-                        Button {
-                            Task {
-                                await checkIn.submitResponse(responseText)
-                                if checkIn.myResponse != nil {
-                                    hasSubmitted = true
-                                    responseText = ""
-                                }
-                            }
-                        } label: {
-                            HStack {
-                                Spacer()
-                                if checkIn.isLoading {
-                                    ProgressView()
-                                } else {
-                                    Text("Submit Answer")
-                                        .font(.headline)
-                                }
-                                Spacer()
-                            }
-                        }
-                        .buttonStyle(.borderedProminent)
-                        .disabled(responseText.trimmingCharacters(in: .whitespaces).isEmpty || checkIn.isLoading)
-                    }
+                    answerInput
                 }
             }
             .padding()
         }
+        .onChange(of: checkIn.partnerResponse?.response) { _, new in
+            guard new != nil, checkIn.myResponse != nil else { return }
+            runRevealIfNeeded()
+        }
+        .onAppear {
+            if checkIn.myResponse != nil && checkIn.partnerResponse != nil {
+                runRevealIfNeeded()
+            }
+        }
+    }
+
+    private var questionCard: some View {
+        VStack(spacing: BondSpacing.m) {
+            if let question = checkIn.todaysQuestion {
+                if let lang = question.loveLanguage {
+                    Image(systemName: lang.symbolName)
+                        .font(.title)
+                        .foregroundStyle(lang.tint)
+                }
+                Text(question.question)
+                    .font(.title3)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal)
+                if let lang = question.loveLanguage {
+                    Text(lang.title)
+                        .font(.caption)
+                        .foregroundStyle(lang.tint)
+                        .padding(.horizontal, BondSpacing.m)
+                        .padding(.vertical, BondSpacing.xs)
+                        .background(lang.tint.opacity(0.12), in: Capsule())
+                }
+            }
+        }
+        .padding()
+        .frame(maxWidth: .infinity)
+        .background(Color.bondCardFill, in: RoundedRectangle(cornerRadius: BondRadius.card))
+    }
+
+    private func answerBlock(
+        title: String, icon: String, tint: Color, text: String
+    ) -> some View {
+        VStack(alignment: .leading, spacing: BondSpacing.s) {
+            HStack(spacing: BondSpacing.s) {
+                Image(systemName: icon).foregroundStyle(tint)
+                Text(title).font(.subheadline.bold())
+            }
+            Text(text)
+                .font(.body)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding()
+                .background(tint.opacity(0.08), in: RoundedRectangle(cornerRadius: BondRadius.inline))
+        }
+    }
+
+    private func partnerCard(_ text: String) -> some View {
+        ZStack {
+            if revealPhase == .sealed {
+                BondSealedCard(title: "Their answer", hint: "Sealed until they answer")
+                    .transition(.opacity)
+            } else {
+                answerBlock(
+                    title: "Their answer",
+                    icon: "person.circle.fill",
+                    tint: .bondAccent,
+                    text: text
+                )
+                .opacity(revealPhase == .revealed ? 1 : 0)
+                .transition(.opacity)
+            }
+        }
+    }
+
+    private var answerInput: some View {
+        VStack(spacing: BondSpacing.m) {
+            TextField("Type your answer...", text: $responseText, axis: .vertical)
+                .textFieldStyle(.plain)
+                .lineLimit(3...6)
+                .padding()
+                .background(Color.bondCardFill, in: RoundedRectangle(cornerRadius: BondRadius.inline))
+
+            BondPrimaryButton(
+                title: "Submit answer",
+                isLoading: checkIn.isLoading
+            ) {
+                Task {
+                    await checkIn.submitResponse(responseText)
+                    if checkIn.myResponse != nil {
+                        hasSubmitted = true
+                        responseText = ""
+                    }
+                }
+            }
+            .disabled(responseText.trimmingCharacters(in: .whitespaces).isEmpty || checkIn.isLoading)
+        }
+    }
+
+    private func runRevealIfNeeded() {
+        let key = "reveal-shown-\(Self.dayKey())"
+        if UserDefaults.standard.bool(forKey: key) {
+            revealPhase = .revealed
+            return
+        }
+        UserDefaults.standard.set(true, forKey: key)
+
+        if reduceMotion {
+            withAnimation(.easeOut(duration: 0.2)) { revealPhase = .revealed }
+            announceReveal()
+            return
+        }
+
+        revealPhase = .sealed
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.60) {
+            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+            withAnimation(.easeOut(duration: 0.35)) { revealPhase = .revealing }
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.95) {
+            withAnimation(.easeOut(duration: 0.40)) { revealPhase = .revealed }
+            announceReveal()
+        }
+    }
+
+    private func announceReveal() {
+        let who = pairing.partnerProfile?.displayName ?? "They"
+        UIAccessibility.post(notification: .announcement, argument: "\(who) answered.")
+    }
+
+    private static func dayKey() -> String {
+        let f = DateFormatter()
+        f.dateFormat = "yyyy-MM-dd"
+        return f.string(from: Date())
     }
 }
