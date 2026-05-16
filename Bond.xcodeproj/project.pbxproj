@@ -59,6 +59,7 @@
 		76443759E56A5F120FBA2AF3 /* NotificationPrimerSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6817074B516199A1A5B909F4 /* NotificationPrimerSheet.swift */; };
 		7A63C76588E01152BAE592FC /* WatchConnectivitySender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046ACADF7DDF5DD6D6E4F7DD /* WatchConnectivitySender.swift */; };
 		804E3B0744B2FFA6F7D63C93 /* ReminderListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92E29E1FE9B88C15260E348F /* ReminderListView.swift */; };
+		819BFBFEDE556903A09401C4 /* EmptyRemindersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F3F10AF06A234B8B995372A /* EmptyRemindersView.swift */; };
 		8408C38ED1DBEDDFB1944904 /* LoveLanguage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF58AA7D81DFDBBF4E3D941F /* LoveLanguage.swift */; };
 		8B701D9D6AD8A4BAC0672DD5 /* PairingSuccessView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95073072E3E305CBDEAA7500 /* PairingSuccessView.swift */; };
 		8F9419F2A37A33E9C4960DD2 /* DailyQuestionDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50E8F1F976E924BD6B235514 /* DailyQuestionDTO.swift */; };
@@ -161,6 +162,7 @@
 		381B819C3EFFEEF1F7BCF87A /* Bond.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Bond.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3A9691537350F5E42C03E679 /* MilestoneDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MilestoneDTO.swift; sourceTree = "<group>"; };
 		3F2E4B1106B687E94A91D464 /* PremiumGate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PremiumGate.swift; sourceTree = "<group>"; };
+		3F3F10AF06A234B8B995372A /* EmptyRemindersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyRemindersView.swift; sourceTree = "<group>"; };
 		431E38A9565DAF005868FFB8 /* ReminderDTOTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderDTOTests.swift; sourceTree = "<group>"; };
 		4749EF61AE27675A3976D9E8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4A157DD27E1A47C5DB812074 /* WatchConnectivityBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConnectivityBridge.swift; sourceTree = "<group>"; };
@@ -367,6 +369,7 @@
 		718E99AAE0CB74E56B210C8F /* ReminderList */ = {
 			isa = PBXGroup;
 			children = (
+				3F3F10AF06A234B8B995372A /* EmptyRemindersView.swift */,
 				92E29E1FE9B88C15260E348F /* ReminderListView.swift */,
 			);
 			path = ReminderList;
@@ -709,6 +712,7 @@
 				70A539715E4A0D1CFDFDF4AF /* DailyCheckInService.swift in Sources */,
 				283326B0C9C4463EB1914AAC /* DailyCheckInView.swift in Sources */,
 				3E927366F5DCD67A54AA83B4 /* DailyQuestionDTO.swift in Sources */,
+				819BFBFEDE556903A09401C4 /* EmptyRemindersView.swift in Sources */,
 				228F5CBF7BCA960AF4460003 /* GateSampleContent.swift in Sources */,
 				E5743F3B95401D7F92110EAB /* LocationService.swift in Sources */,
 				8408C38ED1DBEDDFB1944904 /* LoveLanguage.swift in Sources */,

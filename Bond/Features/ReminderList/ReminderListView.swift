@@ -13,6 +13,7 @@ struct ReminderListView: View {
     @State private var editingReminder: ReminderDTO?
     @State private var listFilter: ReminderFilter = .all
     @State private var showNotificationPrimer = false
+    @State private var starterPrefill: StarterChip?
 
     private let primerShownKey = "hasShownNotificationPrimer"
 
@@ -30,11 +31,14 @@ struct ReminderListView: View {
         NavigationStack {
             Group {
                 if repo.reminders.isEmpty {
-                    ContentUnavailableView {
-                        Label("No reminders yet", systemImage: "heart.text.square")
-                    } description: {
-                        Text("Tap + to add your first reminder for your partner or yourself.")
-                    }
+                    EmptyRemindersView(
+                        onTapChip: { chip in
+                            editingReminder = nil
+                            starterPrefill = chip
+                            isEditorPresented = true
+                        },
+                        onBrowseTemplates: { isTemplatesPresented = true }
+                    )
                 } else {
                     list
                 }
@@ -65,8 +69,11 @@ struct ReminderListView: View {
                     }
                 }
             }
-            .sheet(isPresented: $isEditorPresented) {
-                ReminderEditorView(existing: editingReminder)
+            .sheet(isPresented: $isEditorPresented, onDismiss: { starterPrefill = nil }) {
+                ReminderEditorView(
+                    existing: editingReminder,
+                    prefill: starterPrefill.map { ($0.title, $0.loveLanguage) }
+                )
             }
             .sheet(isPresented: $isTemplatesPresented) {
                 ReminderTemplatesView()
@@ -147,6 +154,12 @@ struct ReminderListView: View {
             }
 
             let g = grouped
+
+            if filteredReminders.isEmpty {
+                Section {
+                    FilteredEmptyView { listFilter = .all }
+                }
+            }
 
             if !g.upcoming.isEmpty {
                 Section("Upcoming") {

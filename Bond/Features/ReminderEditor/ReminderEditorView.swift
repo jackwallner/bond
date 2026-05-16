@@ -9,6 +9,9 @@ struct ReminderEditorView: View {
     @Environment(\.dismiss) private var dismiss
 
     var existing: ReminderDTO?
+    /// Optional seed for a brand-new reminder (e.g. tapped from a starter
+    /// chip). Ignored when `existing` is set.
+    var prefill: (title: String, language: LoveLanguage)?
 
     @State private var title = ""
     @State private var noteText = ""
@@ -165,7 +168,13 @@ struct ReminderEditorView: View {
     }
 
     private func hydrate() {
-        guard let existing else { return }
+        guard let existing else {
+            if let prefill {
+                title = prefill.title
+                loveLanguage = prefill.language
+            }
+            return
+        }
         title = existing.title
         noteText = existing.body ?? ""
         loveLanguage = existing.loveLanguage
