@@ -1,12 +1,15 @@
 import Foundation
+import OSLog
 import WatchConnectivity
 
 @MainActor
-final class WatchConnectivitySender: NSObject, ObservableObject {
+@Observable
+final class WatchConnectivitySender: NSObject {
     static let shared = WatchConnectivitySender()
+    private let log = Logger(subsystem: "com.jackwallner.bond.watch", category: "connectivity")
 
-    @Published var lastError: String?
-    @Published var isReachable = false
+    var lastError: String?
+    var isReachable = false
 
     private override init() {
         super.init()
@@ -22,25 +25,29 @@ final class WatchConnectivitySender: NSObject, ObservableObject {
             loveLanguage: language.rawValue,
             scheduledOffsetSeconds: 60 * 60 // default: fire one hour from now
         )
-        guard let data = try? JSONEncoder().encode(payload) else { return false }
+        guard let data = try? JSONEncoder().encode(payload) else {
+            lastError = "Failed to encode payload."
+            return false
+        }
 
         let session = WCSession.default
         guard session.activationState == .activated else {
             lastError = "Watch session not active."
             return false
         }
-        let reachable = session.isReachable
 
-        if reachable {
+        if session.isReachable {
             return await sendNow(data: data)
         }
         do {
             try session.updateApplicationContext(
                 [WatchPayload.createReminderKey: data]
             )
+            log.info("Sent reminder via application context (background)")
             return true
         } catch {
             lastError = error.localizedDescription
+            log.error("Failed to send via context: \(error.localizedDescription)")
             return false
         }
     }
@@ -67,6 +74,19 @@ extension WatchConnectivitySender: WCSessionDelegate {
         _ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState,
         error: Error?
     ) {
+        let reachable = session.isReachable
+        Task { @MainActor in self.isReachable = reachable }
+        if let error {
+            Task { @MainActor in self.lastError = error.localizedDescription }
+        }
+    }
+
+    nonisolated func sessionDidBecomeInactive(_ session: WCSession) {
+        let reachable = session.isReachable
+        Task { @MainActor in self.isReachable = reachable }
+    }
+
+    nonisolated func sessionDidDeactivate(_ session: WCSession) {
         let reachable = session.isReachable
         Task { @MainActor in self.isReachable = reachable }
     }

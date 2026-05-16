@@ -1,4 +1,5 @@
 import Foundation
+import OSLog
 import Supabase
 
 @MainActor
@@ -6,6 +7,7 @@ import Supabase
 final class MilestonesService {
     private let supabase = SupabaseService.shared
     private let pairing: PairingService
+    private let log = Logger(subsystem: "com.jackwallner.bond", category: "milestones")
 
     var milestones: [MilestoneDTO] = []
     var lastError: String?
@@ -24,8 +26,10 @@ final class MilestonesService {
                 .execute()
                 .value
             milestones = rows
+            log.info("Refreshed \(rows.count) milestones")
         } catch {
             lastError = error.localizedDescription
+            log.error("Refresh failed: \(error.localizedDescription)")
         }
     }
 
@@ -37,6 +41,7 @@ final class MilestonesService {
             .single()
             .execute()
             .value
+        log.info("Upserted milestone \(milestone.id)")
         await refresh()
     }
 
@@ -47,6 +52,7 @@ final class MilestonesService {
             .eq("id", value: milestone.id.uuidString)
             .execute()
         milestones.removeAll { $0.id == milestone.id }
+        log.info("Deleted milestone \(milestone.id)")
     }
 
     var nextOccurrence: (milestone: MilestoneDTO, date: Date)? {

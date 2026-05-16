@@ -1,10 +1,12 @@
 import Foundation
+import OSLog
 import RevenueCat
 
 @MainActor
 @Observable
 final class PurchasesService {
     static let shared = PurchasesService()
+    private let log = Logger(subsystem: "com.jackwallner.bond", category: "purchases")
 
     static let apiKey = "appl_mNANfaYASZUZZwdRZuLHXzovffW"
     static let entitlementId = "premium"
@@ -36,6 +38,7 @@ final class PurchasesService {
             apply(info: info)
         } catch {
             lastError = error.localizedDescription
+            log.error("Refresh failed: \(error.localizedDescription)")
         }
     }
 
@@ -43,8 +46,10 @@ final class PurchasesService {
         do {
             let (info, _) = try await Purchases.shared.logIn(supabaseUserId.uuidString)
             apply(info: info)
+            log.info("Identified user \(supabaseUserId) — premium: \(self.isPremium)")
         } catch {
             lastError = error.localizedDescription
+            log.error("Identify failed: \(error.localizedDescription)")
         }
     }
 
@@ -52,13 +57,16 @@ final class PurchasesService {
         do {
             let info = try await Purchases.shared.logOut()
             apply(info: info)
+            log.info("Signed out of RevenueCat")
         } catch {
             lastError = error.localizedDescription
+            log.error("Sign out failed: \(error.localizedDescription)")
         }
     }
 
     private func apply(info: CustomerInfo) {
         customerInfo = info
         isPremium = info.entitlements[Self.entitlementId]?.isActive == true
+        log.info("Customer info updated — premium: \(self.isPremium)")
     }
 }

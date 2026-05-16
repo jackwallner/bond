@@ -7,15 +7,21 @@ struct BondApp: App {
     @State private var pairingService: PairingService
     @State private var reminderRepo: ReminderRepository
     @State private var milestonesService: MilestonesService
+    @State private var eventsRepo: ReminderEventRepository
+    @State private var checkInService: DailyCheckInService
 
     init() {
         let pairing = PairingService()
         let repo = ReminderRepository(pairing: pairing)
         let milestones = MilestonesService(pairing: pairing)
+        let events = ReminderEventRepository(pairing: pairing)
+        let checkIn = DailyCheckInService(pairing: pairing)
 
         _pairingService = State(initialValue: pairing)
         _reminderRepo = State(initialValue: repo)
         _milestonesService = State(initialValue: milestones)
+        _eventsRepo = State(initialValue: events)
+        _checkInService = State(initialValue: checkIn)
     }
 
     var body: some Scene {
@@ -26,6 +32,8 @@ struct BondApp: App {
                 .environment(pairingService)
                 .environment(reminderRepo)
                 .environment(milestonesService)
+                .environment(eventsRepo)
+                .environment(checkInService)
                 .onAppear {
                     WatchConnectivityBridge.shared.start(
                         repository: reminderRepo,
@@ -118,10 +126,15 @@ struct HomeTabs: View {
         TabView {
             ReminderListView()
                 .tabItem { Label("Reminders", systemImage: "heart.text.square") }
+
+            DailyCheckInView()
+                .tabItem { Label("Check-In", systemImage: "questionmark.bubble") }
+
             MilestonesView()
                 .tabItem { Label("Milestones", systemImage: "calendar.badge.plus") }
+
             StatsView()
-                .tabItem { Label("Stats", systemImage: "chart.bar.xaxis") }
+                .tabItem { Label("Insights", systemImage: "chart.bar.xaxis") }
         }
     }
 }

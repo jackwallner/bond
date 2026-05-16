@@ -1,10 +1,12 @@
 import Foundation
+import OSLog
 import Supabase
 
 @MainActor
 @Observable
 final class PairingService {
     private let supabase = SupabaseService.shared
+    private let log = Logger(subsystem: "com.jackwallner.bond", category: "pairing")
 
     var coupleId: UUID?
     var partnerProfile: ProfileDTO?
@@ -42,10 +44,12 @@ final class PairingService {
                 partnerProfile = nil
             }
             needsPreferenceChoice = false
+            log.info("Loaded couple \(self.coupleId?.uuidString ?? "nil") (solo: \(self.solo))")
         } catch {
             coupleId = nil
             solo = false
             needsPreferenceChoice = true
+            log.notice("No couple found — needs preference: \(error.localizedDescription)")
         }
     }
 

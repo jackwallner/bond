@@ -1,4 +1,5 @@
 import Foundation
+import OSLog
 import Supabase
 
 @MainActor
@@ -6,6 +7,7 @@ import Supabase
 final class ReminderRepository {
     private let supabase = SupabaseService.shared
     private let pairing: PairingService
+    private let log = Logger(subsystem: "com.jackwallner.bond", category: "reminders")
 
     var reminders: [ReminderDTO] = []
     var isLoading = false
@@ -35,8 +37,10 @@ final class ReminderRepository {
                 .value
             reminders = rows
             onChange(rows)
+            log.info("Refreshed \(rows.count) reminders")
         } catch {
             lastError = error.localizedDescription
+            log.error("Refresh failed: \(error.localizedDescription)")
         }
     }
 
@@ -48,6 +52,7 @@ final class ReminderRepository {
             .single()
             .execute()
             .value
+        log.info("Upserted reminder \(reminder.id)")
         await refresh()
     }
 
@@ -58,6 +63,7 @@ final class ReminderRepository {
             .eq("id", value: reminder.id.uuidString)
             .execute()
         reminders.removeAll { $0.id == reminder.id }
+        log.info("Deleted reminder \(reminder.id)")
         onChange(reminders)
     }
 
@@ -74,6 +80,7 @@ final class ReminderRepository {
 
         await channel.subscribe()
         realtimeChannel = channel
+        log.info("Subscribed to realtime channel for couple \(coupleId)")
 
         Task {
             for await _ in changes {

@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct DictateView: View {
-    @StateObject private var sender = WatchConnectivitySender.shared
+    private let sender = WatchConnectivitySender.shared
 
     @State private var text = ""
     @State private var language: LoveLanguage = .words

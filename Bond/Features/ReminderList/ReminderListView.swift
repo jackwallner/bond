@@ -3,9 +3,24 @@ import SwiftUI
 struct ReminderListView: View {
     @Environment(SupabaseService.self) private var supabase
     @Environment(ReminderRepository.self) private var repo
+    @Environment(ReminderEventRepository.self) private var eventsRepo
+    @Environment(PairingService.self) private var pairing
+    @Environment(PurchasesService.self) private var store
 
     @State private var isEditorPresented = false
+    @State private var isTemplatesPresented = false
     @State private var editingReminder: ReminderDTO?
+    @State private var listFilter: ReminderFilter = .all
+
+    enum ReminderFilter: String, CaseIterable {
+        case all, forMe
+        var title: String {
+            switch self {
+            case .all: "All"
+            case .forMe: "For Me"
+            }
+        }
+    }
 
     var body: some View {
         NavigationStack {
@@ -23,22 +38,34 @@ struct ReminderListView: View {
             .navigationTitle("Bond")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        editingReminder = nil
-                        isEditorPresented = true
-                    } label: {
-                        Image(systemName: "plus")
+                    HStack(spacing: 12) {
+                        Button {
+                            isTemplatesPresented = true
+                        } label: {
+                            Image(systemName: "square.grid.2x2")
+                        }
+                        Button {
+                            editingReminder = nil
+                            isEditorPresented = true
+                        } label: {
+                            Image(systemName: "plus")
+                        }
                     }
                 }
             }
             .sheet(isPresented: $isEditorPresented) {
                 ReminderEditorView(existing: editingReminder)
             }
+            .sheet(isPresented: $isTemplatesPresented) {
+                ReminderTemplatesView()
+            }
             .refreshable {
                 await repo.refresh()
+                await eventsRepo.refresh()
             }
             .task {
                 await repo.refresh()
+                await eventsRepo.refresh()
                 await repo.subscribeRealtime()
                 await NotificationScheduler.shared.reschedule(
                     forSelfUserId: supabase.currentUserId ?? UUID(),
@@ -48,11 +75,23 @@ struct ReminderListView: View {
         }
     }
 
+    private var filteredReminders: [ReminderDTO] {
+        guard let me = supabase.currentUserId else { return repo.reminders }
+        switch listFilter {
+        case .all:
+            return repo.reminders
+        case .forMe:
+            return repo.reminders.filter { $0.targetId == me }
+        }
+    }
+
     private var grouped: (upcoming: [ReminderDTO], past: [ReminderDTO]) {
         let now = Date.now
         var upcoming: [ReminderDTO] = []
         var past: [ReminderDTO] = []
-        for r in repo.reminders {
+        let actedReminderIds = Set(eventsRepo.events.filter { $0.actedAt != nil }.map(\.reminderId))
+        for r in filteredReminders {
+            // For recurring reminders, check if there's a recent event to show in past
             if let next = r.trigger?.nextFireDate, next < now {
                 past.append(r)
             } else {
@@ -64,6 +103,19 @@ struct ReminderListView: View {
 
     private var list: some View {
         List {
+            if !pairing.solo && supabase.currentUserId != nil {
+                Section {
+                    Picker("Show", selection: $listFilter) {
+                        ForEach(ReminderFilter.allCases, id: \.self) { filter in
+                            Text(filter.title).tag(filter)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                    .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+                    .listRowBackground(Color.clear)
+                }
+            }
+
             let g = grouped
 
             if !g.upcoming.isEmpty {
@@ -81,14 +133,50 @@ struct ReminderListView: View {
         }
     }
 
+    @ViewBuilder
     private func row(_ reminder: ReminderDTO) -> some View {
         Button {
             editingReminder = reminder
             isEditorPresented = true
         } label: {
-            ReminderRow(reminder: reminder, currentUserId: supabase.currentUserId)
+            let acted = eventsRepo.events
+                .filter { $0.reminderId == reminder.id && $0.actedAt != nil }
+                .count > 0
+            ReminderRow(
+                reminder: reminder,
+                currentUserId: supabase.currentUserId,
+                isActedOn: acted
+            )
         }
         .buttonStyle(.plain)
+        .swipeActions(edge: .trailing) {
+            Button(role: .destructive) {
+                Task { try? await repo.delete(reminder) }
+            } label: {
+                Label("Delete", systemImage: "trash")
+            }
+        }
+        .swipeActions(edge: .leading) {
+            let hasEvent = eventsRepo.events
+                .contains { $0.reminderId == reminder.id && $0.actedAt != nil }
+            if !hasEvent {
+                Button {
+                    Task {
+                        guard let coupleId = pairing.coupleId else { return }
+                        try? await eventsRepo.createEvent(
+                            reminderId: reminder.id, coupleId: coupleId
+                        )
+                        await NotificationScheduler.shared.reschedule(
+                            forSelfUserId: supabase.currentUserId ?? UUID(),
+                            reminders: repo.reminders
+                        )
+                    }
+                } label: {
+                    Label("Done", systemImage: "checkmark")
+                }
+                .tint(.green)
+            }
+        }
     }
 
     private func delete(_ source: [ReminderDTO], at offsets: IndexSet) {
@@ -102,53 +190,5 @@ struct ReminderListView: View {
                 )
             }
         }
-    }
-}
-
-private struct ReminderRow: View {
-    let reminder: ReminderDTO
-    let currentUserId: UUID?
-
-    var body: some View {
-        HStack(alignment: .top, spacing: 12) {
-            Image(systemName: reminder.loveLanguage.symbolName)
-                .foregroundStyle(reminder.loveLanguage.tint)
-                .frame(width: 28, height: 28)
-
-            VStack(alignment: .leading, spacing: 4) {
-                Text(reminder.title)
-                    .font(.headline)
-                    .lineLimit(2)
-                if let body = reminder.body, !body.isEmpty {
-                    Text(body)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(2)
-                }
-                HStack(spacing: 8) {
-                    if let next = reminder.trigger?.nextFireDate {
-                        Text(next, style: .relative)
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-                    if reminder.triggerType == "recurring",
-                       let rrule = reminder.rrule,
-                       let preset = RecurrencePreset(rrule: rrule) {
-                        Text(preset.title)
-                            .font(.caption2)
-                            .padding(.horizontal, 6).padding(.vertical, 2)
-                            .background(Color.gray.opacity(0.15), in: Capsule())
-                    }
-                    if reminder.targetId != currentUserId {
-                        Text("for partner")
-                            .font(.caption2)
-                            .padding(.horizontal, 6).padding(.vertical, 2)
-                            .background(reminder.loveLanguage.tint.opacity(0.15), in: Capsule())
-                    }
-                }
-            }
-            Spacer()
-        }
-        .padding(.vertical, 4)
     }
 }

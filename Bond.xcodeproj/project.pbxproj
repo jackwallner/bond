@@ -8,55 +8,82 @@
 
 /* Begin PBXBuildFile section */
 		03A4658CD638D6C07E34600F /* DictateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BF6AA28F3907997D62C23E1 /* DictateView.swift */; };
+		05B46674EDB8219D56A3D8C0 /* ReminderEventDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18775E994B22E961A54F8E3D /* ReminderEventDTO.swift */; };
 		083DC3AE75FF0273E8FD73FB /* RevenueCatUI in Frameworks */ = {isa = PBXBuildFile; productRef = 0E0189BDBF4D7010F39727C5 /* RevenueCatUI */; };
+		0DD7D612C97250275B7DA054 /* ReminderEditorModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = F867C11913BB4FCF5D3D5E9F /* ReminderEditorModels.swift */; };
 		0ED8EEED9492C17B5A9C0D64 /* PairingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4651927088C4AF8826E38EE /* PairingView.swift */; };
 		14271AAE2B1B55F6F1300DA3 /* CoupleDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 614F6A4AF63E9073387D83DA /* CoupleDTO.swift */; };
 		15F323D3A66EDD111C27312C /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = 79DA0CE0B85E6A75ACD31F75 /* Supabase */; };
 		19CC6DAF32A9EAEB84D31290 /* ReminderEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E1C46FF806BE5F4CFA6483B /* ReminderEditorView.swift */; };
+		1AD98BC93C4B7A3128EE2499 /* LoveLanguageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E44B9DF2E598986B1F41F82 /* LoveLanguageTests.swift */; };
 		27F0B2AF1AE96E58B63A4F3A /* ReminderTrigger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94FA6F604A0AE177F1E53E19 /* ReminderTrigger.swift */; };
 		2813CCAF01B9B86418F73CEC /* CoupleDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 614F6A4AF63E9073387D83DA /* CoupleDTO.swift */; };
+		283326B0C9C4463EB1914AAC /* DailyCheckInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72CA6E5DB9BE3E5FBF29230D /* DailyCheckInView.swift */; };
 		3226DA024CFAFDA32F294D31 /* ProfileDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = C76495F38E8EC32C13087CAC /* ProfileDTO.swift */; };
+		3347E8B65E2F3F00C5F91944 /* ReminderDTOTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 431E38A9565DAF005868FFB8 /* ReminderDTOTests.swift */; };
 		346E3CA160F86EC6A841A71D /* BondWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 2D2331EDA51A63F2314DDB32 /* BondWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		35460CE84004F5686F3D5F10 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A42CD9882E06FC36B7BAC844 /* Assets.xcassets */; };
 		3B838DF1DB360C572EA4A91F /* CoupleDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 614F6A4AF63E9073387D83DA /* CoupleDTO.swift */; };
+		3E927366F5DCD67A54AA83B4 /* DailyQuestionDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50E8F1F976E924BD6B235514 /* DailyQuestionDTO.swift */; };
+		42216868266425D95BD996AB /* ReminderEventRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8A50E874ABC84170E0D26E6 /* ReminderEventRepository.swift */; };
 		4423CE637C6D08B8C5EC785F /* ReminderDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 585D1A7C6799459199130E5B /* ReminderDTO.swift */; };
 		470C83BD28F7511C14F4CCC1 /* RecurrencePreset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34C0EC429765DBD636FD8D72 /* RecurrencePreset.swift */; };
+		48FFC533C5318497E0E802C3 /* ReminderRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 541C4F85BC1812B1C61978AD /* ReminderRow.swift */; };
 		4A1FFC7369BB4120070D2C6D /* ProfileDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = C76495F38E8EC32C13087CAC /* ProfileDTO.swift */; };
 		4E5B7E7C7B7C2FAF0E18EFE1 /* AppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E49B51523219D78344AB9A8 /* AppGroup.swift */; };
+		4EF4BBC8BE8D354A50EA4900 /* ReminderTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301EDB6E9D1A234A90519B12 /* ReminderTemplate.swift */; };
+		5094CCFB786B2EA0AB296343 /* ProfileDTOTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51A5DD4BA2316889F39CDD24 /* ProfileDTOTests.swift */; };
 		52F1860A269EF29ACE6EE0A3 /* AppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E49B51523219D78344AB9A8 /* AppGroup.swift */; };
 		56281E60F20B712539F957FF /* LoveLanguage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF58AA7D81DFDBBF4E3D941F /* LoveLanguage.swift */; };
+		570B143E3863237F137F676D /* CoupleDTOTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AA7F8207838DB6359ECF024 /* CoupleDTOTests.swift */; };
 		57BC2289724538457316CAB4 /* MilestonesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72C9DDB7D721FC614C52CF6E /* MilestonesView.swift */; };
 		5D94D2F96EDDD2FF55327F9F /* MilestoneDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9691537350F5E42C03E679 /* MilestoneDTO.swift */; };
 		5E95FA191A93BEB0EA23D220 /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = 04DB1D81058B6E8FF4DBF480 /* Supabase */; };
 		5F2AAFCE2DDEC7E0A254A5C5 /* ReminderRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D57F25AA26A85B46F6A8446 /* ReminderRepository.swift */; };
 		5FEE1E878E0187DE2EC0F5A6 /* ProfileDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = C76495F38E8EC32C13087CAC /* ProfileDTO.swift */; };
 		62CD4EA4E0A59DBC6E22AE4C /* WidgetSnapshotPump.swift in Sources */ = {isa = PBXBuildFile; fileRef = F90568721DDE1134D8589429 /* WidgetSnapshotPump.swift */; };
+		634A6D2B3462452976132097 /* ReminderEditorModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = F867C11913BB4FCF5D3D5E9F /* ReminderEditorModels.swift */; };
+		65B757C3698B213595B132C4 /* PaywallModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BC77A8D75651643D578208A /* PaywallModifier.swift */; };
 		6782BCD1DA14CFA28E8B63DD /* PaywallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D805023C4E04450F773363ED /* PaywallView.swift */; };
 		6EB1C7BDDF8E1A60572C72C0 /* ReminderDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 585D1A7C6799459199130E5B /* ReminderDTO.swift */; };
 		6F1FEEB089EFB8F9BCD20E29 /* PreferenceChoiceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1B20DA5B893C061E647A350 /* PreferenceChoiceView.swift */; };
 		6F6C2CB3F5A0CF9120D0AAA9 /* BondWidgetsBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = B67A2D6BC9AC30CDB4726850 /* BondWidgetsBundle.swift */; };
-		71AEF9419BAA21E69F7A012F /* BondWatch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 902B35CB888AF0397097702E /* BondWatch.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		70A539715E4A0D1CFDFDF4AF /* DailyCheckInService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A6CFD466E5A10EC3632F8A8 /* DailyCheckInService.swift */; };
 		7411F1A8C72A107812C597EB /* ReminderTrigger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94FA6F604A0AE177F1E53E19 /* ReminderTrigger.swift */; };
+		74931C84D00EDF96A27AB45B /* ReminderEditorModelsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D85CCE368AE1BB6440274221 /* ReminderEditorModelsTests.swift */; };
 		7A63C76588E01152BAE592FC /* WatchConnectivitySender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 046ACADF7DDF5DD6D6E4F7DD /* WatchConnectivitySender.swift */; };
 		804E3B0744B2FFA6F7D63C93 /* ReminderListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92E29E1FE9B88C15260E348F /* ReminderListView.swift */; };
 		8408C38ED1DBEDDFB1944904 /* LoveLanguage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF58AA7D81DFDBBF4E3D941F /* LoveLanguage.swift */; };
+		8F9419F2A37A33E9C4960DD2 /* DailyQuestionDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50E8F1F976E924BD6B235514 /* DailyQuestionDTO.swift */; };
+		909FE3C9FA74D62B83E746D6 /* PremiumGateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069BF3DD08F61BC8D074E355 /* PremiumGateView.swift */; };
 		919EB3DE7409BA035B414E2A /* PurchasesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C5718ADF6D126CFA618BD62 /* PurchasesService.swift */; };
 		92CDAEDF1F9D98BDD8F2628F /* WidgetSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCC41155EF6A2E9443D8990A /* WidgetSnapshot.swift */; };
 		992C2457DC8B5C6B9EFE5FAE /* NotificationScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16A3D4EC5485B89310FB3815 /* NotificationScheduler.swift */; };
 		9A2F69C5EDACC56A8920B26F /* SupabaseConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 939CEC163F261084A4635A51 /* SupabaseConfig.swift */; };
 		A1A3E41F08D94F63493F5F39 /* LoveLanguage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF58AA7D81DFDBBF4E3D941F /* LoveLanguage.swift */; };
+		A3189215EDEC433363CC12F0 /* ReminderTriggerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E43E1C2A7786CBB1E69F0C90 /* ReminderTriggerTests.swift */; };
 		AE772874A114CC2B5E4C2739 /* AppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E49B51523219D78344AB9A8 /* AppGroup.swift */; };
+		AED61940397E14521591E73C /* ReminderTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301EDB6E9D1A234A90519B12 /* ReminderTemplate.swift */; };
+		B25775643F9198940939DD61 /* LoveLanguageAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC67BE3E182EB254453908B /* LoveLanguageAnalyzer.swift */; };
+		B3D00EBEBA252A6F97537B64 /* MilestoneEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E78C2218E473C3871EE0D2C0 /* MilestoneEditorView.swift */; };
+		B41BE25B58B6E887BA3B7C52 /* RecurrencePresetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB62C0231491EE4F65A95A2C /* RecurrencePresetTests.swift */; };
 		B42C73BC3E1E71858F9531DE /* WatchPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD85E0386762BF4BEEBA39E7 /* WatchPayload.swift */; };
+		B4BBB555EDB39A162C36CA54 /* ReminderTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301EDB6E9D1A234A90519B12 /* ReminderTemplate.swift */; };
+		B8A4BD8347DD2D9141E150D0 /* ReminderEventDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18775E994B22E961A54F8E3D /* ReminderEventDTO.swift */; };
 		BC6A2BB0AAC48DDE56E8BEE6 /* BondWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F49157A02B5BD4DD60E4D6A9 /* BondWatchApp.swift */; };
+		BD9D1E3117B1A08C546A7445 /* ReminderTemplatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7C6EB1679352861557F61EC /* ReminderTemplatesView.swift */; };
+		C22CC43865B9C68017FCEBF3 /* ReminderEditorModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = F867C11913BB4FCF5D3D5E9F /* ReminderEditorModels.swift */; };
 		C455C1D4B733D81132787827 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4ECCA9463B20E0BF3A735F1 /* OnboardingView.swift */; };
 		C7C6BF0E9FFB89D1127E90DD /* SupabaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12B0502E3CD2A5CE2602DE00 /* SupabaseService.swift */; };
 		C85B4C6B1B7AC5597C83FA4C /* AppleSignInHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FD98197BFD6CA378B6E5EE2 /* AppleSignInHelper.swift */; };
 		C936D494989E30796DF97085 /* RecurrencePreset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34C0EC429765DBD636FD8D72 /* RecurrencePreset.swift */; };
+		C9F8FE48A9984D8BD8BE07D0 /* ReminderEventDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18775E994B22E961A54F8E3D /* ReminderEventDTO.swift */; };
 		CF93F136AAA77D09B5932D29 /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = 7644CAA47A3A1207F2301EE4 /* RevenueCat */; };
 		D44DC594E39222BF724D26D6 /* WatchConnectivityBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A157DD27E1A47C5DB812074 /* WatchConnectivityBridge.swift */; };
 		D6F1179E8055F1C971A04654 /* RecurrencePreset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34C0EC429765DBD636FD8D72 /* RecurrencePreset.swift */; };
 		D901243B3926F226062C57E2 /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E532B78A2FDF72771E0852A0 /* StatsView.swift */; };
 		E1B0AFF57064F67A389FA982 /* BondApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C93F203FD44AA24FC52C1EF /* BondApp.swift */; };
+		E1C0EFE1D84ADEFDBA829B35 /* DailyQuestionDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50E8F1F976E924BD6B235514 /* DailyQuestionDTO.swift */; };
 		E307A29AE38CBC7DE32C8BE6 /* MilestoneDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9691537350F5E42C03E679 /* MilestoneDTO.swift */; };
 		E5743F3B95401D7F92110EAB /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEC67EF3AE529FDFBF5C96C /* LocationService.swift */; };
 		E979CADB843AA4BC1E0799A8 /* WidgetSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCC41155EF6A2E9443D8990A /* WidgetSnapshot.swift */; };
@@ -69,22 +96,23 @@
 		FD11FDB9F1B6727650955C04 /* MilestoneDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9691537350F5E42C03E679 /* MilestoneDTO.swift */; };
 		FD652D967BE346A7833D4461 /* ReminderDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 585D1A7C6799459199130E5B /* ReminderDTO.swift */; };
 		FE1B9776FA4A29DDCFC59E82 /* PairingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 167CA752300A93B733B1F99B /* PairingService.swift */; };
+		FE65922E9F09AD4B439AC6F1 /* MilestoneDTOTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E7D69CC27F9E108A7CA1580 /* MilestoneDTOTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		56BC0229A3B69F89FFDF22B9 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = EEC45BA88290345E9A4B1004 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 71BA1EE73B231085ADD03089;
-			remoteInfo = BondWatch;
-		};
 		75C1C2245A5A7C5B83ECD3F7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = EEC45BA88290345E9A4B1004 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = DA1B9B252D28DF4638EB38AB;
 			remoteInfo = BondWidgets;
+		};
+		FD5ED7D9F8038F72821F2694 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EEC45BA88290345E9A4B1004 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 50522AFA470C7496132750D0;
+			remoteInfo = Bond;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -100,63 +128,74 @@
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		8528664331D085C875F34670 /* Embed Watch Content */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
-			dstSubfolderSpec = 16;
-			files = (
-				71AEF9419BAA21E69F7A012F /* BondWatch.app in Embed Watch Content */,
-			);
-			name = "Embed Watch Content";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		046ACADF7DDF5DD6D6E4F7DD /* WatchConnectivitySender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConnectivitySender.swift; sourceTree = "<group>"; };
+		05B10D58B2719BBE3B32C681 /* BondTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = BondTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		069BF3DD08F61BC8D074E355 /* PremiumGateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PremiumGateView.swift; sourceTree = "<group>"; };
 		113F2620C6CB170BE5DFAC2C /* MilestonesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MilestonesService.swift; sourceTree = "<group>"; };
 		12B0502E3CD2A5CE2602DE00 /* SupabaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseService.swift; sourceTree = "<group>"; };
 		167CA752300A93B733B1F99B /* PairingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PairingService.swift; sourceTree = "<group>"; };
 		16A3D4EC5485B89310FB3815 /* NotificationScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationScheduler.swift; sourceTree = "<group>"; };
+		18775E994B22E961A54F8E3D /* ReminderEventDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderEventDTO.swift; sourceTree = "<group>"; };
 		1BF6AA28F3907997D62C23E1 /* DictateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictateView.swift; sourceTree = "<group>"; };
 		278C29A0A919288DF213F74A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		27C794277EBC08A83545480C /* BondWatch.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BondWatch.entitlements; sourceTree = "<group>"; };
 		2C93F203FD44AA24FC52C1EF /* BondApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BondApp.swift; sourceTree = "<group>"; };
 		2D2331EDA51A63F2314DDB32 /* BondWidgets.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = BondWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		2EEC67EF3AE529FDFBF5C96C /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
+		301EDB6E9D1A234A90519B12 /* ReminderTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderTemplate.swift; sourceTree = "<group>"; };
 		34C0EC429765DBD636FD8D72 /* RecurrencePreset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecurrencePreset.swift; sourceTree = "<group>"; };
 		381B819C3EFFEEF1F7BCF87A /* Bond.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Bond.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3A9691537350F5E42C03E679 /* MilestoneDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MilestoneDTO.swift; sourceTree = "<group>"; };
+		431E38A9565DAF005868FFB8 /* ReminderDTOTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderDTOTests.swift; sourceTree = "<group>"; };
 		4749EF61AE27675A3976D9E8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4A157DD27E1A47C5DB812074 /* WatchConnectivityBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConnectivityBridge.swift; sourceTree = "<group>"; };
+		4A6CFD466E5A10EC3632F8A8 /* DailyCheckInService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyCheckInService.swift; sourceTree = "<group>"; };
 		4E1C46FF806BE5F4CFA6483B /* ReminderEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderEditorView.swift; sourceTree = "<group>"; };
+		4E44B9DF2E598986B1F41F82 /* LoveLanguageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoveLanguageTests.swift; sourceTree = "<group>"; };
+		50E8F1F976E924BD6B235514 /* DailyQuestionDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyQuestionDTO.swift; sourceTree = "<group>"; };
+		51A5DD4BA2316889F39CDD24 /* ProfileDTOTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileDTOTests.swift; sourceTree = "<group>"; };
+		541C4F85BC1812B1C61978AD /* ReminderRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderRow.swift; sourceTree = "<group>"; };
 		585D1A7C6799459199130E5B /* ReminderDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderDTO.swift; sourceTree = "<group>"; };
 		5E49B51523219D78344AB9A8 /* AppGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGroup.swift; sourceTree = "<group>"; };
 		614F6A4AF63E9073387D83DA /* CoupleDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoupleDTO.swift; sourceTree = "<group>"; };
 		675148F7F28D41E44B500502 /* Bond.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Bond.entitlements; sourceTree = "<group>"; };
 		6C5718ADF6D126CFA618BD62 /* PurchasesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchasesService.swift; sourceTree = "<group>"; };
 		72C9DDB7D721FC614C52CF6E /* MilestonesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MilestonesView.swift; sourceTree = "<group>"; };
+		72CA6E5DB9BE3E5FBF29230D /* DailyCheckInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyCheckInView.swift; sourceTree = "<group>"; };
 		75B9135257B219360C5756D1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		7D57F25AA26A85B46F6A8446 /* ReminderRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderRepository.swift; sourceTree = "<group>"; };
+		8BC77A8D75651643D578208A /* PaywallModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaywallModifier.swift; sourceTree = "<group>"; };
+		8E7D69CC27F9E108A7CA1580 /* MilestoneDTOTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MilestoneDTOTests.swift; sourceTree = "<group>"; };
 		8FD98197BFD6CA378B6E5EE2 /* AppleSignInHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleSignInHelper.swift; sourceTree = "<group>"; };
 		902B35CB888AF0397097702E /* BondWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BondWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		922EDFFF7306B8D113F47F36 /* BondWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BondWidgets.entitlements; sourceTree = "<group>"; };
 		92E29E1FE9B88C15260E348F /* ReminderListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderListView.swift; sourceTree = "<group>"; };
 		939CEC163F261084A4635A51 /* SupabaseConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseConfig.swift; sourceTree = "<group>"; };
 		94FA6F604A0AE177F1E53E19 /* ReminderTrigger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderTrigger.swift; sourceTree = "<group>"; };
+		9AA7F8207838DB6359ECF024 /* CoupleDTOTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoupleDTOTests.swift; sourceTree = "<group>"; };
 		A42CD9882E06FC36B7BAC844 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B4651927088C4AF8826E38EE /* PairingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PairingView.swift; sourceTree = "<group>"; };
 		B4ECCA9463B20E0BF3A735F1 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		B67A2D6BC9AC30CDB4726850 /* BondWidgetsBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BondWidgetsBundle.swift; sourceTree = "<group>"; };
 		C76495F38E8EC32C13087CAC /* ProfileDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileDTO.swift; sourceTree = "<group>"; };
+		C8A50E874ABC84170E0D26E6 /* ReminderEventRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderEventRepository.swift; sourceTree = "<group>"; };
 		CCC41155EF6A2E9443D8990A /* WidgetSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetSnapshot.swift; sourceTree = "<group>"; };
 		CD85E0386762BF4BEEBA39E7 /* WatchPayload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchPayload.swift; sourceTree = "<group>"; };
 		D805023C4E04450F773363ED /* PaywallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaywallView.swift; sourceTree = "<group>"; };
+		D85CCE368AE1BB6440274221 /* ReminderEditorModelsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderEditorModelsTests.swift; sourceTree = "<group>"; };
+		E43E1C2A7786CBB1E69F0C90 /* ReminderTriggerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderTriggerTests.swift; sourceTree = "<group>"; };
 		E532B78A2FDF72771E0852A0 /* StatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsView.swift; sourceTree = "<group>"; };
+		E78C2218E473C3871EE0D2C0 /* MilestoneEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MilestoneEditorView.swift; sourceTree = "<group>"; };
+		EB62C0231491EE4F65A95A2C /* RecurrencePresetTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecurrencePresetTests.swift; sourceTree = "<group>"; };
 		EEC2380E22745DECC51B7942 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		EFC67BE3E182EB254453908B /* LoveLanguageAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoveLanguageAnalyzer.swift; sourceTree = "<group>"; };
 		F1B20DA5B893C061E647A350 /* PreferenceChoiceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferenceChoiceView.swift; sourceTree = "<group>"; };
 		F49157A02B5BD4DD60E4D6A9 /* BondWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BondWatchApp.swift; sourceTree = "<group>"; };
+		F7C6EB1679352861557F61EC /* ReminderTemplatesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderTemplatesView.swift; sourceTree = "<group>"; };
+		F867C11913BB4FCF5D3D5E9F /* ReminderEditorModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderEditorModels.swift; sourceTree = "<group>"; };
 		F90568721DDE1134D8589429 /* WidgetSnapshotPump.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetSnapshotPump.swift; sourceTree = "<group>"; };
 		FF58AA7D81DFDBBF4E3D941F /* LoveLanguage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoveLanguage.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -209,11 +248,14 @@
 			isa = PBXGroup;
 			children = (
 				8FD98197BFD6CA378B6E5EE2 /* AppleSignInHelper.swift */,
+				4A6CFD466E5A10EC3632F8A8 /* DailyCheckInService.swift */,
 				2EEC67EF3AE529FDFBF5C96C /* LocationService.swift */,
+				EFC67BE3E182EB254453908B /* LoveLanguageAnalyzer.swift */,
 				113F2620C6CB170BE5DFAC2C /* MilestonesService.swift */,
 				16A3D4EC5485B89310FB3815 /* NotificationScheduler.swift */,
 				167CA752300A93B733B1F99B /* PairingService.swift */,
 				6C5718ADF6D126CFA618BD62 /* PurchasesService.swift */,
+				C8A50E874ABC84170E0D26E6 /* ReminderEventRepository.swift */,
 				7D57F25AA26A85B46F6A8446 /* ReminderRepository.swift */,
 				939CEC163F261084A4635A51 /* SupabaseConfig.swift */,
 				12B0502E3CD2A5CE2602DE00 /* SupabaseService.swift */,
@@ -227,10 +269,19 @@
 			isa = PBXGroup;
 			children = (
 				381B819C3EFFEEF1F7BCF87A /* Bond.app */,
+				05B10D58B2719BBE3B32C681 /* BondTests.xctest */,
 				902B35CB888AF0397097702E /* BondWatch.app */,
 				2D2331EDA51A63F2314DDB32 /* BondWidgets.appex */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		296869205C50BD7010B25052 /* CheckIn */ = {
+			isa = PBXGroup;
+			children = (
+				72CA6E5DB9BE3E5FBF29230D /* DailyCheckInView.swift */,
+			);
+			path = CheckIn;
 			sourceTree = "<group>";
 		};
 		2D57FDDB6360A6350DA05900 /* Bond */ = {
@@ -240,6 +291,7 @@
 				675148F7F28D41E44B500502 /* Bond.entitlements */,
 				2C93F203FD44AA24FC52C1EF /* BondApp.swift */,
 				278C29A0A919288DF213F74A /* Info.plist */,
+				45A2DFD291DA5FF97AC354EF /* Components */,
 				DA1520EAE05057CE75397FDE /* Features */,
 				181F3037FDDCB872B298C861 /* Services */,
 			);
@@ -252,6 +304,7 @@
 				614F6A4AF63E9073387D83DA /* CoupleDTO.swift */,
 				C76495F38E8EC32C13087CAC /* ProfileDTO.swift */,
 				585D1A7C6799459199130E5B /* ReminderDTO.swift */,
+				18775E994B22E961A54F8E3D /* ReminderEventDTO.swift */,
 			);
 			path = DTOs;
 			sourceTree = "<group>";
@@ -260,11 +313,30 @@
 			isa = PBXGroup;
 			children = (
 				2D57FDDB6360A6350DA05900 /* Bond */,
+				9C22C2876ADF97712CEF4D61 /* BondTests */,
 				0409B24F53BAB15E34888D9D /* BondWatch */,
 				B897F2680C88444499C5EB72 /* BondWidgets */,
 				BFCC780BB03A1C1637566A77 /* Shared */,
 				22E151673E904F86E5F85C0A /* Products */,
 			);
+			sourceTree = "<group>";
+		};
+		446752AF7734854EBD41D4A8 /* Templates */ = {
+			isa = PBXGroup;
+			children = (
+				F7C6EB1679352861557F61EC /* ReminderTemplatesView.swift */,
+			);
+			path = Templates;
+			sourceTree = "<group>";
+		};
+		45A2DFD291DA5FF97AC354EF /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				8BC77A8D75651643D578208A /* PaywallModifier.swift */,
+				069BF3DD08F61BC8D074E355 /* PremiumGateView.swift */,
+				541C4F85BC1812B1C61978AD /* ReminderRow.swift */,
+			);
+			path = Components;
 			sourceTree = "<group>";
 		};
 		718E99AAE0CB74E56B210C8F /* ReminderList */ = {
@@ -278,12 +350,30 @@
 		968CCB8EDDF6E5B40A2212B2 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				50E8F1F976E924BD6B235514 /* DailyQuestionDTO.swift */,
 				FF58AA7D81DFDBBF4E3D941F /* LoveLanguage.swift */,
 				3A9691537350F5E42C03E679 /* MilestoneDTO.swift */,
 				34C0EC429765DBD636FD8D72 /* RecurrencePreset.swift */,
+				F867C11913BB4FCF5D3D5E9F /* ReminderEditorModels.swift */,
+				301EDB6E9D1A234A90519B12 /* ReminderTemplate.swift */,
 				94FA6F604A0AE177F1E53E19 /* ReminderTrigger.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		9C22C2876ADF97712CEF4D61 /* BondTests */ = {
+			isa = PBXGroup;
+			children = (
+				9AA7F8207838DB6359ECF024 /* CoupleDTOTests.swift */,
+				4E44B9DF2E598986B1F41F82 /* LoveLanguageTests.swift */,
+				8E7D69CC27F9E108A7CA1580 /* MilestoneDTOTests.swift */,
+				51A5DD4BA2316889F39CDD24 /* ProfileDTOTests.swift */,
+				EB62C0231491EE4F65A95A2C /* RecurrencePresetTests.swift */,
+				431E38A9565DAF005868FFB8 /* ReminderDTOTests.swift */,
+				D85CCE368AE1BB6440274221 /* ReminderEditorModelsTests.swift */,
+				E43E1C2A7786CBB1E69F0C90 /* ReminderTriggerTests.swift */,
+			);
+			path = BondTests;
 			sourceTree = "<group>";
 		};
 		9E074D2E52E6F995F29DBC7B /* Stats */ = {
@@ -351,6 +441,7 @@
 		DA1520EAE05057CE75397FDE /* Features */ = {
 			isa = PBXGroup;
 			children = (
+				296869205C50BD7010B25052 /* CheckIn */,
 				F9F79FA340ECCBE7B36F4917 /* Milestones */,
 				0CAC98D4759D65A96676DDE9 /* Onboarding */,
 				9EE6B4FEC25EF5FE4B587CEF /* Pairing */,
@@ -358,6 +449,7 @@
 				A7C3BE35BC3AA10A5C6E7232 /* ReminderEditor */,
 				718E99AAE0CB74E56B210C8F /* ReminderList */,
 				9E074D2E52E6F995F29DBC7B /* Stats */,
+				446752AF7734854EBD41D4A8 /* Templates */,
 			);
 			path = Features;
 			sourceTree = "<group>";
@@ -365,6 +457,7 @@
 		F9F79FA340ECCBE7B36F4917 /* Milestones */ = {
 			isa = PBXGroup;
 			children = (
+				E78C2218E473C3871EE0D2C0 /* MilestoneEditorView.swift */,
 				72C9DDB7D721FC614C52CF6E /* MilestonesView.swift */,
 			);
 			path = Milestones;
@@ -381,13 +474,11 @@
 				AD00B683DD1EA81869A2547E /* Resources */,
 				2656B31032035CA270E01DA4 /* Frameworks */,
 				27935014A4EC856544C965B8 /* Embed Foundation Extensions */,
-				8528664331D085C875F34670 /* Embed Watch Content */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				85B7FC293F32B0A89F87B427 /* PBXTargetDependency */,
-				92FE73E1394721440FA3645C /* PBXTargetDependency */,
 			);
 			name = Bond;
 			packageProductDependencies = (
@@ -398,6 +489,24 @@
 			productName = Bond;
 			productReference = 381B819C3EFFEEF1F7BCF87A /* Bond.app */;
 			productType = "com.apple.product-type.application";
+		};
+		677B96B4BF97C2CB7FECBBB4 /* BondTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 991E0CD718775AEA0B8AECC9 /* Build configuration list for PBXNativeTarget "BondTests" */;
+			buildPhases = (
+				2F5DBD42A0587DF838BD4361 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				7795E77A27436F07B4A449E2 /* PBXTargetDependency */,
+			);
+			name = BondTests;
+			packageProductDependencies = (
+			);
+			productName = BondTests;
+			productReference = 05B10D58B2719BBE3B32C681 /* BondTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		71BA1EE73B231085ADD03089 /* BondWatch */ = {
 			isa = PBXNativeTarget;
@@ -449,6 +558,10 @@
 						DevelopmentTeam = YXG4MP6W39;
 						ProvisioningStyle = Automatic;
 					};
+					677B96B4BF97C2CB7FECBBB4 = {
+						DevelopmentTeam = YXG4MP6W39;
+						ProvisioningStyle = Automatic;
+					};
 					71BA1EE73B231085ADD03089 = {
 						DevelopmentTeam = YXG4MP6W39;
 						ProvisioningStyle = Automatic;
@@ -478,6 +591,7 @@
 			projectRoot = "";
 			targets = (
 				50522AFA470C7496132750D0 /* Bond */,
+				677B96B4BF97C2CB7FECBBB4 /* BondTests */,
 				71BA1EE73B231085ADD03089 /* BondWatch */,
 				DA1B9B252D28DF4638EB38AB /* BondWidgets */,
 			);
@@ -504,6 +618,21 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		2F5DBD42A0587DF838BD4361 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				570B143E3863237F137F676D /* CoupleDTOTests.swift in Sources */,
+				1AD98BC93C4B7A3128EE2499 /* LoveLanguageTests.swift in Sources */,
+				FE65922E9F09AD4B439AC6F1 /* MilestoneDTOTests.swift in Sources */,
+				5094CCFB786B2EA0AB296343 /* ProfileDTOTests.swift in Sources */,
+				B41BE25B58B6E887BA3B7C52 /* RecurrencePresetTests.swift in Sources */,
+				3347E8B65E2F3F00C5F91944 /* ReminderDTOTests.swift in Sources */,
+				74931C84D00EDF96A27AB45B /* ReminderEditorModelsTests.swift in Sources */,
+				A3189215EDEC433363CC12F0 /* ReminderTriggerTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		336ACDBF54E47908D80FCF99 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -511,11 +640,15 @@
 				AE772874A114CC2B5E4C2739 /* AppGroup.swift in Sources */,
 				6F6C2CB3F5A0CF9120D0AAA9 /* BondWidgetsBundle.swift in Sources */,
 				2813CCAF01B9B86418F73CEC /* CoupleDTO.swift in Sources */,
+				8F9419F2A37A33E9C4960DD2 /* DailyQuestionDTO.swift in Sources */,
 				56281E60F20B712539F957FF /* LoveLanguage.swift in Sources */,
 				FD11FDB9F1B6727650955C04 /* MilestoneDTO.swift in Sources */,
 				4A1FFC7369BB4120070D2C6D /* ProfileDTO.swift in Sources */,
 				470C83BD28F7511C14F4CCC1 /* RecurrencePreset.swift in Sources */,
 				FD652D967BE346A7833D4461 /* ReminderDTO.swift in Sources */,
+				634A6D2B3462452976132097 /* ReminderEditorModels.swift in Sources */,
+				05B46674EDB8219D56A3D8C0 /* ReminderEventDTO.swift in Sources */,
+				B4BBB555EDB39A162C36CA54 /* ReminderTemplate.swift in Sources */,
 				7411F1A8C72A107812C597EB /* ReminderTrigger.swift in Sources */,
 				F6941DD7FCB6341653A886E4 /* WatchPayload.swift in Sources */,
 				F2D531BF71A180F993CD06A7 /* WidgetSnapshot.swift in Sources */,
@@ -530,24 +663,37 @@
 				C85B4C6B1B7AC5597C83FA4C /* AppleSignInHelper.swift in Sources */,
 				E1B0AFF57064F67A389FA982 /* BondApp.swift in Sources */,
 				3B838DF1DB360C572EA4A91F /* CoupleDTO.swift in Sources */,
+				70A539715E4A0D1CFDFDF4AF /* DailyCheckInService.swift in Sources */,
+				283326B0C9C4463EB1914AAC /* DailyCheckInView.swift in Sources */,
+				3E927366F5DCD67A54AA83B4 /* DailyQuestionDTO.swift in Sources */,
 				E5743F3B95401D7F92110EAB /* LocationService.swift in Sources */,
 				8408C38ED1DBEDDFB1944904 /* LoveLanguage.swift in Sources */,
+				B25775643F9198940939DD61 /* LoveLanguageAnalyzer.swift in Sources */,
 				5D94D2F96EDDD2FF55327F9F /* MilestoneDTO.swift in Sources */,
+				B3D00EBEBA252A6F97537B64 /* MilestoneEditorView.swift in Sources */,
 				EB9512343521D9C53C7DA522 /* MilestonesService.swift in Sources */,
 				57BC2289724538457316CAB4 /* MilestonesView.swift in Sources */,
 				992C2457DC8B5C6B9EFE5FAE /* NotificationScheduler.swift in Sources */,
 				C455C1D4B733D81132787827 /* OnboardingView.swift in Sources */,
 				FE1B9776FA4A29DDCFC59E82 /* PairingService.swift in Sources */,
 				0ED8EEED9492C17B5A9C0D64 /* PairingView.swift in Sources */,
+				65B757C3698B213595B132C4 /* PaywallModifier.swift in Sources */,
 				6782BCD1DA14CFA28E8B63DD /* PaywallView.swift in Sources */,
 				6F1FEEB089EFB8F9BCD20E29 /* PreferenceChoiceView.swift in Sources */,
+				909FE3C9FA74D62B83E746D6 /* PremiumGateView.swift in Sources */,
 				5FEE1E878E0187DE2EC0F5A6 /* ProfileDTO.swift in Sources */,
 				919EB3DE7409BA035B414E2A /* PurchasesService.swift in Sources */,
 				C936D494989E30796DF97085 /* RecurrencePreset.swift in Sources */,
 				6EB1C7BDDF8E1A60572C72C0 /* ReminderDTO.swift in Sources */,
+				0DD7D612C97250275B7DA054 /* ReminderEditorModels.swift in Sources */,
 				19CC6DAF32A9EAEB84D31290 /* ReminderEditorView.swift in Sources */,
+				C9F8FE48A9984D8BD8BE07D0 /* ReminderEventDTO.swift in Sources */,
+				42216868266425D95BD996AB /* ReminderEventRepository.swift in Sources */,
 				804E3B0744B2FFA6F7D63C93 /* ReminderListView.swift in Sources */,
 				5F2AAFCE2DDEC7E0A254A5C5 /* ReminderRepository.swift in Sources */,
+				48FFC533C5318497E0E802C3 /* ReminderRow.swift in Sources */,
+				4EF4BBC8BE8D354A50EA4900 /* ReminderTemplate.swift in Sources */,
+				BD9D1E3117B1A08C546A7445 /* ReminderTemplatesView.swift in Sources */,
 				27F0B2AF1AE96E58B63A4F3A /* ReminderTrigger.swift in Sources */,
 				D901243B3926F226062C57E2 /* StatsView.swift in Sources */,
 				9A2F69C5EDACC56A8920B26F /* SupabaseConfig.swift in Sources */,
@@ -566,12 +712,16 @@
 				4E5B7E7C7B7C2FAF0E18EFE1 /* AppGroup.swift in Sources */,
 				BC6A2BB0AAC48DDE56E8BEE6 /* BondWatchApp.swift in Sources */,
 				14271AAE2B1B55F6F1300DA3 /* CoupleDTO.swift in Sources */,
+				E1C0EFE1D84ADEFDBA829B35 /* DailyQuestionDTO.swift in Sources */,
 				03A4658CD638D6C07E34600F /* DictateView.swift in Sources */,
 				A1A3E41F08D94F63493F5F39 /* LoveLanguage.swift in Sources */,
 				E307A29AE38CBC7DE32C8BE6 /* MilestoneDTO.swift in Sources */,
 				3226DA024CFAFDA32F294D31 /* ProfileDTO.swift in Sources */,
 				D6F1179E8055F1C971A04654 /* RecurrencePreset.swift in Sources */,
 				4423CE637C6D08B8C5EC785F /* ReminderDTO.swift in Sources */,
+				C22CC43865B9C68017FCEBF3 /* ReminderEditorModels.swift in Sources */,
+				B8A4BD8347DD2D9141E150D0 /* ReminderEventDTO.swift in Sources */,
+				AED61940397E14521591E73C /* ReminderTemplate.swift in Sources */,
 				F8591164C8A77D09DECE3911 /* ReminderTrigger.swift in Sources */,
 				7A63C76588E01152BAE592FC /* WatchConnectivitySender.swift in Sources */,
 				EF70E5BED32B37B8E03B5BBF /* WatchPayload.swift in Sources */,
@@ -582,15 +732,15 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		7795E77A27436F07B4A449E2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 50522AFA470C7496132750D0 /* Bond */;
+			targetProxy = FD5ED7D9F8038F72821F2694 /* PBXContainerItemProxy */;
+		};
 		85B7FC293F32B0A89F87B427 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = DA1B9B252D28DF4638EB38AB /* BondWidgets */;
 			targetProxy = 75C1C2245A5A7C5B83ECD3F7 /* PBXContainerItemProxy */;
-		};
-		92FE73E1394721440FA3645C /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 71BA1EE73B231085ADD03089 /* BondWatch */;
-			targetProxy = 56BC0229A3B69F89FFDF22B9 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -622,6 +772,38 @@
 				WATCHOS_DEPLOYMENT_TARGET = 11.0;
 			};
 			name = Debug;
+		};
+		25112293BBC3537E74D71D72 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.jackwallner.bond.tests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Bond.app/Bond";
+			};
+			name = Debug;
+		};
+		2982A25D7D2EF3322AA7031F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.jackwallner.bond.tests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Bond.app/Bond";
+			};
+			name = Release;
 		};
 		68463DE4544D3CB691D40E8D /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -658,7 +840,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 11;
+				CURRENT_PROJECT_VERSION = 18;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = YXG4MP6W39;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -726,7 +908,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 11;
+				CURRENT_PROJECT_VERSION = 18;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = YXG4MP6W39;
 				ENABLE_NS_ASSERTIONS = NO;
@@ -826,6 +1008,15 @@
 			buildConfigurations = (
 				9671980AB4DE00EC80B8A5F3 /* Debug */,
 				7DD701F29402BB5396549D11 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		991E0CD718775AEA0B8AECC9 /* Build configuration list for PBXNativeTarget "BondTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				25112293BBC3537E74D71D72 /* Debug */,
+				2982A25D7D2EF3322AA7031F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
