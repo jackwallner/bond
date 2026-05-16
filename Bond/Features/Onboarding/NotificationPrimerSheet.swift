@@ -1,0 +1,47 @@
+import SwiftUI
+
+/// Pre-prompt primer shown once before the system notification dialog.
+/// Presented as a medium sheet — never a takeover, always escapable.
+struct NotificationPrimerSheet: View {
+    @Environment(\.dismiss) private var dismiss
+    let onRequest: () -> Void
+
+    var body: some View {
+        VStack(spacing: BondSpacing.xl) {
+            Spacer().frame(height: BondSpacing.xl)
+
+            Image(systemName: "bell")
+                .font(.system(size: 48))
+                .foregroundStyle(Color.bondAccent)
+                .accessibilityHidden(true)
+
+            VStack(spacing: BondSpacing.m) {
+                Text("Bond is silent without your permission.")
+                    .font(.title2.bold())
+                    .multilineTextAlignment(.center)
+                Text("Reminders fire as notifications. No notifications, no reminders. That's the whole app.")
+                    .font(.body)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+            }
+            .padding(.horizontal, BondSpacing.l)
+
+            Spacer()
+
+            VStack(spacing: BondSpacing.s) {
+                BondPrimaryButton(title: "Turn on notifications") {
+                    onRequest()
+                    dismiss()
+                }
+                Button("Maybe later") { dismiss() }
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .padding(.bottom, BondSpacing.s)
+            }
+            .padding(.horizontal, BondSpacing.base)
+        }
+        .padding(.top, BondSpacing.l)
+        .presentationDetents([.medium])
+        .presentationDragIndicator(.visible)
+    }
+}

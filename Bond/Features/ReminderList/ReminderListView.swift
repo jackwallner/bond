@@ -1,4 +1,5 @@
 import SwiftUI
+import UserNotifications
 
 struct ReminderListView: View {
     @Environment(SupabaseService.self) private var supabase
@@ -11,6 +12,9 @@ struct ReminderListView: View {
     @State private var isTemplatesPresented = false
     @State private var editingReminder: ReminderDTO?
     @State private var listFilter: ReminderFilter = .all
+    @State private var showNotificationPrimer = false
+
+    private let primerShownKey = "hasShownNotificationPrimer"
 
     enum ReminderFilter: String, CaseIterable {
         case all, forMe
@@ -37,6 +41,14 @@ struct ReminderListView: View {
             }
             .navigationTitle("Bond")
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    NavigationLink {
+                        SettingsView()
+                    } label: {
+                        Image(systemName: "gearshape")
+                    }
+                    .accessibilityLabel("Settings")
+                }
                 ToolbarItem(placement: .topBarTrailing) {
                     HStack(spacing: 12) {
                         Button {
@@ -59,6 +71,11 @@ struct ReminderListView: View {
             .sheet(isPresented: $isTemplatesPresented) {
                 ReminderTemplatesView()
             }
+            .sheet(isPresented: $showNotificationPrimer) {
+                NotificationPrimerSheet {
+                    Task { await NotificationScheduler.shared.requestAuthorizationIfNeeded() }
+                }
+            }
             .refreshable {
                 await repo.refresh()
                 await eventsRepo.refresh()
@@ -71,8 +88,21 @@ struct ReminderListView: View {
                     forSelfUserId: supabase.currentUserId ?? UUID(),
                     reminders: repo.reminders
                 )
+                await maybeShowNotificationPrimer()
             }
         }
+    }
+
+    /// Show the pre-prompt primer once, only if the system hasn't been asked
+    /// yet. Solo users see it when they first open the editor instead.
+    private func maybeShowNotificationPrimer() async {
+        guard !pairing.solo else { return }
+        guard !UserDefaults.standard.bool(forKey: primerShownKey) else { return }
+        let status = await UNUserNotificationCenter.current()
+            .notificationSettings().authorizationStatus
+        guard status == .notDetermined else { return }
+        UserDefaults.standard.set(true, forKey: primerShownKey)
+        showNotificationPrimer = true
     }
 
     private var filteredReminders: [ReminderDTO] {
