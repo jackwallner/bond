@@ -56,7 +56,16 @@ final class WatchConnectivitySender: NSObject {
         await withCheckedContinuation { (cont: CheckedContinuation<Bool, Never>) in
             WCSession.default.sendMessage(
                 [WatchPayload.createReminderKey: data],
-                replyHandler: { _ in cont.resume(returning: true) },
+                replyHandler: { response in
+                    let ok = (response["ok"] as? Bool) ?? false
+                    if !ok {
+                        let message = (response["error"] as? String) ?? "Couldn't save on your phone."
+                        Task { @MainActor in
+                            WatchConnectivitySender.shared.lastError = message
+                        }
+                    }
+                    cont.resume(returning: ok)
+                },
                 errorHandler: { err in
                     let message = err.localizedDescription
                     Task { @MainActor in
