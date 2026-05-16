@@ -9,6 +9,7 @@ struct SettingsView: View {
     @State private var confirmSignOut = false
     @State private var confirmUnpair = false
     @State private var isRestoring = false
+    @State private var isPairingPresented = false
     @State private var notificationStatus: UNAuthorizationStatus = .notDetermined
 
     var body: some View {
@@ -19,7 +20,13 @@ struct SettingsView: View {
 
             Section("Pairing") {
                 if pairing.solo || pairing.coupleId == nil {
-                    Text("Just you")
+                    Button {
+                        isPairingPresented = true
+                    } label: {
+                        Label("Connect a partner", systemImage: "heart.circle")
+                    }
+                    Text("Bond is just for you right now. Pair to share reminders — you keep everything you've already added.")
+                        .font(.caption)
                         .foregroundStyle(.secondary)
                 } else {
                     HStack(spacing: BondSpacing.m) {
@@ -101,6 +108,12 @@ struct SettingsView: View {
         .task {
             notificationStatus = await UNUserNotificationCenter.current()
                 .notificationSettings().authorizationStatus
+        }
+        .sheet(isPresented: $isPairingPresented) {
+            PairingView()
+        }
+        .onChange(of: pairing.justPaired) { _, paired in
+            if paired { isPairingPresented = false }
         }
         .confirmationDialog("Sign out?", isPresented: $confirmSignOut, titleVisibility: .visible) {
             Button("Sign out", role: .destructive) {

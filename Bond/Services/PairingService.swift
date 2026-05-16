@@ -19,7 +19,6 @@ final class PairingService {
     /// router can show the one-time success interstitial.
     var justPaired = false
     var lastError: String?
-    var needsPreferenceChoice = false
 
     private let inviteCodeLength = 6
     private let inviteCodeAlphabet = Array("ABCDEFGHJKMNPQRSTUVWXYZ23456789")
@@ -49,13 +48,11 @@ final class PairingService {
             } else {
                 partnerProfile = nil
             }
-            needsPreferenceChoice = false
             log.info("Loaded couple \(self.coupleId?.uuidString ?? "nil") (solo: \(self.solo))")
         } catch {
             coupleId = nil
             solo = false
-            needsPreferenceChoice = true
-            log.notice("No couple found — needs preference: \(error.localizedDescription)")
+            log.notice("No couple found — new account: \(error.localizedDescription)")
         }
     }
 
@@ -119,9 +116,30 @@ final class PairingService {
                 .execute()
             lastError = nil
             await loadCouple()
-            if coupleId != nil && !solo { justPaired = true }
+            if coupleId != nil && !solo {
+                justPaired = true
+                // Preferences are device-local until the user actually pairs;
+                // a partner makes love language relevant server-side.
+                await syncLoveLanguageToProfile()
+            }
         } catch {
             lastError = error.localizedDescription
+        }
+    }
+
+    /// Pushes the on-device primary love language to the server profile so a
+    /// paired partner's app can read it. No-op until the user has paired.
+    private func syncLoveLanguageToProfile() async {
+        guard let me = supabase.currentUserId else { return }
+        let language = OnboardingPreferences.shared.primaryLoveLanguage.rawValue
+        do {
+            try await supabase.client
+                .from("profiles")
+                .update(["love_language": language])
+                .eq("id", value: me.uuidString)
+                .execute()
+        } catch {
+            log.notice("Love language sync failed: \(error.localizedDescription)")
         }
     }
 
@@ -155,7 +173,6 @@ final class PairingService {
         justPaired = false
         isPairing = false
         lastError = nil
-        needsPreferenceChoice = false
     }
 
     func handleIncomingURL(_ url: URL) {

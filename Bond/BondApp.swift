@@ -66,11 +66,8 @@ struct RootView: View {
             case .onboarding:
                 OnboardingView()
                     .transition(.opacity)
-            case .preference:
-                PreferenceChoiceView()
-                    .transition(.opacity.combined(with: .move(edge: .trailing)))
-            case .pairing:
-                PairingView()
+            case .intentSetup:
+                IntentSetupView()
                     .transition(.opacity.combined(with: .move(edge: .trailing)))
             case .pairingSuccess:
                 PairingSuccessView(partnerName: pairing.partnerProfile?.displayName) {
@@ -107,7 +104,7 @@ struct RootView: View {
         }
     }
 
-    private enum Destination { case onboarding, loading, preference, pairing, pairingSuccess, home }
+    private enum Destination { case onboarding, loading, intentSetup, pairingSuccess, home }
 
     private var currentDestination: Destination {
         if isTransitioning {
@@ -116,11 +113,11 @@ struct RootView: View {
         if !supabase.isAuthenticated {
             return .onboarding
         }
-        if pairing.needsPreferenceChoice {
-            return .preference
-        }
+        // No couple at all = brand-new account. Everyone starts solo; the
+        // intent screen captures preferences and creates the solo couple.
+        // Pairing is opt-in from Settings, not a setup gate.
         if pairing.coupleId == nil {
-            return .pairing
+            return .intentSetup
         }
         if pairing.justPaired {
             return .pairingSuccess
