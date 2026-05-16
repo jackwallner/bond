@@ -38,15 +38,23 @@ struct ReminderEditorView: View {
                     TextField("Title", text: $title)
                     TextField("Note (optional)", text: $noteText, axis: .vertical)
                         .lineLimit(2...5)
+                } footer: {
+                    if title.trimmingCharacters(in: .whitespaces).isEmpty {
+                        Text("Add a title to save.")
+                    }
                 }
 
                 Section("Love language") {
                     Picker("Love language", selection: $loveLanguage) {
                         ForEach(LoveLanguage.allCases) { lang in
-                            Label(lang.title, systemImage: lang.symbolName).tag(lang)
+                            Label(lang.title, systemImage: lang.symbolName)
+                                .foregroundStyle(lang.tint)
+                                .tag(lang)
                         }
                     }
                     .pickerStyle(.menu)
+                    .labelsHidden()
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 }
 
                 Section("Who is this for?") {
