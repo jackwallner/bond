@@ -12,6 +12,12 @@ final class PairingService {
     var partnerProfile: ProfileDTO?
     var solo: Bool = false
     var pendingInviteCode: String?
+    var pendingInviteURL: URL?
+    var pendingInviteExpiresAt: Date?
+    var isPairing = false
+    /// Set when this device just completed pairing via an invite code, so the
+    /// router can show the one-time success interstitial.
+    var justPaired = false
     var lastError: String?
     var needsPreferenceChoice = false
 
@@ -77,20 +83,23 @@ final class PairingService {
             .map { _ in inviteCodeAlphabet.randomElement()! }
             .reduce(into: "") { $0.append($1) }
 
+        let expiresAt = Date().addingTimeInterval(60 * 60 * 24)
         let payload: [String: AnyJSON] = [
             "code": .string(code),
             "created_by": .string(me.uuidString),
-            "expires_at": .string(ISO8601DateFormatter().string(
-                from: Date().addingTimeInterval(60 * 60 * 24)
-            ))
+            "expires_at": .string(ISO8601DateFormatter().string(from: expiresAt))
         ]
         do {
             try await supabase.client
                 .from("invite_codes")
                 .insert(payload)
                 .execute()
+            let url = URL(string: "https://\(universalLinkHost)/pair/\(code)")
             pendingInviteCode = code
-            return URL(string: "https://\(universalLinkHost)/pair/\(code)")
+            pendingInviteURL = url
+            pendingInviteExpiresAt = expiresAt
+            lastError = nil
+            return url
         } catch {
             lastError = error.localizedDescription
             return nil
@@ -102,14 +111,51 @@ final class PairingService {
             lastError = "Sign in first."
             return
         }
+        isPairing = true
+        defer { isPairing = false }
         do {
             try await supabase.client
                 .rpc("consume_invite_code", params: ["p_code": code, "p_user": me.uuidString])
                 .execute()
+            lastError = nil
+            await loadCouple()
+            if coupleId != nil && !solo { justPaired = true }
+        } catch {
+            lastError = error.localizedDescription
+        }
+    }
+
+    /// Leaves the current couple. Each partner keeps their own reminders;
+    /// the couple row is dissolved server-side by the `leave_couple` RPC.
+    func leaveCouple() async {
+        guard let me = supabase.currentUserId else {
+            lastError = "Sign in first."
+            return
+        }
+        do {
+            try await supabase.client
+                .rpc("leave_couple", params: ["p_user": me.uuidString])
+                .execute()
+            lastError = nil
             await loadCouple()
         } catch {
             lastError = error.localizedDescription
         }
+    }
+
+    /// Clears all in-memory pairing state on sign-out so the next account
+    /// starts clean.
+    func reset() {
+        coupleId = nil
+        partnerProfile = nil
+        solo = false
+        pendingInviteCode = nil
+        pendingInviteURL = nil
+        pendingInviteExpiresAt = nil
+        justPaired = false
+        isPairing = false
+        lastError = nil
+        needsPreferenceChoice = false
     }
 
     func handleIncomingURL(_ url: URL) {

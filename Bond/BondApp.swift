@@ -72,6 +72,11 @@ struct RootView: View {
             case .pairing:
                 PairingView()
                     .transition(.opacity.combined(with: .move(edge: .trailing)))
+            case .pairingSuccess:
+                PairingSuccessView(partnerName: pairing.partnerProfile?.displayName) {
+                    pairing.justPaired = false
+                }
+                .transition(.opacity)
             case .home:
                 HomeTabs()
                     .transition(.opacity)
@@ -102,7 +107,7 @@ struct RootView: View {
         }
     }
 
-    private enum Destination { case onboarding, loading, preference, pairing, home }
+    private enum Destination { case onboarding, loading, preference, pairing, pairingSuccess, home }
 
     private var currentDestination: Destination {
         if isTransitioning {
@@ -116,6 +121,9 @@ struct RootView: View {
         }
         if pairing.coupleId == nil {
             return .pairing
+        }
+        if pairing.justPaired {
+            return .pairingSuccess
         }
         return .home
     }

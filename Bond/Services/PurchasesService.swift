@@ -64,6 +64,22 @@ final class PurchasesService {
         }
     }
 
+    func restore() async {
+        do {
+            let info = try await Purchases.shared.restorePurchases()
+            apply(info: info)
+            log.info("Restored purchases — premium: \(self.isPremium)")
+        } catch {
+            lastError = error.localizedDescription
+            log.error("Restore failed: \(error.localizedDescription)")
+        }
+    }
+
+    /// When the premium entitlement became active, if known.
+    var premiumSince: Date? {
+        customerInfo?.entitlements[Self.entitlementId]?.latestPurchaseDate
+    }
+
     private func apply(info: CustomerInfo) {
         customerInfo = info
         isPremium = info.entitlements[Self.entitlementId]?.isActive == true

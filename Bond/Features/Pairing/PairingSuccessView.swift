@@ -1,0 +1,94 @@
+import SwiftUI
+
+/// One-time interstitial shown right after pairing completes. It exists for a
+/// single beat of weight — no CTA, no upsell, no onboarding.
+struct PairingSuccessView: View {
+    let partnerName: String?
+    let onDone: () -> Void
+
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var progress: Double = 0
+
+    var body: some View {
+        VStack(spacing: BondSpacing.xl) {
+            Spacer()
+
+            CoupleMark(progress: reduceMotion ? 1 : progress)
+
+            VStack(spacing: BondSpacing.s) {
+                Text("You're paired.")
+                    .font(.largeTitle.bold())
+                Text(namesLine)
+                    .font(.title3)
+                    .foregroundStyle(.secondary)
+            }
+
+            Spacer()
+
+            if reduceMotion {
+                BondPrimaryButton(title: "Continue", action: onDone)
+                    .padding(.horizontal, BondSpacing.base)
+            } else {
+                Capsule()
+                    .fill(.secondary.opacity(0.2))
+                    .frame(width: 220, height: 2)
+                    .overlay(alignment: .leading) {
+                        Capsule()
+                            .fill(.secondary.opacity(0.6))
+                            .frame(width: 220 * progress, height: 2)
+                    }
+            }
+
+            Spacer().frame(height: BondSpacing.xxxl)
+        }
+        .frame(maxWidth: .infinity)
+        .onAppear {
+            UIAccessibility.post(notification: .announcement, argument: accessibilityAnnouncement)
+            guard !reduceMotion else { return }
+            withAnimation(.linear(duration: 1.8)) { progress = 1 }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.8) { onDone() }
+        }
+    }
+
+    private var namesLine: String {
+        if let partnerName, !partnerName.isEmpty {
+            return "You & \(partnerName)"
+        }
+        return "You're paired with someone."
+    }
+
+    private var accessibilityAnnouncement: String {
+        if let partnerName, !partnerName.isEmpty {
+            return "You're paired with \(partnerName)."
+        }
+        return "You're paired."
+    }
+}
+
+private struct CoupleMark: View {
+    /// 0 = hearts apart, 1 = hearts settled together.
+    let progress: Double
+
+    var body: some View {
+        ZStack {
+            Image(systemName: "heart.fill")
+                .font(.system(size: 44))
+                .foregroundStyle(Color.bondAccent.gradient)
+                .opacity(progress)
+                .scaleEffect(0.6 + 0.4 * progress)
+
+            Image(systemName: "heart.fill")
+                .font(.system(size: 36))
+                .foregroundStyle(Color.bondAccent)
+                .offset(x: -40 * (1 - progress) - 8, y: 0)
+
+            Image(systemName: "heart.fill")
+                .font(.system(size: 36))
+                .foregroundStyle(Color.bondAccent.opacity(0.7))
+                .offset(x: 40 * (1 - progress) + 8, y: 0)
+        }
+        .frame(height: 80)
+        .accessibilityElement()
+        .accessibilityLabel("Paired")
+    }
+}
