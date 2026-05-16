@@ -2,26 +2,36 @@ import AuthenticationServices
 import CryptoKit
 import Foundation
 
+/// Nonce management for Sign in with Apple. The button itself is the native
+/// `SignInWithAppleButton` (driven from its own `onRequest`/`onCompletion`) —
+/// no transparent overlay. This type only owns the nonce lifecycle and
+/// credential extraction.
 @MainActor
-final class AppleSignInHelper: NSObject {
+final class AppleSignInHelper {
     private var currentNonce: String?
-    private var continuation: CheckedContinuation<(idToken: String, nonce: String), Error>?
 
-    func performSignIn() async throws -> (idToken: String, nonce: String) {
+    /// Generates a fresh nonce, stores it for verification, and returns the
+    /// SHA256 hash to attach to the authorization request.
+    func beginRequest() -> String {
         let nonce = Self.randomNonce()
         currentNonce = nonce
+        return Self.sha256(nonce)
+    }
 
-        let request = ASAuthorizationAppleIDProvider().createRequest()
-        request.requestedScopes = [.fullName, .email]
-        request.nonce = Self.sha256(nonce)
-
-        let controller = ASAuthorizationController(authorizationRequests: [request])
-        controller.delegate = self
-
-        return try await withCheckedThrowingContinuation { cont in
-            self.continuation = cont
-            controller.performRequests()
+    /// Extracts the id token + original nonce from a completed authorization.
+    func credential(
+        from authorization: ASAuthorization
+    ) throws -> (idToken: String, nonce: String) {
+        guard
+            let credential = authorization.credential as? ASAuthorizationAppleIDCredential,
+            let tokenData = credential.identityToken,
+            let idToken = String(data: tokenData, encoding: .utf8),
+            let nonce = currentNonce
+        else {
+            throw AppleSignInError.invalidCredential
         }
+        currentNonce = nil
+        return (idToken, nonce)
     }
 
     private static func randomNonce(length: Int = 32) -> String {
@@ -48,34 +58,6 @@ final class AppleSignInHelper: NSObject {
         let data = Data(input.utf8)
         let hash = SHA256.hash(data: data)
         return hash.map { String(format: "%02x", $0) }.joined()
-    }
-}
-
-extension AppleSignInHelper: ASAuthorizationControllerDelegate {
-    func authorizationController(
-        controller: ASAuthorizationController,
-        didCompleteWithAuthorization authorization: ASAuthorization
-    ) {
-        guard
-            let credential = authorization.credential as? ASAuthorizationAppleIDCredential,
-            let tokenData = credential.identityToken,
-            let idToken = String(data: tokenData, encoding: .utf8),
-            let nonce = currentNonce
-        else {
-            continuation?.resume(throwing: AppleSignInError.invalidCredential)
-            continuation = nil
-            return
-        }
-        continuation?.resume(returning: (idToken, nonce))
-        continuation = nil
-    }
-
-    func authorizationController(
-        controller: ASAuthorizationController,
-        didCompleteWithError error: Error
-    ) {
-        continuation?.resume(throwing: error)
-        continuation = nil
     }
 }
 

@@ -2,75 +2,53 @@ import SwiftUI
 
 struct PreferenceChoiceView: View {
     @Environment(PairingService.self) private var pairing
+    @State private var isCreatingSolo = false
 
     var body: some View {
-        VStack(spacing: 32) {
+        VStack(alignment: .leading, spacing: BondSpacing.xl) {
             Spacer()
 
-            VStack(spacing: 16) {
-                Image(systemName: "heart.text.square.fill")
-                    .font(.system(size: 72))
-                    .foregroundStyle(.pink.gradient)
+            BondScreenHeader(title: "How will you use Bond?")
+                .padding(.horizontal, BondSpacing.base)
 
-                Text("Bond")
-                    .font(.largeTitle.bold())
-            }
-
-            Text("How will you use Bond?")
-                .font(.title2.bold())
-
-            VStack(spacing: 16) {
-                Button {
-                    Task { await pairing.createSoloCouple() }
-                } label: {
-                    VStack(spacing: 8) {
-                        Image(systemName: "person.circle.fill")
-                            .font(.system(size: 36))
-                        Text("Just me")
-                            .font(.headline)
-                        Text("Set reminders for yourself. Journal, self-care, habits — whatever helps you grow.")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                            .multilineTextAlignment(.center)
+            VStack(spacing: BondSpacing.m) {
+                BondChoiceCard(
+                    symbol: "person.fill",
+                    title: "Just me",
+                    description: "Reminders for yourself. Journaling, habits, the things you keep meaning to do.",
+                    tint: .secondary
+                ) {
+                    Task {
+                        isCreatingSolo = true
+                        defer { isCreatingSolo = false }
+                        await pairing.createSoloCouple()
                     }
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(.regularMaterial)
-                    .clipShape(RoundedRectangle(cornerRadius: 16))
                 }
-                .buttonStyle(.plain)
+                .disabled(isCreatingSolo)
 
-                Button {
+                BondChoiceCard(
+                    symbol: "heart.fill",
+                    title: "With someone",
+                    description: "Share reminders with your partner. Little nudges, surprises, milestones together.",
+                    tint: .bondAccent
+                ) {
                     pairing.needsPreferenceChoice = false
-                } label: {
-                    VStack(spacing: 8) {
-                        Image(systemName: "heart.circle.fill")
-                            .font(.system(size: 36))
-                        Text("With someone")
-                            .font(.headline)
-                        Text("Share reminders with your partner. Little nudges of love, surprises, and milestones together.")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                            .multilineTextAlignment(.center)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(.regularMaterial)
-                    .clipShape(RoundedRectangle(cornerRadius: 16))
                 }
-                .buttonStyle(.plain)
+                .disabled(isCreatingSolo)
             }
-            .padding(.horizontal)
+            .padding(.horizontal, BondSpacing.base)
 
             if let error = pairing.lastError {
-                Text(error)
-                    .font(.footnote)
-                    .foregroundStyle(.red)
-                    .padding(.horizontal)
+                BondInlineError(message: error)
             }
+
+            Text("You can switch later in Settings.")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+                .frame(maxWidth: .infinity, alignment: .center)
 
             Spacer()
         }
-        .padding(.vertical, 48)
+        .padding(.vertical, BondSpacing.xxxl)
     }
 }
