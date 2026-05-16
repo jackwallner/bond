@@ -33,8 +33,11 @@ final class DailyCheckInService {
 
             let calendar = Calendar.current
             let dayOffset = calendar.ordinality(of: .day, in: .era, for: Date()) ?? 0
-            let coupleSeed = coupleId.uuidString.hashValue
-            let questionIndex = abs((dayOffset + coupleSeed) % max(count, 1))
+            // Stable seed: UUID bytes summed as Int. `String.hashValue` is salted
+            // per-process, so partners would see different questions and a single
+            // user would see a different question on every cold start.
+            let coupleSeed = Self.stableSeed(from: coupleId)
+            let questionIndex = abs((dayOffset &+ coupleSeed) % max(count, 1))
 
             let questions: [DailyQuestionDTO] = try await supabase.client
                 .from("daily_questions")
@@ -120,5 +123,12 @@ final class DailyCheckInService {
 
     var hasBothResponded: Bool {
         myResponse != nil && partnerResponse != nil
+    }
+
+    /// Deterministic integer derived from a UUID — stable across processes.
+    private static func stableSeed(from uuid: UUID) -> Int {
+        withUnsafeBytes(of: uuid.uuid) { bytes in
+            bytes.reduce(0) { ($0 &* 31) &+ Int($1) }
+        }
     }
 }
