@@ -23,6 +23,29 @@ public enum ReminderTrigger: Codable, Sendable, Hashable {
         case .location:              nil
         }
     }
+
+    /// Future-aware next fire. For recurring triggers, walks the RRULE forward
+    /// from the stored anchor until it lands after `reference`. The bare
+    /// `nextFireDate` returns the stored anchor, which goes stale for
+    /// recurring reminders once the anchor is in the past.
+    public func upcomingFireDate(after reference: Date = .now) -> Date? {
+        switch self {
+        case .oneTime(let d):
+            return d
+        case .recurring(let rrule, let anchor):
+            guard let preset = RecurrencePreset(rrule: rrule) else { return anchor }
+            var next = anchor
+            for _ in 0..<10_000 {
+                if next > reference { return next }
+                next = preset.nextOccurrence(after: next)
+            }
+            return next
+        case .randomWindow(_, let end):
+            return end
+        case .location:
+            return nil
+        }
+    }
 }
 
 public struct Geofence: Codable, Sendable, Hashable {

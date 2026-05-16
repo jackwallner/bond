@@ -7,7 +7,7 @@ enum WidgetSnapshotPump {
     static func push(reminders: [ReminderDTO], milestones: [MilestoneDTO]) {
         let nextReminder = reminders
             .compactMap { r -> (ReminderDTO, Date)? in
-                guard let fire = r.trigger?.nextFireDate, fire > .now else { return nil }
+                guard let fire = r.trigger?.upcomingFireDate(), fire > .now else { return nil }
                 return (r, fire)
             }
             .min { $0.1 < $1.1 }

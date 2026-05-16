@@ -89,13 +89,13 @@ struct ReminderListView: View {
         let now = Date.now
         var upcoming: [ReminderDTO] = []
         var past: [ReminderDTO] = []
-        let actedReminderIds = Set(eventsRepo.events.filter { $0.actedAt != nil }.map(\.reminderId))
         for r in filteredReminders {
-            // For recurring reminders, check if there's a recent event to show in past
-            if let next = r.trigger?.nextFireDate, next < now {
-                past.append(r)
-            } else {
+            // upcomingFireDate advances recurring reminders forward, so a daily
+            // reminder anchored last month still appears in Upcoming.
+            if let next = r.trigger?.upcomingFireDate(after: now), next >= now {
                 upcoming.append(r)
+            } else {
+                past.append(r)
             }
         }
         return (upcoming, past)

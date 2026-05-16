@@ -54,6 +54,43 @@ struct ReminderTriggerTests {
         #expect(t.nextFireDate == e)
     }
 
+    // MARK: — upcomingFireDate (future-aware)
+
+    @Test func upcomingFireDate_oneTime_returnsFireAt() {
+        let date = DateComponents(calendar: .current, year: 2030, month: 1, day: 1, hour: 9).date!
+        let t = ReminderTrigger.oneTime(fireAt: date)
+        #expect(t.upcomingFireDate(after: .now) == date)
+    }
+
+    @Test func upcomingFireDate_recurring_pastAnchor_advancesToFuture() {
+        let anchor = DateComponents(calendar: .current, year: 2020, month: 1, day: 1, hour: 9).date!
+        let reference = DateComponents(calendar: .current, year: 2026, month: 5, day: 16, hour: 12).date!
+        let t = ReminderTrigger.recurring(rrule: "FREQ=DAILY", nextFire: anchor)
+        let next = t.upcomingFireDate(after: reference)
+        #expect(next != nil)
+        #expect(next! > reference)
+    }
+
+    @Test func upcomingFireDate_recurring_futureAnchor_staysPut() {
+        let anchor = DateComponents(calendar: .current, year: 2030, month: 6, day: 1, hour: 9).date!
+        let reference = DateComponents(calendar: .current, year: 2026, month: 5, day: 16).date!
+        let t = ReminderTrigger.recurring(rrule: "FREQ=WEEKLY", nextFire: anchor)
+        #expect(t.upcomingFireDate(after: reference) == anchor)
+    }
+
+    @Test func upcomingFireDate_location_returnsNil() {
+        let g = Geofence(latitude: 0, longitude: 0, radiusMeters: 200, label: "Home")
+        let t = ReminderTrigger.location(geofence: g, onEntry: true)
+        #expect(t.upcomingFireDate(after: .now) == nil)
+    }
+
+    @Test func upcomingFireDate_randomWindow_returnsEnd() {
+        let s = DateComponents(calendar: .current, year: 2026, month: 7, day: 4, hour: 9).date!
+        let e = DateComponents(calendar: .current, year: 2026, month: 7, day: 4, hour: 17).date!
+        let t = ReminderTrigger.randomWindow(start: s, end: e)
+        #expect(t.upcomingFireDate(after: .now) == e)
+    }
+
     // MARK: — Codable round-trip
 
     @Test func codable_oneTime() throws {

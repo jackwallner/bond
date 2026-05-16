@@ -35,7 +35,7 @@ struct ReminderRow: View {
                         .lineLimit(2)
                 }
                 HStack(spacing: 8) {
-                    if let next = reminder.trigger?.nextFireDate {
+                    if let next = reminder.trigger?.upcomingFireDate() {
                         Text(next, style: .relative)
                             .font(.caption)
                             .foregroundStyle(.secondary)
