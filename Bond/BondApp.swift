@@ -2,6 +2,7 @@ import SwiftUI
 
 @main
 struct BondApp: App {
+    @Environment(\.scenePhase) private var scenePhase
     @State private var supabase = SupabaseService.shared
     @State private var store = PurchasesService.shared
     @State private var pairingService: PairingService
@@ -51,6 +52,15 @@ struct BondApp: App {
                 .onOpenURL { url in
                     pairingService.handleIncomingURL(url)
                 }
+                .onChange(of: scenePhase) { _, phase in
+                    // Re-pull entitlements when returning to foreground.
+                    // App Store transactions can take a moment to propagate
+                    // to RevenueCat — without this, a paid user can sit on a
+                    // stale isPremium=false until they reopen the app.
+                    if phase == .active {
+                        Task { await store.refresh() }
+                    }
+                }
         }
     }
 }
@@ -63,9 +73,6 @@ struct RootView: View {
     var body: some View {
         Group {
             switch currentDestination {
-            case .onboarding:
-                OnboardingView()
-                    .transition(.opacity)
             case .intentSetup:
                 IntentSetupView()
                     .transition(.opacity.combined(with: .move(edge: .trailing)))
@@ -88,9 +95,13 @@ struct RootView: View {
         }
         .animation(.easeOut(duration: 0.35), value: currentDestination)
         .task {
-            if supabase.isAuthenticated {
-                isTransitioning = true
+            // Make sure we have a backing session before loading couple data.
+            // SupabaseService.restoreSession() auto-creates an anonymous user
+            // on first launch — we just wait for it to settle.
+            if !supabase.isAuthenticated {
+                await supabase.signInAnonymously()
             }
+            isTransitioning = true
             await pairing.loadCouple()
             isTransitioning = false
         }
@@ -104,14 +115,11 @@ struct RootView: View {
         }
     }
 
-    private enum Destination { case onboarding, loading, intentSetup, pairingSuccess, home }
+    private enum Destination { case loading, intentSetup, pairingSuccess, home }
 
     private var currentDestination: Destination {
-        if isTransitioning {
+        if isTransitioning || !supabase.isAuthenticated {
             return .loading
-        }
-        if !supabase.isAuthenticated {
-            return .onboarding
         }
         // No couple at all = brand-new account. Everyone starts solo; the
         // intent screen captures preferences and creates the solo couple.

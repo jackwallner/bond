@@ -5,27 +5,6 @@ import SwiftUI
 // preview. Never calls live services; every label is prefixed "Sample ·"
 // so it can't be mistaken for real data, even in a screen recording.
 
-struct MilestonesGateContent: View {
-    private let rows: [(String, String, String)] = [
-        ("heart.fill", "Sample · Our anniversary", "in 87 days"),
-        ("gift.fill", "Sample · Sarah's birthday", "in 142 days"),
-        ("heart.fill", "Sample · The day we moved in", "in 6 months")
-    ]
-
-    var body: some View {
-        List {
-            ForEach(rows, id: \.1) { icon, label, when in
-                HStack(spacing: BondSpacing.m) {
-                    Image(systemName: icon).foregroundStyle(.pink).frame(width: 28)
-                    Text(label).font(.headline)
-                    Spacer()
-                    Text(when).font(.callout.monospacedDigit()).foregroundStyle(.secondary)
-                }
-            }
-        }
-    }
-}
-
 struct InsightsGateContent: View {
     private let dist: [(LoveLanguage, Int)] = [
         (.words, 38), (.acts, 12), (.gifts, 8), (.time, 28), (.touch, 14)

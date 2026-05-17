@@ -14,16 +14,14 @@ struct StatsView: View {
     var body: some View {
         NavigationStack {
             Group {
-                if !store.isPremium {
-                    BondGatePreview(feature: .insights, isPaywallPresented: $isPaywallPresented) {
-                        InsightsGateContent()
-                    }
-                } else if repo.reminders.isEmpty {
+                if repo.reminders.isEmpty {
                     ContentUnavailableView(
                         "No data yet",
                         systemImage: "chart.bar.xaxis",
                         description: Text("Create reminders and mark them done to see your relationship analytics.")
                     )
+                } else if !store.isPremium {
+                    teaser
                 } else {
                     content
                 }
@@ -31,6 +29,21 @@ struct StatsView: View {
             .navigationTitle("Insights")
             .paywallSheet(isPresented: $isPaywallPresented)
             .task { await eventsRepo.refresh() }
+        }
+    }
+
+    private var teaser: some View {
+        let a = analyzer
+        return Form {
+            Section {
+                streakSection(a: a)
+            }
+
+            Section {
+                BondInsightsUnlockCard(isPaywallPresented: $isPaywallPresented)
+                    .listRowInsets(EdgeInsets())
+                    .listRowBackground(Color.clear)
+            }
         }
     }
 

@@ -15,6 +15,8 @@ final class PurchasesService {
     private(set) var customerInfo: CustomerInfo?
     var lastError: String?
 
+    private var streamTask: Task<Void, Never>?
+
     private init() {}
 
     func bootstrap() async {
@@ -24,8 +26,11 @@ final class PurchasesService {
         }
         await refresh()
 
-        // Listen for entitlement changes pushed by the SDK.
-        Task { @MainActor [weak self] in
+        // Listen for entitlement changes pushed by the SDK. Cancel any
+        // pre-existing listener so re-calls to bootstrap (e.g. RootView
+        // re-appearing) don't pile up duplicate subscribers.
+        streamTask?.cancel()
+        streamTask = Task { @MainActor [weak self] in
             for await info in Purchases.shared.customerInfoStream {
                 self?.apply(info: info)
             }

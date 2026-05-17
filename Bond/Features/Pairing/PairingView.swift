@@ -1,8 +1,10 @@
+import AuthenticationServices
 import CoreImage.CIFilterBuiltins
 import SwiftUI
 
 struct PairingView: View {
     @Environment(PairingService.self) private var pairing
+    @Environment(SupabaseService.self) private var supabase
 
     enum PairMode: String, CaseIterable { case send, receive
         var title: String { self == .send ? "Send" : "Receive" }
@@ -16,25 +18,35 @@ struct PairingView: View {
 
     var body: some View {
         NavigationStack {
-            VStack(spacing: 0) {
-                Picker("Pairing mode", selection: $mode) {
-                    ForEach(PairMode.allCases, id: \.self) { Text($0.title).tag($0) }
-                }
-                .pickerStyle(.segmented)
-                .padding(.horizontal, BondSpacing.base)
-                .padding(.bottom, BondSpacing.base)
-
-                ScrollView {
-                    switch mode {
-                    case .send:    sendContent
-                    case .receive: receiveContent
-                    }
+            Group {
+                if supabase.isAnonymous {
+                    AppleSignInPairingGate()
+                } else {
+                    pairContent
                 }
             }
             .navigationTitle("Pair")
             .navigationBarTitleDisplayMode(.inline)
             .onChange(of: mode) { _, new in
                 if new == .receive { isCodeFocused = true }
+            }
+        }
+    }
+
+    private var pairContent: some View {
+        VStack(spacing: 0) {
+            Picker("Pairing mode", selection: $mode) {
+                ForEach(PairMode.allCases, id: \.self) { Text($0.title).tag($0) }
+            }
+            .pickerStyle(.segmented)
+            .padding(.horizontal, BondSpacing.base)
+            .padding(.bottom, BondSpacing.base)
+
+            ScrollView {
+                switch mode {
+                case .send:    sendContent
+                case .receive: receiveContent
+                }
             }
         }
     }
@@ -257,5 +269,85 @@ private struct QRCodeView: View {
         ),
         let cg = context.createCGImage(output, from: output.extent) else { return nil }
         return UIImage(cgImage: cg)
+    }
+}
+
+// MARK: - Apple Sign-In gate
+
+/// Surfaces Apple Sign-In as the price of admission for pairing. Anonymous
+/// users get to use the rest of the app without an account, but pairing
+/// requires a recoverable identity so their partner can keep reaching them
+/// across reinstalls and device swaps. Supabase promotes the anonymous user
+/// to a permanent Apple-linked user in place — no data migration needed.
+struct AppleSignInPairingGate: View {
+    @Environment(SupabaseService.self) private var supabase
+    @Environment(PurchasesService.self) private var purchases
+    @Environment(\.colorScheme) private var colorScheme
+    @State private var appleHelper = AppleSignInHelper()
+    @State private var isSigningIn = false
+    @State private var errorMessage: String?
+
+    var body: some View {
+        VStack(spacing: BondSpacing.xl) {
+            Spacer()
+            VStack(spacing: BondSpacing.m) {
+                Image(systemName: "person.crop.circle.badge.checkmark")
+                    .font(.system(size: 48))
+                    .foregroundStyle(Color.bondAccent)
+                Text("Sign in to pair")
+                    .font(.title2.bold())
+                Text("Pairing connects your reminders with your partner's. Apple Sign-In keeps that link recoverable across devices.")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, BondSpacing.xl)
+            }
+
+            VStack(spacing: BondSpacing.m) {
+                if isSigningIn {
+                    ProgressView()
+                        .controlSize(.large)
+                        .frame(height: 50)
+                } else {
+                    SignInWithAppleButton(.signIn) { request in
+                        request.requestedScopes = [.fullName, .email]
+                        request.nonce = appleHelper.beginRequest()
+                    } onCompletion: { result in
+                        Task { await handle(result) }
+                    }
+                    .signInWithAppleButtonStyle(colorScheme == .dark ? .whiteOutline : .black)
+                    .frame(height: 50)
+                    .padding(.horizontal, BondSpacing.base)
+                }
+                if let errorMessage {
+                    BondInlineError(message: errorMessage)
+                }
+            }
+
+            Spacer()
+        }
+        .padding(.vertical, BondSpacing.xxxl)
+    }
+
+    private func handle(_ result: Result<ASAuthorization, Error>) async {
+        switch result {
+        case .success(let authorization):
+            isSigningIn = true
+            defer { isSigningIn = false }
+            do {
+                let cred = try appleHelper.credential(from: authorization)
+                try await supabase.signInWithApple(idToken: cred.idToken, nonce: cred.nonce)
+                if let me = supabase.currentUserId {
+                    await purchases.identify(supabaseUserId: me)
+                }
+            } catch {
+                errorMessage = error.localizedDescription
+            }
+        case .failure(let error):
+            if let asError = error as? ASAuthorizationError, asError.code == .canceled {
+                return
+            }
+            errorMessage = error.localizedDescription
+        }
     }
 }

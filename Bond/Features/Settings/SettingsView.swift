@@ -14,8 +14,10 @@ struct SettingsView: View {
 
     var body: some View {
         Form {
-            Section("Account") {
-                Button("Sign out", role: .destructive) { confirmSignOut = true }
+            if !supabase.isAnonymous {
+                Section("Account") {
+                    Button("Sign out", role: .destructive) { confirmSignOut = true }
+                }
             }
 
             Section("Pairing") {

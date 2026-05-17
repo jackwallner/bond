@@ -11,11 +11,18 @@ struct PaywallView: View {
     var body: some View {
         RevenueCatUI.PaywallView(displayCloseButton: true)
             .onPurchaseCompleted { _ in
-                Task { await purchases.refresh() }
-                dismiss()
+                // Refresh BEFORE dismiss — otherwise the underlying view may
+                // re-render with stale isPremium=false and the gate flashes back.
+                Task {
+                    await purchases.refresh()
+                    dismiss()
+                }
             }
             .onRestoreCompleted { _ in
-                Task { await purchases.refresh() }
+                Task {
+                    await purchases.refresh()
+                    if purchases.isPremium { dismiss() }
+                }
             }
     }
 }

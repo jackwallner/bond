@@ -1,12 +1,11 @@
 import SwiftUI
 
 enum PremiumFeature {
-    case checkIn, milestones, insights, templates
+    case checkIn, insights, templates
 
     var gateHeadline: String {
         switch self {
         case .checkIn:    "One question, every day."
-        case .milestones: "Dates that matter."
         case .insights:   "How you tend to each other."
         case .templates:  "Reminder packs, ready to go."
         }
@@ -15,7 +14,6 @@ enum PremiumFeature {
     var gateSubhead: String {
         switch self {
         case .checkIn:    "Both of you answer the same prompt. You see each other's once you've both replied."
-        case .milestones: "Anniversaries, birthdays, the day you moved in. Countdown widgets included."
         case .insights:   "Track which love languages you're leaning on — and which need attention."
         case .templates:  "Curated sets for date nights, long distance, daily affirmations, and more."
         }
@@ -82,5 +80,96 @@ struct BondGatePreview<Preview: View>: View {
             .padding(BondSpacing.base)
             .accessibilityElement(children: .contain)
         }
+    }
+}
+
+struct BondCheckInUnlockCard: View {
+    @Binding var isPaywallPresented: Bool
+    @Environment(PurchasesService.self) private var purchases
+    @State private var isRestoring = false
+
+    var body: some View {
+        VStack(spacing: BondSpacing.m) {
+            VStack(spacing: BondSpacing.xs) {
+                Image(systemName: "questionmark.bubble.fill")
+                    .font(.title2)
+                    .foregroundStyle(Color.bondAccent)
+                Text("Answer together")
+                    .font(.headline)
+                Text("Premium unlocks answering today's question and seeing each other's response once you've both replied.")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+            }
+            BondPrimaryButton(title: "Try Premium free for 7 days") {
+                isPaywallPresented = true
+            }
+            Button {
+                Task {
+                    isRestoring = true
+                    defer { isRestoring = false }
+                    await purchases.restore()
+                }
+            } label: {
+                if isRestoring {
+                    ProgressView()
+                } else {
+                    Text("Restore purchases")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .disabled(isRestoring)
+        }
+        .padding(BondSpacing.base)
+        .frame(maxWidth: .infinity)
+        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: BondRadius.hero))
+    }
+}
+
+/// Inline unlock card for the freemium teaser layout — sits in a Form
+/// section beneath whatever free preview content the host view shows.
+struct BondInsightsUnlockCard: View {
+    @Binding var isPaywallPresented: Bool
+    @Environment(PurchasesService.self) private var purchases
+    @State private var isRestoring = false
+
+    var body: some View {
+        VStack(spacing: BondSpacing.m) {
+            VStack(spacing: BondSpacing.xs) {
+                Image(systemName: "chart.bar.xaxis.ascending")
+                    .font(.title2)
+                    .foregroundStyle(Color.bondAccent)
+                Text("Unlock the full picture")
+                    .font(.headline)
+                Text("Premium opens up your love-language balance, weekly trends, and personalized insights.")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+            }
+            BondPrimaryButton(title: "Try Premium free for 7 days") {
+                isPaywallPresented = true
+            }
+            Button {
+                Task {
+                    isRestoring = true
+                    defer { isRestoring = false }
+                    await purchases.restore()
+                }
+            } label: {
+                if isRestoring {
+                    ProgressView()
+                } else {
+                    Text("Restore purchases")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .disabled(isRestoring)
+        }
+        .padding(BondSpacing.base)
+        .frame(maxWidth: .infinity)
+        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: BondRadius.hero))
+        .padding(BondSpacing.base)
     }
 }

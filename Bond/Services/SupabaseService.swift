@@ -11,6 +11,7 @@ final class SupabaseService {
     let client: SupabaseClient
 
     var currentUserId: UUID?
+    var isAnonymous: Bool = false
     var isAuthenticated: Bool { currentUserId != nil }
 
     private init() {
@@ -21,14 +22,32 @@ final class SupabaseService {
         Task { await restoreSession() }
     }
 
+    /// Restore a cached session, or silently start an anonymous one so every
+    /// user has a backing Supabase identity without seeing a sign-in screen.
+    /// Apple Sign-In is reserved for opt-in upgrades (pairing, account
+    /// recovery), not for first launch.
     func restoreSession() async {
         do {
             let session = try await client.auth.session
             currentUserId = session.user.id
-            log.info("Session restored for user \(session.user.id)")
+            isAnonymous = session.user.isAnonymous
+            log.info("Session restored for user \(session.user.id) (anon: \(self.isAnonymous))")
+        } catch {
+            log.notice("No cached session — signing in anonymously")
+            await signInAnonymously()
+        }
+    }
+
+    func signInAnonymously() async {
+        do {
+            let session = try await client.auth.signInAnonymously()
+            currentUserId = session.user.id
+            isAnonymous = true
+            log.info("Signed in anonymously — user \(session.user.id)")
         } catch {
             currentUserId = nil
-            log.notice("No cached session found: \(error.localizedDescription)")
+            isAnonymous = false
+            log.error("Anonymous sign-in failed: \(error.localizedDescription)")
         }
     }
 
@@ -37,12 +56,14 @@ final class SupabaseService {
             credentials: .init(provider: .apple, idToken: idToken, nonce: nonce)
         )
         currentUserId = session.user.id
+        isAnonymous = session.user.isAnonymous
         log.info("Signed in with Apple — user \(session.user.id)")
     }
 
     func signOut() async {
         try? await client.auth.signOut()
         currentUserId = nil
+        isAnonymous = false
         log.info("Signed out")
     }
 }

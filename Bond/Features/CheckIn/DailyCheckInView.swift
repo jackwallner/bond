@@ -16,14 +16,12 @@ struct DailyCheckInView: View {
     var body: some View {
         NavigationStack {
             Group {
-                if !store.isPremium {
-                    BondGatePreview(feature: .checkIn, isPaywallPresented: $isPaywallPresented) {
-                        CheckInGateContent()
-                    }
-                } else if pairing.solo {
+                if pairing.solo {
                     soloState
                 } else if checkIn.isLoading && checkIn.todaysQuestion == nil {
                     ProgressView("Loading today's question...")
+                } else if !store.isPremium {
+                    teaserContent
                 } else {
                     content
                 }
@@ -31,10 +29,23 @@ struct DailyCheckInView: View {
             .navigationTitle("Check-In")
             .paywallSheet(isPresented: $isPaywallPresented)
             .task {
-                if store.isPremium && !pairing.solo {
+                if !pairing.solo {
                     await checkIn.loadTodaysQuestion()
                 }
             }
+        }
+    }
+
+    /// Free, paired users see today's real question — the answer flow stays
+    /// paywalled. Question text alone isn't sensitive: the value of Premium
+    /// is in the back-and-forth, not in knowing the prompt.
+    private var teaserContent: some View {
+        ScrollView {
+            VStack(spacing: BondSpacing.xl) {
+                questionCard
+                BondCheckInUnlockCard(isPaywallPresented: $isPaywallPresented)
+            }
+            .padding()
         }
     }
 

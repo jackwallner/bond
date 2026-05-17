@@ -2,19 +2,13 @@ import SwiftUI
 
 struct MilestonesView: View {
     @Environment(MilestonesService.self) private var milestones
-    @Environment(PurchasesService.self) private var store
     @State private var isEditorPresented = false
     @State private var editing: MilestoneDTO?
-    @State private var isPaywallPresented = false
 
     var body: some View {
         NavigationStack {
             Group {
-                if !store.isPremium {
-                    BondGatePreview(feature: .milestones, isPaywallPresented: $isPaywallPresented) {
-                        MilestonesGateContent()
-                    }
-                } else if milestones.milestones.isEmpty {
+                if milestones.milestones.isEmpty {
                     ContentUnavailableView {
                         Label("No milestones", systemImage: "calendar.badge.plus")
                     } description: {
@@ -26,21 +20,18 @@ struct MilestonesView: View {
             }
             .navigationTitle("Milestones")
             .toolbar {
-                if store.isPremium {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button {
-                            editing = nil
-                            isEditorPresented = true
-                        } label: {
-                            Image(systemName: "plus")
-                        }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        editing = nil
+                        isEditorPresented = true
+                    } label: {
+                        Image(systemName: "plus")
                     }
                 }
             }
             .sheet(isPresented: $isEditorPresented) {
                 MilestoneEditorView(existing: editing)
             }
-            .paywallSheet(isPresented: $isPaywallPresented)
             .task { await milestones.refresh() }
         }
     }

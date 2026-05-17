@@ -74,29 +74,29 @@ struct ReminderEditorView: View {
                     }
                 }
 
-                Section("When") {
-                    Picker("Trigger", selection: $triggerKind) {
-                        ForEach(TriggerKind.allCases) { kind in
-                            HStack {
-                                Text(kind.title)
-                                if kind.isPremium && !store.isPremium {
-                                    Spacer()
-                                    Image(systemName: "lock.fill")
-                                        .foregroundStyle(.secondary)
-                                        .font(.caption2)
-                                }
+                Section {
+                    ForEach(TriggerKind.allCases) { kind in
+                        TriggerOptionRow(
+                            kind: kind,
+                            isSelected: triggerKind == kind,
+                            isLocked: kind.isPremium && !store.isPremium
+                        ) {
+                            if kind.isPremium && !store.isPremium {
+                                isPaywallPresented = true
+                            } else {
+                                triggerKind = kind
                             }
-                            .tag(kind)
                         }
                     }
-                    .onChange(of: triggerKind) { _, newValue in
-                        if newValue.isPremium && !store.isPremium {
-                            isPaywallPresented = true
-                            triggerKind = .oneTime
-                        }
-                    }
-
                     triggerDetail
+                } header: {
+                    Text("When")
+                } footer: {
+                    if !store.isPremium {
+                        Text("Location & random-surprise triggers are Premium.")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
                 }
 
                 if let errorMessage {
@@ -311,5 +311,53 @@ struct ReminderEditorView: View {
         } catch {
             errorMessage = error.localizedDescription
         }
+    }
+}
+
+private struct TriggerOptionRow: View {
+    let kind: TriggerKind
+    let isSelected: Bool
+    let isLocked: Bool
+    let onTap: () -> Void
+
+    var body: some View {
+        Button(action: onTap) {
+            HStack(spacing: BondSpacing.m) {
+                Image(systemName: kind.symbolName)
+                    .font(.title3)
+                    .foregroundStyle(isLocked ? .secondary : Color.bondAccent)
+                    .frame(width: 28)
+                VStack(alignment: .leading, spacing: 2) {
+                    HStack(spacing: BondSpacing.xs) {
+                        Text(kind.title)
+                            .font(.headline)
+                            .foregroundStyle(.primary)
+                        if kind.isPremium {
+                            Text("PRO")
+                                .font(.caption2.weight(.semibold))
+                                .foregroundStyle(.white)
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 2)
+                                .background(Color.bondAccent, in: Capsule())
+                        }
+                    }
+                    Text(kind.subtitle)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                Spacer()
+                if isLocked {
+                    Image(systemName: "lock.fill")
+                        .foregroundStyle(.secondary)
+                        .font(.caption)
+                } else if isSelected {
+                    Image(systemName: "checkmark.circle.fill")
+                        .foregroundStyle(Color.bondAccent)
+                }
+            }
+            .contentShape(Rectangle())
+            .padding(.vertical, 4)
+        }
+        .buttonStyle(.plain)
     }
 }

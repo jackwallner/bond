@@ -21,6 +21,22 @@ enum TriggerKind: String, CaseIterable, Identifiable {
         case .randomWindow: "Random surprise"
         }
     }
+    var subtitle: String {
+        switch self {
+        case .oneTime:      "Fires once at a chosen moment."
+        case .recurring:    "Daily, weekly, monthly — your call."
+        case .location:     "Triggers when you arrive somewhere."
+        case .randomWindow: "Fires at a random moment in a window."
+        }
+    }
+    var symbolName: String {
+        switch self {
+        case .oneTime:      "clock"
+        case .recurring:    "repeat"
+        case .location:     "mappin.and.ellipse"
+        case .randomWindow: "sparkles"
+        }
+    }
     var isPremium: Bool {
         switch self {
         case .oneTime, .recurring: false
