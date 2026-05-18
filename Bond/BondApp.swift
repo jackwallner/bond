@@ -82,7 +82,7 @@ struct RootView: View {
                 }
                 .transition(.opacity)
             case .home:
-                HomeTabs()
+                ReminderListView()
                     .transition(.opacity)
             case .loading:
                 ZStack {
@@ -134,20 +134,34 @@ struct RootView: View {
     }
 }
 
-struct HomeTabs: View {
+struct BondMoreView: View {
     var body: some View {
-        TabView {
-            ReminderListView()
-                .tabItem { Label("Reminders", systemImage: "heart.text.square") }
-
-            DailyCheckInView()
-                .tabItem { Label("Check-In", systemImage: "questionmark.bubble") }
-
-            MilestonesView()
-                .tabItem { Label("Milestones", systemImage: "calendar.badge.plus") }
-
-            StatsView()
-                .tabItem { Label("Insights", systemImage: "chart.bar.xaxis") }
+        List {
+            Section("Relationship") {
+                NavigationLink {
+                    DailyCheckInView()
+                } label: {
+                    Label("Check-In", systemImage: "questionmark.bubble")
+                }
+                NavigationLink {
+                    MilestonesView()
+                } label: {
+                    Label("Milestones", systemImage: "calendar.badge.plus")
+                }
+                NavigationLink {
+                    StatsView()
+                } label: {
+                    Label("Insights", systemImage: "chart.bar.xaxis")
+                }
+            }
+            Section("App") {
+                NavigationLink {
+                    SettingsView()
+                } label: {
+                    Label("Settings", systemImage: "gearshape")
+                }
+            }
         }
+        .navigationTitle("More")
     }
 }

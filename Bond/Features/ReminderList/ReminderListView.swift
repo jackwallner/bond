@@ -7,30 +7,26 @@ struct ReminderListView: View {
     @Environment(ReminderEventRepository.self) private var eventsRepo
     @Environment(PairingService.self) private var pairing
     @Environment(PurchasesService.self) private var store
+    @Environment(DailyCheckInService.self) private var checkIn
 
     @State private var isEditorPresented = false
     @State private var isTemplatesPresented = false
     @State private var editingReminder: ReminderDTO?
-    @State private var listFilter: ReminderFilter = .all
     @State private var showNotificationPrimer = false
     @State private var starterPrefill: StarterChip?
+    @State private var hasLoadedOnce = false
+    @State private var showAllHandled = false
 
     private let primerShownKey = "hasShownNotificationPrimer"
-
-    enum ReminderFilter: String, CaseIterable {
-        case all, forMe
-        var title: String {
-            switch self {
-            case .all: "All"
-            case .forMe: "For Me"
-            }
-        }
-    }
+    private let handledRecentDays = 7
 
     var body: some View {
         NavigationStack {
             Group {
-                if repo.reminders.isEmpty {
+                if !hasLoadedOnce && repo.isLoading && repo.reminders.isEmpty {
+                    ProgressView()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                } else if visibleReminders.isEmpty {
                     EmptyRemindersView(
                         onTapChip: { chip in
                             editingReminder = nil
@@ -47,27 +43,23 @@ struct ReminderListView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     NavigationLink {
-                        SettingsView()
+                        BondMoreView()
                     } label: {
-                        Image(systemName: "gearshape")
+                        Image(systemName: "ellipsis.circle")
                     }
-                    .accessibilityLabel("Settings")
+                    .accessibilityLabel("More")
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    HStack(spacing: 12) {
-                        Button {
-                            isTemplatesPresented = true
-                        } label: {
-                            Image(systemName: "square.grid.2x2")
-                        }
-                        Button {
-                            editingReminder = nil
-                            isEditorPresented = true
-                        } label: {
-                            Image(systemName: "plus")
-                        }
+                    Button {
+                        isTemplatesPresented = true
+                    } label: {
+                        Image(systemName: "square.grid.2x2")
                     }
+                    .accessibilityLabel("Templates")
                 }
+            }
+            .safeAreaInset(edge: .bottom, alignment: .trailing) {
+                composeButton
             }
             .sheet(isPresented: $isEditorPresented, onDismiss: { starterPrefill = nil }) {
                 ReminderEditorView(
@@ -90,6 +82,7 @@ struct ReminderListView: View {
             .task {
                 await repo.refresh()
                 await eventsRepo.refresh()
+                hasLoadedOnce = true
                 await repo.subscribeRealtime()
                 await NotificationScheduler.shared.reschedule(
                     forSelfUserId: supabase.currentUserId ?? UUID(),
@@ -112,68 +105,191 @@ struct ReminderListView: View {
         showNotificationPrimer = true
     }
 
-    private var filteredReminders: [ReminderDTO] {
-        guard let me = supabase.currentUserId else { return repo.reminders }
-        switch listFilter {
-        case .all:
-            return repo.reminders
-        case .forMe:
-            return repo.reminders.filter { $0.targetId == me }
-        }
+    /// Everything the user should see: their own reminders (regardless of target)
+    /// plus reminders the partner addressed to them.
+    private var visibleReminders: [ReminderDTO] {
+        guard let me = supabase.currentUserId else { return [] }
+        return repo.reminders.filter { $0.authorId == me || $0.targetId == me }
     }
 
-    private var grouped: (upcoming: [ReminderDTO], past: [ReminderDTO]) {
+    private var activeReminders: [ReminderDTO] {
+        visibleReminders.filter { !isActedOn($0) }
+    }
+
+    private var partnerRequests: [ReminderDTO] {
+        guard let me = supabase.currentUserId, !pairing.solo else { return [] }
+        return sortByNextDate(activeReminders.filter { $0.authorId != me })
+    }
+
+    /// Reminders I authored (for me or partner), still active.
+    private var myActiveReminders: [ReminderDTO] {
+        guard let me = supabase.currentUserId else { return [] }
+        return activeReminders.filter { $0.authorId == me }
+    }
+
+    private var pastDueReminders: [ReminderDTO] {
+        sortByNextDate(myActiveReminders.filter(isPastDue))
+    }
+
+    private var todayReminders: [ReminderDTO] {
+        sortByNextDate(myActiveReminders.filter {
+            guard !isPastDue($0), let next = nextDate(for: $0) else { return false }
+            return Calendar.current.isDateInToday(next)
+        })
+    }
+
+    private var weekReminders: [ReminderDTO] {
+        let calendar = Calendar.current
         let now = Date.now
-        var upcoming: [ReminderDTO] = []
-        var past: [ReminderDTO] = []
-        for r in filteredReminders {
-            // upcomingFireDate advances recurring reminders forward, so a daily
-            // reminder anchored last month still appears in Upcoming.
-            if let next = r.trigger?.upcomingFireDate(after: now), next >= now {
-                upcoming.append(r)
-            } else {
-                past.append(r)
-            }
+        let cutoff = calendar.date(byAdding: .day, value: 7, to: now) ?? now
+        return sortByNextDate(myActiveReminders.filter {
+            guard !isPastDue($0), let next = nextDate(for: $0) else { return false }
+            return !calendar.isDateInToday(next) && next <= cutoff
+        })
+    }
+
+    private var laterReminders: [ReminderDTO] {
+        let cutoff = Calendar.current.date(byAdding: .day, value: 7, to: Date.now) ?? Date.now
+        return sortByNextDate(myActiveReminders.filter {
+            guard !isPastDue($0), let next = nextDate(for: $0) else { return false }
+            return next > cutoff
+        })
+    }
+
+    private var anytimeReminders: [ReminderDTO] {
+        sortByCreatedDate(myActiveReminders.filter {
+            !isPastDue($0) && nextDate(for: $0) == nil
+        })
+    }
+
+    private var handledReminders: [ReminderDTO] {
+        sortByCreatedDate(visibleReminders.filter { isActedOn($0) })
+    }
+
+    private var recentHandledReminders: [ReminderDTO] {
+        let cutoff = Calendar.current.date(byAdding: .day, value: -handledRecentDays, to: Date.now) ?? Date.now
+        return handledReminders.filter { ($0.createdAt ?? .distantPast) >= cutoff }
+    }
+
+    private var composeButton: some View {
+        Button {
+            editingReminder = nil
+            isEditorPresented = true
+        } label: {
+            Image(systemName: "plus")
+                .font(.title2.bold())
+                .foregroundStyle(.white)
+                .frame(width: 58, height: 58)
+                .background(Color.bondAccent, in: Circle())
+                .shadow(color: Color.bondAccent.opacity(0.28), radius: 12, x: 0, y: 6)
         }
-        return (upcoming, past)
+        .padding(BondSpacing.base)
+        .accessibilityLabel("Add reminder")
     }
 
     private var list: some View {
         List {
-            if !pairing.solo && supabase.currentUserId != nil {
+            if let state = checkInCardState {
                 Section {
-                    Picker("Show", selection: $listFilter) {
-                        ForEach(ReminderFilter.allCases, id: \.self) { filter in
-                            Text(filter.title).tag(filter)
-                        }
+                    NavigationLink {
+                        DailyCheckInView()
+                    } label: {
+                        CheckInPromptCard(state: state, partnerName: partnerName)
                     }
-                    .pickerStyle(.segmented)
-                    .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+                    .listRowInsets(EdgeInsets(top: 4, leading: 16, bottom: 4, trailing: 16))
                     .listRowBackground(Color.clear)
                 }
             }
 
-            let g = grouped
-
-            if filteredReminders.isEmpty {
+            if !partnerRequests.isEmpty {
                 Section {
-                    FilteredEmptyView { listFilter = .all }
+                    ForEach(partnerRequests) { requestRow($0) }
+                } header: {
+                    Text("\(partnerName) added")
                 }
             }
 
-            if !g.upcoming.isEmpty {
-                Section("Upcoming") {
-                    ForEach(g.upcoming) { row($0) }
-                        .onDelete { offsets in delete(g.upcoming, at: offsets) }
+            if myActiveReminders.isEmpty && partnerRequests.isEmpty {
+                Section {
+                    MyListEmptyView(
+                        partnerName: partnerName,
+                        isPaired: !pairing.solo,
+                        onAdd: {
+                            editingReminder = nil
+                            isEditorPresented = true
+                        },
+                        onBrowseTemplates: { isTemplatesPresented = true }
+                    )
+                    .listRowBackground(Color.clear)
                 }
             }
-            if !g.past.isEmpty {
-                Section("Past") {
-                    ForEach(g.past) { row($0) }
-                        .onDelete { offsets in delete(g.past, at: offsets) }
+
+            if !pastDueReminders.isEmpty {
+                Section("Past due") {
+                    ForEach(pastDueReminders) { row($0) }
+                        .onDelete { offsets in delete(pastDueReminders, at: offsets) }
                 }
+            }
+
+            if !todayReminders.isEmpty {
+                Section("Today") {
+                    ForEach(todayReminders) { row($0) }
+                        .onDelete { offsets in delete(todayReminders, at: offsets) }
+                }
+            }
+
+            if !weekReminders.isEmpty {
+                Section("This week") {
+                    ForEach(weekReminders) { row($0) }
+                        .onDelete { offsets in delete(weekReminders, at: offsets) }
+                }
+            }
+
+            if !laterReminders.isEmpty {
+                Section("Later") {
+                    ForEach(laterReminders) { row($0) }
+                        .onDelete { offsets in delete(laterReminders, at: offsets) }
+                }
+            }
+
+            if !anytimeReminders.isEmpty {
+                Section("Anytime") {
+                    ForEach(anytimeReminders) { row($0) }
+                        .onDelete { offsets in delete(anytimeReminders, at: offsets) }
+                }
+            }
+
+            handledSection
+        }
+        .listStyle(.insetGrouped)
+    }
+
+    @ViewBuilder
+    private var handledSection: some View {
+        let recent = recentHandledReminders
+        let all = handledReminders
+        if !all.isEmpty {
+            let shown = showAllHandled ? all : recent
+            Section {
+                ForEach(shown) { row($0) }
+                    .onDelete { offsets in delete(shown, at: offsets) }
+                if all.count > recent.count {
+                    Button(showAllHandled ? "Show recent only" : "Show all \(all.count) handled") {
+                        showAllHandled.toggle()
+                    }
+                    .font(.footnote)
+                }
+            } header: {
+                Text(showAllHandled ? "Handled" : "Handled · last \(handledRecentDays) days")
             }
         }
+    }
+
+    private var partnerName: String {
+        if let name = pairing.partnerProfile?.displayName, !name.isEmpty {
+            return name
+        }
+        return "Your partner"
     }
 
     @ViewBuilder
@@ -222,6 +338,76 @@ struct ReminderListView: View {
         }
     }
 
+    private func requestRow(_ reminder: ReminderDTO) -> some View {
+        PartnerRequestCard(
+            reminder: reminder,
+            currentUserId: supabase.currentUserId,
+            partnerName: partnerName,
+            onEdit: {
+                editingReminder = reminder
+                isEditorPresented = true
+            },
+            onDone: { markDone(reminder) }
+        )
+        .listRowSeparator(.hidden)
+        .listRowBackground(Color.clear)
+        .swipeActions(edge: .trailing) {
+            Button(role: .destructive) {
+                Task { try? await repo.delete(reminder) }
+            } label: {
+                Label("Delete", systemImage: "trash")
+            }
+        }
+    }
+
+    private func isActedOn(_ reminder: ReminderDTO) -> Bool {
+        eventsRepo.events.contains { $0.reminderId == reminder.id && $0.actedAt != nil }
+    }
+
+    private func nextDate(for reminder: ReminderDTO) -> Date? {
+        reminder.trigger?.upcomingFireDate(after: Date.now)
+    }
+
+    /// One-time reminder whose fire date has passed.
+    private func isPastDue(_ reminder: ReminderDTO) -> Bool {
+        guard case .oneTime(let fireAt) = reminder.trigger else { return false }
+        return fireAt < Date.now
+    }
+
+    private var checkInCardState: CheckInPromptCard.State? {
+        guard !pairing.solo else { return nil }
+        guard checkIn.todaysQuestion != nil else { return nil }
+        if checkIn.myResponse == nil { return .pending }
+        if checkIn.partnerResponse == nil { return .awaitingPartner }
+        return .readyToReveal
+    }
+
+    private func sortByNextDate(_ reminders: [ReminderDTO]) -> [ReminderDTO] {
+        reminders.sorted {
+            (nextDate(for: $0) ?? .distantFuture) < (nextDate(for: $1) ?? .distantFuture)
+        }
+    }
+
+    private func sortByCreatedDate(_ reminders: [ReminderDTO]) -> [ReminderDTO] {
+        reminders.sorted {
+            ($0.createdAt ?? .distantPast) > ($1.createdAt ?? .distantPast)
+        }
+    }
+
+    private func markDone(_ reminder: ReminderDTO) {
+        Task {
+            guard let coupleId = pairing.coupleId else { return }
+            try? await eventsRepo.createEvent(
+                reminderId: reminder.id,
+                coupleId: coupleId
+            )
+            await NotificationScheduler.shared.reschedule(
+                forSelfUserId: supabase.currentUserId ?? UUID(),
+                reminders: repo.reminders
+            )
+        }
+    }
+
     private func delete(_ source: [ReminderDTO], at offsets: IndexSet) {
         Task {
             for index in offsets {
@@ -233,5 +419,149 @@ struct ReminderListView: View {
                 )
             }
         }
+    }
+}
+
+private struct PartnerRequestCard: View {
+    let reminder: ReminderDTO
+    let currentUserId: UUID?
+    let partnerName: String
+    let onEdit: () -> Void
+    let onDone: () -> Void
+
+    private var nextFire: Date? { reminder.trigger?.upcomingFireDate() }
+    private var primaryActionTitle: String {
+        nextFire == nil ? "Pick a time" : "Reschedule"
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: BondSpacing.m) {
+            HStack(alignment: .top, spacing: BondSpacing.m) {
+                Image(systemName: "sparkles")
+                    .font(.title3)
+                    .foregroundStyle(Color.bondAccent)
+                    .frame(width: 28, height: 28)
+                VStack(alignment: .leading, spacing: BondSpacing.xs) {
+                    Text("\(partnerName) added this")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(Color.bondAccent)
+                    Text(reminder.title)
+                        .font(.headline)
+                        .foregroundStyle(.primary)
+                    if let body = reminder.body, !body.isEmpty {
+                        Text(body)
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                    if let next = nextFire {
+                        Label(next.formatted(date: .abbreviated, time: .shortened), systemImage: "clock")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                Spacer()
+            }
+            HStack(spacing: BondSpacing.s) {
+                Button(primaryActionTitle, action: onEdit)
+                    .buttonStyle(.borderedProminent)
+                    .tint(.bondAccent)
+                Button("Handled", action: onDone)
+                    .buttonStyle(.bordered)
+                    .tint(.bondAccent)
+            }
+        }
+        .padding(BondSpacing.base)
+        .background(Color.bondAccent.opacity(0.10), in: RoundedRectangle(cornerRadius: BondRadius.hero))
+        .accessibilityElement(children: .combine)
+    }
+}
+
+private struct CheckInPromptCard: View {
+    enum State { case pending, awaitingPartner, readyToReveal }
+    let state: State
+    let partnerName: String
+
+    private var icon: String {
+        switch state {
+        case .pending:         "questionmark.bubble.fill"
+        case .awaitingPartner: "hourglass"
+        case .readyToReveal:   "sparkles"
+        }
+    }
+    private var headline: String {
+        switch state {
+        case .pending:         "Today's check-in"
+        case .awaitingPartner: "Waiting on \(partnerName)"
+        case .readyToReveal:   "\(partnerName) answered"
+        }
+    }
+    private var subhead: String {
+        switch state {
+        case .pending:         "Answer to see \(partnerName)'s reply."
+        case .awaitingPartner: "We'll let you know when their answer lands."
+        case .readyToReveal:   "Tap to reveal both answers."
+        }
+    }
+
+    var body: some View {
+        HStack(spacing: BondSpacing.m) {
+            Image(systemName: icon)
+                .font(.title2)
+                .foregroundStyle(Color.bondAccent)
+                .frame(width: 32, height: 32)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(headline)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.primary)
+                Text(subhead)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            Spacer()
+            Image(systemName: "chevron.right")
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.tertiary)
+        }
+        .padding(BondSpacing.base)
+        .background(Color.bondAccent.opacity(0.10), in: RoundedRectangle(cornerRadius: BondRadius.hero))
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(headline). \(subhead)")
+    }
+}
+
+private struct MyListEmptyView: View {
+    let partnerName: String
+    let isPaired: Bool
+    let onAdd: () -> Void
+    let onBrowseTemplates: () -> Void
+
+    private var subtitle: String {
+        isPaired
+            ? "Add something for you or \(partnerName), or start from a template."
+            : "Add a reminder, or start from a template."
+    }
+
+    var body: some View {
+        VStack(spacing: BondSpacing.base) {
+            Image(systemName: "heart.text.square")
+                .font(.system(size: 40))
+                .foregroundStyle(Color.bondAccent)
+            Text("Your list is clear")
+                .font(.title3.bold())
+            Text(subtitle)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+            HStack(spacing: BondSpacing.s) {
+                Button("Add one", action: onAdd)
+                    .buttonStyle(.borderedProminent)
+                    .tint(.bondAccent)
+                Button("Templates", action: onBrowseTemplates)
+                    .buttonStyle(.bordered)
+                    .tint(.bondAccent)
+            }
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, BondSpacing.xxl)
     }
 }
