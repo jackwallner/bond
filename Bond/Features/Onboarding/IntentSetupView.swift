@@ -1,49 +1,53 @@
+#if canImport(UIKit)
+import UIKit
+#endif
 import SwiftUI
 
-// Post-sign-in intent capture. Replaces the old "Just me / With someone"
-// fork: everyone starts solo. We only ask what they want out of Bond so the
-// reminders list can seed itself. Pairing is a deliberate opt-in later
-// (Settings), since partner setup is heavier lift.
+// Post-sign-in intent capture. Bond is built around showing up for ONE
+// specific person, so onboarding centers on them: their name, a commitment
+// moment, their love language, and what the user wants to remember for
+// them. Everyone starts solo; pairing is opt-in from Settings.
 
-enum ReminderTheme: String, CaseIterable, Identifiable, Codable {
-    case selfCare
-    case habits
-    case partner
-    case milestones
+enum FocusArea: String, CaseIterable, Identifiable, Codable {
+    case gestures
+    case dates
+    case loves
+    case avoid
 
     var id: String { rawValue }
 
     var title: String {
         switch self {
-        case .selfCare:   "Self-care"
-        case .habits:     "Habits"
-        case .partner:    "Someone I love"
-        case .milestones: "Dates that matter"
+        case .gestures: "Little gestures"
+        case .dates:    "Important dates"
+        case .loves:    "Things they love"
+        case .avoid:    "Things to avoid"
         }
     }
 
     var subtitle: String {
         switch self {
-        case .selfCare:   "Rest, water, a moment to breathe."
-        case .habits:     "Small things, done consistently."
-        case .partner:    "Little nudges to show up for them."
-        case .milestones: "Anniversaries, birthdays, plans."
+        case .gestures: "Day-to-day ways to show up."
+        case .dates:    "Anniversaries, birthdays, plans."
+        case .loves:    "Favorites, hobbies, what they care about."
+        case .avoid:    "Topics, days, or things that hurt."
         }
     }
 
     var symbol: String {
         switch self {
-        case .selfCare:   "leaf.fill"
-        case .habits:     "repeat"
-        case .partner:    "heart.fill"
-        case .milestones: "calendar"
+        case .gestures: "heart.fill"
+        case .dates:    "calendar"
+        case .loves:    "sparkles"
+        case .avoid:    "exclamationmark.triangle.fill"
         }
     }
 }
 
-/// On-device only. Per product decision, preferences stay local until the
-/// user actually pairs with a partner — at which point love language is
-/// pushed to their server profile (see PairingService).
+/// On-device only. The data here describes the *partner* (or whoever the
+/// user wants to show up for), captured before pairing exists. If they
+/// later pair, the real partner profile becomes the source of truth for
+/// shared fields, but these hints remain as the user's private notes.
 @MainActor
 @Observable
 final class OnboardingPreferences {
@@ -51,24 +55,32 @@ final class OnboardingPreferences {
 
     private let defaults = UserDefaults.standard
     private enum Key {
-        static let loveLanguage = "onboarding.loveLanguage"
-        static let themes = "onboarding.themes"
+        static let partnerName = "onboarding.partnerName"
+        static let partnerLoveLanguage = "onboarding.partnerLoveLanguage"
+        static let focusAreas = "onboarding.focusAreas"
+        static let committedAt = "onboarding.committedAt"
     }
 
-    var primaryLoveLanguage: LoveLanguage {
-        didSet { defaults.set(primaryLoveLanguage.rawValue, forKey: Key.loveLanguage) }
+    var partnerName: String {
+        didSet { defaults.set(partnerName, forKey: Key.partnerName) }
     }
-    var themes: Set<ReminderTheme> {
-        didSet {
-            defaults.set(themes.map(\.rawValue), forKey: Key.themes)
-        }
+    var partnerLoveLanguage: LoveLanguage {
+        didSet { defaults.set(partnerLoveLanguage.rawValue, forKey: Key.partnerLoveLanguage) }
+    }
+    var focusAreas: Set<FocusArea> {
+        didSet { defaults.set(focusAreas.map(\.rawValue), forKey: Key.focusAreas) }
+    }
+    var committedAt: Date? {
+        didSet { defaults.set(committedAt, forKey: Key.committedAt) }
     }
 
     private init() {
-        primaryLoveLanguage = (defaults.string(forKey: Key.loveLanguage))
+        partnerName = defaults.string(forKey: Key.partnerName) ?? ""
+        partnerLoveLanguage = (defaults.string(forKey: Key.partnerLoveLanguage))
             .flatMap(LoveLanguage.init(rawValue:)) ?? .words
-        let raw = defaults.stringArray(forKey: Key.themes) ?? []
-        themes = Set(raw.compactMap(ReminderTheme.init(rawValue:)))
+        let raw = defaults.stringArray(forKey: Key.focusAreas) ?? []
+        focusAreas = Set(raw.compactMap(FocusArea.init(rawValue:)))
+        committedAt = defaults.object(forKey: Key.committedAt) as? Date
     }
 }
 
@@ -77,16 +89,29 @@ struct IntentSetupView: View {
     @State private var prefs = OnboardingPreferences.shared
     @State private var step = 0
     @State private var isFinishing = false
+    @FocusState private var nameFocused: Bool
+
+    private var nameTrimmed: String {
+        prefs.partnerName.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    private var displayName: String {
+        nameTrimmed.isEmpty ? "them" : nameTrimmed
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: BondSpacing.xl) {
             Spacer()
 
-            if step == 0 {
-                loveLanguageStep
-            } else {
-                themesStep
+            Group {
+                switch step {
+                case 0: nameStep
+                case 1: commitStep
+                case 2: loveLanguageStep
+                default: focusAreasStep
+                }
             }
+            .transition(.opacity)
 
             if let error = pairing.lastError {
                 BondInlineError(message: error)
@@ -95,33 +120,107 @@ struct IntentSetupView: View {
             Spacer()
 
             BondPrimaryButton(
-                title: step == 0 ? "Continue" : "Start using Bond",
+                title: continueTitle,
                 isLoading: isFinishing
             ) {
-                if step == 0 {
-                    withAnimation { step = 1 }
-                } else {
-                    Task { await finish() }
-                }
+                advance()
             }
             .padding(.horizontal, BondSpacing.base)
-            .disabled(step == 1 && prefs.themes.isEmpty)
+            .disabled(!canContinue)
         }
         .padding(.vertical, BondSpacing.xxxl)
+        .animation(.easeOut(duration: 0.25), value: step)
+    }
+
+    private var continueTitle: String {
+        switch step {
+        case 0, 2: "Continue"
+        case 1: "I commit to showing up for \(displayName)"
+        default: "Start using Bond"
+        }
+    }
+
+    private var canContinue: Bool {
+        switch step {
+        case 0: !nameTrimmed.isEmpty
+        case 3: !prefs.focusAreas.isEmpty
+        default: true
+        }
+    }
+
+    private func advance() {
+        switch step {
+        case 0:
+            prefs.partnerName = nameTrimmed
+            nameFocused = false
+            step = 1
+        case 1:
+            prefs.committedAt = Date()
+            #if canImport(UIKit)
+            UINotificationFeedbackGenerator().notificationOccurred(.success)
+            #endif
+            step = 2
+        case 2:
+            step = 3
+        default:
+            Task { await finish() }
+        }
+    }
+
+    private var nameStep: some View {
+        VStack(alignment: .leading, spacing: BondSpacing.xl) {
+            BondScreenHeader(
+                title: "Who do you want to show up for?",
+                subtitle: "A partner, a parent, a friend. Bond is built around one person."
+            )
+            .padding(.horizontal, BondSpacing.base)
+
+            TextField("Their name", text: $prefs.partnerName)
+                .font(.title3)
+                .textInputAutocapitalization(.words)
+                .autocorrectionDisabled(true)
+                .submitLabel(.continue)
+                .focused($nameFocused)
+                .padding(BondSpacing.base)
+                .background(Color.bondCardFill, in: RoundedRectangle(cornerRadius: BondRadius.inline))
+                .padding(.horizontal, BondSpacing.base)
+                .onAppear { nameFocused = true }
+                .onSubmit { if canContinue { advance() } }
+        }
+    }
+
+    private var commitStep: some View {
+        VStack(alignment: .leading, spacing: BondSpacing.xl) {
+            BondScreenHeader(
+                title: "Make it real.",
+                subtitle: "Showing up for \(displayName) isn't a feature — it's a choice. Make it now, and Bond will help you keep it."
+            )
+            .padding(.horizontal, BondSpacing.base)
+
+            HStack {
+                Spacer()
+                Image(systemName: "heart.circle.fill")
+                    .font(.system(size: 96))
+                    .foregroundStyle(Color.bondAccent)
+                    .accessibilityHidden(true)
+                Spacer()
+            }
+            .padding(.vertical, BondSpacing.l)
+        }
     }
 
     private var loveLanguageStep: some View {
         VStack(alignment: .leading, spacing: BondSpacing.xl) {
             BondScreenHeader(
-                title: "What lands best with you?",
-                subtitle: "Your primary love language. We'll lean prompts and suggestions toward it."
+                title: "What lands best with \(displayName)?",
+                subtitle: "Their primary love language. We'll lean prompts and suggestions toward it."
             )
             .padding(.horizontal, BondSpacing.base)
 
             VStack(spacing: BondSpacing.s) {
                 ForEach(LoveLanguage.allCases) { lang in
                     Button {
-                        prefs.primaryLoveLanguage = lang
+                        prefs.partnerLoveLanguage = lang
                     } label: {
                         HStack(spacing: BondSpacing.m) {
                             Image(systemName: lang.symbolName)
@@ -131,7 +230,7 @@ struct IntentSetupView: View {
                                 .font(.headline)
                                 .foregroundStyle(.primary)
                             Spacer()
-                            if prefs.primaryLoveLanguage == lang {
+                            if prefs.partnerLoveLanguage == lang {
                                 Image(systemName: "checkmark.circle.fill")
                                     .foregroundStyle(Color.bondAccent)
                             }
@@ -146,32 +245,32 @@ struct IntentSetupView: View {
         }
     }
 
-    private var themesStep: some View {
+    private var focusAreasStep: some View {
         VStack(alignment: .leading, spacing: BondSpacing.xl) {
             BondScreenHeader(
-                title: "What do you want nudges about?",
-                subtitle: "Pick what fits. You can change any of this later."
+                title: "What do you want to remember about \(displayName)?",
+                subtitle: "Pick what matters. You can change any of this later."
             )
             .padding(.horizontal, BondSpacing.base)
 
             VStack(spacing: BondSpacing.m) {
-                ForEach(ReminderTheme.allCases) { theme in
+                ForEach(FocusArea.allCases) { area in
                     BondChoiceCard(
-                        symbol: theme.symbol,
-                        title: theme.title,
-                        description: theme.subtitle,
-                        tint: prefs.themes.contains(theme) ? .bondAccent : .secondary,
+                        symbol: area.symbol,
+                        title: area.title,
+                        description: area.subtitle,
+                        tint: prefs.focusAreas.contains(area) ? .bondAccent : .secondary,
                         trailing: {
-                            if prefs.themes.contains(theme) {
+                            if prefs.focusAreas.contains(area) {
                                 Image(systemName: "checkmark.circle.fill")
                                     .foregroundStyle(Color.bondAccent)
                             }
                         },
                         action: {
-                            if prefs.themes.contains(theme) {
-                                prefs.themes.remove(theme)
+                            if prefs.focusAreas.contains(area) {
+                                prefs.focusAreas.remove(area)
                             } else {
-                                prefs.themes.insert(theme)
+                                prefs.focusAreas.insert(area)
                             }
                         }
                     )
@@ -184,8 +283,6 @@ struct IntentSetupView: View {
     private func finish() async {
         isFinishing = true
         defer { isFinishing = false }
-        // Saving prefs is a side effect of the @Observable setters; creating
-        // the solo couple flips the router to home.
         await pairing.createSoloCouple()
     }
 }

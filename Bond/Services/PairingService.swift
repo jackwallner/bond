@@ -118,28 +118,12 @@ final class PairingService {
             await loadCouple()
             if coupleId != nil && !solo {
                 justPaired = true
-                // Preferences are device-local until the user actually pairs;
-                // a partner makes love language relevant server-side.
-                await syncLoveLanguageToProfile()
+                // Onboarding prefs describe the partner from the user's
+                // POV (private hints). Once paired, the real partner owns
+                // their server-side love_language; nothing to push here.
             }
         } catch {
             lastError = error.localizedDescription
-        }
-    }
-
-    /// Pushes the on-device primary love language to the server profile so a
-    /// paired partner's app can read it. No-op until the user has paired.
-    private func syncLoveLanguageToProfile() async {
-        guard let me = supabase.currentUserId else { return }
-        let language = OnboardingPreferences.shared.primaryLoveLanguage.rawValue
-        do {
-            try await supabase.client
-                .from("profiles")
-                .update(["love_language": language])
-                .eq("id", value: me.uuidString)
-                .execute()
-        } catch {
-            log.notice("Love language sync failed: \(error.localizedDescription)")
         }
     }
 

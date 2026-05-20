@@ -4,37 +4,36 @@ struct StarterChip: Identifiable {
     let id = UUID()
     let title: String
     let loveLanguage: LoveLanguage
-    var theme: ReminderTheme = .partner
+    var area: FocusArea = .gestures
 }
 
 private let starterChipPool: [StarterChip] = [
-    // Partner
-    StarterChip(title: "Tell them they're beautiful", loveLanguage: .words, theme: .partner),
-    StarterChip(title: "Ten-minute walk together", loveLanguage: .time, theme: .partner),
-    StarterChip(title: "Bring home flowers", loveLanguage: .gifts, theme: .partner),
-    StarterChip(title: "A long hug at the door", loveLanguage: .touch, theme: .partner),
-    StarterChip(title: "Handle a chore they dread", loveLanguage: .acts, theme: .partner),
-    // Self-care
-    StarterChip(title: "Drink a full glass of water", loveLanguage: .acts, theme: .selfCare),
-    StarterChip(title: "Five quiet minutes, no phone", loveLanguage: .time, theme: .selfCare),
-    StarterChip(title: "Step outside for fresh air", loveLanguage: .time, theme: .selfCare),
-    // Habits
-    StarterChip(title: "Stretch for two minutes", loveLanguage: .acts, theme: .habits),
-    StarterChip(title: "Write one line in a journal", loveLanguage: .words, theme: .habits),
-    StarterChip(title: "Tidy one surface", loveLanguage: .acts, theme: .habits),
-    // Milestones
-    StarterChip(title: "Note an upcoming date", loveLanguage: .time, theme: .milestones),
-    StarterChip(title: "Plan something for the weekend", loveLanguage: .time, theme: .milestones)
+    // Little gestures
+    StarterChip(title: "Tell them they're beautiful", loveLanguage: .words, area: .gestures),
+    StarterChip(title: "Ten-minute walk together", loveLanguage: .time, area: .gestures),
+    StarterChip(title: "Bring home flowers", loveLanguage: .gifts, area: .gestures),
+    StarterChip(title: "A long hug at the door", loveLanguage: .touch, area: .gestures),
+    StarterChip(title: "Handle a chore they dread", loveLanguage: .acts, area: .gestures),
+    // Important dates
+    StarterChip(title: "Note an upcoming date", loveLanguage: .time, area: .dates),
+    StarterChip(title: "Plan something for the weekend", loveLanguage: .time, area: .dates),
+    // Things they love
+    StarterChip(title: "Pick up their favorite snack", loveLanguage: .gifts, area: .loves),
+    StarterChip(title: "Play a song they love", loveLanguage: .time, area: .loves),
+    StarterChip(title: "Ask about something they care about", loveLanguage: .words, area: .loves),
+    // Things to avoid
+    StarterChip(title: "Note a topic to steer around", loveLanguage: .words, area: .avoid),
+    StarterChip(title: "Phone away during dinner", loveLanguage: .time, area: .avoid)
 ]
 
 /// Chips tailored to the user's onboarding choices: only their selected
-/// themes, with their primary love language floated to the top. Falls back
-/// to the partner set if they picked nothing (e.g. legacy accounts).
+/// focus areas, with the partner's love language floated to the top. Falls
+/// back to gestures if they picked nothing (e.g. legacy accounts).
 @MainActor
 func starterChips(for prefs: OnboardingPreferences) -> [StarterChip] {
-    let themes = prefs.themes.isEmpty ? [.partner] : prefs.themes
-    let pool = starterChipPool.filter { themes.contains($0.theme) }
-    let primary = prefs.primaryLoveLanguage
+    let areas = prefs.focusAreas.isEmpty ? [.gestures] : prefs.focusAreas
+    let pool = starterChipPool.filter { areas.contains($0.area) }
+    let primary = prefs.partnerLoveLanguage
     let ranked = pool.sorted { ($0.loveLanguage == primary ? 0 : 1) < ($1.loveLanguage == primary ? 0 : 1) }
     return Array(ranked.prefix(5))
 }
