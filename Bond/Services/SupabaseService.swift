@@ -45,8 +45,10 @@ final class SupabaseService {
             isAnonymous = true
             log.info("Signed in anonymously — user \(session.user.id)")
         } catch {
-            currentUserId = nil
-            isAnonymous = false
+            // Don't nuke an already-restored session on failure: restoreSession()
+            // and this method can race at launch, and clearing currentUserId here
+            // would leave the user stuck on the loading screen even though a valid
+            // session existed.
             log.error("Anonymous sign-in failed: \(error.localizedDescription)")
         }
     }
