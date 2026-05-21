@@ -43,6 +43,7 @@
 		570B143E3863237F137F676D /* CoupleDTOTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AA7F8207838DB6359ECF024 /* CoupleDTOTests.swift */; };
 		57BC2289724538457316CAB4 /* MilestonesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72C9DDB7D721FC614C52CF6E /* MilestonesView.swift */; };
 		59AFA28B71534A359A9F6EC7 /* IntentSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE93E308C0FE103E72C1E816 /* IntentSetupView.swift */; };
+		5BD89CAF2DF131F4EE8FDC91 /* BondTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69CE561912A0D197FC73DEF0 /* BondTheme.swift */; };
 		5D94D2F96EDDD2FF55327F9F /* MilestoneDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9691537350F5E42C03E679 /* MilestoneDTO.swift */; };
 		5E95FA191A93BEB0EA23D220 /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = 04DB1D81058B6E8FF4DBF480 /* Supabase */; };
 		5F2AAFCE2DDEC7E0A254A5C5 /* ReminderRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D57F25AA26A85B46F6A8446 /* ReminderRepository.swift */; };
@@ -177,6 +178,7 @@
 		614F6A4AF63E9073387D83DA /* CoupleDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoupleDTO.swift; sourceTree = "<group>"; };
 		675148F7F28D41E44B500502 /* Bond.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Bond.entitlements; sourceTree = "<group>"; };
 		6817074B516199A1A5B909F4 /* NotificationPrimerSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationPrimerSheet.swift; sourceTree = "<group>"; };
+		69CE561912A0D197FC73DEF0 /* BondTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BondTheme.swift; sourceTree = "<group>"; };
 		6C5718ADF6D126CFA618BD62 /* PurchasesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchasesService.swift; sourceTree = "<group>"; };
 		72C9DDB7D721FC614C52CF6E /* MilestonesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MilestonesView.swift; sourceTree = "<group>"; };
 		72CA6E5DB9BE3E5FBF29230D /* DailyCheckInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyCheckInView.swift; sourceTree = "<group>"; };
@@ -434,6 +436,7 @@
 			children = (
 				340A2D4CAC587ED2F0F83D5F /* BondComponents.swift */,
 				F3CF1BD69FCFE09D7F366EB8 /* BondStyle.swift */,
+				69CE561912A0D197FC73DEF0 /* BondTheme.swift */,
 				34ECA85DC3BD65F3E274DEAA /* GateSampleContent.swift */,
 				3F2E4B1106B687E94A91D464 /* PremiumGate.swift */,
 			);
@@ -708,6 +711,7 @@
 				A199C4FBC971AD75056946D8 /* BondColors.swift in Sources */,
 				2FF010987033EA158398F278 /* BondComponents.swift in Sources */,
 				C24FB3A9399D5252A92423B6 /* BondStyle.swift in Sources */,
+				5BD89CAF2DF131F4EE8FDC91 /* BondTheme.swift in Sources */,
 				3B838DF1DB360C572EA4A91F /* CoupleDTO.swift in Sources */,
 				70A539715E4A0D1CFDFDF4AF /* DailyCheckInService.swift in Sources */,
 				283326B0C9C4463EB1914AAC /* DailyCheckInView.swift in Sources */,
@@ -892,7 +896,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 28;
+				CURRENT_PROJECT_VERSION = 29;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = YXG4MP6W39;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -960,7 +964,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 28;
+				CURRENT_PROJECT_VERSION = 29;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = YXG4MP6W39;
 				ENABLE_NS_ASSERTIONS = NO;

@@ -68,10 +68,15 @@ struct BondApp: App {
 struct RootView: View {
     @Environment(SupabaseService.self) private var supabase
     @Environment(PairingService.self) private var pairing
+    @State private var theme = BondTheme.shared
     @State private var isTransitioning = false
 
     var body: some View {
-        Group {
+        // Touch theme.accent so the body re-evaluates when the user picks a
+        // new palette; subviews reading Color.bondAccent then get the new
+        // value via normal SwiftUI prop diffing (no view-identity reset).
+        _ = theme.accent
+        return Group {
             switch currentDestination {
             case .intentSetup:
                 IntentSetupView()

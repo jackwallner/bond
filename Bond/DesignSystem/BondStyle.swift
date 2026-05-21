@@ -22,8 +22,12 @@ enum BondRadius {
 }
 
 extension Color {
-    /// Primary accent. Use instead of raw `Color.pink` so there is one knob.
-    static let bondAccent = Color.pink
+    /// Primary accent. Routed through `BondTheme` so the Settings picker can
+    /// flip palettes at runtime. Reading from a View body registers an
+    /// `@Observable` dependency on `theme.accent`, so changes re-render any
+    /// view that uses this color.
+    @MainActor
+    static var bondAccent: Color { BondTheme.shared.accent.color }
 
     static let bondSurface = Color(.systemBackground)
     static let bondSurfaceElevated = Color(.secondarySystemBackground)

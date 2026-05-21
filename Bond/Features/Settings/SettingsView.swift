@@ -5,6 +5,7 @@ struct SettingsView: View {
     @Environment(SupabaseService.self) private var supabase
     @Environment(PurchasesService.self) private var purchases
     @Environment(PairingService.self) private var pairing
+    @State private var theme = BondTheme.shared
 
     @State private var confirmSignOut = false
     @State private var confirmUnpair = false
@@ -71,6 +72,22 @@ struct SettingsView: View {
                     if isRestoring { ProgressView() } else { Text("Restore purchases") }
                 }
                 .disabled(isRestoring)
+            }
+
+            Section("Theme") {
+                Picker("Accent", selection: $theme.accent) {
+                    ForEach(BondTheme.Accent.allCases) { accent in
+                        HStack {
+                            Circle()
+                                .fill(accent.color)
+                                .frame(width: 14, height: 14)
+                            Text(accent.title)
+                        }
+                        .tag(accent)
+                    }
+                }
+                .pickerStyle(.inline)
+                .labelsHidden()
             }
 
             Section("Notifications") {
