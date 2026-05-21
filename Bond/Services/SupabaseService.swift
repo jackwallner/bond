@@ -14,12 +14,30 @@ final class SupabaseService {
     var isAnonymous: Bool = false
     var isAuthenticated: Bool { currentUserId != nil }
 
+    private var bootstrapTask: Task<Void, Never>?
+
     private init() {
         self.client = SupabaseClient(
             supabaseURL: SupabaseConfig.url,
             supabaseKey: SupabaseConfig.anonKey
         )
-        Task { await restoreSession() }
+    }
+
+    /// Idempotent session bootstrap. The first caller kicks off
+    /// `restoreSession()`; concurrent callers await the same task. This
+    /// prevents the launch race where `init` and `RootView.task` both fire
+    /// `signInAnonymously()` independently and create two anon users — the
+    /// client session ends up signed in as one while `currentUserId` caches
+    /// the other, which makes `p_user <> auth.uid()` RPC checks fail with
+    /// "unauthorized".
+    func bootstrap() async {
+        if let bootstrapTask {
+            await bootstrapTask.value
+            return
+        }
+        let task = Task { await self.restoreSession() }
+        bootstrapTask = task
+        await task.value
     }
 
     /// Restore a cached session, or silently start an anonymous one so every
@@ -66,6 +84,7 @@ final class SupabaseService {
         try? await client.auth.signOut()
         currentUserId = nil
         isAnonymous = false
+        bootstrapTask = nil
         log.info("Signed out")
     }
 }

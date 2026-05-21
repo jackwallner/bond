@@ -95,12 +95,12 @@ struct RootView: View {
         }
         .animation(.easeOut(duration: 0.35), value: currentDestination)
         .task {
-            // Make sure we have a backing session before loading couple data.
-            // SupabaseService.restoreSession() auto-creates an anonymous user
-            // on first launch — we just wait for it to settle.
-            if !supabase.isAuthenticated {
-                await supabase.signInAnonymously()
-            }
+            // Single, idempotent session bootstrap. Restores a cached session
+            // or silently signs in anonymously on first launch. Must be the
+            // only entry point — calling signInAnonymously() in parallel with
+            // init's restoreSession() can mint two anon users and leave the
+            // client session out of sync with currentUserId.
+            await supabase.bootstrap()
             isTransitioning = true
             await pairing.loadCouple()
             isTransitioning = false
