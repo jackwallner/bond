@@ -56,7 +56,10 @@ final class OnboardingPreferences {
     private let defaults = UserDefaults.standard
     private enum Key {
         static let partnerName = "onboarding.partnerName"
-        static let partnerLoveLanguage = "onboarding.partnerLoveLanguage"
+        // Legacy single-language key, kept for one-time migration to the
+        // ordered multi-select array.
+        static let partnerLoveLanguageLegacy = "onboarding.partnerLoveLanguage"
+        static let partnerLoveLanguages = "onboarding.partnerLoveLanguages"
         static let focusAreas = "onboarding.focusAreas"
         static let committedAt = "onboarding.committedAt"
     }
@@ -64,9 +67,24 @@ final class OnboardingPreferences {
     var partnerName: String {
         didSet { defaults.set(partnerName, forKey: Key.partnerName) }
     }
-    var partnerLoveLanguage: LoveLanguage {
-        didSet { defaults.set(partnerLoveLanguage.rawValue, forKey: Key.partnerLoveLanguage) }
+
+    /// Ordered list of love languages the user picked for their partner.
+    /// First element is the primary — it drives prompt weighting and the
+    /// `partnerLoveLanguage` compatibility shim below.
+    var partnerLoveLanguages: [LoveLanguage] {
+        didSet {
+            defaults.set(partnerLoveLanguages.map(\.rawValue), forKey: Key.partnerLoveLanguages)
+        }
     }
+
+    /// Compat shim for callers that still want one love language (e.g.
+    /// starter-chip suggestions). Reads the primary; assignment promotes the
+    /// value to primary in the ordered list.
+    var partnerLoveLanguage: LoveLanguage {
+        get { partnerLoveLanguages.first ?? .words }
+        set { setPrimaryLoveLanguage(newValue) }
+    }
+
     var focusAreas: Set<FocusArea> {
         didSet { defaults.set(focusAreas.map(\.rawValue), forKey: Key.focusAreas) }
     }
@@ -76,11 +94,36 @@ final class OnboardingPreferences {
 
     private init() {
         partnerName = defaults.string(forKey: Key.partnerName) ?? ""
-        partnerLoveLanguage = (defaults.string(forKey: Key.partnerLoveLanguage))
-            .flatMap(LoveLanguage.init(rawValue:)) ?? .words
+
+        let rawList = defaults.stringArray(forKey: Key.partnerLoveLanguages) ?? []
+        let parsed = rawList.compactMap(LoveLanguage.init(rawValue:))
+        if !parsed.isEmpty {
+            partnerLoveLanguages = parsed
+        } else if let legacy = defaults.string(forKey: Key.partnerLoveLanguageLegacy)
+            .flatMap(LoveLanguage.init(rawValue:)) {
+            partnerLoveLanguages = [legacy]
+        } else {
+            partnerLoveLanguages = []
+        }
+
         let raw = defaults.stringArray(forKey: Key.focusAreas) ?? []
         focusAreas = Set(raw.compactMap(FocusArea.init(rawValue:)))
         committedAt = defaults.object(forKey: Key.committedAt) as? Date
+    }
+
+    func toggleLoveLanguage(_ lang: LoveLanguage) {
+        if let idx = partnerLoveLanguages.firstIndex(of: lang) {
+            partnerLoveLanguages.remove(at: idx)
+        } else {
+            partnerLoveLanguages.append(lang)
+        }
+    }
+
+    func setPrimaryLoveLanguage(_ lang: LoveLanguage) {
+        var list = partnerLoveLanguages
+        list.removeAll { $0 == lang }
+        list.insert(lang, at: 0)
+        partnerLoveLanguages = list
     }
 }
 
@@ -130,6 +173,8 @@ struct IntentSetupView: View {
         }
         .padding(.vertical, BondSpacing.xxxl)
         .animation(.easeOut(duration: 0.25), value: step)
+        // Don't carry a stale error in from a previous failed attempt.
+        .onAppear { pairing.lastError = nil }
     }
 
     private var continueTitle: String {
@@ -213,32 +258,48 @@ struct IntentSetupView: View {
         VStack(alignment: .leading, spacing: BondSpacing.xl) {
             BondScreenHeader(
                 title: "What lands best with \(displayName)?",
-                subtitle: "Their primary love language. We'll lean prompts and suggestions toward it."
+                subtitle: "Pick any that fit. Your first choice is their primary — we'll lean toward it."
             )
             .padding(.horizontal, BondSpacing.base)
 
             VStack(spacing: BondSpacing.s) {
                 ForEach(LoveLanguage.allCases) { lang in
-                    Button {
-                        prefs.partnerLoveLanguage = lang
-                    } label: {
-                        HStack(spacing: BondSpacing.m) {
-                            Image(systemName: lang.symbolName)
-                                .foregroundStyle(lang.tint)
-                                .frame(width: 28)
-                            Text(lang.title)
-                                .font(.headline)
-                                .foregroundStyle(.primary)
-                            Spacer()
-                            if prefs.partnerLoveLanguage == lang {
-                                Image(systemName: "checkmark.circle.fill")
-                                    .foregroundStyle(Color.bondAccent)
-                            }
+                    let selected = prefs.partnerLoveLanguages.contains(lang)
+                    let isPrimary = prefs.partnerLoveLanguages.first == lang
+                    HStack(spacing: BondSpacing.m) {
+                        Image(systemName: lang.symbolName)
+                            .foregroundStyle(lang.tint)
+                            .frame(width: 28)
+                        Text(lang.title)
+                            .font(.headline)
+                            .foregroundStyle(.primary)
+                        if isPrimary {
+                            Text("Primary")
+                                .font(.caption2.weight(.semibold))
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 2)
+                                .background(Color.bondAccent.opacity(0.15), in: Capsule())
+                                .foregroundStyle(Color.bondAccent)
+                                .accessibilityLabel("Primary love language")
                         }
-                        .padding(BondSpacing.base)
-                        .background(Color.bondCardFill, in: RoundedRectangle(cornerRadius: BondRadius.inline))
+                        Spacer()
+                        if selected && !isPrimary {
+                            Button("Make primary") {
+                                prefs.setPrimaryLoveLanguage(lang)
+                            }
+                            .font(.caption.weight(.medium))
+                            .buttonStyle(.borderless)
+                            .foregroundStyle(Color.bondAccent)
+                        }
+                        if selected {
+                            Image(systemName: "checkmark.circle.fill")
+                                .foregroundStyle(Color.bondAccent)
+                        }
                     }
-                    .buttonStyle(.plain)
+                    .padding(BondSpacing.base)
+                    .background(Color.bondCardFill, in: RoundedRectangle(cornerRadius: BondRadius.inline))
+                    .contentShape(Rectangle())
+                    .onTapGesture { prefs.toggleLoveLanguage(lang) }
                 }
             }
             .padding(.horizontal, BondSpacing.base)

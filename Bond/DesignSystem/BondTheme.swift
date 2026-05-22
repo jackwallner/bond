@@ -9,7 +9,6 @@ final class BondTheme {
     static let shared = BondTheme()
 
     enum Accent: String, CaseIterable, Identifiable {
-        case sage
         case terracotta
         case pink
 
@@ -17,7 +16,6 @@ final class BondTheme {
 
         var title: String {
             switch self {
-            case .sage:       "Sage"
             case .terracotta: "Terracotta"
             case .pink:       "Pink"
             }
@@ -25,11 +23,6 @@ final class BondTheme {
 
         var color: Color {
             switch self {
-            case .sage:
-                Color(
-                    light: Color(red: 0.36, green: 0.54, blue: 0.43),
-                    dark:  Color(red: 0.50, green: 0.69, blue: 0.57)
-                )
             case .terracotta:
                 Color(
                     light: Color(red: 0.71, green: 0.34, blue: 0.25),
@@ -49,6 +42,6 @@ final class BondTheme {
 
     private init() {
         accent = UserDefaults.standard.string(forKey: defaultsKey)
-            .flatMap(Accent.init(rawValue:)) ?? .sage
+            .flatMap(Accent.init(rawValue:)) ?? .terracotta
     }
 }
