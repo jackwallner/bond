@@ -27,7 +27,7 @@ struct MilestoneEditorView: View {
                     Toggle("Repeat yearly", isOn: $recur)
                 }
                 if let errorMessage {
-                    Text(errorMessage).foregroundStyle(.red).font(.footnote)
+                    Text(errorMessage).foregroundStyle(.red).font(.bond(.footnote))
                 }
             }
             .navigationTitle(existing == nil ? "New milestone" : "Edit milestone")

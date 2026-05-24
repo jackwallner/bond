@@ -221,7 +221,7 @@ struct IntentSetupView: View {
             .padding(.horizontal, BondSpacing.base)
 
             TextField("Their name", text: $prefs.partnerName)
-                .font(.title3)
+                .font(.bond(.title3))
                 .textInputAutocapitalization(.words)
                 .autocorrectionDisabled(true)
                 .submitLabel(.continue)
@@ -238,7 +238,7 @@ struct IntentSetupView: View {
         VStack(alignment: .leading, spacing: BondSpacing.xl) {
             BondScreenHeader(
                 title: "Make it real.",
-                subtitle: "Showing up for \(displayName) isn't a feature — it's a choice. Make it now, and Bond will help you keep it."
+                subtitle: "Showing up for \(displayName) isn't a feature, it's a choice. Make it now, and Bond will help you keep it."
             )
             .padding(.horizontal, BondSpacing.base)
 
@@ -258,7 +258,7 @@ struct IntentSetupView: View {
         VStack(alignment: .leading, spacing: BondSpacing.xl) {
             BondScreenHeader(
                 title: "What lands best with \(displayName)?",
-                subtitle: "Pick any that fit. Your first choice is their primary — we'll lean toward it."
+                subtitle: "Pick any that fit. Your first choice is their primary, we'll lean toward it."
             )
             .padding(.horizontal, BondSpacing.base)
 
@@ -271,11 +271,11 @@ struct IntentSetupView: View {
                             .foregroundStyle(lang.tint)
                             .frame(width: 28)
                         Text(lang.title)
-                            .font(.headline)
+                            .font(.bond(.headline))
                             .foregroundStyle(.primary)
                         if isPrimary {
                             Text("Primary")
-                                .font(.caption2.weight(.semibold))
+                                .font(.bond(.caption2, weight: .semibold))
                                 .padding(.horizontal, 6)
                                 .padding(.vertical, 2)
                                 .background(Color.bondAccent.opacity(0.15), in: Capsule())
@@ -287,7 +287,7 @@ struct IntentSetupView: View {
                             Button("Make primary") {
                                 prefs.setPrimaryLoveLanguage(lang)
                             }
-                            .font(.caption.weight(.medium))
+                            .font(.bond(.caption, weight: .medium))
                             .buttonStyle(.borderless)
                             .foregroundStyle(Color.bondAccent)
                         }

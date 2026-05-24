@@ -34,14 +34,14 @@ struct ReminderTemplatesView: View {
                 } label: {
                     HStack(spacing: 12) {
                         Image(systemName: group.icon)
-                            .font(.title2)
+                            .font(.bond(.title2))
                             .foregroundStyle(.pink)
                             .frame(width: 32)
                         VStack(alignment: .leading, spacing: 2) {
                             Text(group.title)
-                                .font(.headline)
+                                .font(.bond(.headline))
                             Text(group.subtitle)
-                                .font(.caption)
+                                .font(.bond(.caption))
                                 .foregroundStyle(.secondary)
                         }
                     }
@@ -49,7 +49,7 @@ struct ReminderTemplatesView: View {
                 }
             } header: {
                 Text("\(group.reminders.count) reminders")
-                    .font(.caption)
+                    .font(.bond(.caption))
                     .foregroundStyle(.secondary)
             }
         }
@@ -72,9 +72,9 @@ struct TemplateGroupDetailView: View {
             Section {
                 VStack(alignment: .leading, spacing: 8) {
                     Text(group.title)
-                        .font(.title2.bold())
+                        .font(.bond(.title2, weight: .bold))
                     Text(group.subtitle)
-                        .font(.subheadline)
+                        .font(.bond(.subheadline))
                         .foregroundStyle(.secondary)
                 }
                 .padding(.vertical, 8)
@@ -88,10 +88,10 @@ struct TemplateGroupDetailView: View {
                             .frame(width: 24)
                         VStack(alignment: .leading, spacing: 2) {
                             Text(template.title)
-                                .font(.subheadline)
+                                .font(.bond(.subheadline))
                             if let body = template.body {
                                 Text(body)
-                                    .font(.caption)
+                                    .font(.bond(.caption))
                                     .foregroundStyle(.secondary)
                             }
                         }
@@ -102,7 +102,7 @@ struct TemplateGroupDetailView: View {
                                 .frame(width: 8, height: 8)
                             if let preset = template.triggerRecurrence {
                                 Text(preset.title)
-                                    .font(.caption2)
+                                    .font(.bond(.caption2))
                                     .foregroundStyle(.secondary)
                             }
                         }
@@ -120,7 +120,7 @@ struct TemplateGroupDetailView: View {
                             ProgressView()
                         } else {
                             Text("Add \(group.reminders.count) reminders")
-                                .font(.headline)
+                                .font(.bond(.headline))
                         }
                         Spacer()
                     }
@@ -129,7 +129,7 @@ struct TemplateGroupDetailView: View {
                 .buttonStyle(.borderedProminent)
                 if let importError {
                     Text(importError)
-                        .font(.footnote)
+                        .font(.bond(.footnote))
                         .foregroundStyle(.red)
                 }
             }
@@ -192,7 +192,7 @@ struct TemplateGroupDetailView: View {
         } catch {
             // Surface a real error instead of celebrating zero inserts.
             createdCount = 0
-            importError = "Couldn't add templates — check your connection and try again."
+            importError = "Couldn't add templates. Check your connection and try again."
         }
 
         isCreating = false

@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 @main
 struct BondApp: App {
@@ -23,6 +24,25 @@ struct BondApp: App {
         _milestonesService = State(initialValue: milestones)
         _eventsRepo = State(initialValue: events)
         _checkInService = State(initialValue: checkIn)
+
+        Self.applyNavigationBarFont()
+    }
+
+    /// Nav-bar titles are rendered by UIKit, so SwiftUI's `.font(.bond(...))`
+    /// default doesn't reach them. Point the title + large-title text attributes
+    /// at the bundled brand face so navigation chrome matches in-content type.
+    private static func applyNavigationBarFont() {
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithDefaultBackground()
+        if let title = UIFont(name: "PlusJakartaSans-Bold", size: 17) {
+            appearance.titleTextAttributes[.font] = title
+        }
+        if let large = UIFont(name: "PlusJakartaSans-Bold", size: 34) {
+            appearance.largeTitleTextAttributes[.font] = large
+        }
+        UINavigationBar.appearance().standardAppearance = appearance
+        UINavigationBar.appearance().scrollEdgeAppearance = appearance
+        UINavigationBar.appearance().compactAppearance = appearance
     }
 
     var body: some Scene {
@@ -103,11 +123,12 @@ struct RootView: View {
             }
         }
         // Soft Tactile visual system, applied app-wide:
-        // • SF Rounded stands in for Plus Jakarta Sans (friendly geometric sans)
+        // • Plus Jakarta Sans (bundled) is the brand face; `.font(.bond(.body))`
+        //   sets the default so any Text without an explicit style inherits it
         // • warm cream→peach wash behind all content
         // • accent tint flows to every system control (links, switches, etc.)
         .background(Color.bondBackgroundGradient.ignoresSafeArea())
-        .fontDesign(.rounded)
+        .font(.bond(.body))
         .tint(.bondAccent)
         .animation(.easeOut(duration: 0.35), value: currentDestination)
         .sheet(isPresented: Binding(

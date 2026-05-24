@@ -29,16 +29,16 @@ struct SettingsView: View {
                         Label("Connect a partner", systemImage: "heart.circle")
                     }
                     Text("Bond is just for you right now. Pair to share reminders — you keep everything you've already added.")
-                        .font(.caption)
+                        .font(.bond(.caption))
                         .foregroundStyle(.secondary)
                 } else {
                     HStack(spacing: BondSpacing.m) {
                         InitialsAvatar(name: pairing.partnerProfile?.displayName)
                         VStack(alignment: .leading, spacing: 2) {
                             Text(pairing.partnerProfile?.displayName ?? "Your partner")
-                                .font(.headline)
+                                .font(.bond(.headline))
                             Text("Paired")
-                                .font(.caption)
+                                .font(.bond(.caption))
                                 .foregroundStyle(.secondary)
                         }
                     }
@@ -52,7 +52,7 @@ struct SettingsView: View {
                         LabeledContent("Status") {
                             Text("Premium since \(since.formatted(date: .long, time: .omitted))")
                                 .foregroundStyle(.secondary)
-                                .font(.callout)
+                                .font(.bond(.callout))
                         }
                     } else {
                         LabeledContent("Status", value: "Premium")
@@ -116,7 +116,7 @@ struct SettingsView: View {
                 HStack {
                     Spacer()
                     Text("Version \(appVersion) (build \(appBuild))")
-                        .font(.footnote)
+                        .font(.bond(.footnote))
                         .foregroundStyle(.tertiary)
                     Spacer()
                 }
@@ -159,17 +159,17 @@ struct SettingsView: View {
     private var notificationStateLabel: String {
         switch notificationStatus {
         case .authorized, .provisional, .ephemeral: "On"
-        case .denied: "Off — Open Settings"
+        case .denied: "Off, open Settings"
         default: "Not yet enabled"
         }
     }
 
     private var appVersion: String {
-        Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "—"
+        Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "Unknown"
     }
 
     private var appBuild: String {
-        Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "—"
+        Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "Unknown"
     }
 }
 
@@ -185,7 +185,7 @@ private struct InitialsAvatar: View {
 
     var body: some View {
         Text(initials)
-            .font(.subheadline.bold())
+            .font(.bond(.subheadline, weight: .bold))
             .foregroundStyle(.white)
             .frame(width: 36, height: 36)
             .background(Color.bondAccent, in: Circle())

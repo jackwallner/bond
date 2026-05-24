@@ -73,10 +73,10 @@ struct PairingView: View {
                 ShareLink(
                     item: url,
                     subject: Text("I want to pair with you on Bond."),
-                    message: Text("I'm using Bond — a small app for sending each other little reminders. Tap the link to pair with me, or use the code: \(pairing.pendingInviteCode ?? "").")
+                    message: Text("I'm using Bond, a small app for sending each other little reminders. Tap the link to pair with me, or use the code: \(pairing.pendingInviteCode ?? "").")
                 ) {
                     Label("Share invite link", systemImage: "square.and.arrow.up")
-                        .font(.headline)
+                        .font(.bond(.headline))
                         .frame(maxWidth: .infinity, minHeight: 50)
                 }
                 .buttonStyle(.borderedProminent)
@@ -89,13 +89,13 @@ struct PairingView: View {
                         QRCodeView(string: url.absoluteString)
                             .padding(.top, BondSpacing.s)
                         Text("In the same room? Have them point their camera at this.")
-                            .font(.caption)
+                            .font(.bond(.caption))
                             .foregroundStyle(.secondary)
                             .multilineTextAlignment(.center)
                     }
                 } label: {
                     Label("Show QR code", systemImage: "qrcode")
-                        .font(.subheadline)
+                        .font(.bond(.subheadline))
                         .foregroundStyle(.secondary)
                 }
                 .padding(.horizontal, BondSpacing.base)
@@ -188,7 +188,7 @@ private struct ExpiryCaption: View {
                         .monospacedDigit()
                 }
             }
-            .font(.caption)
+            .font(.bond(.caption))
             .foregroundStyle(.secondary)
         }
     }
@@ -296,11 +296,11 @@ struct AppleSignInPairingGate: View {
                     .font(.system(size: 48))
                     .foregroundStyle(Color.bondAccent)
                 Text(pairing.deferredInviteCode != nil ? "One step before pairing" : "Sign in to pair")
-                    .font(.title2.bold())
+                    .font(.bond(.title2, weight: .bold))
                 Text(pairing.deferredInviteCode != nil
                      ? "Your partner's invite is ready. Sign in with Apple so they stay paired with you across devices."
                      : "Pairing connects your reminders with your partner's. Apple Sign-In keeps that link recoverable across devices.")
-                    .font(.subheadline)
+                    .font(.bond(.subheadline))
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, BondSpacing.xl)

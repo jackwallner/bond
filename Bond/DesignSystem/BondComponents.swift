@@ -12,11 +12,11 @@ struct BondHero: View {
                 .foregroundStyle(Color.bondAccent.gradient)
                 .accessibilityHidden(true)
             Text("Bond")
-                .font(.largeTitle.bold())
+                .font(.bond(.largeTitle, weight: .bold))
                 .tracking(-0.5)
             if let subtitle {
                 Text(subtitle)
-                    .font(.title3)
+                    .font(.bond(.title3))
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, BondSpacing.xl)
@@ -33,9 +33,9 @@ struct BondScreenHeader: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: BondSpacing.xs) {
-            Text(title).font(.title.bold())
+            Text(title).font(.bond(.title, weight: .bold))
             if let subtitle {
-                Text(subtitle).font(.body).foregroundStyle(.secondary)
+                Text(subtitle).font(.bond(.body)).foregroundStyle(.secondary)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -56,7 +56,7 @@ struct BondPrimaryButton: View {
                     ProgressView().tint(.white)
                 } else {
                     if let systemImage { Image(systemName: systemImage) }
-                    Text(title).font(.headline)
+                    Text(title).font(.bond(.headline))
                 }
             }
             .frame(maxWidth: .infinity, minHeight: 52)
@@ -112,7 +112,7 @@ struct BondInlineError: View {
         } icon: {
             Image(systemName: "exclamationmark.circle.fill")
         }
-        .font(.footnote)
+        .font(.bond(.footnote))
         .foregroundStyle(.red)
         .padding(.horizontal, BondSpacing.base)
         .accessibilityLabel("Error: \(message)")
@@ -151,8 +151,8 @@ struct BondChoiceCard<Trailing: View>: View {
                     .foregroundStyle(tint)
                     .frame(width: 32, height: 32)
                 VStack(alignment: .leading, spacing: BondSpacing.xs) {
-                    Text(title).font(.headline)
-                    Text(description).font(.subheadline).foregroundStyle(.secondary)
+                    Text(title).font(.bond(.headline))
+                    Text(description).font(.bond(.subheadline)).foregroundStyle(.secondary)
                 }
                 Spacer(minLength: BondSpacing.s)
                 trailing()
@@ -177,11 +177,11 @@ struct BondSealedCard: View {
             HStack(spacing: BondSpacing.s) {
                 Image(systemName: "envelope.fill")
                     .foregroundStyle(.secondary)
-                Text(title).font(.subheadline.bold())
+                Text(title).font(.bond(.subheadline, weight: .bold))
                 Spacer()
             }
             Text(hint)
-                .font(.callout)
+                .font(.bond(.callout))
                 .foregroundStyle(.secondary)
         }
         .padding(BondSpacing.base)

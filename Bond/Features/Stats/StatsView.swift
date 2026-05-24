@@ -72,7 +72,7 @@ struct StatsView: View {
                     )
                     .foregroundStyle(item.0.tint)
                     .annotation(position: .trailing) {
-                        Text("\(item.1)").font(.caption2).foregroundStyle(.secondary)
+                        Text("\(item.1)").font(.bond(.caption2)).foregroundStyle(.secondary)
                     }
                 }
                 .frame(height: 220)
@@ -85,10 +85,10 @@ struct StatsView: View {
                             .foregroundStyle(lang.tint)
                             .frame(width: 24)
                         Text(lang.title)
-                            .font(.caption)
+                            .font(.bond(.caption))
                         Spacer()
                         Text("\(Int(rate))%")
-                            .font(.caption.monospacedDigit())
+                            .font(.bond(.caption).monospacedDigit())
                             .foregroundStyle(.secondary)
                         ProgressView(value: rate, total: 100)
                             .tint(lang.tint)
@@ -127,10 +127,10 @@ struct StatsView: View {
                     ForEach(insights, id: \.self) { insight in
                         HStack(alignment: .top, spacing: 8) {
                             Image(systemName: "lightbulb.fill")
-                                .font(.caption)
+                                .font(.bond(.caption))
                                 .foregroundStyle(.yellow)
                             Text(insight)
-                                .font(.subheadline)
+                                .font(.bond(.subheadline))
                         }
                     }
                 }
@@ -149,10 +149,10 @@ struct StatsView: View {
         return HStack {
             VStack(alignment: .center, spacing: 4) {
                 Text("\(current)")
-                    .font(.title.bold())
+                    .font(.bond(.title, weight: .bold))
                     .foregroundStyle(.pink)
                 Text("day streak")
-                    .font(.caption)
+                    .font(.bond(.caption))
                     .foregroundStyle(.secondary)
             }
             .frame(maxWidth: .infinity)
@@ -161,10 +161,10 @@ struct StatsView: View {
 
             VStack(alignment: .center, spacing: 4) {
                 Text("\(longest)")
-                    .font(.title.bold())
+                    .font(.bond(.title, weight: .bold))
                     .foregroundStyle(.orange)
                 Text("best streak")
-                    .font(.caption)
+                    .font(.bond(.caption))
                     .foregroundStyle(.secondary)
             }
             .frame(maxWidth: .infinity)
@@ -173,10 +173,10 @@ struct StatsView: View {
 
             VStack(alignment: .center, spacing: 4) {
                 Text("\(Int(a.completionRate()))%")
-                    .font(.title.bold())
+                    .font(.bond(.title, weight: .bold))
                     .foregroundStyle(.green)
                 Text("completion")
-                    .font(.caption)
+                    .font(.bond(.caption))
                     .foregroundStyle(.secondary)
             }
             .frame(maxWidth: .infinity)
@@ -198,18 +198,18 @@ struct StatsView: View {
                     .frame(width: 80, height: 80)
                     .rotationEffect(.degrees(-90))
                 Text("\(Int(score))")
-                    .font(.title2.bold())
+                    .font(.bond(.title2, weight: .bold))
             }
 
             if let most = a.mostUsed() {
                 HStack {
                     Text("Most: ")
-                        .font(.caption)
+                        .font(.bond(.caption))
                         .foregroundStyle(.secondary)
                     Text(most.0.title)
-                        .font(.caption.bold())
+                        .font(.bond(.caption, weight: .bold))
                     Image(systemName: most.0.symbolName)
-                        .font(.caption)
+                        .font(.bond(.caption))
                         .foregroundStyle(most.0.tint)
                 }
             }
@@ -217,12 +217,12 @@ struct StatsView: View {
             if let neglected = a.mostNeglected() {
                 HStack {
                     Text("Needs attention: ")
-                        .font(.caption)
+                        .font(.bond(.caption))
                         .foregroundStyle(.secondary)
                     Text(neglected.0.title)
-                        .font(.caption.bold())
+                        .font(.bond(.caption, weight: .bold))
                     Image(systemName: neglected.0.symbolName)
-                        .font(.caption)
+                        .font(.bond(.caption))
                         .foregroundStyle(neglected.0.tint)
                 }
             }

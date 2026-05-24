@@ -41,22 +41,38 @@ extension Color {
     @MainActor
     static var bondAccentGradient: LinearGradient { BondTheme.shared.accent.gradient }
 
-    // Soft Tactile surface palette. Warm cream base, brighter warm-white cards.
-    /// Screen base — cream `#FBE9D2`, lit by sunset rather than flash.
-    static let bondSurface = Color(
-        light: Color(red: 0.984, green: 0.914, blue: 0.824),
-        dark:  Color(red: 0.102, green: 0.082, blue: 0.071)
+    /// Secondary accent — dusty plum. A cool foil to the warm terracotta so
+    /// the palette reads dimensional instead of monochrome. Use sparingly for
+    /// secondary emphasis, alternate tints, and accents that shouldn't compete
+    /// with the primary action color.
+    static let bondSecondary = Color(
+        light: Color(red: 0.549, green: 0.353, blue: 0.451),  // #8C5A73
+        dark:  Color(red: 0.780, green: 0.604, blue: 0.690)
     )
-    /// Raised panels / sheets — warm white `#FFF6E9`.
+    /// Tertiary warm accent — soft gold. For highlights, streaks, and small
+    /// celebratory moments where terracotta would feel heavy.
+    static let bondGold = Color(
+        light: Color(red: 0.784, green: 0.580, blue: 0.235),  // #C8943C
+        dark:  Color(red: 0.902, green: 0.753, blue: 0.455)
+    )
+
+    // Warm surface palette. Deeper cream base + brighter warm-white cards, so
+    // raised surfaces lift off the background with more contrast than before.
+    /// Screen base — warm cream `#F8E2C6`, lit by sunset rather than flash.
+    static let bondSurface = Color(
+        light: Color(red: 0.973, green: 0.886, blue: 0.776),
+        dark:  Color(red: 0.106, green: 0.082, blue: 0.075)
+    )
+    /// Raised panels / sheets — warm white `#FFF1DE`.
     static let bondSurfaceElevated = Color(
-        light: Color(red: 1.000, green: 0.965, blue: 0.914),
-        dark:  Color(red: 0.165, green: 0.137, blue: 0.122)
+        light: Color(red: 1.000, green: 0.945, blue: 0.871),
+        dark:  Color(red: 0.176, green: 0.141, blue: 0.129)
     )
     /// Inline content card fill — the brightest warm white so cards lift off
     /// the cream base. Replaces ad-hoc `Color.gray.opacity(0.08)`.
     static let bondCardFill = Color(
-        light: Color(red: 1.000, green: 0.984, blue: 0.957),
-        dark:  Color(red: 0.196, green: 0.165, blue: 0.149)
+        light: Color(red: 1.000, green: 0.976, blue: 0.945),
+        dark:  Color(red: 0.208, green: 0.173, blue: 0.157)
     )
     /// Hairline border / divider — warm brown, not gray.
     static let bondHairline = Color(
@@ -74,10 +90,10 @@ extension Color {
     static var bondBackgroundGradient: LinearGradient {
         LinearGradient(
             colors: [
-                Color(light: Color(red: 0.984, green: 0.914, blue: 0.824),
-                      dark:  Color(red: 0.102, green: 0.082, blue: 0.071)),
-                Color(light: Color(red: 0.925, green: 0.729, blue: 0.561),
-                      dark:  Color(red: 0.149, green: 0.110, blue: 0.090))
+                Color(light: Color(red: 0.973, green: 0.886, blue: 0.776),
+                      dark:  Color(red: 0.106, green: 0.082, blue: 0.075)),
+                Color(light: Color(red: 0.929, green: 0.690, blue: 0.561),
+                      dark:  Color(red: 0.157, green: 0.114, blue: 0.094))
             ],
             startPoint: .top,
             endPoint: .bottom

@@ -49,23 +49,35 @@ struct ReminderEditorView: View {
                                     } label: {
                                         HStack(spacing: BondSpacing.xs) {
                                             Image(systemName: chip.loveLanguage.symbolName)
-                                                .font(.caption)
+                                                .font(.bond(.caption))
                                                 .foregroundStyle(chip.loveLanguage.tint)
                                             Text(chip.title)
-                                                .font(.caption)
+                                                .font(.bond(.caption))
                                                 .foregroundStyle(.primary)
+                                                .lineLimit(1)
                                         }
+                                        .fixedSize(horizontal: true, vertical: false)
                                         .padding(.horizontal, BondSpacing.m)
                                         .padding(.vertical, BondSpacing.s)
                                         .background(Color.bondCardFill, in: Capsule())
+                                        .overlay(
+                                            Capsule().strokeBorder(Color.bondHairline, lineWidth: 0.5)
+                                        )
                                     }
                                     .buttonStyle(.plain)
                                     .accessibilityLabel("Use suggestion: \(chip.title)")
                                 }
                             }
-                            .padding(.vertical, 2)
+                            // Breathing room lives inside the scroll content so the
+                            // first/last chips clear the screen edges and the capsules
+                            // aren't clipped by the row bounds (the old row insets used
+                            // trailing: 0 + 4pt vertical, so chips ran off the edge and
+                            // got cut top/bottom).
+                            .padding(.horizontal, BondSpacing.base)
+                            .padding(.vertical, BondSpacing.s)
                         }
-                        .listRowInsets(EdgeInsets(top: 4, leading: 12, bottom: 4, trailing: 0))
+                        .listRowInsets(EdgeInsets())
+                        .listRowBackground(Color.clear)
                     } header: {
                         Text("Need an idea?")
                     }
@@ -98,7 +110,7 @@ struct ReminderEditorView: View {
                     if pairing.solo {
                         // Solo users only target themselves.
                         Text("Reminders are just for you.")
-                            .font(.callout)
+                            .font(.bond(.callout))
                             .foregroundStyle(.secondary)
                     } else {
                         Picker("Target", selection: $target) {
@@ -131,7 +143,7 @@ struct ReminderEditorView: View {
                 } footer: {
                     if !store.isPremium {
                         Text("Location & random-surprise triggers are Premium.")
-                            .font(.caption)
+                            .font(.bond(.caption))
                             .foregroundStyle(.secondary)
                     }
                 }
@@ -140,7 +152,7 @@ struct ReminderEditorView: View {
                     Section {
                         Text(errorMessage)
                             .foregroundStyle(.red)
-                            .font(.footnote)
+                            .font(.bond(.footnote))
                     }
                 }
             }
@@ -198,11 +210,11 @@ struct ReminderEditorView: View {
             }
             if geofenceConfigured {
                 Text(String(format: "%.4f, %.4f (200m radius)", geofenceLatitude, geofenceLongitude))
-                    .font(.caption2)
+                    .font(.bond(.caption2))
                     .foregroundStyle(.secondary)
             } else {
                 Text("Tap above to capture a location before saving.")
-                    .font(.caption2)
+                    .font(.bond(.caption2))
                     .foregroundStyle(.orange)
             }
         case .randomWindow:
@@ -210,11 +222,11 @@ struct ReminderEditorView: View {
             DatePicker("Latest", selection: $windowEnd)
             if windowEnd <= windowStart {
                 Text("Latest must be after Earliest.")
-                    .font(.caption2)
+                    .font(.bond(.caption2))
                     .foregroundStyle(.orange)
             } else {
                 Text("Bond will pick a random moment in this window.")
-                    .font(.caption2)
+                    .font(.bond(.caption2))
                     .foregroundStyle(.secondary)
             }
         }
@@ -380,17 +392,17 @@ private struct TriggerOptionRow: View {
         Button(action: onTap) {
             HStack(spacing: BondSpacing.m) {
                 Image(systemName: kind.symbolName)
-                    .font(.title3)
+                    .font(.bond(.title3))
                     .foregroundStyle(isLocked ? .secondary : Color.bondAccent)
                     .frame(width: 28)
                 VStack(alignment: .leading, spacing: 2) {
                     HStack(spacing: BondSpacing.xs) {
                         Text(kind.title)
-                            .font(.headline)
+                            .font(.bond(.headline))
                             .foregroundStyle(.primary)
                         if kind.isPremium {
                             Text("PRO")
-                                .font(.caption2.weight(.semibold))
+                                .font(.bond(.caption2, weight: .semibold))
                                 .foregroundStyle(.white)
                                 .padding(.horizontal, 6)
                                 .padding(.vertical, 2)
@@ -398,14 +410,14 @@ private struct TriggerOptionRow: View {
                         }
                     }
                     Text(kind.subtitle)
-                        .font(.caption)
+                        .font(.bond(.caption))
                         .foregroundStyle(.secondary)
                 }
                 Spacer()
                 if isLocked {
                     Image(systemName: "lock.fill")
                         .foregroundStyle(.secondary)
-                        .font(.caption)
+                        .font(.bond(.caption))
                 } else if isSelected {
                     Image(systemName: "checkmark.circle.fill")
                         .foregroundStyle(Color.bondAccent)

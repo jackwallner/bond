@@ -24,6 +24,13 @@
 	<string>https://rmtkpokdsyfvrisfygta.supabase.co</string>
 	<key>SUPABASE_ANON_KEY</key>
 	<string>eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJtdGtwb2tkc3lmdnJpc2Z5Z3RhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1NjE1MjgsImV4cCI6MjA5NDEzNzUyOH0.AMfEc66W4KsCs33TKgrMZm0qZu4fx-05LchcUvXQ6mk</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>PlusJakartaSans-Regular.ttf</string>
+		<string>PlusJakartaSans-Medium.ttf</string>
+		<string>PlusJakartaSans-SemiBold.ttf</string>
+		<string>PlusJakartaSans-Bold.ttf</string>
+	</array>
 	<key>UILaunchScreen</key>
 	<dict/>
 	<key>ITSAppUsesNonExemptEncryption</key>

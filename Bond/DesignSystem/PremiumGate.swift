@@ -14,7 +14,7 @@ enum PremiumFeature {
     var gateSubhead: String {
         switch self {
         case .checkIn:    "Both of you answer the same prompt. You see each other's once you've both replied."
-        case .insights:   "Track which love languages you're leaning on — and which need attention."
+        case .insights:   "Track which love languages you're leaning on, and which need attention."
         case .templates:  "Curated sets for date nights, long distance, daily affirmations, and more."
         }
     }
@@ -49,9 +49,9 @@ struct BondGatePreview<Preview: View>: View {
 
             VStack(spacing: BondSpacing.s) {
                 VStack(spacing: BondSpacing.xs) {
-                    Text(feature.gateHeadline).font(.headline)
+                    Text(feature.gateHeadline).font(.bond(.headline))
                     Text(feature.gateSubhead)
-                        .font(.subheadline)
+                        .font(.bond(.subheadline))
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
                 }
@@ -69,7 +69,7 @@ struct BondGatePreview<Preview: View>: View {
                         ProgressView()
                     } else {
                         Text("Restore purchases")
-                            .font(.footnote)
+                            .font(.bond(.footnote))
                             .foregroundStyle(.secondary)
                     }
                 }
@@ -92,12 +92,12 @@ struct BondCheckInUnlockCard: View {
         VStack(spacing: BondSpacing.m) {
             VStack(spacing: BondSpacing.xs) {
                 Image(systemName: "questionmark.bubble.fill")
-                    .font(.title2)
+                    .font(.bond(.title2))
                     .foregroundStyle(Color.bondAccent)
                 Text("Answer together")
-                    .font(.headline)
+                    .font(.bond(.headline))
                 Text("Premium unlocks answering today's question and seeing each other's response once you've both replied.")
-                    .font(.subheadline)
+                    .font(.bond(.subheadline))
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
             }
@@ -115,7 +115,7 @@ struct BondCheckInUnlockCard: View {
                     ProgressView()
                 } else {
                     Text("Restore purchases")
-                        .font(.footnote)
+                        .font(.bond(.footnote))
                         .foregroundStyle(.secondary)
                 }
             }
@@ -138,12 +138,12 @@ struct BondInsightsUnlockCard: View {
         VStack(spacing: BondSpacing.m) {
             VStack(spacing: BondSpacing.xs) {
                 Image(systemName: "chart.bar.xaxis.ascending")
-                    .font(.title2)
+                    .font(.bond(.title2))
                     .foregroundStyle(Color.bondAccent)
                 Text("Unlock the full picture")
-                    .font(.headline)
+                    .font(.bond(.headline))
                 Text("Premium opens up your love-language balance, weekly trends, and personalized insights.")
-                    .font(.subheadline)
+                    .font(.bond(.subheadline))
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
             }
@@ -161,7 +161,7 @@ struct BondInsightsUnlockCard: View {
                     ProgressView()
                 } else {
                     Text("Restore purchases")
-                        .font(.footnote)
+                        .font(.bond(.footnote))
                         .foregroundStyle(.secondary)
                 }
             }

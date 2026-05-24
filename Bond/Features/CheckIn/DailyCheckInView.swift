@@ -100,16 +100,16 @@ struct DailyCheckInView: View {
             if let question = checkIn.todaysQuestion {
                 if let lang = question.loveLanguage {
                     Image(systemName: lang.symbolName)
-                        .font(.title)
+                        .font(.bond(.title))
                         .foregroundStyle(lang.tint)
                 }
                 Text(question.question)
-                    .font(.title3)
+                    .font(.bond(.title3))
                     .multilineTextAlignment(.center)
                     .padding(.horizontal)
                 if let lang = question.loveLanguage {
                     Text(lang.title)
-                        .font(.caption)
+                        .font(.bond(.caption))
                         .foregroundStyle(lang.tint)
                         .padding(.horizontal, BondSpacing.m)
                         .padding(.vertical, BondSpacing.xs)
@@ -128,10 +128,10 @@ struct DailyCheckInView: View {
         VStack(alignment: .leading, spacing: BondSpacing.s) {
             HStack(spacing: BondSpacing.s) {
                 Image(systemName: icon).foregroundStyle(tint)
-                Text(title).font(.subheadline.bold())
+                Text(title).font(.bond(.subheadline, weight: .bold))
             }
             Text(text)
-                .font(.body)
+                .font(.bond(.body))
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
                 .background(tint.opacity(0.08), in: RoundedRectangle(cornerRadius: BondRadius.inline))

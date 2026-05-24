@@ -55,9 +55,9 @@ struct EmptyRemindersView: View {
                         .foregroundStyle(.secondary)
                         .accessibilityHidden(true)
                     Text("No reminders yet.")
-                        .font(.title3.bold())
+                        .font(.bond(.title3, weight: .bold))
                     Text("Add one with the + button, or start with these.")
-                        .font(.subheadline)
+                        .font(.bond(.subheadline))
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, BondSpacing.xl)
@@ -67,16 +67,16 @@ struct EmptyRemindersView: View {
 
                 VStack(alignment: .leading, spacing: BondSpacing.m) {
                     Text("Start here")
-                        .font(.subheadline.bold())
+                        .font(.bond(.subheadline, weight: .bold))
                     ForEach(chips) { chip in
                         Button { onTapChip(chip) } label: {
                             HStack(spacing: BondSpacing.m) {
                                 Image(systemName: chip.loveLanguage.symbolName)
-                                    .font(.body)
+                                    .font(.bond(.body))
                                     .foregroundStyle(chip.loveLanguage.tint)
                                     .frame(width: 24)
                                 Text(chip.title)
-                                    .font(.callout)
+                                    .font(.bond(.callout))
                                     .foregroundStyle(.primary)
                                     .multilineTextAlignment(.leading)
                                 Spacer()
@@ -99,7 +99,7 @@ struct EmptyRemindersView: View {
                         Text("Browse templates")
                         Image(systemName: "arrow.right")
                     }
-                    .font(.footnote.bold())
+                    .font(.bond(.footnote, weight: .bold))
                     .foregroundStyle(Color.bondAccent)
                 }
                 .padding(.top, BondSpacing.base)

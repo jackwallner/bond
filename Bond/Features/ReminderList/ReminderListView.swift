@@ -208,7 +208,7 @@ struct ReminderListView: View {
             isEditorPresented = true
         } label: {
             Image(systemName: "plus")
-                .font(.title2.bold())
+                .font(.bond(.title2, weight: .bold))
                 .foregroundStyle(.white)
                 .frame(width: 58, height: 58)
                 .background(Color.bondAccent, in: Circle())
@@ -308,7 +308,7 @@ struct ReminderListView: View {
                     Button(showAllHandled ? "Show recent only" : "Show all \(all.count) handled") {
                         showAllHandled.toggle()
                     }
-                    .font(.footnote)
+                    .font(.bond(.footnote))
                 }
             } header: {
                 Text(showAllHandled ? "Handled" : "Handled · last \(handledRecentDays) days")
@@ -469,24 +469,24 @@ private struct PartnerRequestCard: View {
         VStack(alignment: .leading, spacing: BondSpacing.m) {
             HStack(alignment: .top, spacing: BondSpacing.m) {
                 Image(systemName: "sparkles")
-                    .font(.title3)
+                    .font(.bond(.title3))
                     .foregroundStyle(Color.bondAccent)
                     .frame(width: 28, height: 28)
                 VStack(alignment: .leading, spacing: BondSpacing.xs) {
                     Text("\(partnerName) added this")
-                        .font(.caption.weight(.semibold))
+                        .font(.bond(.caption, weight: .semibold))
                         .foregroundStyle(Color.bondAccent)
                     Text(reminder.title)
-                        .font(.headline)
+                        .font(.bond(.headline))
                         .foregroundStyle(.primary)
                     if let body = reminder.body, !body.isEmpty {
                         Text(body)
-                            .font(.subheadline)
+                            .font(.bond(.subheadline))
                             .foregroundStyle(.secondary)
                     }
                     if let next = nextFire {
                         Label(next.formatted(date: .abbreviated, time: .shortened), systemImage: "clock")
-                            .font(.caption)
+                            .font(.bond(.caption))
                             .foregroundStyle(.secondary)
                     }
                 }
@@ -537,20 +537,20 @@ private struct CheckInPromptCard: View {
     var body: some View {
         HStack(spacing: BondSpacing.m) {
             Image(systemName: icon)
-                .font(.title2)
+                .font(.bond(.title2))
                 .foregroundStyle(Color.bondAccent)
                 .frame(width: 32, height: 32)
             VStack(alignment: .leading, spacing: 2) {
                 Text(headline)
-                    .font(.subheadline.weight(.semibold))
+                    .font(.bond(.subheadline, weight: .semibold))
                     .foregroundStyle(.primary)
                 Text(subhead)
-                    .font(.caption)
+                    .font(.bond(.caption))
                     .foregroundStyle(.secondary)
             }
             Spacer()
             Image(systemName: "chevron.right")
-                .font(.caption.weight(.semibold))
+                .font(.bond(.caption, weight: .semibold))
                 .foregroundStyle(.tertiary)
         }
         .padding(BondSpacing.base)
@@ -578,9 +578,9 @@ private struct MyListEmptyView: View {
                 .font(.system(size: 40))
                 .foregroundStyle(Color.bondAccent)
             Text("Your list is clear")
-                .font(.title3.bold())
+                .font(.bond(.title3, weight: .bold))
             Text(subtitle)
-                .font(.subheadline)
+                .font(.bond(.subheadline))
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
             HStack(spacing: BondSpacing.s) {

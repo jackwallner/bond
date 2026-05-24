@@ -22,7 +22,7 @@ packages:
     from: 2.24.0
   RevenueCat:
     url: https://github.com/RevenueCat/purchases-ios-spm.git
-    from: 5.14.0
+    from: 5.67.0
 
 schemes:
   Bond:
@@ -79,8 +79,6 @@ targets:
         product: Supabase
       - package: RevenueCat
         product: RevenueCat
-      - package: RevenueCat
-        product: RevenueCatUI
       - target: BondWidgets
 
   BondWatch:

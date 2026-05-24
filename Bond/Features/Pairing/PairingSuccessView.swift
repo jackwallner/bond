@@ -17,9 +17,9 @@ struct PairingSuccessView: View {
 
             VStack(spacing: BondSpacing.s) {
                 Text("You're paired.")
-                    .font(.largeTitle.bold())
+                    .font(.bond(.largeTitle, weight: .bold))
                 Text(namesLine)
-                    .font(.title3)
+                    .font(.bond(.title3))
                     .foregroundStyle(.secondary)
             }
 

@@ -31,15 +31,15 @@ struct InsightsGateContent: View {
             Section("Sample · What we noticed") {
                 Label("Sample · Quality Time is your least-expressed love language this month.",
                       systemImage: "lightbulb.fill")
-                    .font(.subheadline)
+                    .font(.bond(.subheadline))
             }
         }
     }
 
     private func metric(_ value: String, _ label: String, _ tint: Color) -> some View {
         VStack(spacing: BondSpacing.xs) {
-            Text(value).font(.title.bold()).foregroundStyle(tint)
-            Text(label).font(.caption).foregroundStyle(.secondary)
+            Text(value).font(.bond(.title, weight: .bold)).foregroundStyle(tint)
+            Text(label).font(.bond(.caption)).foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity)
     }
@@ -51,13 +51,13 @@ struct CheckInGateContent: View {
             VStack(spacing: BondSpacing.xl) {
                 VStack(spacing: BondSpacing.m) {
                     Image(systemName: LoveLanguage.words.symbolName)
-                        .font(.title)
+                        .font(.bond(.title))
                         .foregroundStyle(LoveLanguage.words.tint)
                     Text("Sample · What is one thing you appreciated about your partner today?")
-                        .font(.title3)
+                        .font(.bond(.title3))
                         .multilineTextAlignment(.center)
                     Text(LoveLanguage.words.title)
-                        .font(.caption)
+                        .font(.bond(.caption))
                         .foregroundStyle(LoveLanguage.words.tint)
                         .padding(.horizontal, BondSpacing.m)
                         .padding(.vertical, BondSpacing.xs)
@@ -86,10 +86,10 @@ struct TemplatesGateContent: View {
         List {
             ForEach(groups, id: \.1) { icon, title, count in
                 HStack(spacing: BondSpacing.m) {
-                    Image(systemName: icon).font(.title2).foregroundStyle(.pink).frame(width: 32)
+                    Image(systemName: icon).font(.bond(.title2)).foregroundStyle(.pink).frame(width: 32)
                     VStack(alignment: .leading, spacing: 2) {
-                        Text(title).font(.headline)
-                        Text(count).font(.caption).foregroundStyle(.secondary)
+                        Text(title).font(.bond(.headline))
+                        Text(count).font(.bond(.caption)).foregroundStyle(.secondary)
                     }
                     Spacer()
                 }

@@ -17,10 +17,10 @@ struct NotificationPrimerSheet: View {
 
             VStack(spacing: BondSpacing.m) {
                 Text("Bond is silent without your permission.")
-                    .font(.title2.bold())
+                    .font(.bond(.title2, weight: .bold))
                     .multilineTextAlignment(.center)
                 Text("Reminders fire as notifications. No notifications, no reminders. That's the whole app.")
-                    .font(.body)
+                    .font(.bond(.body))
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
             }
@@ -34,7 +34,7 @@ struct NotificationPrimerSheet: View {
                     dismiss()
                 }
                 Button("Maybe later") { dismiss() }
-                    .font(.footnote)
+                    .font(.bond(.footnote))
                     .foregroundStyle(.secondary)
                     .padding(.bottom, BondSpacing.s)
             }

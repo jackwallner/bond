@@ -157,14 +157,14 @@ public struct LoveLanguageAnalyzer: Sendable {
         }
 
         if let neglected = mostNeglected() {
-            result.append("\(neglected.0.title) is your least expressed love language — consider adding more \(neglected.0.title.lowercased()) reminders.")
+            result.append("\(neglected.0.title) is your least expressed love language. Consider adding more \(neglected.0.title.lowercased()) reminders.")
         }
 
         let rate = completionRate()
         if rate > 75 {
             result.append("Excellent follow-through! You're acting on \(Int(rate))% of your reminders.")
         } else if rate > 50 {
-            result.append("Good progress — you're completing \(Int(rate))% of reminders. Try to act on more when they fire.")
+            result.append("Good progress. You're completing \(Int(rate))% of reminders. Try to act on more when they fire.")
         } else if rate > 0 {
             result.append("You've completed \(Int(rate))% of reminders. Small consistent actions build strong habits.")
         }
