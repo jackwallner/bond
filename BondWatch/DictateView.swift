@@ -5,6 +5,7 @@ struct DictateView: View {
 
     @State private var text = ""
     @State private var language: LoveLanguage = .words
+    @State private var recipient: WatchPayload.Recipient = .partner
     @State private var statusMessage: String?
 
     var body: some View {
@@ -15,6 +16,12 @@ struct DictateView: View {
                     .textFieldStyle(.plain)
                     .padding(8)
                     .background(.gray.opacity(0.15), in: RoundedRectangle(cornerRadius: 10))
+
+                Picker("For", selection: $recipient) {
+                    Text("My partner").tag(WatchPayload.Recipient.partner)
+                    Text("Me").tag(WatchPayload.Recipient.me)
+                }
+                .pickerStyle(.navigationLink)
 
                 Picker("Language", selection: $language) {
                     ForEach(LoveLanguage.allCases) { l in
@@ -44,10 +51,18 @@ struct DictateView: View {
     private func send() async {
         let cleaned = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !cleaned.isEmpty else { return }
-        let ok = await sender.sendDictatedReminder(title: cleaned, language: language)
-        statusMessage = ok
-            ? "Sent — will fire in ~1h."
-            : (sender.lastError ?? "Send failed.")
-        if ok { text = "" }
+        let outcome = await sender.sendDictatedReminder(
+            title: cleaned, language: language, recipient: recipient
+        )
+        switch outcome {
+        case .confirmed:
+            statusMessage = "Saved — you'll be reminded in about an hour."
+            text = ""
+        case .queued:
+            statusMessage = "Queued — open Bond on your phone to confirm."
+            text = ""
+        case .failed:
+            statusMessage = sender.lastError ?? "Send failed."
+        }
     }
 }

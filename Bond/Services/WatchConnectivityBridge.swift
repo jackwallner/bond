@@ -78,12 +78,18 @@ final class WatchConnectivityBridge: NSObject {
 
         let fireAt = Date().addingTimeInterval(payload.scheduledOffsetSeconds)
         let language = LoveLanguage(rawValue: payload.loveLanguage) ?? .words
+        // Honor the recipient chosen on the watch. A `.partner` request still
+        // falls back to the user when solo/unpaired (no partner id to target).
+        let targetId: UUID = switch payload.recipient {
+        case .me:      me
+        case .partner: (!pairing.solo ? pairing.partnerProfile?.id : nil) ?? me
+        }
 
         let reminder = ReminderDTO(
             id: UUID(),
             coupleId: coupleId,
             authorId: me,
-            targetId: me,
+            targetId: targetId,
             title: payload.title,
             body: nil,
             loveLanguage: language,

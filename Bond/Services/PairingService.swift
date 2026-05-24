@@ -19,6 +19,14 @@ final class PairingService {
     /// router can show the one-time success interstitial.
     var justPaired = false
     var lastError: String?
+    /// An invite code captured from a universal link before the user had a
+    /// recoverable identity. Held until Apple Sign-In completes, then
+    /// consumed in [[AppleSignInPairingGate]]. Without this, anonymous users
+    /// could pair via deep link and lose their account forever on reinstall.
+    var deferredInviteCode: String?
+    /// Set when an invite link arrives for an anonymous user; observed by
+    /// RootView to surface the sign-in-to-pair flow.
+    var requiresSignInToPair = false
 
     private let inviteCodeLength = 6
     private let inviteCodeAlphabet = Array("ABCDEFGHJKMNPQRSTUVWXYZ23456789")
@@ -61,14 +69,43 @@ final class PairingService {
             lastError = "Sign in first."
             return
         }
+        lastError = nil
         do {
-            try await supabase.client
-                .rpc("create_solo_couple", params: ["p_user": me.uuidString])
-                .execute()
+            try await callCreateSoloCouple(me)
             await loadCouple()
         } catch {
-            lastError = error.localizedDescription
+            // A stale PostgREST schema cache (function exists in Postgres but
+            // the gateway hasn't reloaded) presents as a transient PGRST202.
+            // Retry once after a beat before giving up.
+            if isSchemaCacheError(error) {
+                try? await Task.sleep(nanoseconds: 1_500_000_000)
+                do {
+                    try await callCreateSoloCouple(me)
+                    await loadCouple()
+                    lastError = nil
+                    return
+                } catch {
+                    log.error("create_solo_couple retry failed: \(error.localizedDescription)")
+                }
+            } else {
+                log.error("create_solo_couple failed: \(error.localizedDescription)")
+            }
+            // Human copy, not raw PostgREST jargon.
+            lastError = "We couldn't finish setup. Please try again in a moment."
         }
+    }
+
+    private func callCreateSoloCouple(_ me: UUID) async throws {
+        try await supabase.client
+            .rpc("create_solo_couple", params: ["p_user": me.uuidString])
+            .execute()
+    }
+
+    private func isSchemaCacheError(_ error: Error) -> Bool {
+        let text = error.localizedDescription.lowercased()
+        return text.contains("schema cache")
+            || text.contains("pgrst202")
+            || text.contains("could not find the function")
     }
 
     func generateInviteCode() async -> URL? {
@@ -76,6 +113,7 @@ final class PairingService {
             lastError = "Sign in first."
             return nil
         }
+        lastError = nil
         let code = (0..<inviteCodeLength)
             .map { _ in inviteCodeAlphabet.randomElement()! }
             .reduce(into: "") { $0.append($1) }
@@ -109,6 +147,7 @@ final class PairingService {
             return
         }
         isPairing = true
+        lastError = nil
         defer { isPairing = false }
         do {
             try await supabase.client
@@ -157,6 +196,8 @@ final class PairingService {
         justPaired = false
         isPairing = false
         lastError = nil
+        deferredInviteCode = nil
+        requiresSignInToPair = false
     }
 
     func handleIncomingURL(_ url: URL) {
@@ -165,6 +206,24 @@ final class PairingService {
         guard let pairIndex = parts.firstIndex(of: "pair"),
               pairIndex + 1 < parts.count else { return }
         let code = parts[pairIndex + 1]
+        // Anonymous users cannot pair via deep link without first establishing
+        // a recoverable identity, otherwise the partner ends up linked to a
+        // throwaway account that vanishes on reinstall. Defer until the gate
+        // upgrades them via Apple Sign-In.
+        if supabase.isAnonymous {
+            deferredInviteCode = code
+            requiresSignInToPair = true
+            return
+        }
         Task { await consumeInviteCode(code) }
+    }
+
+    /// Consume an invite code captured before the user had a recoverable
+    /// identity. Called by [[AppleSignInPairingGate]] after sign-in succeeds.
+    func consumeDeferredInviteIfNeeded() async {
+        guard let code = deferredInviteCode else { return }
+        deferredInviteCode = nil
+        requiresSignInToPair = false
+        await consumeInviteCode(code)
     }
 }

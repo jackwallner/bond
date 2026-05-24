@@ -72,9 +72,32 @@ final class SupabaseService {
     }
 
     func signInWithApple(idToken: String, nonce: String) async throws {
-        let session = try await client.auth.signInWithIdToken(
-            credentials: .init(provider: .apple, idToken: idToken, nonce: nonce)
+        // When the user is already in an anonymous session, link the Apple
+        // identity to *that* user rather than minting a new one. Without
+        // this branch, every "upgrade your account" flow silently swapped
+        // auth.uid() and orphaned the user's reminders, milestones, and
+        // couple row to the abandoned anon identity.
+        let credentials = OpenIDConnectCredentials(
+            provider: .apple, idToken: idToken, nonce: nonce
         )
+        let session: Session
+        if isAnonymous {
+            do {
+                session = try await client.auth.linkIdentityWithIdToken(credentials: credentials)
+                log.info("Linked Apple identity to anonymous user \(session.user.id)")
+            } catch {
+                // If linking fails because the Apple identity is *already*
+                // attached to a different Supabase user (e.g. user previously
+                // signed in with Apple on another device), fall back to a
+                // straight sign-in so they can recover that account. Their
+                // anonymous-session data is lost in that case, which is the
+                // correct tradeoff — the recoverable account wins.
+                log.notice("linkIdentityWithIdToken failed (\(error.localizedDescription)); falling back to signInWithIdToken")
+                session = try await client.auth.signInWithIdToken(credentials: credentials)
+            }
+        } else {
+            session = try await client.auth.signInWithIdToken(credentials: credentials)
+        }
         currentUserId = session.user.id
         isAnonymous = session.user.isAnonymous
         log.info("Signed in with Apple — user \(session.user.id)")
@@ -86,5 +109,11 @@ final class SupabaseService {
         isAnonymous = false
         bootstrapTask = nil
         log.info("Signed out")
+        // Immediately establish a fresh anonymous session so the router
+        // doesn't strand the user on the loading spinner. Sign-out is a
+        // "new guest session" event, not a terminal state — without this,
+        // `RootView` keeps rendering `.loading` because nothing else
+        // re-runs `bootstrap()`.
+        await bootstrap()
     }
 }

@@ -8,6 +8,7 @@ struct ReminderListView: View {
     @Environment(PairingService.self) private var pairing
     @Environment(PurchasesService.self) private var store
     @Environment(DailyCheckInService.self) private var checkIn
+    @State private var router = NotificationRouter.shared
 
     @State private var isEditorPresented = false
     @State private var isTemplatesPresented = false
@@ -83,6 +84,7 @@ struct ReminderListView: View {
                 await repo.refresh()
                 await eventsRepo.refresh()
                 hasLoadedOnce = true
+                openReminderFromNotification(router.pendingReminderId)
                 await repo.subscribeRealtime()
                 await NotificationScheduler.shared.reschedule(
                     forSelfUserId: supabase.currentUserId ?? UUID(),
@@ -90,13 +92,42 @@ struct ReminderListView: View {
                 )
                 await maybeShowNotificationPrimer()
             }
+            .onChange(of: router.pendingReminderId) { _, id in
+                openReminderFromNotification(id)
+            }
+            .onAppear { openReminderFromNotification(router.pendingReminderId) }
+            .onChange(of: pairing.coupleId) { _, _ in
+                // Re-subscribe after pair/unpair so realtime points at the
+                // new couple. Without this, a freshly-paired user keeps
+                // listening on the solo couple's channel and never sees
+                // partner-authored reminders until app restart.
+                Task {
+                    await repo.subscribeRealtime()
+                    await repo.refresh()
+                    await eventsRepo.refresh()
+                }
+            }
         }
     }
 
+    /// Open the editor for a reminder tapped from a notification. Waits for
+    /// the repo to have the row (a cold launch may deliver the tap before the
+    /// list has loaded); if it's not present yet, leaves the id pending so a
+    /// later refresh + onAppear can resolve it.
+    private func openReminderFromNotification(_ id: UUID?) {
+        guard let id else { return }
+        guard let match = repo.reminders.first(where: { $0.id == id }) else { return }
+        editingReminder = match
+        starterPrefill = nil
+        isEditorPresented = true
+        router.pendingReminderId = nil
+    }
+
     /// Show the pre-prompt primer once, only if the system hasn't been asked
-    /// yet. Solo users see it when they first open the editor instead.
+    /// yet. Both solo and paired users get a primer — without it solo users
+    /// would hit the bare iOS dialog with no context and tap "Don't Allow",
+    /// then wonder why nothing ever fires.
     private func maybeShowNotificationPrimer() async {
-        guard !pairing.solo else { return }
         guard !UserDefaults.standard.bool(forKey: primerShownKey) else { return }
         let status = await UNUserNotificationCenter.current()
             .notificationSettings().authorizationStatus

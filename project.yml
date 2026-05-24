@@ -56,6 +56,10 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.jackwallner.bond.tests
+        # Project-wide GENERATE_INFOPLIST_FILE is NO so app targets can pin
+        # their own Info.plist; the test bundle has no real plist to ship and
+        # xcodebuild test needs one to sign the bundle, so synthesize it here.
+        GENERATE_INFOPLIST_FILE: YES
 
   Bond:
     type: application

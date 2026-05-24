@@ -139,21 +139,45 @@ struct DailyCheckInView: View {
     }
 
     private func partnerCard(_ text: String) -> some View {
-        ZStack {
-            if revealPhase == .sealed {
-                BondSealedCard(title: "Their answer", hint: "Sealed until they answer")
-                    .transition(.opacity)
-            } else {
+        FlipRevealCard(
+            isRevealed: revealPhase == .revealed,
+            reduceMotion: reduceMotion,
+            front: {
+                BondSealedCard(
+                    title: "Their answer",
+                    hint: "Tap to reveal"
+                )
+            },
+            back: {
                 answerBlock(
                     title: "Their answer",
                     icon: "person.circle.fill",
                     tint: .bondAccent,
                     text: text
                 )
-                .opacity(revealPhase == .revealed ? 1 : 0)
-                .transition(.opacity)
+            }
+        )
+        .onTapGesture {
+            guard revealPhase != .revealed else { return }
+            performReveal()
+        }
+        .accessibilityAddTraits(.isButton)
+        .accessibilityHint(revealPhase == .revealed ? "" : "Double-tap to reveal their answer.")
+    }
+
+    private func performReveal() {
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+        if reduceMotion {
+            withAnimation(.easeOut(duration: 0.2)) { revealPhase = .revealed }
+        } else {
+            withAnimation(.spring(response: 0.65, dampingFraction: 0.72)) {
+                revealPhase = .revealed
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
+                UINotificationFeedbackGenerator().notificationOccurred(.success)
             }
         }
+        announceReveal()
     }
 
     private var answerInput: some View {
@@ -177,32 +201,26 @@ struct DailyCheckInView: View {
                 }
             }
             .disabled(responseText.trimmingCharacters(in: .whitespaces).isEmpty || checkIn.isLoading)
+
+            if let error = checkIn.lastError {
+                BondInlineError(message: error)
+            }
         }
     }
 
     private func runRevealIfNeeded() {
         let key = "reveal-shown-\(Self.dayKey())"
+        // Subsequent visits skip the ceremony — they've already had their
+        // moment today.
         if UserDefaults.standard.bool(forKey: key) {
             revealPhase = .revealed
             return
         }
         UserDefaults.standard.set(true, forKey: key)
-
-        if reduceMotion {
-            withAnimation(.easeOut(duration: 0.2)) { revealPhase = .revealed }
-            announceReveal()
-            return
-        }
-
+        // First visit of the day stays sealed. The user taps the envelope to
+        // flip it (see [[FlipRevealCard]]) — interactive reveal feels more
+        // intentional than an auto-fade and matches the "envelope" framing.
         revealPhase = .sealed
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.60) {
-            UIImpactFeedbackGenerator(style: .light).impactOccurred()
-            withAnimation(.easeOut(duration: 0.35)) { revealPhase = .revealing }
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.95) {
-            withAnimation(.easeOut(duration: 0.40)) { revealPhase = .revealed }
-            announceReveal()
-        }
     }
 
     private func announceReveal() {
@@ -214,5 +232,44 @@ struct DailyCheckInView: View {
         let f = DateFormatter()
         f.dateFormat = "yyyy-MM-dd"
         return f.string(from: Date())
+    }
+}
+
+/// Y-axis card flip. Renders both sides; the half that's "behind" hides
+/// itself with `opacity` mid-rotation so the back doesn't show mirrored.
+/// Reduce-motion users get a plain cross-fade instead.
+private struct FlipRevealCard<Front: View, Back: View>: View {
+    let isRevealed: Bool
+    let reduceMotion: Bool
+    @ViewBuilder var front: Front
+    @ViewBuilder var back: Back
+
+    var body: some View {
+        if reduceMotion {
+            ZStack {
+                if isRevealed { back } else { front }
+            }
+            .animation(.easeOut(duration: 0.2), value: isRevealed)
+        } else {
+            ZStack {
+                front
+                    .opacity(isRevealed ? 0 : 1)
+                    .rotation3DEffect(
+                        .degrees(isRevealed ? 180 : 0),
+                        axis: (x: 0, y: 1, z: 0),
+                        perspective: 0.6
+                    )
+                back
+                    .opacity(isRevealed ? 1 : 0)
+                    .rotation3DEffect(
+                        // Back starts pre-rotated -180° so when the whole
+                        // stack rotates to 180°, the back lands face-forward.
+                        .degrees(isRevealed ? 0 : -180),
+                        axis: (x: 0, y: 1, z: 0),
+                        perspective: 0.6
+                    )
+            }
+            .animation(.spring(response: 0.65, dampingFraction: 0.72), value: isRevealed)
+        }
     }
 }

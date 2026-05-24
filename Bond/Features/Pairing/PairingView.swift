@@ -281,6 +281,7 @@ private struct QRCodeView: View {
 /// to a permanent Apple-linked user in place — no data migration needed.
 struct AppleSignInPairingGate: View {
     @Environment(SupabaseService.self) private var supabase
+    @Environment(PairingService.self) private var pairing
     @Environment(PurchasesService.self) private var purchases
     @Environment(\.colorScheme) private var colorScheme
     @State private var appleHelper = AppleSignInHelper()
@@ -294,9 +295,11 @@ struct AppleSignInPairingGate: View {
                 Image(systemName: "person.crop.circle.badge.checkmark")
                     .font(.system(size: 48))
                     .foregroundStyle(Color.bondAccent)
-                Text("Sign in to pair")
+                Text(pairing.deferredInviteCode != nil ? "One step before pairing" : "Sign in to pair")
                     .font(.title2.bold())
-                Text("Pairing connects your reminders with your partner's. Apple Sign-In keeps that link recoverable across devices.")
+                Text(pairing.deferredInviteCode != nil
+                     ? "Your partner's invite is ready. Sign in with Apple so they stay paired with you across devices."
+                     : "Pairing connects your reminders with your partner's. Apple Sign-In keeps that link recoverable across devices.")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
@@ -340,6 +343,10 @@ struct AppleSignInPairingGate: View {
                 if let me = supabase.currentUserId {
                     await purchases.identify(supabaseUserId: me)
                 }
+                // If we arrived here via a universal link captured while
+                // anonymous, finish the pairing now that we have a
+                // recoverable identity.
+                await pairing.consumeDeferredInviteIfNeeded()
             } catch {
                 errorMessage = error.localizedDescription
             }

@@ -34,6 +34,43 @@ struct ReminderEditorView: View {
     var body: some View {
         NavigationStack {
             Form {
+                // Starter inspiration is no longer hidden behind "empty list":
+                // any time the user opens a new reminder with a blank title,
+                // they get the same idea chips here. Stuck on what to write
+                // for is the moment you actually need ideas.
+                if existing == nil && title.trimmingCharacters(in: .whitespaces).isEmpty {
+                    Section {
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: BondSpacing.s) {
+                                ForEach(starterChips(for: .shared)) { chip in
+                                    Button {
+                                        title = chip.title
+                                        loveLanguage = chip.loveLanguage
+                                    } label: {
+                                        HStack(spacing: BondSpacing.xs) {
+                                            Image(systemName: chip.loveLanguage.symbolName)
+                                                .font(.caption)
+                                                .foregroundStyle(chip.loveLanguage.tint)
+                                            Text(chip.title)
+                                                .font(.caption)
+                                                .foregroundStyle(.primary)
+                                        }
+                                        .padding(.horizontal, BondSpacing.m)
+                                        .padding(.vertical, BondSpacing.s)
+                                        .background(Color.bondCardFill, in: Capsule())
+                                    }
+                                    .buttonStyle(.plain)
+                                    .accessibilityLabel("Use suggestion: \(chip.title)")
+                                }
+                            }
+                            .padding(.vertical, 2)
+                        }
+                        .listRowInsets(EdgeInsets(top: 4, leading: 12, bottom: 4, trailing: 0))
+                    } header: {
+                        Text("Need an idea?")
+                    }
+                }
+
                 Section {
                     TextField("Title", text: $title)
                     TextField("Note (optional)", text: $noteText, axis: .vertical)
@@ -116,11 +153,20 @@ struct ReminderEditorView: View {
                     Button(action: { Task { await save() } }) {
                         if isSaving { ProgressView() } else { Text("Save") }
                     }
-                    .disabled(title.trimmingCharacters(in: .whitespaces).isEmpty || isSaving)
+                    .disabled(!isFormValid || isSaving)
                 }
             }
             .paywallSheet(isPresented: $isPaywallPresented)
             .onAppear(perform: hydrate)
+        }
+    }
+
+    private var isFormValid: Bool {
+        guard !title.trimmingCharacters(in: .whitespaces).isEmpty else { return false }
+        switch triggerKind {
+        case .location:     return geofenceConfigured
+        case .randomWindow: return windowEnd > windowStart
+        case .oneTime, .recurring: return true
         }
     }
 
@@ -154,13 +200,23 @@ struct ReminderEditorView: View {
                 Text(String(format: "%.4f, %.4f (200m radius)", geofenceLatitude, geofenceLongitude))
                     .font(.caption2)
                     .foregroundStyle(.secondary)
+            } else {
+                Text("Tap above to capture a location before saving.")
+                    .font(.caption2)
+                    .foregroundStyle(.orange)
             }
         case .randomWindow:
             DatePicker("Earliest", selection: $windowStart)
             DatePicker("Latest", selection: $windowEnd)
-            Text("Bond will pick a random moment in this window.")
-                .font(.caption2)
-                .foregroundStyle(.secondary)
+            if windowEnd <= windowStart {
+                Text("Latest must be after Earliest.")
+                    .font(.caption2)
+                    .foregroundStyle(.orange)
+            } else {
+                Text("Bond will pick a random moment in this window.")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+            }
         }
     }
 

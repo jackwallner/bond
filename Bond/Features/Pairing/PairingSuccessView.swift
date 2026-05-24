@@ -25,28 +25,24 @@ struct PairingSuccessView: View {
 
             Spacer()
 
-            if reduceMotion {
-                BondPrimaryButton(title: "Continue", action: onDone)
-                    .padding(.horizontal, BondSpacing.base)
-            } else {
-                Capsule()
-                    .fill(.secondary.opacity(0.2))
-                    .frame(width: 220, height: 2)
-                    .overlay(alignment: .leading) {
-                        Capsule()
-                            .fill(.secondary.opacity(0.6))
-                            .frame(width: 220 * progress, height: 2)
-                    }
-            }
+            // Always an explicit Continue — pairing is an emotionally
+            // meaningful moment; don't auto-dismiss it out from under the
+            // user before they can read the names or screenshot it.
+            BondPrimaryButton(title: "Continue", action: onDone)
+                .padding(.horizontal, BondSpacing.base)
 
             Spacer().frame(height: BondSpacing.xxxl)
         }
         .frame(maxWidth: .infinity)
+        .contentShape(Rectangle())
+        .onTapGesture { onDone() }
         .onAppear {
             UIAccessibility.post(notification: .announcement, argument: accessibilityAnnouncement)
+            #if canImport(UIKit)
+            UINotificationFeedbackGenerator().notificationOccurred(.success)
+            #endif
             guard !reduceMotion else { return }
-            withAnimation(.linear(duration: 1.8)) { progress = 1 }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.8) { onDone() }
+            withAnimation(.easeOut(duration: 1.2)) { progress = 1 }
         }
     }
 

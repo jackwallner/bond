@@ -65,6 +65,7 @@ struct TemplateGroupDetailView: View {
     @State private var isCreating = false
     @State private var createdCount = 0
     @State private var showConfirmation = false
+    @State private var importError: String?
 
     var body: some View {
         List {
@@ -126,6 +127,11 @@ struct TemplateGroupDetailView: View {
                 }
                 .disabled(isCreating)
                 .buttonStyle(.borderedProminent)
+                if let importError {
+                    Text(importError)
+                        .font(.footnote)
+                        .foregroundStyle(.red)
+                }
             }
         }
         .alert("Templates added!", isPresented: $showConfirmation) {
@@ -142,18 +148,24 @@ struct TemplateGroupDetailView: View {
 
         isCreating = true
         createdCount = 0
+        importError = nil
 
-        for template in group.reminders {
-            let partnerId = pairing.partnerProfile?.id
-            let targetId: UUID
-            if pairing.solo {
-                targetId = me
-            } else {
-                // Target partner for love language reminders, self for personal ones
-                targetId = partnerId ?? me
-            }
+        let partnerId = pairing.partnerProfile?.id
+        let targetId: UUID = pairing.solo ? me : (partnerId ?? me)
+        let now = Date()
 
-            let reminder = ReminderDTO(
+        let drafts: [ReminderDTO] = group.reminders.enumerated().map { index, template in
+            // Stagger the initial fire times so importing 7 reminders doesn't
+            // dogpile 7 notifications into the same minute. Recurring items
+            // anchor at staggered days; one-time items spread across coming
+            // afternoons.
+            let dayOffset = Double(index)
+            let hour: Double = template.triggerRecurrence == nil ? 14 : 9 // 2pm vs 9am
+            let fireAt = now
+                .addingTimeInterval(dayOffset * 24 * 60 * 60)
+                .addingTimeInterval(hour * 60 * 60)
+
+            return ReminderDTO(
                 id: UUID(),
                 coupleId: coupleId,
                 authorId: me,
@@ -162,7 +174,7 @@ struct TemplateGroupDetailView: View {
                 body: template.body,
                 loveLanguage: template.loveLanguage,
                 triggerType: template.triggerRecurrence != nil ? "recurring" : "one_time",
-                fireAt: Date().addingTimeInterval(60 * 60),
+                fireAt: fireAt,
                 rrule: template.triggerRecurrence?.rrule,
                 geofence: nil,
                 windowStart: nil,
@@ -171,16 +183,18 @@ struct TemplateGroupDetailView: View {
                 surpriseHiddenFromPartner: false,
                 createdAt: nil
             )
+        }
 
-            do {
-                try await repo.upsert(reminder)
-                createdCount += 1
-            } catch {
-                break
-            }
+        do {
+            try await repo.bulkInsert(drafts)
+            createdCount = drafts.count
+            showConfirmation = true
+        } catch {
+            // Surface a real error instead of celebrating zero inserts.
+            createdCount = 0
+            importError = "Couldn't add templates — check your connection and try again."
         }
 
         isCreating = false
-        showConfirmation = true
     }
 }

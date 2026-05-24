@@ -20,6 +20,7 @@
 		27F0B2AF1AE96E58B63A4F3A /* ReminderTrigger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94FA6F604A0AE177F1E53E19 /* ReminderTrigger.swift */; };
 		2813CCAF01B9B86418F73CEC /* CoupleDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 614F6A4AF63E9073387D83DA /* CoupleDTO.swift */; };
 		283326B0C9C4463EB1914AAC /* DailyCheckInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72CA6E5DB9BE3E5FBF29230D /* DailyCheckInView.swift */; };
+		2B4C98FD09C5DF07E514341D /* NotificationRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F3922F7B12FD86A8B22121 /* NotificationRouter.swift */; };
 		2FF010987033EA158398F278 /* BondComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 340A2D4CAC587ED2F0F83D5F /* BondComponents.swift */; };
 		3226DA024CFAFDA32F294D31 /* ProfileDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = C76495F38E8EC32C13087CAC /* ProfileDTO.swift */; };
 		3335A9265520E6B1EC593C48 /* BondColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90F93FCB23F083FC2424750E /* BondColors.swift */; };
@@ -172,6 +173,7 @@
 		4E44B9DF2E598986B1F41F82 /* LoveLanguageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoveLanguageTests.swift; sourceTree = "<group>"; };
 		50E8F1F976E924BD6B235514 /* DailyQuestionDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyQuestionDTO.swift; sourceTree = "<group>"; };
 		51A5DD4BA2316889F39CDD24 /* ProfileDTOTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileDTOTests.swift; sourceTree = "<group>"; };
+		52F3922F7B12FD86A8B22121 /* NotificationRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationRouter.swift; sourceTree = "<group>"; };
 		541C4F85BC1812B1C61978AD /* ReminderRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderRow.swift; sourceTree = "<group>"; };
 		585D1A7C6799459199130E5B /* ReminderDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderDTO.swift; sourceTree = "<group>"; };
 		5E49B51523219D78344AB9A8 /* AppGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGroup.swift; sourceTree = "<group>"; };
@@ -281,6 +283,7 @@
 				2EEC67EF3AE529FDFBF5C96C /* LocationService.swift */,
 				EFC67BE3E182EB254453908B /* LoveLanguageAnalyzer.swift */,
 				113F2620C6CB170BE5DFAC2C /* MilestonesService.swift */,
+				52F3922F7B12FD86A8B22121 /* NotificationRouter.swift */,
 				16A3D4EC5485B89310FB3815 /* NotificationScheduler.swift */,
 				167CA752300A93B733B1F99B /* PairingService.swift */,
 				6C5718ADF6D126CFA618BD62 /* PurchasesService.swift */,
@@ -727,6 +730,7 @@
 				EB9512343521D9C53C7DA522 /* MilestonesService.swift in Sources */,
 				57BC2289724538457316CAB4 /* MilestonesView.swift in Sources */,
 				76443759E56A5F120FBA2AF3 /* NotificationPrimerSheet.swift in Sources */,
+				2B4C98FD09C5DF07E514341D /* NotificationRouter.swift in Sources */,
 				992C2457DC8B5C6B9EFE5FAE /* NotificationScheduler.swift in Sources */,
 				C455C1D4B733D81132787827 /* OnboardingView.swift in Sources */,
 				FE1B9776FA4A29DDCFC59E82 /* PairingService.swift in Sources */,
@@ -833,6 +837,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -849,6 +854,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -896,7 +902,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 29;
+				CURRENT_PROJECT_VERSION = 36;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = YXG4MP6W39;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -964,7 +970,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 29;
+				CURRENT_PROJECT_VERSION = 36;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = YXG4MP6W39;
 				ENABLE_NS_ASSERTIONS = NO;

@@ -11,6 +11,15 @@ final class WatchConnectivitySender: NSObject {
     var lastError: String?
     var isReachable = false
 
+    enum SendOutcome {
+        /// Phone confirmed the reminder was saved.
+        case confirmed
+        /// Handed off via background application context — phone will process
+        /// it when it next wakes, but we have no confirmation yet.
+        case queued
+        case failed
+    }
+
     private override init() {
         super.init()
         guard WCSession.isSupported() else { return }
@@ -19,36 +28,42 @@ final class WatchConnectivitySender: NSObject {
         session.activate()
     }
 
-    func sendDictatedReminder(title: String, language: LoveLanguage) async -> Bool {
+    func sendDictatedReminder(
+        title: String,
+        language: LoveLanguage,
+        recipient: WatchPayload.Recipient
+    ) async -> SendOutcome {
         let payload = WatchPayload.CreateReminder(
             title: title,
             loveLanguage: language.rawValue,
-            scheduledOffsetSeconds: 60 * 60 // default: fire one hour from now
+            scheduledOffsetSeconds: 60 * 60, // default: fire one hour from now
+            recipient: recipient
         )
         guard let data = try? JSONEncoder().encode(payload) else {
             lastError = "Failed to encode payload."
-            return false
+            return .failed
         }
 
         let session = WCSession.default
         guard session.activationState == .activated else {
             lastError = "Watch session not active."
-            return false
+            return .failed
         }
 
         if session.isReachable {
-            return await sendNow(data: data)
+            return await sendNow(data: data) ? .confirmed : .failed
         }
         do {
             try session.updateApplicationContext(
                 [WatchPayload.createReminderKey: data]
             )
-            log.info("Sent reminder via application context (background)")
-            return true
+            log.info("Queued reminder via application context (background)")
+            // No reply on this path — the phone confirms only when it wakes.
+            return .queued
         } catch {
             lastError = error.localizedDescription
             log.error("Failed to send via context: \(error.localizedDescription)")
-            return false
+            return .failed
         }
     }
 

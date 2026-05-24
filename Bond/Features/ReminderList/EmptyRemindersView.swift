@@ -110,26 +110,3 @@ struct EmptyRemindersView: View {
     }
 }
 
-struct FilteredEmptyView: View {
-    let onShowAll: () -> Void
-
-    var body: some View {
-        VStack(spacing: BondSpacing.base) {
-            Image(systemName: "tray")
-                .font(.system(size: 32))
-                .foregroundStyle(.secondary)
-                .accessibilityHidden(true)
-            Text("Nothing for you right now.")
-                .font(.headline)
-            Text("Your partner is the lucky one today.")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-            Button("Show all reminders", action: onShowAll)
-                .buttonStyle(.bordered)
-                .tint(.bondAccent)
-        }
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, BondSpacing.xxl)
-        .listRowBackground(Color.clear)
-    }
-}

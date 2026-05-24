@@ -59,12 +59,47 @@ struct BondPrimaryButton: View {
                     Text(title).font(.headline)
                 }
             }
-            .frame(maxWidth: .infinity, minHeight: 50)
+            .frame(maxWidth: .infinity, minHeight: 52)
         }
-        .buttonStyle(.borderedProminent)
-        .tint(role == .destructive ? .red : .bondAccent)
-        .controlSize(.large)
+        .buttonStyle(BondSoftButtonStyle(role: role))
         .disabled(isLoading)
+    }
+}
+
+/// Soft Tactile primary button: top-lit gradient fill, warm halo shadow, and
+/// a faint top highlight so it reads as a raised physical control. Presses
+/// dim + sink slightly rather than flashing a system tint.
+struct BondSoftButtonStyle: ButtonStyle {
+    var role: ButtonRole?
+
+    func makeBody(configuration: Configuration) -> some View {
+        let pressed = configuration.isPressed
+        return configuration.label
+            .foregroundStyle(.white)
+            .padding(.horizontal, BondSpacing.l)
+            .background {
+                let shape = RoundedRectangle(cornerRadius: BondRadius.inline, style: .continuous)
+                ZStack {
+                    if role == .destructive {
+                        shape.fill(
+                            LinearGradient(colors: [Color.red.opacity(0.92), .red],
+                                           startPoint: .top, endPoint: .bottom)
+                        )
+                    } else {
+                        shape.fill(Color.bondAccentGradient)
+                    }
+                    // Inset top highlight — the "lit from above" cue.
+                    shape.stroke(.white.opacity(0.25), lineWidth: 0.5)
+                        .blur(radius: 0.5)
+                        .mask(LinearGradient(colors: [.white, .clear],
+                                             startPoint: .top, endPoint: .center))
+                }
+            }
+            .shadow(color: .bondShadow, radius: pressed ? 4 : 12,
+                    x: 0, y: pressed ? 2 : 7)
+            .scaleEffect(pressed ? 0.98 : 1)
+            .opacity(pressed ? 0.92 : 1)
+            .animation(.easeOut(duration: 0.15), value: pressed)
     }
 }
 
@@ -124,11 +159,8 @@ struct BondChoiceCard<Trailing: View>: View {
             }
             .padding(BondSpacing.base)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Color.bondCardFill, in: RoundedRectangle(cornerRadius: BondRadius.card))
-            .overlay(
-                RoundedRectangle(cornerRadius: BondRadius.card)
-                    .stroke(Color.bondHairline, lineWidth: 0.5)
-            )
+            .background(Color.bondCardFill, in: RoundedRectangle(cornerRadius: BondRadius.card, style: .continuous))
+            .bondSoftElevation()
         }
         .buttonStyle(.plain)
         .accessibilityElement(children: .combine)

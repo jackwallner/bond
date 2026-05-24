@@ -18,6 +18,10 @@ final class ReminderRepository {
     var onChange: ([ReminderDTO]) -> Void = { _ in }
 
     private var realtimeChannel: RealtimeChannelV2?
+    /// The couple the active realtime channel is filtered on. Lets us detect
+    /// pair/unpair and re-subscribe rather than keeping a channel bound to a
+    /// stale (solo) couple id after the user joins their partner.
+    private var subscribedCoupleId: UUID?
 
     init(pairing: PairingService) {
         self.pairing = pairing
@@ -56,6 +60,19 @@ final class ReminderRepository {
         await refresh()
     }
 
+    /// Insert many reminders in a single round-trip, then refresh once. The
+    /// per-row [[upsert]] path was acceptable for editor saves but turned
+    /// template imports into 14 sequential HTTP calls for 7 reminders.
+    func bulkInsert(_ reminders: [ReminderDTO]) async throws {
+        guard !reminders.isEmpty else { return }
+        try await supabase.client
+            .from("reminders")
+            .insert(reminders)
+            .execute()
+        log.info("Bulk-inserted \(reminders.count) reminders")
+        await refresh()
+    }
+
     func delete(_ reminder: ReminderDTO) async throws {
         try await supabase.client
             .from("reminders")
@@ -68,7 +85,17 @@ final class ReminderRepository {
     }
 
     func subscribeRealtime() async {
-        guard let coupleId = pairing.coupleId, realtimeChannel == nil else { return }
+        guard let coupleId = pairing.coupleId else {
+            await unsubscribeRealtime()
+            return
+        }
+        // Already subscribed to *this* couple — nothing to do. But if we're
+        // bound to a different couple (e.g. solo → paired), tear down first
+        // so the new channel uses the right filter.
+        if realtimeChannel != nil {
+            guard subscribedCoupleId != coupleId else { return }
+            await unsubscribeRealtime()
+        }
         let channel = supabase.client.channel("couple:\(coupleId.uuidString)")
 
         let changes = channel.postgresChange(
@@ -80,6 +107,7 @@ final class ReminderRepository {
 
         await channel.subscribe()
         realtimeChannel = channel
+        subscribedCoupleId = coupleId
         log.info("Subscribed to realtime channel for couple \(coupleId)")
 
         Task {
@@ -93,6 +121,7 @@ final class ReminderRepository {
         if let channel = realtimeChannel {
             await channel.unsubscribe()
             realtimeChannel = nil
+            subscribedCoupleId = nil
         }
     }
 }
