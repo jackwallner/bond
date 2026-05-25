@@ -8,14 +8,13 @@ enum PaywallLinks {
     static let standardEULA = URL(string: "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/")!
 }
 
-/// Native Bond Premium paywall. Purchases flow through `PurchasesService.purchase`
+/// Native Bond+ paywall. Purchases flow through `PurchasesService.purchase`
 /// → `Purchases.shared.purchase(package:)` so RevenueCat records transactions,
 /// trials, and renewals exactly as with the hosted UI.
 ///
-/// Layout follows high-converting patterns from comparable couples / habit apps
-/// (Paired, Lasting, Cal AI): outcome-led hero, four-bullet value list,
-/// trial-timeline reassurance, plan picker pre-selected on annual with per-week
-/// price + savings badge, single primary CTA with renewal disclosure beneath.
+/// Layout target: fit on a single screen on standard iPhone sizes (no scroll
+/// at default text sizes) so the offer + CTA are always visible. Scroll is
+/// retained as a graceful fallback for Dynamic Type or very small devices.
 struct PaywallView: View {
     @Environment(PurchasesService.self) private var purchases
     @Environment(\.dismiss) private var dismiss
@@ -29,22 +28,13 @@ struct PaywallView: View {
     @State private var restoreMessage: String?
     @State private var isRestoring = false
 
-    /// Outcome-led bullets. Order matters: lead with the daily-use hook that
-    /// most users will pull the app open for, then the differentiating
-    /// insight feature, then the two reminder-flavoured features.
-    private let benefits: [(icon: String, title: String, detail: String)] = [
-        ("questionmark.bubble.fill",
-         "Daily Check-In, together",
-         "One small question a day. You both answer, then it reveals — no scoreboard."),
-        ("sparkles",
-         "See what makes them feel loved",
-         "Insights track your love-language balance and weekly trends, so you stop guessing."),
-        ("bell.badge.fill",
-         "Never forget the moments that matter",
-         "Smart, location and surprise reminders nudge you at the right time, not the wrong one."),
-        ("square.stack.fill",
-         "Templates for the hard days",
-         "Date night, long-distance, post-fight repair — curated prompts you can send in two taps.")
+    /// Concrete Bond+ features framed as outcomes. Order leads with the daily
+    /// hook, then the differentiator, then the two reminder-flavoured wins.
+    private let benefits: [(icon: String, title: String)] = [
+        ("questionmark.bubble.fill", "Daily Check-In, together"),
+        ("sparkles",                  "Love-language insights & trends"),
+        ("bell.badge.fill",           "Smart, location & surprise reminders"),
+        ("square.stack.fill",         "Curated reminder templates")
     ]
 
     var body: some View {
@@ -115,31 +105,25 @@ struct PaywallView: View {
 
     private var content: some View {
         ScrollView(showsIndicators: false) {
-            VStack(spacing: BondSpacing.xl) {
+            VStack(spacing: BondSpacing.l) {
                 header
                 benefitList
-                trialTimelineIfApplicable
                 planCards
                 purchaseSection
                 legalFooter
             }
             .padding(.horizontal, BondSpacing.xl)
-            .padding(.top, displayCloseButton ? 56 : BondSpacing.xxl)
-            .padding(.bottom, BondSpacing.xxl)
+            .padding(.top, displayCloseButton ? 52 : BondSpacing.xl)
+            .padding(.bottom, BondSpacing.base)
         }
     }
 
     private var header: some View {
-        VStack(spacing: BondSpacing.s) {
-            Image(systemName: "heart.text.square.fill")
-                .font(.system(size: 44))
+        VStack(spacing: BondSpacing.xs) {
+            Text("Bond+")
+                .font(.bond(.title, weight: .heavy))
                 .foregroundStyle(Color.bondAccent.gradient)
-                .padding(.bottom, BondSpacing.xs)
-            Text("Stay close, on purpose.")
-                .font(.bond(.title, weight: .bold))
-                .multilineTextAlignment(.center)
-                .fixedSize(horizontal: false, vertical: true)
-            Text("Bond Premium is the small daily nudge that keeps the two of you tuned in — without making it a chore.")
+            Text("The full Bond experience for couples who want to stay close, on purpose.")
                 .font(.bond(.subheadline))
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
@@ -148,33 +132,21 @@ struct PaywallView: View {
     }
 
     private var benefitList: some View {
-        VStack(alignment: .leading, spacing: BondSpacing.m) {
+        VStack(alignment: .leading, spacing: BondSpacing.s) {
             ForEach(benefits, id: \.title) { benefit in
-                HStack(alignment: .top, spacing: BondSpacing.m) {
+                HStack(spacing: BondSpacing.m) {
                     Image(systemName: benefit.icon)
-                        .font(.system(size: 18, weight: .semibold))
+                        .font(.system(size: 14, weight: .semibold))
                         .foregroundStyle(Color.bondAccent)
-                        .frame(width: 28, height: 28)
+                        .frame(width: 26, height: 26)
                         .background(Color.bondAccent.opacity(0.12), in: Circle())
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text(benefit.title)
-                            .font(.bond(.subheadline, weight: .semibold))
-                        Text(benefit.detail)
-                            .font(.bond(.footnote))
-                            .foregroundStyle(.secondary)
-                            .fixedSize(horizontal: false, vertical: true)
-                    }
+                    Text(benefit.title)
+                        .font(.bond(.subheadline, weight: .semibold))
+                    Spacer(minLength: 0)
                 }
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-    }
-
-    @ViewBuilder
-    private var trialTimelineIfApplicable: some View {
-        if let days = trialDaysForTimeline {
-            BondTrialTimeline(totalDays: days)
-        }
     }
 
     private var planCards: some View {
@@ -195,7 +167,7 @@ struct PaywallView: View {
     }
 
     private var purchaseSection: some View {
-        VStack(spacing: BondSpacing.m) {
+        VStack(spacing: BondSpacing.s) {
             BondPrimaryButton(title: ctaTitle, isLoading: isPurchasing) {
                 startPurchase()
             }
@@ -204,14 +176,6 @@ struct PaywallView: View {
             if let subline = ctaSubline {
                 Text(subline)
                     .font(.bond(.footnote, weight: .semibold))
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-
-            if let disclosure = disclosureText {
-                Text(disclosure)
-                    .font(.bond(.caption))
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
@@ -233,25 +197,24 @@ struct PaywallView: View {
     }
 
     private var legalFooter: some View {
-        VStack(spacing: BondSpacing.s) {
+        HStack(spacing: BondSpacing.m) {
             Button {
                 startRestore()
             } label: {
-                Text(isRestoring ? "Restoring…" : "Restore Purchases")
-                    .font(.bond(.footnote, weight: .semibold))
-                    .foregroundStyle(.secondary)
+                Text(isRestoring ? "Restoring…" : "Restore")
+                    .font(.bond(.caption2, weight: .semibold))
+                    .foregroundStyle(.tertiary)
             }
             .buttonStyle(.plain)
             .disabled(isRestoring || isPurchasing)
 
-            HStack(spacing: BondSpacing.s) {
-                Link("Terms", destination: PaywallLinks.standardEULA)
-                Text("·").foregroundStyle(.tertiary)
-                Link("Privacy", destination: PaywallLinks.privacyPolicy)
-            }
-            .font(.bond(.caption2))
-            .foregroundStyle(.tertiary)
+            Text("·").foregroundStyle(.tertiary)
+            Link("Terms", destination: PaywallLinks.standardEULA)
+            Text("·").foregroundStyle(.tertiary)
+            Link("Privacy", destination: PaywallLinks.privacyPolicy)
         }
+        .font(.bond(.caption2))
+        .foregroundStyle(.tertiary)
     }
 
     private var closeButton: some View {
@@ -260,7 +223,7 @@ struct PaywallView: View {
                 Spacer()
                 Button { dismiss() } label: {
                     Image(systemName: "xmark.circle.fill")
-                        .font(.system(size: 28))
+                        .font(.system(size: 26))
                         .foregroundStyle(.secondary)
                         .padding(BondSpacing.base)
                 }
@@ -271,13 +234,6 @@ struct PaywallView: View {
     }
 
     // MARK: - Derived copy
-
-    private var trialDaysForTimeline: Int? {
-        let yearly = purchases.products.first { $0.bondPackageKind == .yearly }
-        let candidate = yearly ?? selectedPackage ?? purchases.products.first
-        guard let candidate, purchases.isEligibleForIntroOffer(candidate) else { return nil }
-        return candidate.bondTrialDays
-    }
 
     private var monthlyPackage: Package? {
         purchases.products.first { $0.bondPackageKind == .monthly }
@@ -301,7 +257,7 @@ struct PaywallView: View {
             return "Start \(days)-Day Free Trial"
         }
         if purchases.isEligibleForIntroOffer(package) { return "Start Free Trial" }
-        return "Subscribe"
+        return "Get Bond+"
     }
 
     private var ctaSubline: String? {
@@ -311,20 +267,7 @@ struct PaywallView: View {
         if purchases.isEligibleForIntroOffer(package) {
             return "Then \(price). Cancel anytime."
         }
-        return "Cancel anytime."
-    }
-
-    private var disclosureText: String? {
-        guard let package = selectedPackage else { return nil }
-        let price = package.bondPriceLabel
-        let renew = "Auto-renews unless cancelled at least 24 hours before the end of the period. Manage or cancel in Settings."
-        if package.bondPackageKind == .lifetime {
-            return "\(price). One-time purchase. No subscription."
-        }
-        if purchases.isEligibleForIntroOffer(package), let trial = package.bondIntroOfferLabel {
-            return "\(trial.capitalized), then \(price). \(renew)"
-        }
-        return "\(price). \(renew)"
+        return "\(price). Cancel anytime."
     }
 
     // MARK: - Actions
@@ -364,79 +307,9 @@ struct PaywallView: View {
             await purchases.restore()
             if !purchases.isPremium {
                 restoreMessage = purchases.lastError
-                    ?? "No active Bond Premium purchase found for this Apple ID."
+                    ?? "No active Bond+ purchase found for this Apple ID."
             }
         }
-    }
-}
-
-// MARK: - Trial Timeline
-
-/// Three-step reassurance graphic shown when the default package has a free
-/// trial. Matches the "How your free trial works" pattern used by Paired,
-/// Lasting, Calm — defuses subscription anxiety, which is the #1 cause of
-/// trial-flow drop-off.
-private struct BondTrialTimeline: View {
-    let totalDays: Int
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: BondSpacing.m) {
-            Text("How your free trial works")
-                .font(.bond(.subheadline, weight: .semibold))
-
-            VStack(spacing: 0) {
-                step(
-                    icon: "lock.open.fill",
-                    title: "Today",
-                    detail: "Get full access to every Premium feature."
-                )
-                connector
-                step(
-                    icon: "bell.fill",
-                    title: "Day \(max(totalDays - 2, 1))",
-                    detail: "We'll remind you before your trial ends — no surprise charges."
-                )
-                connector
-                step(
-                    icon: "checkmark.seal.fill",
-                    title: "Day \(totalDays)",
-                    detail: "Your subscription begins. Cancel anytime from Settings."
-                )
-            }
-        }
-        .padding(BondSpacing.base)
-        .background(Color.bondCardFill, in: RoundedRectangle(cornerRadius: BondRadius.card, style: .continuous))
-        .bondSoftElevation(radius: BondRadius.card)
-    }
-
-    private func step(icon: String, title: String, detail: String) -> some View {
-        HStack(alignment: .top, spacing: BondSpacing.m) {
-            ZStack {
-                Circle()
-                    .fill(Color.bondAccent.opacity(0.15))
-                    .frame(width: 32, height: 32)
-                Image(systemName: icon)
-                    .font(.system(size: 14, weight: .bold))
-                    .foregroundStyle(Color.bondAccent)
-            }
-            VStack(alignment: .leading, spacing: 2) {
-                Text(title)
-                    .font(.bond(.footnote, weight: .bold))
-                Text(detail)
-                    .font(.bond(.footnote))
-                    .foregroundStyle(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-            Spacer(minLength: 0)
-        }
-    }
-
-    private var connector: some View {
-        Rectangle()
-            .fill(Color.bondAccent.opacity(0.2))
-            .frame(width: 2, height: 14)
-            .padding(.leading, 15)
-            .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
@@ -465,7 +338,7 @@ private struct BondPlanCard: View {
                     }
                 }
 
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: 2) {
                     HStack(spacing: BondSpacing.xs) {
                         Text(package.bondDisplayName)
                             .font(.bond(.subheadline, weight: .bold))
@@ -510,7 +383,7 @@ private struct BondPlanCard: View {
                 }
             }
             .padding(.horizontal, BondSpacing.base)
-            .padding(.vertical, BondSpacing.m)
+            .padding(.vertical, BondSpacing.s)
             .background(Color.bondCardFill, in: RoundedRectangle(cornerRadius: BondRadius.card, style: .continuous))
             .overlay {
                 RoundedRectangle(cornerRadius: BondRadius.card, style: .continuous)

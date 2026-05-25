@@ -142,7 +142,7 @@ struct ReminderEditorView: View {
                     Text("When")
                 } footer: {
                     if !store.isPremium {
-                        Text("Location & random-surprise triggers are Premium.")
+                        Text("Location & random-surprise triggers are part of Bond+.")
                             .font(.bond(.caption))
                             .foregroundStyle(.secondary)
                     }

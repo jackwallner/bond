@@ -28,7 +28,7 @@ struct SettingsView: View {
                     } label: {
                         Label("Connect a partner", systemImage: "heart.circle")
                     }
-                    Text("Bond is just for you right now. Pair to share reminders — you keep everything you've already added.")
+                    Text("Bond is just for you right now. Pair to share reminders. You keep everything you've already added.")
                         .font(.bond(.caption))
                         .foregroundStyle(.secondary)
                 } else {
@@ -46,16 +46,16 @@ struct SettingsView: View {
                 }
             }
 
-            Section("Premium") {
+            Section("Bond+") {
                 if purchases.isPremium {
                     if let since = purchases.premiumSince {
                         LabeledContent("Status") {
-                            Text("Premium since \(since.formatted(date: .long, time: .omitted))")
+                            Text("Bond+ since \(since.formatted(date: .long, time: .omitted))")
                                 .foregroundStyle(.secondary)
                                 .font(.bond(.callout))
                         }
                     } else {
-                        LabeledContent("Status", value: "Premium")
+                        LabeledContent("Status", value: "Bond+")
                     }
                     Link("Manage subscription",
                          destination: URL(string: "https://apps.apple.com/account/subscriptions")!)

@@ -120,7 +120,7 @@ struct ReviewPromptSheet: View {
 
     private var reviewPitchContent: some View {
         VStack(spacing: BondSpacing.m) {
-            Text("Bond is built by one indie developer — no ads, no data selling, and your relationship stays between you and your partner.")
+            Text("Bond is built by one indie developer. No ads, no data selling, and your relationship stays between you and your partner.")
                 .font(.bond(.subheadline))
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)

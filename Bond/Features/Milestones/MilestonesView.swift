@@ -10,9 +10,9 @@ struct MilestonesView: View {
             Group {
                 if milestones.milestones.isEmpty {
                     ContentUnavailableView {
-                        Label("No milestones", systemImage: "calendar.badge.plus")
+                        Label("No milestones yet", systemImage: "calendar.badge.plus")
                     } description: {
-                        Text("Add your anniversary, birthdays, or any date worth remembering.")
+                        Text("Add your anniversary, birthdays, or any date worth remembering. Bond shows the next one on your widget and pings you a week before, the day before, and on the day.")
                     }
                 } else {
                     list

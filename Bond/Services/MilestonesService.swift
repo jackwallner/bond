@@ -27,6 +27,7 @@ final class MilestonesService {
                 .value
             milestones = rows
             log.info("Refreshed \(rows.count) milestones")
+            await NotificationScheduler.shared.rescheduleMilestones(rows)
         } catch {
             lastError = error.localizedDescription
             log.error("Refresh failed: \(error.localizedDescription)")
@@ -53,6 +54,7 @@ final class MilestonesService {
             .execute()
         milestones.removeAll { $0.id == milestone.id }
         log.info("Deleted milestone \(milestone.id)")
+        await NotificationScheduler.shared.rescheduleMilestones(milestones)
     }
 
     var nextOccurrence: (milestone: MilestoneDTO, date: Date)? {

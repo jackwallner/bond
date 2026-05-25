@@ -25,6 +25,8 @@ struct MilestoneEditorView: View {
                     }
                     DatePicker("Date", selection: $date, displayedComponents: .date)
                     Toggle("Repeat yearly", isOn: $recur)
+                } footer: {
+                    Text("You'll get a heads-up 1 week before, the day before, and on the day at 9 AM. The next milestone also shows on your home-screen widget.")
                 }
                 if let errorMessage {
                     Text(errorMessage).foregroundStyle(.red).font(.bond(.footnote))

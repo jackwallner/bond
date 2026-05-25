@@ -19,7 +19,7 @@ enum PremiumFeature {
         }
     }
 
-    var ctaTitle: String { "Try Premium free for 7 days" }
+    var ctaTitle: String { "Try Bond+ free for 7 days" }
 }
 
 /// Gate shell: shows the real feature rendered with synthetic data behind a
@@ -96,12 +96,12 @@ struct BondCheckInUnlockCard: View {
                     .foregroundStyle(Color.bondAccent)
                 Text("Answer together")
                     .font(.bond(.headline))
-                Text("Premium unlocks answering today's question and seeing each other's response once you've both replied.")
+                Text("Bond+ unlocks answering today's question and seeing each other's response once you've both replied.")
                     .font(.bond(.subheadline))
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
             }
-            BondPrimaryButton(title: "Try Premium free for 7 days") {
+            BondPrimaryButton(title: "Try Bond+ free for 7 days") {
                 isPaywallPresented = true
             }
             Button {
@@ -142,12 +142,12 @@ struct BondInsightsUnlockCard: View {
                     .foregroundStyle(Color.bondAccent)
                 Text("Unlock the full picture")
                     .font(.bond(.headline))
-                Text("Premium opens up your love-language balance, weekly trends, and personalized insights.")
+                Text("Bond+ opens up your love-language balance, weekly trends, and personalized insights.")
                     .font(.bond(.subheadline))
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
             }
-            BondPrimaryButton(title: "Try Premium free for 7 days") {
+            BondPrimaryButton(title: "Try Bond+ free for 7 days") {
                 isPaywallPresented = true
             }
             Button {

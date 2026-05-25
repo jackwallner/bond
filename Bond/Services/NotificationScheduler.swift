@@ -19,10 +19,80 @@ final class NotificationScheduler {
         await requestAuthorizationIfNeeded()
 
         let center = UNUserNotificationCenter.current()
-        center.removeAllPendingNotificationRequests()
+        // Preserve milestone.* notifications so the milestones scheduler can
+        // own them independently of reminder churn.
+        let pending = await center.pendingNotificationRequests()
+        let toRemove = pending
+            .map(\.identifier)
+            .filter { !$0.hasPrefix("milestone.") }
+        center.removePendingNotificationRequests(withIdentifiers: toRemove)
 
         for reminder in reminders where reminder.targetId == selfId {
             await schedule(reminder)
+        }
+    }
+
+    /// Re-schedules local notifications for milestones. Each milestone fires
+    /// up to three pings: 7 days before, 1 day before, and on the day at 9am
+    /// local. Identifiers are namespaced "milestone.<id>.<offset>" so the
+    /// reminder scheduler can leave them alone.
+    func rescheduleMilestones(_ milestones: [MilestoneDTO]) async {
+        await requestAuthorizationIfNeeded()
+
+        let center = UNUserNotificationCenter.current()
+        let pending = await center.pendingNotificationRequests()
+        let toRemove = pending
+            .map(\.identifier)
+            .filter { $0.hasPrefix("milestone.") }
+        center.removePendingNotificationRequests(withIdentifiers: toRemove)
+
+        for milestone in milestones {
+            await scheduleMilestone(milestone)
+        }
+    }
+
+    private func scheduleMilestone(_ milestone: MilestoneDTO) async {
+        let calendar = Calendar.current
+        let occurrence = milestone.nextOccurrence()
+        let dayStart = calendar.startOfDay(for: occurrence)
+        guard let fireOn = calendar.date(byAdding: .hour, value: 9, to: dayStart) else { return }
+
+        let offsets: [(days: Int, label: String)] = [
+            (-7, "in 1 week"),
+            (-1, "tomorrow"),
+            (0,  "today")
+        ]
+
+        let title = milestone.label?.isEmpty == false
+            ? milestone.label!
+            : milestone.kind.capitalized
+
+        for (days, when) in offsets {
+            guard let fireDate = calendar.date(byAdding: .day, value: days, to: fireOn),
+                  fireDate > .now
+            else { continue }
+
+            let content = UNMutableNotificationContent()
+            content.title = title
+            content.body = "\(title) is \(when)."
+            content.sound = .default
+            content.threadIdentifier = "milestone"
+            content.userInfo = [
+                "milestone_id": milestone.id.uuidString,
+                "couple_id":    milestone.coupleId.uuidString
+            ]
+
+            let comps = calendar.dateComponents(
+                [.year, .month, .day, .hour, .minute], from: fireDate
+            )
+            let trigger = UNCalendarNotificationTrigger(dateMatching: comps, repeats: false)
+
+            let request = UNNotificationRequest(
+                identifier: "milestone.\(milestone.id.uuidString).\(days)",
+                content: content,
+                trigger: trigger
+            )
+            try? await UNUserNotificationCenter.current().add(request)
         }
     }
 

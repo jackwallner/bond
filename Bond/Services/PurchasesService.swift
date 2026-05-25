@@ -144,7 +144,7 @@ final class PurchasesService {
         do {
             let info = try await Purchases.shared.restorePurchases()
             apply(info: info)
-            lastError = isPremium ? nil : "No active Bond Premium purchase found for this Apple ID."
+            lastError = isPremium ? nil : "No active Bond+ purchase found for this Apple ID."
             log.info("Restored purchases — premium: \(self.isPremium)")
         } catch {
             lastError = "Couldn't restore purchases. Try again."
