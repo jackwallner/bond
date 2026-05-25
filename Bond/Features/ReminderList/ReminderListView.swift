@@ -351,16 +351,7 @@ struct ReminderListView: View {
                 .contains { $0.reminderId == reminder.id && $0.actedAt != nil }
             if !hasEvent {
                 Button {
-                    Task {
-                        guard let coupleId = pairing.coupleId else { return }
-                        try? await eventsRepo.createEvent(
-                            reminderId: reminder.id, coupleId: coupleId
-                        )
-                        await NotificationScheduler.shared.reschedule(
-                            forSelfUserId: supabase.currentUserId ?? UUID(),
-                            reminders: repo.reminders
-                        )
-                    }
+                    Task { await completeReminder(reminder) }
                 } label: {
                     Label("Done", systemImage: "checkmark")
                 }
@@ -426,17 +417,21 @@ struct ReminderListView: View {
     }
 
     private func markDone(_ reminder: ReminderDTO) {
-        Task {
-            guard let coupleId = pairing.coupleId else { return }
-            try? await eventsRepo.createEvent(
-                reminderId: reminder.id,
-                coupleId: coupleId
-            )
-            await NotificationScheduler.shared.reschedule(
-                forSelfUserId: supabase.currentUserId ?? UUID(),
-                reminders: repo.reminders
-            )
-        }
+        Task { await completeReminder(reminder) }
+    }
+
+    /// Records a handled reminder and may trigger the review funnel after a delay.
+    private func completeReminder(_ reminder: ReminderDTO) async {
+        guard let coupleId = pairing.coupleId else { return }
+        let alreadyDone = eventsRepo.events.contains { $0.reminderId == reminder.id }
+        guard !alreadyDone else { return }
+        try? await eventsRepo.createEvent(reminderId: reminder.id, coupleId: coupleId)
+        await NotificationScheduler.shared.reschedule(
+            forSelfUserId: supabase.currentUserId ?? UUID(),
+            reminders: repo.reminders
+        )
+        ReviewPromptTracker.recordPositiveMoment()
+        NotificationCenter.default.post(name: .bondPositiveMomentForReview, object: nil)
     }
 
     private func delete(_ source: [ReminderDTO], at offsets: IndexSet) {

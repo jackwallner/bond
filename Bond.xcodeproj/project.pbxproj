@@ -37,10 +37,13 @@
 		48FFC533C5318497E0E802C3 /* ReminderRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 541C4F85BC1812B1C61978AD /* ReminderRow.swift */; };
 		4A1FFC7369BB4120070D2C6D /* ProfileDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = C76495F38E8EC32C13087CAC /* ProfileDTO.swift */; };
 		4DAE11F2CBF2C051D529BAFB /* BondColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90F93FCB23F083FC2424750E /* BondColors.swift */; };
+		4DE3625D81B03BBCE58C0E27 /* ReviewPromptTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 951DA5990DC91CBAFC87A939 /* ReviewPromptTracker.swift */; };
 		4E5B7E7C7B7C2FAF0E18EFE1 /* AppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E49B51523219D78344AB9A8 /* AppGroup.swift */; };
+		4E84D3152AA02E4F975FD6F0 /* ReviewPromptTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 951DA5990DC91CBAFC87A939 /* ReviewPromptTracker.swift */; };
 		4EF4BBC8BE8D354A50EA4900 /* ReminderTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301EDB6E9D1A234A90519B12 /* ReminderTemplate.swift */; };
 		5094CCFB786B2EA0AB296343 /* ProfileDTOTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51A5DD4BA2316889F39CDD24 /* ProfileDTOTests.swift */; };
 		52F1860A269EF29ACE6EE0A3 /* AppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E49B51523219D78344AB9A8 /* AppGroup.swift */; };
+		545C5035DF7F0E1CC933E769 /* AppStoreReviewLinks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 957E650367A6CEF403C68524 /* AppStoreReviewLinks.swift */; };
 		56281E60F20B712539F957FF /* LoveLanguage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF58AA7D81DFDBBF4E3D941F /* LoveLanguage.swift */; };
 		570B143E3863237F137F676D /* CoupleDTOTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AA7F8207838DB6359ECF024 /* CoupleDTOTests.swift */; };
 		57BC2289724538457316CAB4 /* MilestonesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72C9DDB7D721FC614C52CF6E /* MilestonesView.swift */; };
@@ -82,8 +85,10 @@
 		B41BE25B58B6E887BA3B7C52 /* RecurrencePresetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB62C0231491EE4F65A95A2C /* RecurrencePresetTests.swift */; };
 		B42C73BC3E1E71858F9531DE /* WatchPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD85E0386762BF4BEEBA39E7 /* WatchPayload.swift */; };
 		B4BBB555EDB39A162C36CA54 /* ReminderTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301EDB6E9D1A234A90519B12 /* ReminderTemplate.swift */; };
+		B65D13BAD4CEC94C5AF31EB6 /* ReviewPromptSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F0920FA522D143B8C679CC2 /* ReviewPromptSheet.swift */; };
 		B8A4BD8347DD2D9141E150D0 /* ReminderEventDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18775E994B22E961A54F8E3D /* ReminderEventDTO.swift */; };
 		BC6A2BB0AAC48DDE56E8BEE6 /* BondWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F49157A02B5BD4DD60E4D6A9 /* BondWatchApp.swift */; };
+		BC994AD8DBC607F4A4E7A579 /* AppStoreReviewLinks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 957E650367A6CEF403C68524 /* AppStoreReviewLinks.swift */; };
 		BD9D1E3117B1A08C546A7445 /* ReminderTemplatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7C6EB1679352861557F61EC /* ReminderTemplatesView.swift */; };
 		C22CC43865B9C68017FCEBF3 /* ReminderEditorModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = F867C11913BB4FCF5D3D5E9F /* ReminderEditorModels.swift */; };
 		C24FB3A9399D5252A92423B6 /* BondStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3CF1BD69FCFE09D7F366EB8 /* BondStyle.swift */; };
@@ -93,6 +98,7 @@
 		C936D494989E30796DF97085 /* RecurrencePreset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34C0EC429765DBD636FD8D72 /* RecurrencePreset.swift */; };
 		C9F8FE48A9984D8BD8BE07D0 /* ReminderEventDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18775E994B22E961A54F8E3D /* ReminderEventDTO.swift */; };
 		CA1994BE538E18DE8180A6AA /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33311829D0E004F79AB37ABF /* SettingsView.swift */; };
+		CBA5BD9A31D30EE2E8D1443A /* ReviewPromptTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 951DA5990DC91CBAFC87A939 /* ReviewPromptTracker.swift */; };
 		CF93F136AAA77D09B5932D29 /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = 7644CAA47A3A1207F2301EE4 /* RevenueCat */; };
 		D1A8B63123A3279F9975FD5E /* PaywallPackage+Bond.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12E04DA5135FA8A582014C4 /* PaywallPackage+Bond.swift */; };
 		D44DC594E39222BF724D26D6 /* WatchConnectivityBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A157DD27E1A47C5DB812074 /* WatchConnectivityBridge.swift */; };
@@ -102,6 +108,7 @@
 		E1C0EFE1D84ADEFDBA829B35 /* DailyQuestionDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50E8F1F976E924BD6B235514 /* DailyQuestionDTO.swift */; };
 		E307A29AE38CBC7DE32C8BE6 /* MilestoneDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9691537350F5E42C03E679 /* MilestoneDTO.swift */; };
 		E5743F3B95401D7F92110EAB /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEC67EF3AE529FDFBF5C96C /* LocationService.swift */; };
+		E64001C36B76C820F34B572A /* AppStoreReviewLinks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 957E650367A6CEF403C68524 /* AppStoreReviewLinks.swift */; };
 		E979CADB843AA4BC1E0799A8 /* WidgetSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCC41155EF6A2E9443D8990A /* WidgetSnapshot.swift */; };
 		EB9512343521D9C53C7DA522 /* MilestonesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113F2620C6CB170BE5DFAC2C /* MilestonesService.swift */; };
 		EF70E5BED32B37B8E03B5BBF /* WatchPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD85E0386762BF4BEEBA39E7 /* WatchPayload.swift */; };
@@ -150,6 +157,7 @@
 /* Begin PBXFileReference section */
 		046ACADF7DDF5DD6D6E4F7DD /* WatchConnectivitySender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConnectivitySender.swift; sourceTree = "<group>"; };
 		05B10D58B2719BBE3B32C681 /* BondTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = BondTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		0F0920FA522D143B8C679CC2 /* ReviewPromptSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewPromptSheet.swift; sourceTree = "<group>"; };
 		113F2620C6CB170BE5DFAC2C /* MilestonesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MilestonesService.swift; sourceTree = "<group>"; };
 		12B0502E3CD2A5CE2602DE00 /* SupabaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseService.swift; sourceTree = "<group>"; };
 		167CA752300A93B733B1F99B /* PairingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PairingService.swift; sourceTree = "<group>"; };
@@ -205,6 +213,8 @@
 		939CEC163F261084A4635A51 /* SupabaseConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseConfig.swift; sourceTree = "<group>"; };
 		94FA6F604A0AE177F1E53E19 /* ReminderTrigger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderTrigger.swift; sourceTree = "<group>"; };
 		95073072E3E305CBDEAA7500 /* PairingSuccessView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PairingSuccessView.swift; sourceTree = "<group>"; };
+		951DA5990DC91CBAFC87A939 /* ReviewPromptTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewPromptTracker.swift; sourceTree = "<group>"; };
+		957E650367A6CEF403C68524 /* AppStoreReviewLinks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStoreReviewLinks.swift; sourceTree = "<group>"; };
 		9AA7F8207838DB6359ECF024 /* CoupleDTOTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoupleDTOTests.swift; sourceTree = "<group>"; };
 		A42CD9882E06FC36B7BAC844 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		AF2AA00C4EEE3F3D6C38CCB0 /* PlusJakartaSans-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "PlusJakartaSans-Medium.ttf"; sourceTree = "<group>"; };
@@ -399,6 +409,14 @@
 			path = ReminderList;
 			sourceTree = "<group>";
 		};
+		92B39AF5C20C1E0A8581AF6F /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				951DA5990DC91CBAFC87A939 /* ReviewPromptTracker.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
 		968CCB8EDDF6E5B40A2212B2 /* Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -466,6 +484,14 @@
 			path = DesignSystem;
 			sourceTree = "<group>";
 		};
+		B2014F66628444080F80E980 /* Review */ = {
+			isa = PBXGroup;
+			children = (
+				0F0920FA522D143B8C679CC2 /* ReviewPromptSheet.swift */,
+			);
+			path = Review;
+			sourceTree = "<group>";
+		};
 		B897F2680C88444499C5EB72 /* BondWidgets */ = {
 			isa = PBXGroup;
 			children = (
@@ -481,6 +507,7 @@
 			children = (
 				37BA39ED18C231C7A2BB9CF8 /* DTOs */,
 				968CCB8EDDF6E5B40A2212B2 /* Models */,
+				92B39AF5C20C1E0A8581AF6F /* Services */,
 				C1A9D47F8C742A61A14D3072 /* Utilities */,
 			);
 			path = Shared;
@@ -490,6 +517,7 @@
 			isa = PBXGroup;
 			children = (
 				5E49B51523219D78344AB9A8 /* AppGroup.swift */,
+				957E650367A6CEF403C68524 /* AppStoreReviewLinks.swift */,
 				90F93FCB23F083FC2424750E /* BondColors.swift */,
 				CD85E0386762BF4BEEBA39E7 /* WatchPayload.swift */,
 				CCC41155EF6A2E9443D8990A /* WidgetSnapshot.swift */,
@@ -516,6 +544,7 @@
 				C561270B6F58BA0276007B29 /* Paywall */,
 				A7C3BE35BC3AA10A5C6E7232 /* ReminderEditor */,
 				718E99AAE0CB74E56B210C8F /* ReminderList */,
+				B2014F66628444080F80E980 /* Review */,
 				0FF0CE4A3C6E2C9AE28B6F95 /* Settings */,
 				9E074D2E52E6F995F29DBC7B /* Stats */,
 				446752AF7734854EBD41D4A8 /* Templates */,
@@ -721,6 +750,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AE772874A114CC2B5E4C2739 /* AppGroup.swift in Sources */,
+				E64001C36B76C820F34B572A /* AppStoreReviewLinks.swift in Sources */,
 				3335A9265520E6B1EC593C48 /* BondColors.swift in Sources */,
 				6F6C2CB3F5A0CF9120D0AAA9 /* BondWidgetsBundle.swift in Sources */,
 				2813CCAF01B9B86418F73CEC /* CoupleDTO.swift in Sources */,
@@ -734,6 +764,7 @@
 				05B46674EDB8219D56A3D8C0 /* ReminderEventDTO.swift in Sources */,
 				B4BBB555EDB39A162C36CA54 /* ReminderTemplate.swift in Sources */,
 				7411F1A8C72A107812C597EB /* ReminderTrigger.swift in Sources */,
+				4E84D3152AA02E4F975FD6F0 /* ReviewPromptTracker.swift in Sources */,
 				F6941DD7FCB6341653A886E4 /* WatchPayload.swift in Sources */,
 				F2D531BF71A180F993CD06A7 /* WidgetSnapshot.swift in Sources */,
 			);
@@ -744,6 +775,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				52F1860A269EF29ACE6EE0A3 /* AppGroup.swift in Sources */,
+				545C5035DF7F0E1CC933E769 /* AppStoreReviewLinks.swift in Sources */,
 				C85B4C6B1B7AC5597C83FA4C /* AppleSignInHelper.swift in Sources */,
 				E1B0AFF57064F67A389FA982 /* BondApp.swift in Sources */,
 				A199C4FBC971AD75056946D8 /* BondColors.swift in Sources */,
@@ -790,6 +822,8 @@
 				4EF4BBC8BE8D354A50EA4900 /* ReminderTemplate.swift in Sources */,
 				BD9D1E3117B1A08C546A7445 /* ReminderTemplatesView.swift in Sources */,
 				27F0B2AF1AE96E58B63A4F3A /* ReminderTrigger.swift in Sources */,
+				B65D13BAD4CEC94C5AF31EB6 /* ReviewPromptSheet.swift in Sources */,
+				CBA5BD9A31D30EE2E8D1443A /* ReviewPromptTracker.swift in Sources */,
 				CA1994BE538E18DE8180A6AA /* SettingsView.swift in Sources */,
 				D901243B3926F226062C57E2 /* StatsView.swift in Sources */,
 				9A2F69C5EDACC56A8920B26F /* SupabaseConfig.swift in Sources */,
@@ -806,6 +840,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4E5B7E7C7B7C2FAF0E18EFE1 /* AppGroup.swift in Sources */,
+				BC994AD8DBC607F4A4E7A579 /* AppStoreReviewLinks.swift in Sources */,
 				4DAE11F2CBF2C051D529BAFB /* BondColors.swift in Sources */,
 				BC6A2BB0AAC48DDE56E8BEE6 /* BondWatchApp.swift in Sources */,
 				14271AAE2B1B55F6F1300DA3 /* CoupleDTO.swift in Sources */,
@@ -820,6 +855,7 @@
 				B8A4BD8347DD2D9141E150D0 /* ReminderEventDTO.swift in Sources */,
 				AED61940397E14521591E73C /* ReminderTemplate.swift in Sources */,
 				F8591164C8A77D09DECE3911 /* ReminderTrigger.swift in Sources */,
+				4DE3625D81B03BBCE58C0E27 /* ReviewPromptTracker.swift in Sources */,
 				7A63C76588E01152BAE592FC /* WatchConnectivitySender.swift in Sources */,
 				EF70E5BED32B37B8E03B5BBF /* WatchPayload.swift in Sources */,
 				92CDAEDF1F9D98BDD8F2628F /* WidgetSnapshot.swift in Sources */,
@@ -939,7 +975,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 37;
+				CURRENT_PROJECT_VERSION = 39;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = YXG4MP6W39;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -1007,7 +1043,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 37;
+				CURRENT_PROJECT_VERSION = 39;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = YXG4MP6W39;
 				ENABLE_NS_ASSERTIONS = NO;

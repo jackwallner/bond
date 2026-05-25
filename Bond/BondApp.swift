@@ -1,3 +1,4 @@
+import StoreKit
 import SwiftUI
 import UIKit
 
@@ -26,6 +27,7 @@ struct BondApp: App {
         _checkInService = State(initialValue: checkIn)
 
         Self.applyNavigationBarFont()
+        ReviewPromptTracker.recordAppLaunch()
     }
 
     /// Nav-bar titles are rendered by UIKit, so SwiftUI's `.font(.bond(...))`
@@ -89,11 +91,17 @@ struct BondApp: App {
 struct RootView: View {
     @Environment(SupabaseService.self) private var supabase
     @Environment(PairingService.self) private var pairing
+    @StateObject private var reviewPromptCoordinator = ReviewPromptCoordinator.shared
     @State private var theme = BondTheme.shared
     // Stays false until both auth bootstrap AND the initial couple load have
     // settled. Without this single gate, the destination resolved off
     // mid-flight state and flashed intent-setup → loading → home on launch.
     @State private var isAppBootstrapped = false
+    @State private var showReviewPrompt = false
+    @State private var reviewPromptInitialStep: ReviewPromptSheet.Step = .enjoyment
+    @State private var reviewPromptShownThisSession = false
+    @State private var pendingNativeReviewAfterDismiss = false
+    @Environment(\.requestReview) private var requestReview
 
     var body: some View {
         // Touch theme.accent so the body re-evaluates when the user picks a
@@ -170,6 +178,71 @@ struct RootView: View {
                 isAppBootstrapped = true
             }
         }
+        .onReceive(NotificationCenter.default.publisher(for: .bondPositiveMomentForReview)) { _ in
+            scheduleReviewPromptAfterPositiveMoment()
+        }
+        .onChange(of: reviewPromptCoordinator.pendingPresentation) { _, presentation in
+            guard let presentation else { return }
+            defer { reviewPromptCoordinator.clear() }
+            guard currentDestination == .home,
+                  !pairing.requiresSignInToPair
+            else { return }
+            switch presentation {
+            case .enjoymentPrompt:
+                presentReviewPrompt(step: .enjoyment)
+            case .feedbackOnly:
+                presentReviewPrompt(step: .feedback)
+            }
+        }
+        .sheet(isPresented: $showReviewPrompt, onDismiss: {
+            if pendingNativeReviewAfterDismiss {
+                pendingNativeReviewAfterDismiss = false
+                requestReview()
+            }
+        }) {
+            ReviewPromptSheet(initialStep: reviewPromptInitialStep, onFinish: handleReviewPromptFinish)
+        }
+    }
+
+    private var hasCompletedSetup: Bool {
+        isAppBootstrapped && pairing.coupleId != nil
+    }
+
+    private func scheduleReviewPromptAfterPositiveMoment() {
+        guard currentDestination == .home,
+              !pairing.justPaired,
+              !pairing.requiresSignInToPair,
+              ReviewPromptTracker.shouldShowAfterPositiveMoment(hasCompletedSetup: hasCompletedSetup),
+              !reviewPromptShownThisSession,
+              !showReviewPrompt
+        else { return }
+
+        Task { @MainActor in
+            try? await Task.sleep(nanoseconds: 3_500_000_000)
+            guard currentDestination == .home,
+                  !pairing.justPaired,
+                  !pairing.requiresSignInToPair,
+                  !showReviewPrompt,
+                  ReviewPromptTracker.shouldShowAfterPositiveMoment(hasCompletedSetup: hasCompletedSetup)
+            else { return }
+            ReviewPromptTracker.consumePendingPositiveMoment()
+            reviewPromptInitialStep = .enjoyment
+            reviewPromptShownThisSession = true
+            showReviewPrompt = true
+        }
+    }
+
+    private func handleReviewPromptFinish(_ outcome: ReviewPromptDismissOutcome) {
+        showReviewPrompt = false
+        if outcome == .enjoyedMaybeLater {
+            pendingNativeReviewAfterDismiss = true
+        }
+    }
+
+    private func presentReviewPrompt(step: ReviewPromptSheet.Step) {
+        reviewPromptInitialStep = step
+        reviewPromptShownThisSession = true
+        showReviewPrompt = true
     }
 
     private enum Destination { case loading, intentSetup, pairingSuccess, home }

@@ -10,3 +10,5 @@ See memory `project_bond.md` for app overview, stack, and phased plan.
 - `scripts/upload-appstore-metadata.sh` — `fastlane upload_metadata` (screenshots + listing copy, no binary, no submit-for-review).
 
 ASC API key (shared across apps): `~/.baseball_credentials` (`ASC_API_KEY_ID`, `ASC_ISSUER_ID`, `ASC_KEY_PATH`).
+
+**Review prompt:** See `docs/review-prompt.md` (5-star funnel; set `BondAppStoreID` in Info.plist before App Store launch).

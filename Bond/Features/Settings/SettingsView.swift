@@ -108,6 +108,14 @@ struct SettingsView: View {
                 }
             }
 
+            Section("Help") {
+                Button {
+                    ReviewPromptCoordinator.shared.requestEnjoymentPrompt()
+                } label: {
+                    Label("Rate or Send Feedback", systemImage: "star.bubble")
+                }
+            }
+
             Section {
                 Link("Privacy policy", destination: URL(string: "https://jackwallner.com/bond/privacy")!)
                 Link("Terms of service", destination: URL(string: "https://jackwallner.com/bond/terms")!)
