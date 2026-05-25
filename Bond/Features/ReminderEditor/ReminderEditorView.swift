@@ -30,111 +30,53 @@ struct ReminderEditorView: View {
     @State private var isSaving = false
     @State private var errorMessage: String?
     @State private var isPaywallPresented = false
+    @State private var isTemplatesPresented = false
+    @State private var lastFreeTriggerKind: TriggerKind = .oneTime
 
     var body: some View {
         NavigationStack {
             Form {
-                // Starter inspiration is no longer hidden behind "empty list":
-                // any time the user opens a new reminder with a blank title,
-                // they get the same idea chips here. Stuck on what to write
-                // for is the moment you actually need ideas.
-                if existing == nil && title.trimmingCharacters(in: .whitespaces).isEmpty {
-                    Section {
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            HStack(spacing: BondSpacing.s) {
-                                ForEach(starterChips(for: .shared)) { chip in
-                                    Button {
-                                        title = chip.title
-                                        loveLanguage = chip.loveLanguage
-                                    } label: {
-                                        HStack(spacing: BondSpacing.xs) {
-                                            Image(systemName: chip.loveLanguage.symbolName)
-                                                .font(.bond(.caption))
-                                                .foregroundStyle(chip.loveLanguage.tint)
-                                            Text(chip.title)
-                                                .font(.bond(.caption))
-                                                .foregroundStyle(.primary)
-                                                .lineLimit(1)
-                                        }
-                                        .fixedSize(horizontal: true, vertical: false)
-                                        .padding(.horizontal, BondSpacing.m)
-                                        .padding(.vertical, BondSpacing.s)
-                                        .background(Color.bondCardFill, in: Capsule())
-                                        .overlay(
-                                            Capsule().strokeBorder(Color.bondHairline, lineWidth: 0.5)
-                                        )
-                                    }
-                                    .buttonStyle(.plain)
-                                    .accessibilityLabel("Use suggestion: \(chip.title)")
-                                }
-                            }
-                            // Breathing room lives inside the scroll content so the
-                            // first/last chips clear the screen edges and the capsules
-                            // aren't clipped by the row bounds (the old row insets used
-                            // trailing: 0 + 4pt vertical, so chips ran off the edge and
-                            // got cut top/bottom).
-                            .padding(.horizontal, BondSpacing.base)
-                            .padding(.vertical, BondSpacing.s)
-                        }
-                        .listRowInsets(EdgeInsets())
-                        .listRowBackground(Color.clear)
-                    } header: {
-                        Text("Need an idea?")
-                    }
-                }
-
                 Section {
                     TextField("Title", text: $title)
                     TextField("Note (optional)", text: $noteText, axis: .vertical)
-                        .lineLimit(2...5)
+                        .lineLimit(2...4)
                 } footer: {
                     if title.trimmingCharacters(in: .whitespaces).isEmpty {
                         Text("Add a title to save.")
                     }
                 }
 
-                Section("Love language") {
+                Section {
                     Picker("Love language", selection: $loveLanguage) {
                         ForEach(LoveLanguage.allCases) { lang in
-                            Label(lang.title, systemImage: lang.symbolName)
-                                .foregroundStyle(lang.tint)
-                                .tag(lang)
+                            Label(lang.title, systemImage: lang.symbolName).tag(lang)
                         }
                     }
-                    .pickerStyle(.menu)
-                    .labelsHidden()
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                }
-
-                Section("Who is this for?") {
                     if pairing.solo {
-                        // Solo users only target themselves.
-                        Text("Reminders are just for you.")
-                            .font(.bond(.callout))
-                            .foregroundStyle(.secondary)
+                        LabeledContent("For", value: "You")
                     } else {
-                        Picker("Target", selection: $target) {
+                        Picker("For", selection: $target) {
                             ForEach(ReminderTarget.allCases) { Text($0.title).tag($0) }
                         }
                         .pickerStyle(.segmented)
                         if target == .partner {
-                            Toggle("Keep secret from partner (surprise)", isOn: $surpriseHidden)
+                            Toggle("Surprise (hidden from partner)", isOn: $surpriseHidden)
                         }
                     }
                 }
 
                 Section {
-                    ForEach(TriggerKind.allCases) { kind in
-                        TriggerOptionRow(
-                            kind: kind,
-                            isSelected: triggerKind == kind,
-                            isLocked: kind.isPremium && !store.isPremium
-                        ) {
-                            if kind.isPremium && !store.isPremium {
-                                isPaywallPresented = true
-                            } else {
-                                triggerKind = kind
-                            }
+                    Picker("Schedule", selection: $triggerKind) {
+                        ForEach(TriggerKind.allCases) { kind in
+                            Text(kind.title).tag(kind)
+                        }
+                    }
+                    .onChange(of: triggerKind) { _, newKind in
+                        if newKind.isPremium && !store.isPremium {
+                            triggerKind = lastFreeTriggerKind
+                            isPaywallPresented = true
+                        } else if !newKind.isPremium {
+                            lastFreeTriggerKind = newKind
                         }
                     }
                     triggerDetail
@@ -142,7 +84,7 @@ struct ReminderEditorView: View {
                     Text("When")
                 } footer: {
                     if !store.isPremium {
-                        Text("Location & random-surprise triggers are part of Bond+.")
+                        Text("Location & surprise-in-a-window need Bond+.")
                             .font(.bond(.caption))
                             .foregroundStyle(.secondary)
                     }
@@ -155,6 +97,8 @@ struct ReminderEditorView: View {
                             .font(.bond(.footnote))
                     }
                 }
+
+                ideasAndTemplatesSection
             }
             .navigationTitle(existing == nil ? "New reminder" : "Edit reminder")
             .toolbar {
@@ -169,7 +113,64 @@ struct ReminderEditorView: View {
                 }
             }
             .paywallSheet(isPresented: $isPaywallPresented)
+            .sheet(isPresented: $isTemplatesPresented) {
+                ReminderTemplatesView()
+            }
             .onAppear(perform: hydrate)
+        }
+    }
+
+    @ViewBuilder
+    private var ideasAndTemplatesSection: some View {
+        Section {
+            if existing == nil && title.trimmingCharacters(in: .whitespaces).isEmpty {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: BondSpacing.s) {
+                        ForEach(starterChips(for: .shared)) { chip in
+                            Button {
+                                title = chip.title
+                                loveLanguage = chip.loveLanguage
+                            } label: {
+                                HStack(spacing: BondSpacing.xs) {
+                                    Image(systemName: chip.loveLanguage.symbolName)
+                                        .font(.bond(.caption))
+                                        .foregroundStyle(chip.loveLanguage.tint)
+                                    Text(chip.title)
+                                        .font(.bond(.caption))
+                                        .foregroundStyle(.primary)
+                                        .lineLimit(1)
+                                }
+                                .fixedSize(horizontal: true, vertical: false)
+                                .padding(.horizontal, BondSpacing.m)
+                                .padding(.vertical, BondSpacing.s)
+                                .background(Color.bondCardFill, in: Capsule())
+                                .overlay(Capsule().strokeBorder(Color.bondHairline, lineWidth: 0.5))
+                            }
+                            .buttonStyle(.plain)
+                            .accessibilityLabel("Use suggestion: \(chip.title)")
+                        }
+                    }
+                    .padding(.horizontal, BondSpacing.base)
+                    .padding(.vertical, BondSpacing.s)
+                }
+                .listRowInsets(EdgeInsets())
+                .listRowBackground(Color.clear)
+            }
+
+            Button {
+                isTemplatesPresented = true
+            } label: {
+                Label("Browse reminder templates", systemImage: "square.grid.2x2")
+            }
+
+            if !store.isPremium {
+                Text("83% of Bond+ users report a healthier, happier relationship.")
+                    .font(.bond(.footnote))
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        } header: {
+            Text(existing == nil ? "Need an idea?" : "Templates")
         }
     }
 
@@ -260,9 +261,11 @@ struct ReminderEditorView: View {
         switch existing.trigger {
         case .oneTime(let d):
             triggerKind = .oneTime
+            lastFreeTriggerKind = .oneTime
             fireAt = d
         case .recurring(let r, let d):
             triggerKind = .recurring
+            lastFreeTriggerKind = .recurring
             fireAt = d
             if let p = RecurrencePreset(rrule: r) { recurrence = p }
         case .location(let g, _):
@@ -276,6 +279,9 @@ struct ReminderEditorView: View {
             windowStart = s
             windowEnd = e
         default: break
+        }
+        if !triggerKind.isPremium {
+            lastFreeTriggerKind = triggerKind
         }
     }
 
@@ -382,50 +388,3 @@ struct ReminderEditorView: View {
     }
 }
 
-private struct TriggerOptionRow: View {
-    let kind: TriggerKind
-    let isSelected: Bool
-    let isLocked: Bool
-    let onTap: () -> Void
-
-    var body: some View {
-        Button(action: onTap) {
-            HStack(spacing: BondSpacing.m) {
-                Image(systemName: kind.symbolName)
-                    .font(.bond(.title3))
-                    .foregroundStyle(isLocked ? .secondary : Color.bondAccent)
-                    .frame(width: 28)
-                VStack(alignment: .leading, spacing: 2) {
-                    HStack(spacing: BondSpacing.xs) {
-                        Text(kind.title)
-                            .font(.bond(.headline))
-                            .foregroundStyle(.primary)
-                        if kind.isPremium {
-                            Text("PRO")
-                                .font(.bond(.caption2, weight: .semibold))
-                                .foregroundStyle(.white)
-                                .padding(.horizontal, 6)
-                                .padding(.vertical, 2)
-                                .background(Color.bondAccent, in: Capsule())
-                        }
-                    }
-                    Text(kind.subtitle)
-                        .font(.bond(.caption))
-                        .foregroundStyle(.secondary)
-                }
-                Spacer()
-                if isLocked {
-                    Image(systemName: "lock.fill")
-                        .foregroundStyle(.secondary)
-                        .font(.bond(.caption))
-                } else if isSelected {
-                    Image(systemName: "checkmark.circle.fill")
-                        .foregroundStyle(Color.bondAccent)
-                }
-            }
-            .contentShape(Rectangle())
-            .padding(.vertical, 4)
-        }
-        .buttonStyle(.plain)
-    }
-}

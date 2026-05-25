@@ -115,6 +115,18 @@ final class PurchasesService {
         if isPremium {
             return .purchased
         }
+        // StoreKit → RevenueCat can lag a beat after Apple confirms payment.
+        // Poll briefly so the paywall dismisses and gates unlock without
+        // forcing the user to restore or restart the app.
+        for attempt in 1...6 {
+            try await Task.sleep(nanoseconds: 400_000_000)
+            await refresh()
+            if isPremium {
+                log.info("Premium unlocked after purchase (attempt \(attempt))")
+                return .purchased
+            }
+        }
+        log.warning("Purchase completed but entitlement still inactive")
         return .pending
     }
 

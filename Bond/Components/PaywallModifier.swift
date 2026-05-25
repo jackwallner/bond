@@ -6,7 +6,8 @@ struct PaywallModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .sheet(isPresented: $isPresented) {
-                PaywallView()
+                PaywallView(onClose: { isPresented = false })
+                    .presentationDragIndicator(.visible)
             }
     }
 }

@@ -90,6 +90,7 @@ struct BondApp: App {
 
 struct RootView: View {
     @Environment(SupabaseService.self) private var supabase
+    @Environment(PurchasesService.self) private var store
     @Environment(PairingService.self) private var pairing
     @StateObject private var reviewPromptCoordinator = ReviewPromptCoordinator.shared
     @State private var theme = BondTheme.shared
@@ -167,6 +168,9 @@ struct RootView: View {
             // init's restoreSession() can mint two anon users and leave the
             // client session out of sync with currentUserId.
             await supabase.bootstrap()
+            if let me = supabase.currentUserId {
+                await store.identify(supabaseUserId: me)
+            }
             await pairing.loadCouple()
             isAppBootstrapped = true
         }

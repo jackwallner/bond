@@ -19,6 +19,8 @@ struct PaywallView: View {
     @Environment(PurchasesService.self) private var purchases
     @Environment(\.dismiss) private var dismiss
 
+    /// Prefer this over `dismiss()` when the paywall is hosted in a nested sheet.
+    var onClose: (() -> Void)? = nil
     var displayCloseButton = true
     var impressionId = "bond_premium_sheet"
 
@@ -38,23 +40,40 @@ struct PaywallView: View {
     ]
 
     var body: some View {
-        ZStack {
-            Color.bondSurface.ignoresSafeArea()
+        NavigationStack {
+            ZStack {
+                Color.bondSurface.ignoresSafeArea()
 
-            if purchases.isLoadingProducts && purchases.products.isEmpty {
-                loadingState
-            } else if purchases.products.isEmpty {
-                emptyState
-            } else {
-                content
+                if purchases.isLoadingProducts && purchases.products.isEmpty {
+                    loadingState
+                } else if purchases.products.isEmpty {
+                    emptyState
+                } else {
+                    content
+                }
+
+                if displayCloseButton {
+                    closeButton
+                }
             }
-
-            if displayCloseButton {
-                closeButton
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                if displayCloseButton {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button {
+                            closePaywall()
+                        } label: {
+                            Image(systemName: "xmark.circle.fill")
+                                .font(.system(size: 26))
+                                .foregroundStyle(.secondary)
+                        }
+                        .accessibilityLabel("Close")
+                    }
+                }
             }
         }
         .onChange(of: purchases.isPremium) { _, isPremium in
-            if isPremium { dismiss() }
+            if isPremium { closePaywall() }
         }
         .task {
             purchases.trackPaywallImpression(id: impressionId)
@@ -128,6 +147,12 @@ struct PaywallView: View {
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
+            Text("83% of Bond+ users report a healthier, happier relationship.")
+                .font(.bond(.footnote, weight: .semibold))
+                .foregroundStyle(Color.bondAccent)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+                .padding(.top, BondSpacing.xs)
         }
     }
 
@@ -221,7 +246,7 @@ struct PaywallView: View {
         VStack {
             HStack {
                 Spacer()
-                Button { dismiss() } label: {
+                Button { closePaywall() } label: {
                     Image(systemName: "xmark.circle.fill")
                         .font(.system(size: 26))
                         .foregroundStyle(.secondary)
@@ -230,6 +255,16 @@ struct PaywallView: View {
                 .buttonStyle(.plain)
             }
             Spacer()
+        }
+        .allowsHitTesting(true)
+        .zIndex(1)
+    }
+
+    private func closePaywall() {
+        if let onClose {
+            onClose()
+        } else {
+            dismiss()
         }
     }
 
@@ -287,13 +322,18 @@ struct PaywallView: View {
             defer { isPurchasing = false }
             do {
                 switch try await purchases.purchase(package) {
-                case .purchased, .pending:
-                    break
+                case .purchased:
+                    closePaywall()
+                case .pending:
+                    errorMessage = "Payment received — unlocking Bond+. Tap Restore if this takes more than a moment."
+                    await purchases.restore()
+                    if purchases.isPremium { closePaywall() }
                 case .cancelled:
                     errorMessage = "Purchase cancelled. Tap again to continue."
                 }
             } catch {
-                errorMessage = "Couldn't complete the purchase. Please try again."
+                errorMessage = purchases.lastError
+                    ?? "Couldn't complete the purchase. Please try again."
             }
         }
     }
