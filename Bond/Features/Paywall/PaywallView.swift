@@ -30,6 +30,10 @@ struct PaywallView: View {
     @State private var statusMessage: String?
     @State private var restoreMessage: String?
     @State private var isRestoring = false
+    /// Set when a purchase completes at StoreKit but the entitlement hasn't
+    /// landed after our retry budget — surfaces a prominent inline Restore
+    /// CTA instead of the small one in the legal footer.
+    @State private var needsManualRestore = false
 
     /// Concrete Bond+ features framed as outcomes. Order leads with the daily
     /// hook, then the differentiator, then the two reminder-flavoured wins.
@@ -219,6 +223,15 @@ struct PaywallView: View {
                     .foregroundStyle(.red)
                     .multilineTextAlignment(.center)
             }
+            if needsManualRestore {
+                BondPrimaryButton(
+                    title: isRestoring ? "Restoring…" : "Restore Purchase",
+                    isLoading: isRestoring
+                ) {
+                    startRestore()
+                }
+                .disabled(isRestoring)
+            }
             if let restoreMessage {
                 Text(restoreMessage)
                     .font(.bond(.footnote))
@@ -325,6 +338,7 @@ struct PaywallView: View {
         errorMessage = nil
         statusMessage = nil
         restoreMessage = nil
+        needsManualRestore = false
         isPurchasing = true
         Task {
             defer { isPurchasing = false }
@@ -345,7 +359,8 @@ struct PaywallView: View {
                         closePaywall()
                     } else {
                         statusMessage = nil
-                        errorMessage = "Taking longer than expected. Tap Restore to finish unlocking."
+                        errorMessage = "Your payment went through but we're still syncing it. Tap below to finish unlocking."
+                        needsManualRestore = true
                     }
                 case .cancelled:
                     statusMessage = nil
@@ -365,7 +380,9 @@ struct PaywallView: View {
         Task {
             defer { isRestoring = false }
             await purchases.restore()
-            if !purchases.isPremium {
+            if purchases.isPremium {
+                needsManualRestore = false
+            } else {
                 restoreMessage = purchases.lastError
                     ?? "No active Bond+ purchase found for this Apple ID."
             }

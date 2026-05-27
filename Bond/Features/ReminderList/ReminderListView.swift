@@ -285,10 +285,12 @@ struct ReminderListView: View {
             handledSection
 
             Section {
-                TemplatesHomePitch { isTemplatesPresented = true }
-                    .listRowInsets(EdgeInsets(top: 4, leading: 16, bottom: 80, trailing: 16))
-                    .listRowBackground(Color.clear)
-                    .listRowSeparator(.hidden)
+                TemplatesHomePitch(isPremium: store.isPremium) {
+                    isTemplatesPresented = true
+                }
+                .listRowInsets(EdgeInsets(top: 4, leading: 16, bottom: 80, trailing: 16))
+                .listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
             }
         }
         .listStyle(.insetGrouped)
@@ -562,8 +564,8 @@ private struct MyListEmptyView: View {
 
     private var subtitle: String {
         isPaired
-            ? "Add something for you or \(partnerName), or start from a template."
-            : "Add a reminder, or start from a template."
+            ? "Add something for you or \(partnerName) — or pick a template below."
+            : "Add a reminder — or pick a template below."
     }
 
     var body: some View {
@@ -577,14 +579,9 @@ private struct MyListEmptyView: View {
                 .font(.bond(.subheadline))
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
-            HStack(spacing: BondSpacing.s) {
-                Button("Add one", action: onAdd)
-                    .buttonStyle(.borderedProminent)
-                    .tint(.bondAccent)
-                Button("Templates", action: onBrowseTemplates)
-                    .buttonStyle(.bordered)
-                    .tint(.bondAccent)
-            }
+            Button("Add one", action: onAdd)
+                .buttonStyle(.borderedProminent)
+                .tint(.bondAccent)
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, BondSpacing.xxl)
@@ -596,66 +593,114 @@ private struct MyListEmptyView: View {
 /// users discover packs without hunting in a toolbar. The destination handles
 /// its own gating (free users hit the templates paywall preview).
 private struct TemplatesHomePitch: View {
+    let isPremium: Bool
     let onTap: () -> Void
 
     private var previewGroups: [ReminderTemplateGroup] {
         Array(ReminderTemplateStore.groups.prefix(3))
     }
 
+    private var ctaText: String {
+        isPremium ? "Browse templates →" : "Preview templates →"
+    }
+
+    private var subtitle: String {
+        isPremium
+            ? "Packs for date nights, long distance, daily affirmations, and more."
+            : "Curated packs included with Bond+ — tap to preview."
+    }
+
     var body: some View {
         Button(action: onTap) {
-            ZStack {
-                HStack(spacing: BondSpacing.s) {
-                    ForEach(previewGroups) { group in
-                        VStack(spacing: BondSpacing.xs) {
-                            Image(systemName: group.icon)
-                                .font(.bond(.title2))
-                                .foregroundStyle(.pink)
-                            Text(group.title)
-                                .font(.bond(.caption, weight: .semibold))
-                                .foregroundStyle(.primary)
-                                .lineLimit(1)
-                            Text(group.subtitle)
-                                .font(.bond(.caption2))
-                                .foregroundStyle(.secondary)
-                                .lineLimit(1)
-                        }
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, BondSpacing.base)
-                        .padding(.horizontal, BondSpacing.s)
-                        .background(Color.bondCardFill, in: RoundedRectangle(cornerRadius: BondRadius.inline))
-                    }
-                }
-                .padding(BondSpacing.s)
-                .blur(radius: 5)
-                .accessibilityHidden(true)
-
-                VStack(spacing: BondSpacing.xs) {
-                    Image(systemName: "square.grid.2x2")
-                        .font(.bond(.title3))
-                        .foregroundStyle(Color.bondAccent)
-                    Text("Reminder templates")
-                        .font(.bond(.subheadline, weight: .bold))
-                        .foregroundStyle(.primary)
-                    Text("Packs for date nights, long distance, daily affirmations, and more.")
-                        .font(.bond(.caption))
-                        .foregroundStyle(.secondary)
-                        .multilineTextAlignment(.center)
-                        .fixedSize(horizontal: false, vertical: true)
-                    Text("Browse templates →")
-                        .font(.bond(.footnote, weight: .bold))
-                        .foregroundStyle(Color.bondAccent)
-                        .padding(.top, 2)
-                }
-                .padding(BondSpacing.base)
-                .background(.regularMaterial, in: RoundedRectangle(cornerRadius: BondRadius.hero))
-                .padding(BondSpacing.m)
+            if isPremium {
+                premiumLayout
+            } else {
+                gatedPitchLayout
             }
-            .frame(maxWidth: .infinity)
-            .background(Color.bondAccent.opacity(0.06), in: RoundedRectangle(cornerRadius: BondRadius.hero))
         }
         .buttonStyle(.plain)
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("Browse reminder templates")
+        .accessibilityLabel(isPremium ? "Browse reminder templates" : "Preview reminder templates")
+    }
+
+    /// Clean entry point — no blur, no marketing copy — for users who already
+    /// have access. Blurring everything was reading as "still gated" to
+    /// premium users.
+    private var premiumLayout: some View {
+        HStack(spacing: BondSpacing.m) {
+            Image(systemName: "square.grid.2x2")
+                .font(.bond(.title3))
+                .foregroundStyle(Color.bondAccent)
+                .frame(width: 32, height: 32)
+                .background(Color.bondAccent.opacity(0.12), in: Circle())
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Reminder templates")
+                    .font(.bond(.subheadline, weight: .semibold))
+                    .foregroundStyle(.primary)
+                Text("Date nights, long distance, daily affirmations & more")
+                    .font(.bond(.caption))
+                    .foregroundStyle(.secondary)
+                    .lineLimit(2)
+            }
+            Spacer()
+            Image(systemName: "chevron.right")
+                .font(.bond(.caption, weight: .semibold))
+                .foregroundStyle(.tertiary)
+        }
+        .padding(BondSpacing.base)
+        .frame(maxWidth: .infinity)
+        .background(Color.bondCardFill, in: RoundedRectangle(cornerRadius: BondRadius.hero))
+    }
+
+    private var gatedPitchLayout: some View {
+        ZStack {
+            HStack(spacing: BondSpacing.s) {
+                ForEach(previewGroups) { group in
+                    VStack(spacing: BondSpacing.xs) {
+                        Image(systemName: group.icon)
+                            .font(.bond(.title2))
+                            .foregroundStyle(.pink)
+                        Text(group.title)
+                            .font(.bond(.caption, weight: .semibold))
+                            .foregroundStyle(.primary)
+                            .lineLimit(1)
+                        Text(group.subtitle)
+                            .font(.bond(.caption2))
+                            .foregroundStyle(.secondary)
+                            .lineLimit(1)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, BondSpacing.base)
+                    .padding(.horizontal, BondSpacing.s)
+                    .background(Color.bondCardFill, in: RoundedRectangle(cornerRadius: BondRadius.inline))
+                }
+            }
+            .padding(BondSpacing.s)
+            .blur(radius: 5)
+            .accessibilityHidden(true)
+
+            VStack(spacing: BondSpacing.xs) {
+                Image(systemName: "square.grid.2x2")
+                    .font(.bond(.title3))
+                    .foregroundStyle(Color.bondAccent)
+                Text("Reminder templates")
+                    .font(.bond(.subheadline, weight: .bold))
+                    .foregroundStyle(.primary)
+                Text(subtitle)
+                    .font(.bond(.caption))
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+                Text(ctaText)
+                    .font(.bond(.footnote, weight: .bold))
+                    .foregroundStyle(Color.bondAccent)
+                    .padding(.top, 2)
+            }
+            .padding(BondSpacing.base)
+            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: BondRadius.hero))
+            .padding(BondSpacing.m)
+        }
+        .frame(maxWidth: .infinity)
+        .background(Color.bondAccent.opacity(0.06), in: RoundedRectangle(cornerRadius: BondRadius.hero))
     }
 }
