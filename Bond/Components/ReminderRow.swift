@@ -66,9 +66,15 @@ struct ReminderRow: View {
                     }
                 }
             }
-            Spacer()
+            Spacer(minLength: 8)
+            Image(systemName: "chevron.right")
+                .font(.bond(.caption, weight: .semibold))
+                .foregroundStyle(.tertiary)
+                .accessibilityHidden(true)
         }
         .padding(.vertical, 4)
+        .contentShape(Rectangle())
         .opacity(isActedOn ? 0.6 : 1)
+        .accessibilityHint("Edit reminder")
     }
 }

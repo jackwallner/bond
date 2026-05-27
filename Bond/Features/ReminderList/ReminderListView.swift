@@ -50,14 +50,6 @@ struct ReminderListView: View {
                     }
                     .accessibilityLabel("More")
                 }
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        isTemplatesPresented = true
-                    } label: {
-                        Image(systemName: "square.grid.2x2")
-                    }
-                    .accessibilityLabel("Templates")
-                }
             }
             .safeAreaInset(edge: .bottom, alignment: .trailing) {
                 composeButton
@@ -291,6 +283,13 @@ struct ReminderListView: View {
             }
 
             handledSection
+
+            Section {
+                TemplatesHomePitch { isTemplatesPresented = true }
+                    .listRowInsets(EdgeInsets(top: 4, leading: 16, bottom: 80, trailing: 16))
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+            }
         }
         .listStyle(.insetGrouped)
     }
@@ -589,5 +588,74 @@ private struct MyListEmptyView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, BondSpacing.xxl)
+    }
+}
+
+/// Always-visible templates entry point that lives at the bottom of the home
+/// list. Shows a blurred peek at the available template groups and a CTA so
+/// users discover packs without hunting in a toolbar. The destination handles
+/// its own gating (free users hit the templates paywall preview).
+private struct TemplatesHomePitch: View {
+    let onTap: () -> Void
+
+    private var previewGroups: [ReminderTemplateGroup] {
+        Array(ReminderTemplateStore.groups.prefix(3))
+    }
+
+    var body: some View {
+        Button(action: onTap) {
+            ZStack {
+                HStack(spacing: BondSpacing.s) {
+                    ForEach(previewGroups) { group in
+                        VStack(spacing: BondSpacing.xs) {
+                            Image(systemName: group.icon)
+                                .font(.bond(.title2))
+                                .foregroundStyle(.pink)
+                            Text(group.title)
+                                .font(.bond(.caption, weight: .semibold))
+                                .foregroundStyle(.primary)
+                                .lineLimit(1)
+                            Text(group.subtitle)
+                                .font(.bond(.caption2))
+                                .foregroundStyle(.secondary)
+                                .lineLimit(1)
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, BondSpacing.base)
+                        .padding(.horizontal, BondSpacing.s)
+                        .background(Color.bondCardFill, in: RoundedRectangle(cornerRadius: BondRadius.inline))
+                    }
+                }
+                .padding(BondSpacing.s)
+                .blur(radius: 5)
+                .accessibilityHidden(true)
+
+                VStack(spacing: BondSpacing.xs) {
+                    Image(systemName: "square.grid.2x2")
+                        .font(.bond(.title3))
+                        .foregroundStyle(Color.bondAccent)
+                    Text("Reminder templates")
+                        .font(.bond(.subheadline, weight: .bold))
+                        .foregroundStyle(.primary)
+                    Text("Packs for date nights, long distance, daily affirmations, and more.")
+                        .font(.bond(.caption))
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Text("Browse templates →")
+                        .font(.bond(.footnote, weight: .bold))
+                        .foregroundStyle(Color.bondAccent)
+                        .padding(.top, 2)
+                }
+                .padding(BondSpacing.base)
+                .background(.regularMaterial, in: RoundedRectangle(cornerRadius: BondRadius.hero))
+                .padding(BondSpacing.m)
+            }
+            .frame(maxWidth: .infinity)
+            .background(Color.bondAccent.opacity(0.06), in: RoundedRectangle(cornerRadius: BondRadius.hero))
+        }
+        .buttonStyle(.plain)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Browse reminder templates")
     }
 }

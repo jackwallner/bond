@@ -27,6 +27,7 @@ struct PaywallView: View {
     @State private var selectedPackage: Package?
     @State private var isPurchasing = false
     @State private var errorMessage: String?
+    @State private var statusMessage: String?
     @State private var restoreMessage: String?
     @State private var isRestoring = false
 
@@ -52,9 +53,6 @@ struct PaywallView: View {
                     content
                 }
 
-                if displayCloseButton {
-                    closeButton
-                }
             }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -147,7 +145,7 @@ struct PaywallView: View {
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
-            Text("83% of Bond+ users report a healthier, happier relationship.")
+            Text("Join couples who use Bond+ to stay intentional together.")
                 .font(.bond(.footnote, weight: .semibold))
                 .foregroundStyle(Color.bondAccent)
                 .multilineTextAlignment(.center)
@@ -206,6 +204,15 @@ struct PaywallView: View {
                     .fixedSize(horizontal: false, vertical: true)
             }
 
+            if let statusMessage {
+                HStack(spacing: BondSpacing.xs) {
+                    ProgressView().controlSize(.small)
+                    Text(statusMessage)
+                        .font(.bond(.footnote))
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                }
+            }
             if let errorMessage {
                 Text(errorMessage)
                     .font(.bond(.footnote))
@@ -222,42 +229,34 @@ struct PaywallView: View {
     }
 
     private var legalFooter: some View {
-        HStack(spacing: BondSpacing.m) {
-            Button {
-                startRestore()
-            } label: {
-                Text(isRestoring ? "Restoring…" : "Restore")
-                    .font(.bond(.caption2, weight: .semibold))
+        VStack(spacing: BondSpacing.xs) {
+            if let autoRenewDisclosure {
+                Text(autoRenewDisclosure)
+                    .font(.bond(.caption2))
                     .foregroundStyle(.tertiary)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
             }
-            .buttonStyle(.plain)
-            .disabled(isRestoring || isPurchasing)
 
-            Text("·").foregroundStyle(.tertiary)
-            Link("Terms", destination: PaywallLinks.standardEULA)
-            Text("·").foregroundStyle(.tertiary)
-            Link("Privacy", destination: PaywallLinks.privacyPolicy)
-        }
-        .font(.bond(.caption2))
-        .foregroundStyle(.tertiary)
-    }
-
-    private var closeButton: some View {
-        VStack {
-            HStack {
-                Spacer()
-                Button { closePaywall() } label: {
-                    Image(systemName: "xmark.circle.fill")
-                        .font(.system(size: 26))
-                        .foregroundStyle(.secondary)
-                        .padding(BondSpacing.base)
+            HStack(spacing: BondSpacing.m) {
+                Button {
+                    startRestore()
+                } label: {
+                    Text(isRestoring ? "Restoring…" : "Restore")
+                        .font(.bond(.caption2, weight: .semibold))
+                        .foregroundStyle(.tertiary)
                 }
                 .buttonStyle(.plain)
+                .disabled(isRestoring || isPurchasing)
+
+                Text("·").foregroundStyle(.tertiary)
+                Link("Terms", destination: PaywallLinks.terms)
+                Text("·").foregroundStyle(.tertiary)
+                Link("Privacy", destination: PaywallLinks.privacyPolicy)
             }
-            Spacer()
+            .font(.bond(.caption2))
+            .foregroundStyle(.tertiary)
         }
-        .allowsHitTesting(true)
-        .zIndex(1)
     }
 
     private func closePaywall() {
@@ -302,7 +301,15 @@ struct PaywallView: View {
         if purchases.isEligibleForIntroOffer(package) {
             return "Then \(price). Cancel anytime."
         }
-        return "\(price). Cancel anytime."
+        return "\(price). Renews automatically."
+    }
+
+    /// Compact auto-renew disclosure (3.1.2) — shown for subscriptions only, not lifetime.
+    private var autoRenewDisclosure: String? {
+        guard let package = selectedPackage, package.storeProduct.subscriptionPeriod != nil else {
+            return nil
+        }
+        return "Payment charged to your Apple ID. Renews unless cancelled at least 24 hours before period end."
     }
 
     // MARK: - Actions
@@ -316,6 +323,7 @@ struct PaywallView: View {
     private func startPurchase() {
         guard let package = selectedPackage else { return }
         errorMessage = nil
+        statusMessage = nil
         restoreMessage = nil
         isPurchasing = true
         Task {
@@ -323,15 +331,27 @@ struct PaywallView: View {
             do {
                 switch try await purchases.purchase(package) {
                 case .purchased:
+                    statusMessage = nil
                     closePaywall()
                 case .pending:
-                    errorMessage = "Payment received — unlocking Bond+. Tap Restore if this takes more than a moment."
+                    // Payment cleared but entitlement hasn't propagated yet —
+                    // common in sandbox. Show a calm finalizing state; the
+                    // `onChange(of: isPremium)` will auto-dismiss as soon as
+                    // RevenueCat catches up.
+                    statusMessage = "Finalizing your purchase…"
                     await purchases.restore()
-                    if purchases.isPremium { closePaywall() }
+                    if purchases.isPremium {
+                        statusMessage = nil
+                        closePaywall()
+                    } else {
+                        statusMessage = nil
+                        errorMessage = "Taking longer than expected. Tap Restore to finish unlocking."
+                    }
                 case .cancelled:
-                    errorMessage = "Purchase cancelled. Tap again to continue."
+                    statusMessage = nil
                 }
             } catch {
+                statusMessage = nil
                 errorMessage = purchases.lastError
                     ?? "Couldn't complete the purchase. Please try again."
             }

@@ -115,11 +115,20 @@ final class PurchasesService {
         if isPremium {
             return .purchased
         }
-        // StoreKit → RevenueCat can lag a beat after Apple confirms payment.
-        // Poll briefly so the paywall dismisses and gates unlock without
-        // forcing the user to restore or restart the app.
-        for attempt in 1...6 {
-            try await Task.sleep(nanoseconds: 400_000_000)
+        // StoreKit → RevenueCat can lag a beat after Apple confirms payment —
+        // especially in sandbox/TestFlight where transactions can take several
+        // seconds to propagate. Force a sync (stronger than `customerInfo()`
+        // which can return cached data) and poll until the entitlement lands
+        // or we give up.
+        do {
+            let synced = try await Purchases.shared.syncPurchases()
+            apply(info: synced)
+            if isPremium { return .purchased }
+        } catch {
+            log.warning("syncPurchases after purchase failed: \(error.localizedDescription)")
+        }
+        for attempt in 1...15 {
+            try await Task.sleep(nanoseconds: 600_000_000)
             await refresh()
             if isPremium {
                 log.info("Premium unlocked after purchase (attempt \(attempt))")
