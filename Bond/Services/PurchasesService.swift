@@ -24,6 +24,11 @@ final class PurchasesService {
     private(set) var purchaseInFlight = false
     private(set) var introEligibility: [String: Bool] = [:]
     var lastError: String?
+    /// True when the most recent purchase failure is one where Apple may have
+    /// already taken payment (receipt/ownership conflicts) — i.e. a Restore
+    /// could complete the unlock. Lets the paywall avoid offering Restore for
+    /// failures (network, store outage) where there's nothing to restore.
+    private(set) var lastErrorSuggestsRestore = false
 
     private var streamTask: Task<Void, Never>?
     private var paywallImpressionsThisSession: Set<String> = []
@@ -106,8 +111,46 @@ final class PurchasesService {
     func purchase(_ package: Package) async throws -> PurchaseState {
         purchaseInFlight = true
         defer { purchaseInFlight = false }
+        lastError = nil
+        lastErrorSuggestsRestore = false
 
-        let result = try await Purchases.shared.purchase(package: package)
+        let result: PurchaseResultData
+        do {
+            result = try await Purchases.shared.purchase(package: package)
+        } catch let error as RevenueCat.ErrorCode {
+            // RevenueCat can throw ErrorCode directly. A user backing out of
+            // Apple's payment sheet is a cancel, not a failure — surface no
+            // error and no Restore prompt.
+            if error == .purchaseCancelledError { return .cancelled }
+            log.error("Purchase threw ErrorCode \(error.rawValue): \(error.localizedDescription)")
+            // Some codes mean Apple accepted payment but RC couldn't attach it
+            // to this user — a restore usually completes the unlock.
+            if await recoverFromKnownPurchaseError(error) {
+                return .purchased
+            }
+            lastError = readablePurchaseError(error)
+            lastErrorSuggestsRestore = errorSuggestsRestore(error)
+            throw error
+        } catch {
+            // RevenueCat normally surfaces failures as a bridged NSError in its
+            // own domain. Only interpret the numeric code as an RC ErrorCode
+            // when the domain matches — otherwise an unrelated NSError code
+            // could collide with an RC raw value and trigger a bogus restore.
+            let nsError = error as NSError
+            log.error("Purchase threw \(nsError.domain):\(nsError.code) — \(error.localizedDescription)")
+            if nsError.domain == RevenueCat.ErrorCode.errorDomain,
+               let code = RevenueCat.ErrorCode(rawValue: nsError.code) {
+                if code == .purchaseCancelledError { return .cancelled }
+                if await recoverFromKnownPurchaseError(code) {
+                    return .purchased
+                }
+                lastError = readablePurchaseError(code)
+                lastErrorSuggestsRestore = errorSuggestsRestore(code)
+            } else {
+                lastError = readablePurchaseError(error)
+            }
+            throw error
+        }
         apply(info: result.customerInfo)
         if result.userCancelled {
             return .cancelled
@@ -137,6 +180,71 @@ final class PurchasesService {
         }
         log.warning("Purchase completed but entitlement still inactive")
         return .pending
+    }
+
+    /// Some RC errors mean "Apple took the payment, but the entitlement is
+    /// attached to a different RC user / receipt" — restore reattaches it.
+    /// Returns true when a restore successfully unlocked premium.
+    private func recoverFromKnownPurchaseError(_ code: RevenueCat.ErrorCode) async -> Bool {
+        switch code {
+        case .receiptAlreadyInUseError,
+             .productAlreadyPurchasedError,
+             .missingReceiptFileError,
+             .invalidReceiptError:
+            log.info("Attempting restore to recover from \(code.rawValue)")
+            do {
+                let info = try await Purchases.shared.restorePurchases()
+                apply(info: info)
+                if isPremium {
+                    log.info("Recovered: restore unlocked premium")
+                    return true
+                }
+            } catch {
+                log.error("Recovery restore failed: \(error.localizedDescription)")
+            }
+            return false
+        default:
+            return false
+        }
+    }
+
+    /// Whether the failure represents a purchase that may already exist on the
+    /// Apple ID (so Restore can finish the unlock), vs. an outright failure
+    /// where nothing was charged.
+    private func errorSuggestsRestore(_ error: Error) -> Bool {
+        guard let code = error as? RevenueCat.ErrorCode else { return false }
+        switch code {
+        case .receiptAlreadyInUseError,
+             .productAlreadyPurchasedError,
+             .missingReceiptFileError,
+             .invalidReceiptError,
+             .paymentPendingError:
+            return true
+        default:
+            return false
+        }
+    }
+
+    private func readablePurchaseError(_ error: Error) -> String {
+        if let code = error as? RevenueCat.ErrorCode {
+            switch code {
+            case .receiptAlreadyInUseError:
+                return "This purchase is tied to another Apple ID. Tap Restore to unlock with the original account."
+            case .productAlreadyPurchasedError:
+                return "You already own this. Tap Restore to unlock it on this device."
+            case .paymentPendingError:
+                return "Your payment is pending approval. We'll unlock Bond+ as soon as it clears."
+            case .purchaseNotAllowedError:
+                return "In-app purchases are restricted on this device."
+            case .networkError, .offlineConnectionError:
+                return "Network issue completing the purchase. Check your connection and try again."
+            case .storeProblemError, .unknownBackendError, .unexpectedBackendResponseError:
+                return "The App Store had a problem. Wait a moment and try again, or tap Restore."
+            default:
+                return "Couldn't complete the purchase (\(code.rawValue)). \(error.localizedDescription)"
+            }
+        }
+        return error.localizedDescription
     }
 
     func identify(supabaseUserId: UUID) async {

@@ -9,9 +9,7 @@ struct ReminderTemplatesView: View {
         NavigationStack {
             Group {
                 if !store.isPremium {
-                    BondGatePreview(feature: .templates, isPaywallPresented: $isPaywallPresented) {
-                        TemplatesGateContent()
-                    }
+                    teaser
                 } else {
                     list
                 }
@@ -23,6 +21,39 @@ struct ReminderTemplatesView: View {
                 }
             }
             .paywallSheet(isPresented: $isPaywallPresented)
+        }
+    }
+
+    private var teaser: some View {
+        Form {
+            Section {
+                ForEach(ReminderTemplateStore.groups) { group in
+                    HStack(spacing: 12) {
+                        Image(systemName: group.icon)
+                            .font(.bond(.title2))
+                            .foregroundStyle(.pink)
+                            .frame(width: 32)
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(group.title)
+                                .font(.bond(.headline))
+                            Text(group.subtitle)
+                                .font(.bond(.caption))
+                                .foregroundStyle(.secondary)
+                        }
+                        Spacer()
+                        Text("\(group.reminders.count)")
+                            .font(.bond(.caption, weight: .semibold))
+                            .foregroundStyle(.tertiary)
+                    }
+                    .padding(.vertical, 4)
+                }
+            }
+
+            Section {
+                BondTemplatesUnlockCard(isPaywallPresented: $isPaywallPresented)
+                    .listRowInsets(EdgeInsets())
+                    .listRowBackground(Color.clear)
+            }
         }
     }
 
@@ -152,18 +183,22 @@ struct TemplateGroupDetailView: View {
 
         let partnerId = pairing.partnerProfile?.id
         let targetId: UUID = pairing.solo ? me : (partnerId ?? me)
+        let cal = Calendar.current
         let now = Date()
 
         let drafts: [ReminderDTO] = group.reminders.enumerated().map { index, template in
-            // Stagger the initial fire times so importing 7 reminders doesn't
-            // dogpile 7 notifications into the same minute. Recurring items
-            // anchor at staggered days; one-time items spread across coming
-            // afternoons.
-            let dayOffset = Double(index)
-            let hour: Double = template.triggerRecurrence == nil ? 14 : 9 // 2pm vs 9am
-            let fireAt = now
-                .addingTimeInterval(dayOffset * 24 * 60 * 60)
-                .addingTimeInterval(hour * 60 * 60)
+            // Anchor each reminder to a friendly clock time — recurring packs at
+            // 9am, one-time nudges at 2pm — then stagger one day apart so
+            // importing a whole pack doesn't dogpile notifications into one
+            // moment. Start from the next occurrence of that hour so one-time
+            // items are always in the future (a past fireAt would be dropped
+            // by the scheduler).
+            let targetHour = template.triggerRecurrence == nil ? 14 : 9 // 2pm vs 9am
+            var base = cal.date(bySettingHour: targetHour, minute: 0, second: 0, of: now) ?? now
+            if base <= now {
+                base = cal.date(byAdding: .day, value: 1, to: base) ?? base
+            }
+            let fireAt = cal.date(byAdding: .day, value: index, to: base) ?? base
 
             return ReminderDTO(
                 id: UUID(),

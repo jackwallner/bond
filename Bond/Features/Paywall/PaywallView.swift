@@ -367,8 +367,15 @@ struct PaywallView: View {
                 }
             } catch {
                 statusMessage = nil
-                errorMessage = purchases.lastError
-                    ?? "Couldn't complete the purchase. Please try again."
+                // Prefer the message PurchasesService just set (it maps
+                // RC ErrorCodes to actionable copy); fall back to the
+                // raw description so we never swallow a real error.
+                errorMessage = purchases.lastError ?? error.localizedDescription
+                // Only surface the prominent Restore CTA when the failure looks
+                // like a purchase that may already exist on this Apple ID.
+                // For plain failures (network, store outage) there's nothing to
+                // restore, so a Restore button would only confuse.
+                needsManualRestore = purchases.lastErrorSuggestsRestore
             }
         }
     }
