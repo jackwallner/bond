@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://jackwallner.github.io/bond/sitemap.xml
+Sitemap: https://jackwallner.com/bond/sitemap.xml
