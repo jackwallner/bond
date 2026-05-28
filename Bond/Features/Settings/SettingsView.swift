@@ -10,6 +10,7 @@ struct SettingsView: View {
     @State private var confirmSignOut = false
     @State private var confirmUnpair = false
     @State private var isRestoring = false
+    @State private var showRestoreResult = false
     @State private var isPairingPresented = false
     @State private var notificationStatus: UNAuthorizationStatus = .notDetermined
 
@@ -67,11 +68,20 @@ struct SettingsView: View {
                         isRestoring = true
                         defer { isRestoring = false }
                         await purchases.restore()
+                        // Success updates the Status row above; only the
+                        // failure / nothing-found case needs explaining.
+                        if !purchases.isPremium { showRestoreResult = true }
                     }
                 } label: {
                     if isRestoring { ProgressView() } else { Text("Restore purchases") }
                 }
                 .disabled(isRestoring)
+            }
+            .alert("Restore Purchases", isPresented: $showRestoreResult) {
+                Button("OK", role: .cancel) {}
+            } message: {
+                Text(purchases.lastError
+                     ?? "No active Bond+ purchase found for this Apple ID.")
             }
 
             Section("Theme") {

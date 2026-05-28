@@ -50,9 +50,14 @@ struct ReminderTemplatesView: View {
             }
 
             Section {
-                BondTemplatesUnlockCard(isPaywallPresented: $isPaywallPresented)
-                    .listRowInsets(EdgeInsets())
-                    .listRowBackground(Color.clear)
+                BondUnlockCard(
+                    icon: "square.stack.fill",
+                    headline: PremiumFeature.templates.gateHeadline,
+                    subhead: PremiumFeature.templates.gateSubhead,
+                    isPaywallPresented: $isPaywallPresented
+                )
+                .listRowInsets(EdgeInsets())
+                .listRowBackground(Color.clear)
             }
         }
     }

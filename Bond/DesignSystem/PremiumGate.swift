@@ -19,157 +19,82 @@ enum PremiumFeature {
         }
     }
 
-    var ctaTitle: String { "Try Bond+ free for 7 days" }
+    var ctaTitle: String { "Try Bond+ free" }
 }
 
-/// Gate shell: shows the real feature rendered with synthetic data behind a
-/// soft blur + fade, with a sticky CTA card. Replaces the old takeover
-/// PremiumGateView. The preview is never interactive and never real data.
-struct BondGatePreview<Preview: View>: View {
-    let feature: PremiumFeature
-    @Binding var isPaywallPresented: Bool
-    @ViewBuilder var preview: () -> Preview
-
+/// Restore button shared by every gate card. Restoring success flips
+/// `isPremium`, which dismisses the surrounding gate — so the only thing this
+/// has to surface itself is the *failure* case (nothing to restore, or a
+/// network error). Without this feedback the button silently stops spinning,
+/// which reads as "broken" and is exactly what App Review tends to test.
+struct BondRestoreButton: View {
     @Environment(PurchasesService.self) private var purchases
     @State private var isRestoring = false
+    @State private var showResult = false
 
     var body: some View {
-        ZStack(alignment: .bottom) {
-            preview()
-                .allowsHitTesting(false)
-                .blur(radius: 4)
-                .accessibilityHidden(true)
-                .overlay {
-                    LinearGradient(
-                        colors: [Color.bondSurface.opacity(0), Color.bondSurface.opacity(0.95)],
-                        startPoint: .center,
-                        endPoint: .bottom
-                    )
-                }
-
-            VStack(spacing: BondSpacing.s) {
-                VStack(spacing: BondSpacing.xs) {
-                    Text(feature.gateHeadline).font(.bond(.headline))
-                    Text(feature.gateSubhead)
-                        .font(.bond(.subheadline))
-                        .foregroundStyle(.secondary)
-                        .multilineTextAlignment(.center)
-                }
-                BondPrimaryButton(title: feature.ctaTitle) {
-                    isPaywallPresented = true
-                }
-                Button {
-                    Task {
-                        isRestoring = true
-                        defer { isRestoring = false }
-                        await purchases.restore()
-                    }
-                } label: {
-                    if isRestoring {
-                        ProgressView()
-                    } else {
-                        Text("Restore purchases")
-                            .font(.bond(.footnote))
-                            .foregroundStyle(.secondary)
-                    }
-                }
-                .disabled(isRestoring)
+        Button {
+            Task {
+                isRestoring = true
+                defer { isRestoring = false }
+                await purchases.restore()
+                // Success drops the gate; only announce when it didn't unlock.
+                if !purchases.isPremium { showResult = true }
             }
-            .padding(BondSpacing.base)
-            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: BondRadius.hero))
-            .padding(BondSpacing.base)
-            .accessibilityElement(children: .contain)
+        } label: {
+            if isRestoring {
+                ProgressView()
+            } else {
+                Text("Restore purchases")
+                    .font(.bond(.footnote))
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .disabled(isRestoring)
+        .alert("Restore Purchases", isPresented: $showResult) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(purchases.lastError
+                 ?? "No active Bond+ purchase found for this Apple ID.")
         }
     }
 }
 
-struct BondCheckInUnlockCard: View {
+/// Inline unlock card shown beneath a free preview of a gated feature. One
+/// shape for check-in, insights, and templates so the gated screens feel
+/// consistent.
+struct BondUnlockCard: View {
+    let icon: String
+    let headline: String
+    let subhead: String
+    var ctaTitle: String = "Try Bond+ free"
     @Binding var isPaywallPresented: Bool
-    @Environment(PurchasesService.self) private var purchases
-    @State private var isRestoring = false
+    /// Adds outer padding when the card sits in a Form row whose insets have
+    /// been zeroed (so it doesn't run edge-to-edge).
+    var outerPadding: Bool = false
 
     var body: some View {
         VStack(spacing: BondSpacing.m) {
             VStack(spacing: BondSpacing.xs) {
-                Image(systemName: "questionmark.bubble.fill")
+                Image(systemName: icon)
                     .font(.bond(.title2))
                     .foregroundStyle(Color.bondAccent)
-                Text("Answer together")
+                Text(headline)
                     .font(.bond(.headline))
-                Text("Bond+ unlocks answering today's question and seeing each other's response once you've both replied.")
+                    .multilineTextAlignment(.center)
+                Text(subhead)
                     .font(.bond(.subheadline))
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
             }
-            BondPrimaryButton(title: "Try Bond+ free for 7 days") {
+            BondPrimaryButton(title: ctaTitle) {
                 isPaywallPresented = true
             }
-            Button {
-                Task {
-                    isRestoring = true
-                    defer { isRestoring = false }
-                    await purchases.restore()
-                }
-            } label: {
-                if isRestoring {
-                    ProgressView()
-                } else {
-                    Text("Restore purchases")
-                        .font(.bond(.footnote))
-                        .foregroundStyle(.secondary)
-                }
-            }
-            .disabled(isRestoring)
+            BondRestoreButton()
         }
         .padding(BondSpacing.base)
         .frame(maxWidth: .infinity)
         .background(.regularMaterial, in: RoundedRectangle(cornerRadius: BondRadius.hero))
-    }
-}
-
-/// Inline unlock card for the freemium teaser layout — sits in a Form
-/// section beneath whatever free preview content the host view shows.
-struct BondInsightsUnlockCard: View {
-    @Binding var isPaywallPresented: Bool
-    @Environment(PurchasesService.self) private var purchases
-    @State private var isRestoring = false
-
-    var body: some View {
-        VStack(spacing: BondSpacing.m) {
-            VStack(spacing: BondSpacing.xs) {
-                Image(systemName: "chart.bar.xaxis.ascending")
-                    .font(.bond(.title2))
-                    .foregroundStyle(Color.bondAccent)
-                Text("Unlock the full picture")
-                    .font(.bond(.headline))
-                Text("Bond+ opens up your love-language balance, weekly trends, and personalized insights.")
-                    .font(.bond(.subheadline))
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
-            }
-            BondPrimaryButton(title: "Try Bond+ free for 7 days") {
-                isPaywallPresented = true
-            }
-            Button {
-                Task {
-                    isRestoring = true
-                    defer { isRestoring = false }
-                    await purchases.restore()
-                }
-            } label: {
-                if isRestoring {
-                    ProgressView()
-                } else {
-                    Text("Restore purchases")
-                        .font(.bond(.footnote))
-                        .foregroundStyle(.secondary)
-                }
-            }
-            .disabled(isRestoring)
-        }
-        .padding(BondSpacing.base)
-        .frame(maxWidth: .infinity)
-        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: BondRadius.hero))
-        .padding(BondSpacing.base)
+        .padding(outerPadding ? BondSpacing.base : 0)
     }
 }

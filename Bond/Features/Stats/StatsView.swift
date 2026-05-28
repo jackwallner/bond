@@ -40,9 +40,15 @@ struct StatsView: View {
             }
 
             Section {
-                BondInsightsUnlockCard(isPaywallPresented: $isPaywallPresented)
-                    .listRowInsets(EdgeInsets())
-                    .listRowBackground(Color.clear)
+                BondUnlockCard(
+                    icon: "chart.bar.xaxis.ascending",
+                    headline: "Unlock the full picture",
+                    subhead: "Bond+ opens up your love-language balance, weekly trends, and personalized insights.",
+                    isPaywallPresented: $isPaywallPresented,
+                    outerPadding: true
+                )
+                .listRowInsets(EdgeInsets())
+                .listRowBackground(Color.clear)
             }
         }
     }

@@ -43,7 +43,12 @@ struct DailyCheckInView: View {
         ScrollView {
             VStack(spacing: BondSpacing.xl) {
                 questionCard
-                BondCheckInUnlockCard(isPaywallPresented: $isPaywallPresented)
+                BondUnlockCard(
+                    icon: "questionmark.bubble.fill",
+                    headline: "Answer together",
+                    subhead: "Bond+ unlocks answering today's question and seeing each other's response once you've both replied.",
+                    isPaywallPresented: $isPaywallPresented
+                )
             }
             .padding()
         }
