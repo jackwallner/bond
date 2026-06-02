@@ -1,0 +1,1 @@
+veza,tracker,partner,widget,suprug,udaljenost,prekretnica,podsjetnik,brojač,paired

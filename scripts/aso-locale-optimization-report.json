@@ -1,0 +1,1052 @@
+{
+  "ar-SA": {
+    "name": {
+      "old": "Husband & Wife Reminder - Bond",
+      "new": "Bond: لغات الحب",
+      "len": 15
+    },
+    "keywords": {
+      "old": "",
+      "new": "علاقة,tracker,شريك,widget,زوج,مسافة,معلم,تذكير,عداد,paired,تسجيل",
+      "len": 64
+    },
+    "subtitle": {
+      "old": "",
+      "new": "أزواج · Watch · ذكرى",
+      "len": 20
+    },
+    "description": {
+      "old_len": 0,
+      "new_len": 871
+    }
+  },
+  "bn-BD": {
+    "name": {
+      "old": "Husband & Wife Reminder - Bond",
+      "new": "Bond: Love Language Reminders",
+      "len": 29
+    },
+    "keywords": {
+      "old": "",
+      "new": "relationship,tracker,partner,widget,spouse,distance,milestone,nudge,counter,paired,checkin",
+      "len": 90
+    },
+    "subtitle": {
+      "old": "",
+      "new": "Couples · Watch · Anniversary",
+      "len": 29
+    },
+    "description": {
+      "old_len": 0,
+      "new_len": 871
+    }
+  },
+  "ca": {
+    "name": {
+      "old": "Husband & Wife Reminder - Bond",
+      "new": "Bond: Llenguatges de l'amor",
+      "len": 27
+    },
+    "keywords": {
+      "old": "",
+      "new": "relació,tracker,widget,cònjuge,distància,fita,recordatori,comptador,paired,checkin",
+      "len": 82
+    },
+    "subtitle": {
+      "old": "",
+      "new": "Parella · Watch · Aniversari",
+      "len": 28
+    },
+    "description": {
+      "old_len": 0,
+      "new_len": 871
+    }
+  },
+  "cs": {
+    "name": {
+      "old": "Husband & Wife Reminder - Bond",
+      "new": "Bond: Jazyky lásky",
+      "len": 18
+    },
+    "keywords": {
+      "old": "",
+      "new": "vztah,tracker,partner,widget,manžel,vzdálenost,milník,připomínka,počítadlo,paired,checkin",
+      "len": 89
+    },
+    "subtitle": {
+      "old": "",
+      "new": "Pár · Watch · Výročí",
+      "len": 20
+    },
+    "description": {
+      "old_len": 0,
+      "new_len": 871
+    }
+  },
+  "da": {
+    "name": {
+      "old": "Husband & Wife Reminder - Bond",
+      "new": "Bond: Kærlighedssprog tips",
+      "len": 26
+    },
+    "keywords": {
+      "old": "",
+      "new": "forhold,tracker,partner,widget,ægtefælle,afstand,milepæl,påmindelse,tæller,paired,checkin",
+      "len": 89
+    },
+    "subtitle": {
+      "old": "",
+      "new": "Par · Watch · Jubilæum",
+      "len": 22
+    },
+    "description": {
+      "old_len": 0,
+      "new_len": 871
+    }
+  },
+  "de-DE": {
+    "name": {
+      "old": "Husband & Wife Reminder - Bond",
+      "new": "Bond: Liebessprachen-Tipps",
+      "len": 26
+    },
+    "keywords": {
+      "old": "",
+      "new": "beziehung,tracker,partner,widget,ehepartner,fernbeziehung,meilenstein,erinnerung,zähler,pärchen,ehe",
+      "len": 99
+    },
+    "subtitle": {
+      "old": "",
+      "new": "Paar · Watch · Jahrestag",
+      "len": 24
+    },
+    "description": {
+      "old_len": 0,
+      "new_len": 689
+    }
+  },
+  "el": {
+    "name": {
+      "old": "Husband & Wife Reminder - Bond",
+      "new": "Bond: Γλώσσες αγάπης",
+      "len": 20
+    },
+    "keywords": {
+      "old": "",
+      "new": "σχέση,tracker,σύντροφος,widget,σύζυγος,απόσταση,ορόσημο,υπενθύμιση,μετρητής,paired",
+      "len": 82
+    },
+    "subtitle": {
+      "old": "",
+      "new": "Ζευγάρι · Watch · Επέτειος",
+      "len": 26
+    },
+    "description": {
+      "old_len": 0,
+      "new_len": 871
+    }
+  },
+  "en-AU": {
+    "name": {
+      "old": "Husband & Wife Reminder - Bond",
+      "new": "Bond: Love Language Reminders",
+      "len": 29
+    },
+    "keywords": {
+      "old": "",
+      "new": "relationship,tracker,partner,widget,spouse,distance,milestone,nudge,counter,paired,checkin,marriage",
+      "len": 99
+    },
+    "subtitle": {
+      "old": "",
+      "new": "Couples · Watch · Anniversary",
+      "len": 29
+    },
+    "description": {
+      "old_len": 0,
+      "new_len": 871
+    }
+  },
+  "en-CA": {
+    "name": {
+      "old": "Husband & Wife Reminder - Bond",
+      "new": "Bond: Love Language Reminders",
+      "len": 29
+    },
+    "keywords": {
+      "old": "",
+      "new": "relationship,tracker,partner,widget,spouse,distance,milestone,nudge,counter,paired,checkin,marriage",
+      "len": 99
+    },
+    "subtitle": {
+      "old": "",
+      "new": "Couples · Watch · Anniversary",
+      "len": 29
+    },
+    "description": {
+      "old_len": 0,
+      "new_len": 871
+    }
+  },
+  "en-GB": {
+    "name": {
+      "old": "Husband & Wife Reminder - Bond",
+      "new": "Bond: Love Language Reminders",
+      "len": 29
+    },
+    "keywords": {
+      "old": "",
+      "new": "relationship,tracker,partner,widget,spouse,distance,milestone,nudge,counter,paired,checkin,marriage",
+      "len": 99
+    },
+    "subtitle": {
+      "old": "",
+      "new": "Couples · Watch · Anniversary",
+      "len": 29
+    },
+    "description": {
+      "old_len": 0,
+      "new_len": 871
+    }
+  },
+  "en-US": {
+    "name": {
+      "old": "Husband & Wife Reminder - Bond",
+      "new": "Bond: Love Language Reminders",
+      "len": 29
+    },
+    "keywords": {
+      "old": "",
+      "new": "relationship,tracker,partner,widget,spouse,distance,milestone,nudge,counter,paired,checkin,marriage",
+      "len": 99
+    },
+    "subtitle": {
+      "old": "",
+      "new": "Couples · Watch · Anniversary",
+      "len": 29
+    },
+    "description": {
+      "old_len": 0,
+      "new_len": 871
+    }
+  },
+  "es-ES": {
+    "name": {
+      "old": "Husband & Wife Reminder - Bond",
+      "new": "Bond: Lenguajes del amor",
+      "len": 24
+    },
+    "keywords": {
+      "old": "",
+      "new": "relación,tracker,widget,cónyuge,distancia,hito,recordatorio,contador,paired,checkin,matrimonio",
+      "len": 94
+    },
+    "subtitle": {
+      "old": "",
+      "new": "Pareja · Watch · Aniversario",
+      "len": 28
+    },
+    "description": {
+      "old_len": 0,
+      "new_len": 451
+    }
+  },
+  "es-MX": {
+    "name": {
+      "old": "Husband & Wife Reminder - Bond",
+      "new": "Bond: Lenguajes del amor",
+      "len": 24
+    },
+    "keywords": {
+      "old": "",
+      "new": "relación,tracker,widget,cónyuge,distancia,hito,recordatorio,contador,paired,checkin,matrimonio",
+      "len": 94
+    },
+    "subtitle": {
+      "old": "",
+      "new": "Pareja · Watch · Aniversario",
+      "len": 28
+    },
+    "description": {
+      "old_len": 0,
+      "new_len": 871
+    }
+  },
+  "fi": {
+    "name": {
+      "old": "Husband & Wife Reminder - Bond",
+      "new": "Bond: Rakkauden kielet",
+      "len": 22
+    },
+    "keywords": {
+      "old": "",
+      "new": "suhde,tracker,kumppani,widget,puoliso,etäisyys,virstanpylväs,muistutus,laskuri,paired",
+      "len": 85
+    },
+    "subtitle": {
+      "old": "",
+      "new": "Pariskunta · Watch · Vuosi",
+      "len": 26
+    },
+    "description": {
+      "old_len": 0,
+      "new_len": 871
+    }
+  },
+  "fr-CA": {
+    "name": {
+      "old": "Husband & Wife Reminder - Bond",
+      "new": "Bond: Langages de l'amour",
+      "len": 25
+    },
+    "keywords": {
+      "old": "",
+      "new": "relation,tracker,partenaire,widget,conjoint,distance,jalon,rappel,compteur,paired,mariage,checkin",
+      "len": 97
+    },
+    "subtitle": {
+      "old": "",
+      "new": "Couples · Montre · Anniversair",
+      "len": 30
+    },
+    "description": {
+      "old_len": 0,
+      "new_len": 871
+    }
+  },
+  "fr-FR": {
+    "name": {
+      "old": "Husband & Wife Reminder - Bond",
+      "new": "Bond: Langages de l'amour",
+      "len": 25
+    },
+    "keywords": {
+      "old": "",
+      "new": "relation,tracker,partenaire,widget,conjoint,distance,jalon,rappel,compteur,paired,mariage,checkin",
+      "len": 97
+    },
+    "subtitle": {
+      "old": "",
+      "new": "Couples · Montre · Anniversair",
+      "len": 30
+    },
+    "description": {
+      "old_len": 0,
+      "new_len": 547
+    }
+  },
+  "gu-IN": {
+    "name": {
+      "old": "Husband & Wife Reminder - Bond",
+      "new": "Bond: Love Language Reminders",
+      "len": 29
+    },
+    "keywords": {
+      "old": "",
+      "new": "relationship,tracker,partner,widget,spouse,distance,milestone,nudge,counter,paired,checkin",
+      "len": 90
+    },
+    "subtitle": {
+      "old": "",
+      "new": "Couples · Watch · Anniversary",
+      "len": 29
+    },
+    "description": {
+      "old_len": 0,
+      "new_len": 871
+    }
+  },
+  "he": {
+    "name": {
+      "old": "Husband & Wife Reminder - Bond",
+      "new": "Bond: שפות אהבה",
+      "len": 15
+    },
+    "keywords": {
+      "old": "",
+      "new": "מערכת,tracker,בן,זוג,widget,בן,זוג,מרחק,אבן,תזכורת,מונה,paired",
+      "len": 62
+    },
+    "subtitle": {
+      "old": "",
+      "new": "זוגות · Watch · יום שנה",
+      "len": 23
+    },
+    "description": {
+      "old_len": 0,
+      "new_len": 871
+    }
+  },
+  "hi": {
+    "name": {
+      "old": "Husband & Wife Reminder - Bond",
+      "new": "Bond: Love Language Reminders",
+      "len": 29
+    },
+    "keywords": {
+      "old": "",
+      "new": "relationship,tracker,partner,widget,spouse,distance,milestone,nudge,counter,paired,checkin,marriage",
+      "len": 99
+    },
+    "subtitle": {
+      "old": "",
+      "new": "Couples · Watch · Anniversary",
+      "len": 29
+    },
+    "description": {
+      "old_len": 0,
+      "new_len": 871
+    }
+  },
+  "hr": {
+    "name": {
+      "old": "Husband & Wife Reminder - Bond",
+      "new": "Bond: Jezici ljubavi",
+      "len": 20
+    },
+    "keywords": {
+      "old": "",
+      "new": "veza,tracker,partner,widget,suprug,udaljenost,prekretnica,podsjetnik,brojač,paired",
+      "len": 82
+    },
+    "subtitle": {
+      "old": "",
+      "new": "Par · Watch · Godišnjica",
+      "len": 24
+    },
+    "description": {
+      "old_len": 0,
+      "new_len": 871
+    }
+  },
+  "hu": {
+    "name": {
+      "old": "Husband & Wife Reminder - Bond",
+      "new": "Bond: Szeretetnyelvek",
+      "len": 21
+    },
+    "keywords": {
+      "old": "",
+      "new": "kapcsolat,tracker,partner,widget,házastárs,távolság,mérföldkő,emlékeztető,számláló,paired",
+      "len": 89
+    },
+    "subtitle": {
+      "old": "",
+      "new": "Pár · Watch · Évforduló",
+      "len": 23
+    },
+    "description": {
+      "old_len": 0,
+      "new_len": 871
+    }
+  },
+  "id": {
+    "name": {
+      "old": "Husband & Wife Reminder - Bond",
+      "new": "Bond: Bahasa Cinta",
+      "len": 18
+    },
+    "keywords": {
+      "old": "",
+      "new": "hubungan,tracker,widget,jarak,tonggak,pengingat,penghitung,paired,checkin",
+      "len": 73
+    },
+    "subtitle": {
+      "old": "",
+      "new": "Pasangan · Watch · Ulang tahun",
+      "len": 30
+    },
+    "description": {
+      "old_len": 0,
+      "new_len": 871
+    }
+  },
+  "it": {
+    "name": {
+      "old": "Husband & Wife Reminder - Bond",
+      "new": "Bond: Linguaggi dell'amore",
+      "len": 26
+    },
+    "keywords": {
+      "old": "",
+      "new": "relazione,tracker,partner,widget,coniuge,distanza,pietra,promemoria,contatore,paired,checkin",
+      "len": 92
+    },
+    "subtitle": {
+      "old": "",
+      "new": "Coppia · Watch · Anniversario",
+      "len": 29
+    },
+    "description": {
+      "old_len": 0,
+      "new_len": 871
+    }
+  },
+  "ja": {
+    "name": {
+      "old": "Husband & Wife Reminder - Bond",
+      "new": "Bond：愛の言語リマインダー",
+      "len": 15
+    },
+    "keywords": {
+      "old": "",
+      "new": "関係,tracker,パートナー,widget,配偶者,遠距離,マイルストーン,カウンター,paired,チェックイン",
+      "len": 59
+    },
+    "subtitle": {
+      "old": "",
+      "new": "カップル · Watch · 記念日",
+      "len": 18
+    },
+    "description": {
+      "old_len": 0,
+      "new_len": 215
+    }
+  },
+  "kn-IN": {
+    "name": {
+      "old": "Husband & Wife Reminder - Bond",
+      "new": "Bond: Love Language Reminders",
+      "len": 29
+    },
+    "keywords": {
+      "old": "",
+      "new": "relationship,tracker,partner,widget,spouse,distance,milestone,nudge,counter,paired,checkin",
+      "len": 90
+    },
+    "subtitle": {
+      "old": "",
+      "new": "Couples · Watch · Anniversary",
+      "len": 29
+    },
+    "description": {
+      "old_len": 0,
+      "new_len": 871
+    }
+  },
+  "ko": {
+    "name": {
+      "old": "Husband & Wife Reminder - Bond",
+      "new": "Bond: 사랑의 언어 알림",
+      "len": 15
+    },
+    "keywords": {
+      "old": "",
+      "new": "관계,tracker,파트너,widget,배우자,장거리,마일스톤,카운터,paired,체크인",
+      "len": 49
+    },
+    "subtitle": {
+      "old": "",
+      "new": "커플 · Watch · 기념일",
+      "len": 16
+    },
+    "description": {
+      "old_len": 0,
+      "new_len": 871
+    }
+  },
+  "ml-IN": {
+    "name": {
+      "old": "Husband & Wife Reminder - Bond",
+      "new": "Bond: Love Language Reminders",
+      "len": 29
+    },
+    "keywords": {
+      "old": "",
+      "new": "relationship,tracker,partner,widget,spouse,distance,milestone,nudge,counter,paired,checkin",
+      "len": 90
+    },
+    "subtitle": {
+      "old": "",
+      "new": "Couples · Watch · Anniversary",
+      "len": 29
+    },
+    "description": {
+      "old_len": 0,
+      "new_len": 871
+    }
+  },
+  "mr-IN": {
+    "name": {
+      "old": "Husband & Wife Reminder - Bond",
+      "new": "Bond: Love Language Reminders",
+      "len": 29
+    },
+    "keywords": {
+      "old": "",
+      "new": "relationship,tracker,partner,widget,spouse,distance,milestone,nudge,counter,paired,checkin",
+      "len": 90
+    },
+    "subtitle": {
+      "old": "",
+      "new": "Couples · Watch · Anniversary",
+      "len": 29
+    },
+    "description": {
+      "old_len": 0,
+      "new_len": 871
+    }
+  },
+  "ms": {
+    "name": {
+      "old": "Husband & Wife Reminder - Bond",
+      "new": "Bond: Bahasa Kasih Sayang",
+      "len": 25
+    },
+    "keywords": {
+      "old": "",
+      "new": "hubungan,tracker,widget,jarak,tonggak,peringatan,pembilang,paired,checkin",
+      "len": 73
+    },
+    "subtitle": {
+      "old": "",
+      "new": "Pasangan · Watch · Ulang tahun",
+      "len": 30
+    },
+    "description": {
+      "old_len": 0,
+      "new_len": 871
+    }
+  },
+  "nl-NL": {
+    "name": {
+      "old": "Husband & Wife Reminder - Bond",
+      "new": "Bond: Love Language Reminders",
+      "len": 29
+    },
+    "keywords": {
+      "old": "",
+      "new": "relatie,tracker,partner,widget,echtgenoot,afstand,mijlpaal,herinnering,teller,paired,stel,checkin",
+      "len": 97
+    },
+    "subtitle": {
+      "old": "",
+      "new": "Koppel · Watch · Jubileum",
+      "len": 25
+    },
+    "description": {
+      "old_len": 0,
+      "new_len": 871
+    }
+  },
+  "no": {
+    "name": {
+      "old": "Husband & Wife Reminder - Bond",
+      "new": "Bond: Kjærlighetsspråk tips",
+      "len": 27
+    },
+    "keywords": {
+      "old": "",
+      "new": "forhold,tracker,partner,widget,ektefelle,avstand,milepæl,påminnelse,teller,paired,checkin",
+      "len": 89
+    },
+    "subtitle": {
+      "old": "",
+      "new": "Par · Watch · Jubileum",
+      "len": 22
+    },
+    "description": {
+      "old_len": 0,
+      "new_len": 871
+    }
+  },
+  "or-IN": {
+    "name": {
+      "old": "Husband & Wife Reminder - Bond",
+      "new": "Bond: Love Language Reminders",
+      "len": 29
+    },
+    "keywords": {
+      "old": "",
+      "new": "relationship,tracker,partner,widget,spouse,distance,milestone,nudge,counter,paired,checkin",
+      "len": 90
+    },
+    "subtitle": {
+      "old": "",
+      "new": "Couples · Watch · Anniversary",
+      "len": 29
+    },
+    "description": {
+      "old_len": 0,
+      "new_len": 871
+    }
+  },
+  "pa-IN": {
+    "name": {
+      "old": "Husband & Wife Reminder - Bond",
+      "new": "Bond: Love Language Reminders",
+      "len": 29
+    },
+    "keywords": {
+      "old": "",
+      "new": "relationship,tracker,partner,widget,spouse,distance,milestone,nudge,counter,paired,checkin",
+      "len": 90
+    },
+    "subtitle": {
+      "old": "",
+      "new": "Couples · Watch · Anniversary",
+      "len": 29
+    },
+    "description": {
+      "old_len": 0,
+      "new_len": 871
+    }
+  },
+  "pl": {
+    "name": {
+      "old": "Husband & Wife Reminder - Bond",
+      "new": "Bond: Języki miłości",
+      "len": 20
+    },
+    "keywords": {
+      "old": "",
+      "new": "związek,tracker,partner,widget,małżonek,dystans,kamień,przypomnienie,licznik,paired,checkin",
+      "len": 91
+    },
+    "subtitle": {
+      "old": "",
+      "new": "Para · Watch · Rocznica",
+      "len": 23
+    },
+    "description": {
+      "old_len": 0,
+      "new_len": 871
+    }
+  },
+  "pt-BR": {
+    "name": {
+      "old": "Husband & Wife Reminder - Bond",
+      "new": "Bond: Linguagens do amor",
+      "len": 24
+    },
+    "keywords": {
+      "old": "",
+      "new": "relacionamento,tracker,parceiro,widget,cônjuge,distância,marco,lembrete,contador,paired,checkin",
+      "len": 95
+    },
+    "subtitle": {
+      "old": "",
+      "new": "Casal · Watch · Aniversário",
+      "len": 27
+    },
+    "description": {
+      "old_len": 0,
+      "new_len": 871
+    }
+  },
+  "pt-PT": {
+    "name": {
+      "old": "Husband & Wife Reminder - Bond",
+      "new": "Bond: Linguagens do amor",
+      "len": 24
+    },
+    "keywords": {
+      "old": "",
+      "new": "relacionamento,tracker,parceiro,widget,cônjuge,distância,marco,lembrete,contador,paired,checkin",
+      "len": 95
+    },
+    "subtitle": {
+      "old": "",
+      "new": "Casal · Watch · Aniversário",
+      "len": 27
+    },
+    "description": {
+      "old_len": 0,
+      "new_len": 871
+    }
+  },
+  "ro": {
+    "name": {
+      "old": "Husband & Wife Reminder - Bond",
+      "new": "Bond: Limbaje ale iubirii",
+      "len": 25
+    },
+    "keywords": {
+      "old": "",
+      "new": "relație,tracker,partener,widget,soț,distanță,reper,reminder,contor,paired,checkin",
+      "len": 81
+    },
+    "subtitle": {
+      "old": "",
+      "new": "Cuplu · Watch · Aniversar",
+      "len": 25
+    },
+    "description": {
+      "old_len": 0,
+      "new_len": 871
+    }
+  },
+  "ru": {
+    "name": {
+      "old": "Husband & Wife Reminder - Bond",
+      "new": "Bond: Языки любви",
+      "len": 17
+    },
+    "keywords": {
+      "old": "",
+      "new": "отношения,tracker,партнёр,widget,супруг,расстояние,веха,напоминание,счётчик,paired",
+      "len": 82
+    },
+    "subtitle": {
+      "old": "",
+      "new": "Пара · Watch · Годовщина",
+      "len": 24
+    },
+    "description": {
+      "old_len": 0,
+      "new_len": 871
+    }
+  },
+  "sk": {
+    "name": {
+      "old": "Husband & Wife Reminder - Bond",
+      "new": "Bond: Jazyky lásky",
+      "len": 18
+    },
+    "keywords": {
+      "old": "",
+      "new": "vzťah,tracker,partner,widget,manžel,vzdialenosť,míľnik,pripomienka,počítadlo,paired,checkin",
+      "len": 91
+    },
+    "subtitle": {
+      "old": "",
+      "new": "Pár · Watch · Výročie",
+      "len": 21
+    },
+    "description": {
+      "old_len": 0,
+      "new_len": 871
+    }
+  },
+  "sl-SI": {
+    "name": {
+      "old": "Husband & Wife Reminder - Bond",
+      "new": "Bond: Jeziki ljubezni",
+      "len": 21
+    },
+    "keywords": {
+      "old": "",
+      "new": "razmerje,tracker,partner,widget,zakonec,razdalja,mejnik,opomnik,števec,paired",
+      "len": 77
+    },
+    "subtitle": {
+      "old": "",
+      "new": "Par · Watch · Obletnica",
+      "len": 23
+    },
+    "description": {
+      "old_len": 0,
+      "new_len": 871
+    }
+  },
+  "sv": {
+    "name": {
+      "old": "Husband & Wife Reminder - Bond",
+      "new": "Bond: Kärleksspråk påminn",
+      "len": 25
+    },
+    "keywords": {
+      "old": "",
+      "new": "relation,tracker,partner,widget,maka,avstånd,milstolpe,räknare,paired,checkin",
+      "len": 77
+    },
+    "subtitle": {
+      "old": "",
+      "new": "Par · Watch · Årsdag",
+      "len": 20
+    },
+    "description": {
+      "old_len": 0,
+      "new_len": 871
+    }
+  },
+  "ta-IN": {
+    "name": {
+      "old": "Husband & Wife Reminder - Bond",
+      "new": "Bond: Love Language Reminders",
+      "len": 29
+    },
+    "keywords": {
+      "old": "",
+      "new": "relationship,tracker,partner,widget,spouse,distance,milestone,nudge,counter,paired,checkin",
+      "len": 90
+    },
+    "subtitle": {
+      "old": "",
+      "new": "Couples · Watch · Anniversary",
+      "len": 29
+    },
+    "description": {
+      "old_len": 0,
+      "new_len": 871
+    }
+  },
+  "te-IN": {
+    "name": {
+      "old": "Husband & Wife Reminder - Bond",
+      "new": "Bond: Love Language Reminders",
+      "len": 29
+    },
+    "keywords": {
+      "old": "",
+      "new": "relationship,tracker,partner,widget,spouse,distance,milestone,nudge,counter,paired,checkin",
+      "len": 90
+    },
+    "subtitle": {
+      "old": "",
+      "new": "Couples · Watch · Anniversary",
+      "len": 29
+    },
+    "description": {
+      "old_len": 0,
+      "new_len": 871
+    }
+  },
+  "th": {
+    "name": {
+      "old": "Husband & Wife Reminder - Bond",
+      "new": "Bond: ภาษารัก",
+      "len": 13
+    },
+    "keywords": {
+      "old": "",
+      "new": "ความสัมพันธ์,tracker,คู่,widget,คู่สมรส,ระยะทาง,หมุด,เตือน,นับ,paired,เช็คอิน",
+      "len": 77
+    },
+    "subtitle": {
+      "old": "",
+      "new": "คู่รัก · Watch · ครบรอบ",
+      "len": 23
+    },
+    "description": {
+      "old_len": 0,
+      "new_len": 871
+    }
+  },
+  "tr": {
+    "name": {
+      "old": "Husband & Wife Reminder - Bond",
+      "new": "Bond: Sevgi Dilleri",
+      "len": 19
+    },
+    "keywords": {
+      "old": "",
+      "new": "ilişki,tracker,partner,widget,eş,mesafe,noktası,hatırlatıcı,sayaç,paired,checkin",
+      "len": 80
+    },
+    "subtitle": {
+      "old": "",
+      "new": "Çift · Watch · Yıldönümü",
+      "len": 24
+    },
+    "description": {
+      "old_len": 0,
+      "new_len": 871
+    }
+  },
+  "uk": {
+    "name": {
+      "old": "Husband & Wife Reminder - Bond",
+      "new": "Bond: Мови кохання",
+      "len": 18
+    },
+    "keywords": {
+      "old": "",
+      "new": "стосунки,tracker,партнер,widget,подружжя,відстань,віха,нагадування,лічильник,paired",
+      "len": 83
+    },
+    "subtitle": {
+      "old": "",
+      "new": "Пара · Watch · Річниця",
+      "len": 22
+    },
+    "description": {
+      "old_len": 0,
+      "new_len": 871
+    }
+  },
+  "ur-PK": {
+    "name": {
+      "old": "Husband & Wife Reminder - Bond",
+      "new": "Bond: Love Language Reminders",
+      "len": 29
+    },
+    "keywords": {
+      "old": "",
+      "new": "relationship,tracker,partner,widget,spouse,distance,milestone,nudge,counter,paired,checkin",
+      "len": 90
+    },
+    "subtitle": {
+      "old": "",
+      "new": "Couples · Watch · Anniversary",
+      "len": 29
+    },
+    "description": {
+      "old_len": 0,
+      "new_len": 871
+    }
+  },
+  "vi": {
+    "name": {
+      "old": "Husband & Wife Reminder - Bond",
+      "new": "Bond: Ngôn ngữ tình yêu",
+      "len": 23
+    },
+    "keywords": {
+      "old": "",
+      "new": "mối,quan,hệ,tracker,đối,tác,widget,vợ,chồng,khoảng,cách,cột,mốc,nhắc,đếm,paired",
+      "len": 79
+    },
+    "subtitle": {
+      "old": "",
+      "new": "Cặp đôi · Watch · Kỷ niệm",
+      "len": 25
+    },
+    "description": {
+      "old_len": 0,
+      "new_len": 871
+    }
+  },
+  "zh-Hans": {
+    "name": {
+      "old": "Husband & Wife Reminder - Bond",
+      "new": "Bond：爱的五种语言提醒",
+      "len": 13
+    },
+    "keywords": {
+      "old": "",
+      "new": "关系,tracker,伴侣,widget,配偶,异地,里程碑,提醒,计数器,paired,签到",
+      "len": 47
+    },
+    "subtitle": {
+      "old": "",
+      "new": "情侣 · Watch · 纪念日",
+      "len": 16
+    },
+    "description": {
+      "old_len": 0,
+      "new_len": 170
+    }
+  },
+  "zh-Hant": {
+    "name": {
+      "old": "Husband & Wife Reminder - Bond",
+      "new": "Bond：愛的五種語言提醒",
+      "len": 13
+    },
+    "keywords": {
+      "old": "",
+      "new": "關係,tracker,伴侶,widget,配偶,遠距,里程碑,提醒,計數器,paired,簽到",
+      "len": 47
+    },
+    "subtitle": {
+      "old": "",
+      "new": "情侶 · Watch · 紀念日",
+      "len": 16
+    },
+    "description": {
+      "old_len": 0,
+      "new_len": 871
+    }
+  }
+}

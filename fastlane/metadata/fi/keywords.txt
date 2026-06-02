@@ -1,0 +1,1 @@
+suhde,tracker,kumppani,widget,puoliso,etäisyys,virstanpylväs,muistutus,laskuri,paired

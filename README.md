@@ -60,6 +60,19 @@ Not yet wired:
    ```
 5. Universal links use `jackwallner.com` (the portfolio site). The AASA file is hosted at `https://jackwallner.com/.well-known/apple-app-site-association` (committed in the portfolio repo under `docs/.well-known/`).
 
+## Marketing site (App Store / privacy URLs)
+
+Static pages live in `docs/` (same layout as Vitals: landing, privacy, terms, support):
+
+| Page | URL (production) |
+|------|------------------|
+| Landing | https://jackwallner.com/bond/ |
+| Privacy | https://jackwallner.com/bond/privacy |
+| Terms | https://jackwallner.com/bond/terms |
+| Support | https://jackwallner.com/bond/support |
+
+Publish: `./scripts/sync-site-to-portfolio.sh` then commit & push the [portfolio](https://github.com/jackwallner/portfolio) repo (`main` / `/docs` → GitHub Pages on `jackwallner.com`).
+
 ## APNs (Phase 2)
 
 Requires a **paid** Apple Developer Program account. When ready:

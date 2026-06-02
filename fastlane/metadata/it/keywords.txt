@@ -1,0 +1,1 @@
+relazione,tracker,partner,widget,coniuge,distanza,pietra,promemoria,contatore,paired,checkin

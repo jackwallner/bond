@@ -1,0 +1,1 @@
+관계,tracker,파트너,widget,배우자,장거리,마일스톤,카운터,paired,체크인

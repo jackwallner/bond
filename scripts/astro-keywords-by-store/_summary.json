@@ -1,0 +1,769 @@
+{
+  "syncedAt": "2026-05-27T05:19:41Z",
+  "appId": "101",
+  "storeCount": 91,
+  "stores": {
+    "us": {
+      "locales": [
+        "en-US"
+      ],
+      "planned": 45,
+      "keywords": 45
+    },
+    "ca": {
+      "locales": [
+        "en-CA",
+        "fr-CA",
+        "en-US"
+      ],
+      "planned": 43,
+      "keywords": 43
+    },
+    "mx": {
+      "locales": [
+        "es-MX",
+        "en-US"
+      ],
+      "planned": 45,
+      "keywords": 45
+    },
+    "br": {
+      "locales": [
+        "pt-BR",
+        "en-US"
+      ],
+      "planned": 43,
+      "keywords": 43
+    },
+    "ar": {
+      "locales": [
+        "es-ES",
+        "es-MX",
+        "en-US"
+      ],
+      "planned": 45,
+      "keywords": 45
+    },
+    "bo": {
+      "locales": [
+        "es-ES",
+        "es-MX",
+        "en-US"
+      ],
+      "planned": 45,
+      "keywords": 45
+    },
+    "cl": {
+      "locales": [
+        "es-ES",
+        "es-MX",
+        "en-US"
+      ],
+      "planned": 45,
+      "keywords": 45
+    },
+    "co": {
+      "locales": [
+        "es-ES",
+        "es-MX",
+        "en-US"
+      ],
+      "planned": 45,
+      "keywords": 45
+    },
+    "cr": {
+      "locales": [
+        "es-ES",
+        "es-MX",
+        "en-US"
+      ],
+      "planned": 45,
+      "keywords": 45
+    },
+    "do": {
+      "locales": [
+        "es-ES",
+        "es-MX",
+        "en-US"
+      ],
+      "planned": 45,
+      "keywords": 45
+    },
+    "ec": {
+      "locales": [
+        "es-ES",
+        "es-MX",
+        "en-US"
+      ],
+      "planned": 45,
+      "keywords": 45
+    },
+    "sv": {
+      "locales": [
+        "es-ES",
+        "es-MX",
+        "en-US"
+      ],
+      "planned": 45,
+      "keywords": 45
+    },
+    "gt": {
+      "locales": [
+        "es-ES",
+        "es-MX",
+        "en-US"
+      ],
+      "planned": 45,
+      "keywords": 45
+    },
+    "hn": {
+      "locales": [
+        "es-ES",
+        "es-MX",
+        "en-US"
+      ],
+      "planned": 45,
+      "keywords": 45
+    },
+    "pa": {
+      "locales": [
+        "es-ES",
+        "es-MX",
+        "en-US"
+      ],
+      "planned": 45,
+      "keywords": 45
+    },
+    "py": {
+      "locales": [
+        "es-ES",
+        "es-MX",
+        "en-US"
+      ],
+      "planned": 45,
+      "keywords": 45
+    },
+    "pe": {
+      "locales": [
+        "es-ES",
+        "es-MX",
+        "en-US"
+      ],
+      "planned": 45,
+      "keywords": 45
+    },
+    "gb": {
+      "locales": [
+        "en-GB",
+        "en-US"
+      ],
+      "planned": 30,
+      "keywords": 30
+    },
+    "de": {
+      "locales": [
+        "de-DE",
+        "en-US"
+      ],
+      "planned": 45,
+      "keywords": 45
+    },
+    "fr": {
+      "locales": [
+        "fr-FR",
+        "en-US"
+      ],
+      "planned": 43,
+      "keywords": 43
+    },
+    "es": {
+      "locales": [
+        "es-ES",
+        "ca",
+        "en-US"
+      ],
+      "planned": 45,
+      "keywords": 45
+    },
+    "it": {
+      "locales": [
+        "it",
+        "en-US"
+      ],
+      "planned": 42,
+      "keywords": 42
+    },
+    "nl": {
+      "locales": [
+        "nl-NL",
+        "en-US"
+      ],
+      "planned": 40,
+      "keywords": 40
+    },
+    "at": {
+      "locales": [
+        "de-DE",
+        "en-US"
+      ],
+      "planned": 45,
+      "keywords": 45
+    },
+    "be": {
+      "locales": [
+        "fr-FR",
+        "nl-NL",
+        "de-DE",
+        "en-US"
+      ],
+      "planned": 45,
+      "keywords": 45
+    },
+    "ch": {
+      "locales": [
+        "de-DE",
+        "fr-FR",
+        "it",
+        "en-US"
+      ],
+      "planned": 45,
+      "keywords": 45
+    },
+    "se": {
+      "locales": [
+        "sv",
+        "en-US"
+      ],
+      "planned": 41,
+      "keywords": 41
+    },
+    "no": {
+      "locales": [
+        "no",
+        "en-US"
+      ],
+      "planned": 42,
+      "keywords": 42
+    },
+    "dk": {
+      "locales": [
+        "da",
+        "en-US"
+      ],
+      "planned": 42,
+      "keywords": 42
+    },
+    "fi": {
+      "locales": [
+        "fi",
+        "en-US"
+      ],
+      "planned": 43,
+      "keywords": 43
+    },
+    "pl": {
+      "locales": [
+        "pl",
+        "en-US"
+      ],
+      "planned": 42,
+      "keywords": 42
+    },
+    "pt": {
+      "locales": [
+        "pt-PT",
+        "en-US"
+      ],
+      "planned": 43,
+      "keywords": 43
+    },
+    "ie": {
+      "locales": [
+        "en-GB",
+        "en-US"
+      ],
+      "planned": 30,
+      "keywords": 30
+    },
+    "ru": {
+      "locales": [
+        "ru",
+        "en-US"
+      ],
+      "planned": 43,
+      "keywords": 43
+    },
+    "ua": {
+      "locales": [
+        "uk",
+        "ru",
+        "en-US"
+      ],
+      "planned": 45,
+      "keywords": 45
+    },
+    "cz": {
+      "locales": [
+        "cs",
+        "en-US"
+      ],
+      "planned": 42,
+      "keywords": 42
+    },
+    "sk": {
+      "locales": [
+        "sk",
+        "cs",
+        "en-US"
+      ],
+      "planned": 45,
+      "keywords": 45
+    },
+    "hu": {
+      "locales": [
+        "hu",
+        "en-US"
+      ],
+      "planned": 42,
+      "keywords": 42
+    },
+    "ro": {
+      "locales": [
+        "ro",
+        "en-US"
+      ],
+      "planned": 45,
+      "keywords": 45
+    },
+    "gr": {
+      "locales": [
+        "el",
+        "en-US"
+      ],
+      "planned": 43,
+      "keywords": 43
+    },
+    "hr": {
+      "locales": [
+        "hr",
+        "en-US"
+      ],
+      "planned": 42,
+      "keywords": 42
+    },
+    "bg": {
+      "locales": [
+        "en-GB",
+        "en-US"
+      ],
+      "planned": 30,
+      "keywords": 30
+    },
+    "si": {
+      "locales": [
+        "hr",
+        "it",
+        "en-US"
+      ],
+      "planned": 45,
+      "keywords": 45
+    },
+    "ee": {
+      "locales": [
+        "en-GB",
+        "en-US"
+      ],
+      "planned": 30,
+      "keywords": 30
+    },
+    "lv": {
+      "locales": [
+        "en-GB",
+        "en-US"
+      ],
+      "planned": 30,
+      "keywords": 30
+    },
+    "lu": {
+      "locales": [
+        "fr-FR",
+        "de-DE",
+        "en-US"
+      ],
+      "planned": 45,
+      "keywords": 45
+    },
+    "is": {
+      "locales": [
+        "en-GB",
+        "en-US"
+      ],
+      "planned": 30,
+      "keywords": 30
+    },
+    "cy": {
+      "locales": [
+        "el",
+        "en-GB",
+        "en-US"
+      ],
+      "planned": 43,
+      "keywords": 43
+    },
+    "tr": {
+      "locales": [
+        "tr",
+        "en-US"
+      ],
+      "planned": 42,
+      "keywords": 42
+    },
+    "az": {
+      "locales": [
+        "tr",
+        "ru",
+        "en-US"
+      ],
+      "planned": 45,
+      "keywords": 45
+    },
+    "kz": {
+      "locales": [
+        "ru",
+        "en-US"
+      ],
+      "planned": 43,
+      "keywords": 43
+    },
+    "kg": {
+      "locales": [
+        "ru",
+        "en-US"
+      ],
+      "planned": 43,
+      "keywords": 43
+    },
+    "uz": {
+      "locales": [
+        "ru",
+        "en-US"
+      ],
+      "planned": 43,
+      "keywords": 43
+    },
+    "al": {
+      "locales": [
+        "en-GB",
+        "en-US"
+      ],
+      "planned": 30,
+      "keywords": 30
+    },
+    "au": {
+      "locales": [
+        "en-AU",
+        "en-US"
+      ],
+      "planned": 30,
+      "keywords": 30
+    },
+    "nz": {
+      "locales": [
+        "en-AU",
+        "en-GB",
+        "en-US"
+      ],
+      "planned": 30,
+      "keywords": 30
+    },
+    "jp": {
+      "locales": [
+        "ja",
+        "en-US"
+      ],
+      "planned": 39,
+      "keywords": 39
+    },
+    "kr": {
+      "locales": [
+        "ko",
+        "en-US"
+      ],
+      "planned": 40,
+      "keywords": 40
+    },
+    "cn": {
+      "locales": [
+        "zh-Hans",
+        "en-US"
+      ],
+      "planned": 40,
+      "keywords": 40
+    },
+    "hk": {
+      "locales": [
+        "zh-Hant",
+        "en-GB",
+        "en-US"
+      ],
+      "planned": 40,
+      "keywords": 40
+    },
+    "tw": {
+      "locales": [
+        "zh-Hant",
+        "en-US"
+      ],
+      "planned": 40,
+      "keywords": 40
+    },
+    "mo": {
+      "locales": [
+        "zh-Hant",
+        "en-US"
+      ],
+      "planned": 40,
+      "keywords": 40
+    },
+    "sg": {
+      "locales": [
+        "en-GB",
+        "en-US"
+      ],
+      "planned": 30,
+      "keywords": 30
+    },
+    "my": {
+      "locales": [
+        "ms",
+        "en-GB",
+        "en-US"
+      ],
+      "planned": 44,
+      "keywords": 44
+    },
+    "th": {
+      "locales": [
+        "th",
+        "en-US"
+      ],
+      "planned": 43,
+      "keywords": 43
+    },
+    "vn": {
+      "locales": [
+        "vi",
+        "en-US"
+      ],
+      "planned": 45,
+      "keywords": 45
+    },
+    "id": {
+      "locales": [
+        "id",
+        "en-US"
+      ],
+      "planned": 42,
+      "keywords": 42
+    },
+    "ph": {
+      "locales": [
+        "en-US",
+        "en-GB"
+      ],
+      "planned": 30,
+      "keywords": 30
+    },
+    "in": {
+      "locales": [
+        "hi",
+        "en-GB",
+        "en-US"
+      ],
+      "planned": 30,
+      "keywords": 30
+    },
+    "kh": {
+      "locales": [
+        "en-US",
+        "th"
+      ],
+      "planned": 43,
+      "keywords": 43
+    },
+    "mn": {
+      "locales": [
+        "en-US"
+      ],
+      "planned": 30,
+      "keywords": 30
+    },
+    "np": {
+      "locales": [
+        "en-GB",
+        "en-US"
+      ],
+      "planned": 30,
+      "keywords": 30
+    },
+    "lk": {
+      "locales": [
+        "en-GB",
+        "en-US"
+      ],
+      "planned": 30,
+      "keywords": 30
+    },
+    "sa": {
+      "locales": [
+        "ar-SA",
+        "en-US"
+      ],
+      "planned": 44,
+      "keywords": 44
+    },
+    "ae": {
+      "locales": [
+        "ar-SA",
+        "en-GB",
+        "en-US"
+      ],
+      "planned": 44,
+      "keywords": 44
+    },
+    "eg": {
+      "locales": [
+        "ar-SA",
+        "en-GB",
+        "en-US"
+      ],
+      "planned": 44,
+      "keywords": 44
+    },
+    "il": {
+      "locales": [
+        "he",
+        "en-GB",
+        "en-US"
+      ],
+      "planned": 44,
+      "keywords": 44
+    },
+    "jo": {
+      "locales": [
+        "ar-SA",
+        "en-US"
+      ],
+      "planned": 44,
+      "keywords": 44
+    },
+    "kw": {
+      "locales": [
+        "ar-SA",
+        "en-US"
+      ],
+      "planned": 44,
+      "keywords": 44
+    },
+    "lb": {
+      "locales": [
+        "ar-SA",
+        "fr-FR",
+        "en-US"
+      ],
+      "planned": 45,
+      "keywords": 45
+    },
+    "om": {
+      "locales": [
+        "ar-SA",
+        "en-US"
+      ],
+      "planned": 44,
+      "keywords": 44
+    },
+    "qa": {
+      "locales": [
+        "ar-SA",
+        "en-US"
+      ],
+      "planned": 44,
+      "keywords": 44
+    },
+    "bh": {
+      "locales": [
+        "ar-SA",
+        "en-US"
+      ],
+      "planned": 44,
+      "keywords": 44
+    },
+    "iq": {
+      "locales": [
+        "ar-SA",
+        "en-US"
+      ],
+      "planned": 44,
+      "keywords": 44
+    },
+    "ma": {
+      "locales": [
+        "fr-FR",
+        "ar-SA",
+        "en-US"
+      ],
+      "planned": 45,
+      "keywords": 45
+    },
+    "dz": {
+      "locales": [
+        "fr-FR",
+        "ar-SA",
+        "en-US"
+      ],
+      "planned": 45,
+      "keywords": 45
+    },
+    "gh": {
+      "locales": [
+        "en-GB",
+        "en-US"
+      ],
+      "planned": 30,
+      "keywords": 30
+    },
+    "ke": {
+      "locales": [
+        "en-GB",
+        "en-US"
+      ],
+      "planned": 30,
+      "keywords": 30
+    },
+    "za": {
+      "locales": [
+        "en-GB",
+        "en-US"
+      ],
+      "planned": 30,
+      "keywords": 30
+    },
+    "pk": {
+      "locales": [
+        "en-GB",
+        "en-US"
+      ],
+      "planned": 30,
+      "keywords": 30
+    },
+    "am": {
+      "locales": [
+        "ru",
+        "en-GB",
+        "en-US"
+      ],
+      "planned": 43,
+      "keywords": 43
+    }
+  }
+}

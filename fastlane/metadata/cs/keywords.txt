@@ -1,0 +1,1 @@
+vztah,tracker,partner,widget,manžel,vzdálenost,milník,připomínka,počítadlo,paired,checkin

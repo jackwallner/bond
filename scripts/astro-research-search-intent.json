@@ -1,0 +1,167 @@
+[
+  {
+    "keyword": "couples app",
+    "intent": 8,
+    "good": 8,
+    "bad": 0,
+    "top1": "Cozy Couples: Relationship App"
+  },
+  {
+    "keyword": "relationship reminder",
+    "intent": 8,
+    "good": 8,
+    "bad": 0,
+    "top1": "Vera: Relationship Reminders"
+  },
+  {
+    "keyword": "love language app",
+    "intent": 8,
+    "good": 8,
+    "bad": 0,
+    "top1": "Love Nudge"
+  },
+  {
+    "keyword": "couple check in",
+    "intent": 8,
+    "good": 8,
+    "bad": 0,
+    "top1": "Paired: Couples & Relationship"
+  },
+  {
+    "keyword": "long distance couples",
+    "intent": 8,
+    "good": 8,
+    "bad": 0,
+    "top1": "Cozy Couples: Relationship App"
+  },
+  {
+    "keyword": "couple app",
+    "intent": 8,
+    "good": 8,
+    "bad": 0,
+    "top1": "Cozy Couples: Relationship App"
+  },
+  {
+    "keyword": "love counter",
+    "intent": 8,
+    "good": 8,
+    "bad": 0,
+    "top1": "My Love - Relationship Counter"
+  },
+  {
+    "keyword": "couples widget",
+    "intent": 8,
+    "good": 8,
+    "bad": 0,
+    "top1": "Couple Joy - Relationship App"
+  },
+  {
+    "keyword": "relationship app",
+    "intent": 8,
+    "good": 8,
+    "bad": 0,
+    "top1": "My Love - Relationship Counter"
+  },
+  {
+    "keyword": "five love languages",
+    "intent": 8,
+    "good": 8,
+    "bad": 0,
+    "top1": "Love Nudge"
+  },
+  {
+    "keyword": "paired app couples",
+    "intent": 8,
+    "good": 8,
+    "bad": 0,
+    "top1": "Paired: Couples & Relationship"
+  },
+  {
+    "keyword": "relationship tracker",
+    "intent": 7,
+    "good": 7,
+    "bad": 0,
+    "top1": "My Love - Relationship Counter"
+  },
+  {
+    "keyword": "anniversary tracker",
+    "intent": 7,
+    "good": 7,
+    "bad": 0,
+    "top1": "My Love - Relationship Counter"
+  },
+  {
+    "keyword": "anniversary countdown",
+    "intent": 7,
+    "good": 7,
+    "bad": 0,
+    "top1": "My Love - Relationship Counter"
+  },
+  {
+    "keyword": "love nudge",
+    "intent": 7,
+    "good": 7,
+    "bad": 0,
+    "top1": "Love Nudge"
+  },
+  {
+    "keyword": "partner reminder",
+    "intent": 6,
+    "good": 6,
+    "bad": 0,
+    "top1": "A Propos - Partner reminders"
+  },
+  {
+    "keyword": "couples reminder",
+    "intent": 5,
+    "good": 5,
+    "bad": 0,
+    "top1": "Countdown"
+  },
+  {
+    "keyword": "milestone tracker",
+    "intent": 5,
+    "good": 5,
+    "bad": 0,
+    "top1": "CDC's Milestone Tracker"
+  },
+  {
+    "keyword": "apple watch couples",
+    "intent": 4,
+    "good": 4,
+    "bad": 0,
+    "top1": "Bond Touch"
+  },
+  {
+    "keyword": "date night app",
+    "intent": 4,
+    "good": 4,
+    "bad": 0,
+    "top1": "Couples Games for Date Night"
+  },
+  {
+    "keyword": "marriage app",
+    "intent": 4,
+    "good": 4,
+    "bad": 0,
+    "top1": "Muzz: Where Muslims Marry"
+  },
+  {
+    "keyword": "words of affirmation",
+    "intent": 4,
+    "good": 4,
+    "bad": 0,
+    "top1": "I am - Daily Affirmations"
+  },
+  {
+    "keyword": "acts of service",
+    "intent": 1,
+    "good": 1,
+    "bad": 0,
+    "top1": "IRS2Go"
+  },
+  {
+    "keyword": "couple notification",
+    "error": "HTTP Error 500: Internal Server Error"
+  }
+]

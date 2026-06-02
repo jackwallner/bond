@@ -11,4 +11,9 @@ See memory `project_bond.md` for app overview, stack, and phased plan.
 
 ASC API key (shared across apps): `~/.baseball_credentials` (`ASC_API_KEY_ID`, `ASC_ISSUER_ID`, `ASC_KEY_PATH`).
 
+## Marketing site
+
+- Pages: `docs/index.html`, `privacy-policy.html`, `terms.html`, `support.html` (+ `privacy/`, `terms/`, `support/` index routes for clean URLs)
+- Production host: `https://jackwallner.com/bond/` via portfolio repo — run `./scripts/sync-site-to-portfolio.sh` then push `~/portfolio` `main`
+
 **Review prompt:** See `docs/review-prompt.md` (5-star funnel; set `BondAppStoreID` in Info.plist before App Store launch).
