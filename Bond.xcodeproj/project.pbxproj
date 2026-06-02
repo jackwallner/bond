@@ -92,7 +92,6 @@
 		BD9D1E3117B1A08C546A7445 /* ReminderTemplatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7C6EB1679352861557F61EC /* ReminderTemplatesView.swift */; };
 		C22CC43865B9C68017FCEBF3 /* ReminderEditorModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = F867C11913BB4FCF5D3D5E9F /* ReminderEditorModels.swift */; };
 		C24FB3A9399D5252A92423B6 /* BondStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3CF1BD69FCFE09D7F366EB8 /* BondStyle.swift */; };
-		C455C1D4B733D81132787827 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4ECCA9463B20E0BF3A735F1 /* OnboardingView.swift */; };
 		C7C6BF0E9FFB89D1127E90DD /* SupabaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12B0502E3CD2A5CE2602DE00 /* SupabaseService.swift */; };
 		C85B4C6B1B7AC5597C83FA4C /* AppleSignInHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FD98197BFD6CA378B6E5EE2 /* AppleSignInHelper.swift */; };
 		C936D494989E30796DF97085 /* RecurrencePreset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34C0EC429765DBD636FD8D72 /* RecurrencePreset.swift */; };
@@ -219,7 +218,6 @@
 		A42CD9882E06FC36B7BAC844 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		AF2AA00C4EEE3F3D6C38CCB0 /* PlusJakartaSans-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "PlusJakartaSans-Medium.ttf"; sourceTree = "<group>"; };
 		B4651927088C4AF8826E38EE /* PairingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PairingView.swift; sourceTree = "<group>"; };
-		B4ECCA9463B20E0BF3A735F1 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		B67A2D6BC9AC30CDB4726850 /* BondWidgetsBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BondWidgetsBundle.swift; sourceTree = "<group>"; };
 		C76495F38E8EC32C13087CAC /* ProfileDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileDTO.swift; sourceTree = "<group>"; };
 		C8A50E874ABC84170E0D26E6 /* ReminderEventRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderEventRepository.swift; sourceTree = "<group>"; };
@@ -282,7 +280,6 @@
 			children = (
 				CE93E308C0FE103E72C1E816 /* IntentSetupView.swift */,
 				6817074B516199A1A5B909F4 /* NotificationPrimerSheet.swift */,
-				B4ECCA9463B20E0BF3A735F1 /* OnboardingView.swift */,
 			);
 			path = Onboarding;
 			sourceTree = "<group>";
@@ -800,7 +797,6 @@
 				76443759E56A5F120FBA2AF3 /* NotificationPrimerSheet.swift in Sources */,
 				2B4C98FD09C5DF07E514341D /* NotificationRouter.swift in Sources */,
 				992C2457DC8B5C6B9EFE5FAE /* NotificationScheduler.swift in Sources */,
-				C455C1D4B733D81132787827 /* OnboardingView.swift in Sources */,
 				FE1B9776FA4A29DDCFC59E82 /* PairingService.swift in Sources */,
 				8B701D9D6AD8A4BAC0672DD5 /* PairingSuccessView.swift in Sources */,
 				0ED8EEED9492C17B5A9C0D64 /* PairingView.swift in Sources */,

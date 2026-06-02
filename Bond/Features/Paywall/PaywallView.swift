@@ -17,6 +17,7 @@ enum PaywallLinks {
 /// retained as a graceful fallback for Dynamic Type or very small devices.
 struct PaywallView: View {
     @Environment(PurchasesService.self) private var purchases
+    @Environment(PairingService.self) private var pairing
     @Environment(\.dismiss) private var dismiss
 
     /// Prefer this over `dismiss()` when the paywall is hosted in a nested sheet.
@@ -35,14 +36,31 @@ struct PaywallView: View {
     /// CTA instead of the small one in the legal footer.
     @State private var needsManualRestore = false
 
-    /// Concrete Bond+ features framed as outcomes. Order leads with the daily
-    /// hook, then the differentiator, then the two reminder-flavoured wins.
-    private let benefits: [(icon: String, title: String)] = [
-        ("questionmark.bubble.fill", "Daily Check-In, together"),
-        ("sparkles",                  "Love-language insights & trends"),
-        ("bell.badge.fill",           "Smart, location & surprise reminders"),
-        ("square.stack.fill",         "Curated reminder templates")
-    ]
+    /// True when the buyer has no partner yet. Everyone starts solo (pairing is
+    /// opt-in), so the headline couples benefit — Daily Check-In — isn't usable
+    /// for them. Leading with it would sell a feature they can't access, which
+    /// kills conversion and risks an "advertised feature unavailable" review hit.
+    private var isSolo: Bool { pairing.solo || pairing.coupleId == nil }
+
+    /// Concrete Bond+ features framed as outcomes. For paired users we lead with
+    /// the daily hook; for solo users we lead with the wins they can use today
+    /// and frame Check-In as something that unlocks once they pair.
+    private var benefits: [(icon: String, title: String)] {
+        if isSolo {
+            return [
+                ("bell.badge.fill",          "Smart, location & surprise reminders"),
+                ("square.stack.fill",        "Curated reminder templates"),
+                ("sparkles",                 "Love-language insights & trends"),
+                ("questionmark.bubble.fill", "Daily Check-In — when you pair")
+            ]
+        }
+        return [
+            ("questionmark.bubble.fill", "Daily Check-In, together"),
+            ("sparkles",                  "Love-language insights & trends"),
+            ("bell.badge.fill",           "Smart, location & surprise reminders"),
+            ("square.stack.fill",         "Curated reminder templates")
+        ]
+    }
 
     var body: some View {
         NavigationStack {
@@ -144,12 +162,14 @@ struct PaywallView: View {
             Text("Bond+")
                 .font(.bond(.title, weight: .heavy))
                 .foregroundStyle(Color.bondAccent.gradient)
-            Text("The full Bond experience for couples who want to stay close, on purpose.")
+            Text(isSolo
+                 ? "Everything you need to show up for the people you love."
+                 : "The full Bond experience for couples who want to stay close, on purpose.")
                 .font(.bond(.subheadline))
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
-            Text("Join couples who use Bond+ to stay intentional together.")
+            Text("Start free. Stay intentional, together.")
                 .font(.bond(.footnote, weight: .semibold))
                 .foregroundStyle(Color.bondAccent)
                 .multilineTextAlignment(.center)

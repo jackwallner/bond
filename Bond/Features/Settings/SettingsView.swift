@@ -9,6 +9,9 @@ struct SettingsView: View {
 
     @State private var confirmSignOut = false
     @State private var confirmUnpair = false
+    @State private var confirmDelete = false
+    @State private var isDeleting = false
+    @State private var deleteError: String?
     @State private var isRestoring = false
     @State private var showRestoreResult = false
     @State private var isPairingPresented = false
@@ -16,9 +19,27 @@ struct SettingsView: View {
 
     var body: some View {
         Form {
-            if !supabase.isAnonymous {
-                Section("Account") {
+            Section("Account") {
+                if !supabase.isAnonymous {
                     Button("Sign out", role: .destructive) { confirmSignOut = true }
+                }
+                Button(role: .destructive) {
+                    confirmDelete = true
+                } label: {
+                    if isDeleting {
+                        HStack(spacing: BondSpacing.s) {
+                            ProgressView()
+                            Text("Deleting…")
+                        }
+                    } else {
+                        Text("Delete account")
+                    }
+                }
+                .disabled(isDeleting)
+                if let deleteError {
+                    Text(deleteError)
+                        .font(.bond(.footnote))
+                        .foregroundStyle(.red)
                 }
             }
 
@@ -171,6 +192,27 @@ struct SettingsView: View {
             Button("Cancel", role: .cancel) {}
         } message: {
             Text("You'll keep your reminders. Your partner will keep theirs.")
+        }
+        .confirmationDialog("Delete account?", isPresented: $confirmDelete, titleVisibility: .visible) {
+            Button("Delete everything", role: .destructive) { deleteAccount() }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("This permanently deletes your account and all your reminders, milestones, and check-ins. If you're paired, your partner will be unpaired. This can't be undone. (Any App Store subscription is managed separately in Settings → Apple ID.)")
+        }
+    }
+
+    private func deleteAccount() {
+        Task {
+            isDeleting = true
+            deleteError = nil
+            defer { isDeleting = false }
+            do {
+                try await supabase.deleteAccount()
+                await purchases.signOut()
+                pairing.reset()
+            } catch {
+                deleteError = "Couldn't delete your account. Check your connection and try again."
+            }
         }
     }
 

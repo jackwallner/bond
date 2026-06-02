@@ -173,7 +173,7 @@ struct TemplateGroupDetailView: View {
         .alert("Templates added!", isPresented: $showConfirmation) {
             Button("Done") { dismiss() }
         } message: {
-            Text("\(createdCount) reminders have been added to your list. Customize them anytime.")
+            Text("\(createdCount) reminders added — spread across the coming days so they arrive one at a time, not all at once. Customize any of them anytime.")
         }
     }
 

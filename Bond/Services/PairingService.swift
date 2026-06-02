@@ -30,7 +30,11 @@ final class PairingService {
 
     private let inviteCodeLength = 6
     private let inviteCodeAlphabet = Array("ABCDEFGHJKMNPQRSTUVWXYZ23456789")
-    private let universalLinkHost = "bond.jackwallner.com"
+    // AASA is served at https://jackwallner.com/.well-known/apple-app-site-association
+    // (matching `/pair/*`); bond.jackwallner.com has no DNS and never served one,
+    // so invite links built against it silently failed to deep-link. This host
+    // drives both invite-URL generation and incoming-link matching below.
+    private let universalLinkHost = "jackwallner.com"
 
     func loadCouple() async {
         guard let me = supabase.currentUserId else { return }

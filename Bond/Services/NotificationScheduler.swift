@@ -15,8 +15,20 @@ final class NotificationScheduler {
         _ = try? await center.requestAuthorization(options: [.alert, .badge, .sound])
     }
 
-    func reschedule(forSelfUserId selfId: UUID, reminders: [ReminderDTO]) async {
-        await requestAuthorizationIfNeeded()
+    /// - Parameter requestAuthIfNeeded: when true (default) and authorization is
+    ///   still undetermined, this surfaces the system permission prompt. The
+    ///   first-launch home load passes `false` so the pre-permission primer
+    ///   (`NotificationPrimerSheet`) gets to explain *why* before the bare iOS
+    ///   dialog appears — otherwise the primer's `.notDetermined` guard never
+    ///   passes and the primer is effectively dead.
+    func reschedule(
+        forSelfUserId selfId: UUID,
+        reminders: [ReminderDTO],
+        requestAuthIfNeeded: Bool = true
+    ) async {
+        if requestAuthIfNeeded {
+            await requestAuthorizationIfNeeded()
+        }
 
         let center = UNUserNotificationCenter.current()
         // Preserve milestone.* notifications so the milestones scheduler can

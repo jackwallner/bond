@@ -15,7 +15,7 @@
 	<key>CFBundleDisplayName</key>
 	<string>Bond</string>
 	<key>BondAppStoreID</key>
-	<string></string>
+	<string>6768514177</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -40,12 +40,9 @@
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>
-		<string>location</string>
 	</array>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Bond uses your location to trigger reminders when you arrive at or leave specific places (e.g. remind you to hug your partner when you get home).</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Bond uses your location in the background to fire location-based reminders even when the app is closed.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>Bond uses speech recognition to let you dictate reminders from your Apple Watch.</string>
 	<key>NSMicrophoneUsageDescription</key>

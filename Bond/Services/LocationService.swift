@@ -14,11 +14,13 @@ final class LocationService: NSObject, CLLocationManagerDelegate {
         manager.desiredAccuracy = kCLLocationAccuracyHundredMeters
     }
 
+    /// Geofence reminders fire through `UNLocationNotificationTrigger`, which
+    /// only needs When-In-Use authorization — Bond never does continuous
+    /// background location, so we never request "Always" (declaring it without
+    /// using it is an App Review rejection vector).
     func requestAuthorizationIfNeeded() {
-        switch manager.authorizationStatus {
-        case .notDetermined: manager.requestAlwaysAuthorization()
-        case .authorizedWhenInUse: manager.requestAlwaysAuthorization()
-        default: break
+        if manager.authorizationStatus == .notDetermined {
+            manager.requestWhenInUseAuthorization()
         }
     }
 

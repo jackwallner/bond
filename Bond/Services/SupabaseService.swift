@@ -116,4 +116,23 @@ final class SupabaseService {
         // re-runs `bootstrap()`.
         await bootstrap()
     }
+
+    /// Permanently delete the current account and all its server-side data
+    /// (App Store Guideline 5.1.1(v)). The `delete_account` RPC removes the
+    /// `auth.users` row; FK cascades take out the profile, couple, reminders,
+    /// milestones, events, and subscription mirror. We then drop the local
+    /// session and start a fresh anonymous one so the app returns to first-run
+    /// rather than stranding on the loading spinner.
+    func deleteAccount() async throws {
+        guard let me = currentUserId else { return }
+        try await client
+            .rpc("delete_account", params: ["p_user": me.uuidString])
+            .execute()
+        log.info("Deleted account \(me)")
+        try? await client.auth.signOut()
+        currentUserId = nil
+        isAnonymous = false
+        bootstrapTask = nil
+        await bootstrap()
+    }
 }

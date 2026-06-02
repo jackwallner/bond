@@ -99,6 +99,8 @@ struct RootView: View {
     // mid-flight state and flashed intent-setup → loading → home on launch.
     @State private var isAppBootstrapped = false
     @State private var showReviewPrompt = false
+    @State private var showPostPairPaywall = false
+    private let postPairPaywallKey = "hasShownPostPairPaywall"
     @State private var reviewPromptInitialStep: ReviewPromptSheet.Step = .enjoyment
     @State private var reviewPromptShownThisSession = false
     @State private var pendingNativeReviewAfterDismiss = false
@@ -116,7 +118,17 @@ struct RootView: View {
                     .transition(.opacity.combined(with: .move(edge: .trailing)))
             case .pairingSuccess:
                 PairingSuccessView(partnerName: pairing.partnerProfile?.displayName) {
-                    pairing.justPaired = false
+                    // Pairing is a high-intent moment and the headline Bond+
+                    // benefit (Daily Check-In) just became usable. Offer the
+                    // paywall once, dismissibly, before dropping the now-paired
+                    // user onto home. Premium users (and anyone who's already
+                    // seen it) skip straight through.
+                    if !store.isPremium && !UserDefaults.standard.bool(forKey: postPairPaywallKey) {
+                        UserDefaults.standard.set(true, forKey: postPairPaywallKey)
+                        showPostPairPaywall = true
+                    } else {
+                        pairing.justPaired = false
+                    }
                 }
                 .transition(.opacity)
             case .home:
@@ -205,6 +217,12 @@ struct RootView: View {
             }
         }) {
             ReviewPromptSheet(initialStep: reviewPromptInitialStep, onFinish: handleReviewPromptFinish)
+        }
+        // Proactive post-pairing paywall. Whether the user buys or closes it,
+        // dismissal advances past the success screen to home.
+        .sheet(isPresented: $showPostPairPaywall, onDismiss: { pairing.justPaired = false }) {
+            PaywallView(onClose: { showPostPairPaywall = false }, impressionId: "post_pairing")
+                .presentationDragIndicator(.visible)
         }
     }
 

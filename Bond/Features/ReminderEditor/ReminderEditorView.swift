@@ -162,13 +162,6 @@ struct ReminderEditorView: View {
             } label: {
                 Label("Browse reminder templates", systemImage: "square.grid.2x2")
             }
-
-            if !store.isPremium {
-                Text("83% of Bond+ users report a healthier, happier relationship.")
-                    .font(.bond(.footnote))
-                    .foregroundStyle(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
         } header: {
             Text(existing == nil ? "Need an idea?" : "Templates")
         }

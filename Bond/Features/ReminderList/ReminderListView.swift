@@ -17,6 +17,8 @@ struct ReminderListView: View {
     @State private var starterPrefill: StarterChip?
     @State private var hasLoadedOnce = false
     @State private var showAllHandled = false
+    @State private var isPairingPresented = false
+    @AppStorage("pairingNudgeDismissed") private var pairingNudgeDismissed = false
 
     private let primerShownKey = "hasShownNotificationPrimer"
     private let handledRecentDays = 7
@@ -63,9 +65,21 @@ struct ReminderListView: View {
             .sheet(isPresented: $isTemplatesPresented) {
                 ReminderTemplatesView()
             }
+            .sheet(isPresented: $isPairingPresented) {
+                PairingView()
+            }
             .sheet(isPresented: $showNotificationPrimer) {
                 NotificationPrimerSheet {
-                    Task { await NotificationScheduler.shared.requestAuthorizationIfNeeded() }
+                    Task {
+                        await NotificationScheduler.shared.requestAuthorizationIfNeeded()
+                        // Now that permission is (hopefully) granted, schedule
+                        // anything that already exists.
+                        await NotificationScheduler.shared.reschedule(
+                            forSelfUserId: supabase.currentUserId ?? UUID(),
+                            reminders: repo.reminders,
+                            requestAuthIfNeeded: false
+                        )
+                    }
                 }
             }
             .refreshable {
@@ -78,9 +92,13 @@ struct ReminderListView: View {
                 hasLoadedOnce = true
                 openReminderFromNotification(router.pendingReminderId)
                 await repo.subscribeRealtime()
+                // Don't let rescheduling fire the bare system prompt here — the
+                // primer below explains *why* first, then requests. Without this
+                // the primer's `.notDetermined` guard never passes.
                 await NotificationScheduler.shared.reschedule(
                     forSelfUserId: supabase.currentUserId ?? UUID(),
-                    reminders: repo.reminders
+                    reminders: repo.reminders,
+                    requestAuthIfNeeded: false
                 )
                 await maybeShowNotificationPrimer()
             }
@@ -212,6 +230,18 @@ struct ReminderListView: View {
 
     private var list: some View {
         List {
+            if pairing.solo && !pairingNudgeDismissed {
+                Section {
+                    PairingNudgeCard(
+                        onPair: { isPairingPresented = true },
+                        onDismiss: { pairingNudgeDismissed = true }
+                    )
+                    .listRowInsets(EdgeInsets(top: 4, leading: 16, bottom: 4, trailing: 16))
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                }
+            }
+
             if let state = checkInCardState {
                 Section {
                     NavigationLink {
@@ -553,6 +583,47 @@ private struct CheckInPromptCard: View {
         .background(Color.bondAccent.opacity(0.10), in: RoundedRectangle(cornerRadius: BondRadius.hero))
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(headline). \(subhead)")
+    }
+}
+
+/// Home-screen nudge shown to solo users so pairing isn't buried in Settings.
+/// Dismissible (persisted) so it never nags. Tapping opens the pairing sheet;
+/// the copy reassures that pairing keeps everything they've already added.
+private struct PairingNudgeCard: View {
+    let onPair: () -> Void
+    let onDismiss: () -> Void
+
+    var body: some View {
+        HStack(alignment: .top, spacing: BondSpacing.m) {
+            Image(systemName: "heart.circle.fill")
+                .font(.bond(.title2))
+                .foregroundStyle(Color.bondAccent)
+                .frame(width: 32, height: 32)
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Pair with your partner")
+                    .font(.bond(.subheadline, weight: .semibold))
+                    .foregroundStyle(.primary)
+                Text("Share reminders and unlock your daily check-in together. You keep everything you've already added.")
+                    .font(.bond(.caption))
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+                Button("Connect a partner", action: onPair)
+                    .font(.bond(.footnote, weight: .bold))
+                    .foregroundStyle(Color.bondAccent)
+                    .padding(.top, BondSpacing.xs)
+            }
+            Spacer(minLength: 0)
+            Button(action: onDismiss) {
+                Image(systemName: "xmark")
+                    .font(.bond(.caption, weight: .semibold))
+                    .foregroundStyle(.tertiary)
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("Dismiss")
+        }
+        .padding(BondSpacing.base)
+        .background(Color.bondAccent.opacity(0.10), in: RoundedRectangle(cornerRadius: BondRadius.hero))
+        .accessibilityElement(children: .contain)
     }
 }
 
