@@ -27,3 +27,10 @@ xcuserdata/
 Secrets.xcconfig
 *.entitlements.local
 supabase/.temp/
+
+## Fastlane / ASO transient state
+fastlane/metadata.bak.*/
+fastlane/report.xml
+scripts/.asc-state.json
+scripts/.astro-app.json
+scripts/*.log
