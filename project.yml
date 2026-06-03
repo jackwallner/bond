@@ -12,7 +12,7 @@ settings:
     SWIFT_VERSION: "6.0"
     DEVELOPMENT_TEAM: YXG4MP6W39
     CODE_SIGN_STYLE: Automatic
-    MARKETING_VERSION: "0.1.0"
+    MARKETING_VERSION: "1.0.0"
     CURRENT_PROJECT_VERSION: "45"
     GENERATE_INFOPLIST_FILE: NO
 
@@ -80,6 +80,11 @@ targets:
       - package: RevenueCat
         product: RevenueCat
       - target: BondWidgets
+      # Embed the watchOS companion app into the iOS app bundle so it actually
+      # ships with App Store builds (the listing advertises Apple Watch). Without
+      # this, archiving the Bond scheme produced an .app with no Watch content.
+      - target: BondWatch
+        embed: true
 
   BondWatch:
     type: application

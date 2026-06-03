@@ -60,6 +60,7 @@
 		6EB1C7BDDF8E1A60572C72C0 /* ReminderDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 585D1A7C6799459199130E5B /* ReminderDTO.swift */; };
 		6F6C2CB3F5A0CF9120D0AAA9 /* BondWidgetsBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = B67A2D6BC9AC30CDB4726850 /* BondWidgetsBundle.swift */; };
 		70A539715E4A0D1CFDFDF4AF /* DailyCheckInService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A6CFD466E5A10EC3632F8A8 /* DailyCheckInService.swift */; };
+		71AEF9419BAA21E69F7A012F /* BondWatch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 902B35CB888AF0397097702E /* BondWatch.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		7411F1A8C72A107812C597EB /* ReminderTrigger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94FA6F604A0AE177F1E53E19 /* ReminderTrigger.swift */; };
 		74931C84D00EDF96A27AB45B /* ReminderEditorModelsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D85CCE368AE1BB6440274221 /* ReminderEditorModelsTests.swift */; };
 		76443759E56A5F120FBA2AF3 /* NotificationPrimerSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6817074B516199A1A5B909F4 /* NotificationPrimerSheet.swift */; };
@@ -123,6 +124,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		56BC0229A3B69F89FFDF22B9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EEC45BA88290345E9A4B1004 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 71BA1EE73B231085ADD03089;
+			remoteInfo = BondWatch;
+		};
 		75C1C2245A5A7C5B83ECD3F7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = EEC45BA88290345E9A4B1004 /* Project object */;
@@ -149,6 +157,17 @@
 				346E3CA160F86EC6A841A71D /* BondWidgets.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8528664331D085C875F34670 /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				71AEF9419BAA21E69F7A012F /* BondWatch.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -580,11 +599,13 @@
 				AD00B683DD1EA81869A2547E /* Resources */,
 				2656B31032035CA270E01DA4 /* Frameworks */,
 				27935014A4EC856544C965B8 /* Embed Foundation Extensions */,
+				8528664331D085C875F34670 /* Embed Watch Content */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				85B7FC293F32B0A89F87B427 /* PBXTargetDependency */,
+				92FE73E1394721440FA3645C /* PBXTargetDependency */,
 			);
 			name = Bond;
 			packageProductDependencies = (
@@ -871,6 +892,11 @@
 			target = DA1B9B252D28DF4638EB38AB /* BondWidgets */;
 			targetProxy = 75C1C2245A5A7C5B83ECD3F7 /* PBXContainerItemProxy */;
 		};
+		92FE73E1394721440FA3645C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 71BA1EE73B231085ADD03089 /* BondWatch */;
+			targetProxy = 56BC0229A3B69F89FFDF22B9 /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
@@ -992,7 +1018,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
-				MARKETING_VERSION = 0.1.0;
+				MARKETING_VERSION = 1.0.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -1054,7 +1080,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
-				MARKETING_VERSION = 0.1.0;
+				MARKETING_VERSION = 1.0.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
