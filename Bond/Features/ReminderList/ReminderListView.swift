@@ -713,37 +713,51 @@ private struct TemplatesHomePitch: View {
         .background(Color.bondCardFill, in: RoundedRectangle(cornerRadius: BondRadius.hero))
     }
 
+    /// Blurred peek on top, marketing copy + CTA beneath it. The peek is the
+    /// whole point — an opaque card centered over it (the previous layout) hid
+    /// the very content it was teasing — so the lock signal is a small corner
+    /// badge and the copy never covers the preview.
     private var gatedPitchLayout: some View {
-        ZStack {
-            HStack(spacing: BondSpacing.s) {
-                ForEach(previewGroups) { group in
-                    VStack(spacing: BondSpacing.xs) {
-                        Image(systemName: group.icon)
-                            .font(.bond(.title2))
-                            .foregroundStyle(.pink)
-                        Text(group.title)
-                            .font(.bond(.caption, weight: .semibold))
-                            .foregroundStyle(.primary)
-                            .lineLimit(1)
-                        Text(group.subtitle)
-                            .font(.bond(.caption2))
-                            .foregroundStyle(.secondary)
-                            .lineLimit(1)
+        VStack(spacing: BondSpacing.m) {
+            ZStack(alignment: .topTrailing) {
+                HStack(spacing: BondSpacing.s) {
+                    ForEach(previewGroups) { group in
+                        VStack(spacing: BondSpacing.xs) {
+                            Image(systemName: group.icon)
+                                .font(.bond(.title2))
+                                .foregroundStyle(.pink)
+                            Text(group.title)
+                                .font(.bond(.caption, weight: .semibold))
+                                .foregroundStyle(.primary)
+                                .lineLimit(1)
+                            Text(group.subtitle)
+                                .font(.bond(.caption2))
+                                .foregroundStyle(.secondary)
+                                .lineLimit(1)
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, BondSpacing.base)
+                        .padding(.horizontal, BondSpacing.s)
+                        .background(Color.bondCardFill, in: RoundedRectangle(cornerRadius: BondRadius.inline))
                     }
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, BondSpacing.base)
-                    .padding(.horizontal, BondSpacing.s)
-                    .background(Color.bondCardFill, in: RoundedRectangle(cornerRadius: BondRadius.inline))
                 }
+                .blur(radius: 4)
+                .accessibilityHidden(true)
+
+                HStack(spacing: 4) {
+                    Image(systemName: "lock.fill")
+                        .font(.system(size: 9, weight: .bold))
+                    Text("Bond+")
+                        .font(.bond(.caption2, weight: .heavy))
+                }
+                .foregroundStyle(.white)
+                .padding(.horizontal, BondSpacing.s)
+                .padding(.vertical, 4)
+                .background(Color.bondAccent, in: Capsule())
+                .padding(BondSpacing.xs)
             }
-            .padding(BondSpacing.s)
-            .blur(radius: 5)
-            .accessibilityHidden(true)
 
             VStack(spacing: BondSpacing.xs) {
-                Image(systemName: "square.grid.2x2")
-                    .font(.bond(.title3))
-                    .foregroundStyle(Color.bondAccent)
                 Text("Reminder templates")
                     .font(.bond(.subheadline, weight: .bold))
                     .foregroundStyle(.primary)
@@ -757,10 +771,8 @@ private struct TemplatesHomePitch: View {
                     .foregroundStyle(Color.bondAccent)
                     .padding(.top, 2)
             }
-            .padding(BondSpacing.base)
-            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: BondRadius.hero))
-            .padding(BondSpacing.m)
         }
+        .padding(BondSpacing.base)
         .frame(maxWidth: .infinity)
         .background(Color.bondAccent.opacity(0.06), in: RoundedRectangle(cornerRadius: BondRadius.hero))
     }
