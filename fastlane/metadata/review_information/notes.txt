@@ -1,1 +1,22 @@
+Bond is fully usable with NO login. On first launch the app silently creates an anonymous account, so there is no demo username/password to enter — just open the app.
 
+ACCOUNT / SIGN IN
+- No credentials are required to review the core single-user experience.
+- "Sign in with Apple" is only used to (a) make an account recoverable across devices and (b) pair with a partner. It is not needed to evaluate the app.
+
+PAIRING (needs a second device/Apple ID)
+Pairing links two people, so a single reviewer cannot complete it alone. To test it with two devices:
+1. Device A: tap "..." (top-left) -> Settings -> "Connect a partner" (or the "Pair with your partner" card on Home) -> Send -> Generate code.
+2. Device B: same screen -> Receive -> enter the 6-character code (or open the shared invite link), then complete Sign in with Apple.
+Everything except Daily Check-In and partner-targeted reminders can be fully reviewed WITHOUT pairing.
+
+BOND+ (auto-renewable subscription, testable in sandbox)
+Bond+ unlocks templates, insights, smart/location/surprise reminders, and the Daily Check-In answer flow. Reach the paywall by tapping any locked feature — e.g. the reminder editor's "When" -> Location option, or the Templates card on the Home screen. It is purchased via StoreKit and works with a sandbox Apple ID.
+
+ACCOUNT DELETION (Guideline 5.1.1(v))
+In-app deletion: "..." -> Settings -> Account -> "Delete account". It permanently deletes the account and all associated data. Any active App Store subscription is managed separately by the user in Apple ID settings.
+
+LOCATION
+Location is requested only When-In-Use, to capture a one-time anchor for optional location-based reminders (delivered via UNLocationNotificationTrigger). There is no background location use.
+
+Questions: bond@jackwallner.com
