@@ -216,7 +216,7 @@ struct IntentSetupView: View {
         VStack(alignment: .leading, spacing: BondSpacing.xl) {
             BondScreenHeader(
                 title: "Who do you want to show up for?",
-                subtitle: "A partner, a parent, a friend. Bond is built around one person."
+                subtitle: "Your partner. Bond is built to help you keep showing up for them."
             )
             .padding(.horizontal, BondSpacing.base)
 

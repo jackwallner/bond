@@ -163,7 +163,7 @@ struct PaywallView: View {
                 .font(.bond(.title, weight: .heavy))
                 .foregroundStyle(Color.bondAccent.gradient)
             Text(isSolo
-                 ? "Everything you need to show up for the people you love."
+                 ? "Everything you need to keep showing up for your partner."
                  : "The full Bond experience for couples who want to stay close, on purpose.")
                 .font(.bond(.subheadline))
                 .foregroundStyle(.secondary)
