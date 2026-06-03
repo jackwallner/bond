@@ -68,38 +68,53 @@ struct BondPrimaryButton: View {
 
 /// Soft Tactile primary button: top-lit gradient fill, warm halo shadow, and
 /// a faint top highlight so it reads as a raised physical control. Presses
-/// dim + sink slightly rather than flashing a system tint.
+/// dim + sink slightly rather than flashing a system tint. When disabled it
+/// desaturates and flattens (no shadow) so it visibly reads as inactive —
+/// otherwise a `.disabled()` CTA looked fully tappable and a tap did nothing.
 struct BondSoftButtonStyle: ButtonStyle {
     var role: ButtonRole?
 
     func makeBody(configuration: Configuration) -> some View {
-        let pressed = configuration.isPressed
-        return configuration.label
-            .foregroundStyle(.white)
-            .padding(.horizontal, BondSpacing.l)
-            .background {
-                let shape = RoundedRectangle(cornerRadius: BondRadius.inline, style: .continuous)
-                ZStack {
-                    if role == .destructive {
-                        shape.fill(
-                            LinearGradient(colors: [Color.red.opacity(0.92), .red],
-                                           startPoint: .top, endPoint: .bottom)
-                        )
-                    } else {
-                        shape.fill(Color.bondAccentGradient)
+        StyledBody(configuration: configuration, role: role)
+    }
+
+    private struct StyledBody: View {
+        let configuration: Configuration
+        let role: ButtonRole?
+        @Environment(\.isEnabled) private var isEnabled
+
+        var body: some View {
+            let pressed = configuration.isPressed
+            configuration.label
+                .foregroundStyle(.white)
+                .padding(.horizontal, BondSpacing.l)
+                .background {
+                    let shape = RoundedRectangle(cornerRadius: BondRadius.inline, style: .continuous)
+                    ZStack {
+                        if role == .destructive {
+                            shape.fill(
+                                LinearGradient(colors: [Color.red.opacity(0.92), .red],
+                                               startPoint: .top, endPoint: .bottom)
+                            )
+                        } else {
+                            shape.fill(Color.bondAccentGradient)
+                        }
+                        // Inset top highlight — the "lit from above" cue.
+                        shape.stroke(.white.opacity(0.25), lineWidth: 0.5)
+                            .blur(radius: 0.5)
+                            .mask(LinearGradient(colors: [.white, .clear],
+                                                 startPoint: .top, endPoint: .center))
                     }
-                    // Inset top highlight — the "lit from above" cue.
-                    shape.stroke(.white.opacity(0.25), lineWidth: 0.5)
-                        .blur(radius: 0.5)
-                        .mask(LinearGradient(colors: [.white, .clear],
-                                             startPoint: .top, endPoint: .center))
                 }
-            }
-            .shadow(color: .bondShadow, radius: pressed ? 4 : 12,
-                    x: 0, y: pressed ? 2 : 7)
-            .scaleEffect(pressed ? 0.98 : 1)
-            .opacity(pressed ? 0.92 : 1)
-            .animation(.easeOut(duration: 0.15), value: pressed)
+                .saturation(isEnabled ? 1 : 0)
+                .shadow(color: .bondShadow,
+                        radius: isEnabled ? (pressed ? 4 : 12) : 0,
+                        x: 0, y: isEnabled ? (pressed ? 2 : 7) : 0)
+                .scaleEffect(pressed ? 0.98 : 1)
+                .opacity(isEnabled ? (pressed ? 0.92 : 1) : 0.45)
+                .animation(.easeOut(duration: 0.15), value: pressed)
+                .animation(.easeOut(duration: 0.15), value: isEnabled)
+        }
     }
 }
 

@@ -137,8 +137,16 @@ struct RootView: View {
             case .loading:
                 ZStack {
                     Color.bondSurface.ignoresSafeArea()
-                    ProgressView()
-                        .controlSize(.large)
+                    if isAppBootstrapped && !supabase.isAuthenticated {
+                        // Bootstrap finished but no session exists — almost
+                        // always a first-launch network failure (anonymous
+                        // sign-in needs the network). Offer a way forward
+                        // instead of an indefinite spinner.
+                        loadingFailedState
+                    } else {
+                        ProgressView()
+                            .controlSize(.large)
+                    }
                 }
                 .transition(.opacity)
             }
@@ -228,6 +236,36 @@ struct RootView: View {
 
     private var hasCompletedSetup: Bool {
         isAppBootstrapped && pairing.coupleId != nil
+    }
+
+    private var loadingFailedState: some View {
+        VStack(spacing: BondSpacing.m) {
+            Image(systemName: "wifi.exclamationmark")
+                .font(.system(size: 40))
+                .foregroundStyle(.secondary)
+            Text("Couldn't connect")
+                .font(.bond(.headline))
+            Text("Bond needs a connection the first time you open it. Check your network and try again.")
+                .font(.bond(.subheadline))
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, BondSpacing.xl)
+            Button("Try again") { retryBootstrap() }
+                .font(.bond(.subheadline, weight: .semibold))
+                .foregroundStyle(Color.bondAccent)
+        }
+    }
+
+    private func retryBootstrap() {
+        Task {
+            isAppBootstrapped = false
+            await supabase.retryBootstrap()
+            if let me = supabase.currentUserId {
+                await store.identify(supabaseUserId: me)
+            }
+            await pairing.loadCouple()
+            isAppBootstrapped = true
+        }
     }
 
     private func scheduleReviewPromptAfterPositiveMoment() {

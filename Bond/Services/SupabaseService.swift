@@ -40,6 +40,16 @@ final class SupabaseService {
         await task.value
     }
 
+    /// Force a fresh bootstrap attempt. `bootstrap()` caches its task, so once
+    /// the first attempt finishes — even if it failed to establish a session
+    /// (e.g. the device was offline at first launch, so anonymous sign-in
+    /// couldn't run) — re-calling it just re-awaits the failed task. The
+    /// loading screen's "Try again" calls this so a retry actually re-attempts.
+    func retryBootstrap() async {
+        bootstrapTask = nil
+        await bootstrap()
+    }
+
     /// Restore a cached session, or silently start an anonymous one so every
     /// user has a backing Supabase identity without seeing a sign-in screen.
     /// Apple Sign-In is reserved for opt-in upgrades (pairing, account
