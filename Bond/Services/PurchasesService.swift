@@ -15,11 +15,19 @@ final class PurchasesService {
     private let log = Logger(subsystem: "com.jackwallner.bond", category: "purchases")
 
     static let apiKey = "appl_mNANfaYASZUZZwdRZuLHXzovffW"
-    static let entitlementId = "premium"
+    /// MUST exactly match the entitlement *identifier* in the RevenueCat
+    /// dashboard (Product catalog → Entitlements), NOT the display name. It is
+    /// `Husband & Wife Reminder - Bond Pro` — the long-standing "payment went
+    /// through but still syncing" bug was this checking `"premium"`, which never
+    /// existed, so a successful purchase could never resolve to an entitlement.
+    static let entitlementId = "Husband & Wife Reminder - Bond Pro"
 
     private(set) var isPremium = false
     private(set) var customerInfo: CustomerInfo?
     private(set) var products: [Package] = []
+    /// Product identifiers we actually sell, collected as offerings load. Used
+    /// as a fallback unlock signal when the named entitlement doesn't resolve.
+    private(set) var knownProductIds: Set<String> = []
     private(set) var isLoadingProducts = false
     private(set) var purchaseInFlight = false
     private(set) var introEligibility: [String: Bool] = [:]
@@ -67,6 +75,10 @@ final class PurchasesService {
         do {
             let offerings = try await Purchases.shared.offerings()
             products = offerings.bondPaywallOffering?.bondSortedPackages ?? []
+            // Remember every Bond+ product id we've ever seen offered. `apply`
+            // uses this to treat ownership of a known product as premium even
+            // when the dashboard entitlement mapping is the broken link.
+            knownProductIds.formUnion(products.map(\.storeProduct.productIdentifier))
             lastError = nil
             await refreshIntroEligibility()
             log.info("Loaded \(self.products.count) packages")
@@ -283,11 +295,45 @@ final class PurchasesService {
 
     var premiumSince: Date? {
         customerInfo?.entitlements[Self.entitlementId]?.latestPurchaseDate
+            ?? customerInfo?.entitlements.active.values.compactMap(\.latestPurchaseDate).max()
+    }
+
+    /// Whether this customer should have Bond+ unlocked.
+    ///
+    /// Bond sells exactly one paid tier, so we unlock on the first signal that
+    /// the user has paid — in priority order:
+    ///   1. the configured `premium` entitlement is active (the happy path), or
+    ///   2. *any* entitlement is active — covers an entitlement-identifier
+    ///      mismatch between this app and the RevenueCat dashboard, or
+    ///   3. they own an active subscription / a known Bond+ product — covers a
+    ///      missing or broken product→entitlement mapping in the dashboard.
+    ///
+    /// (2) and (3) are the recurring TestFlight/sandbox failure mode: Apple
+    /// takes payment and RevenueCat records the transaction, but
+    /// `entitlements["premium"]` never populates, so the old entitlement-only
+    /// check left a paying user stuck on "payment went through but still
+    /// syncing" no matter how long we polled.
+    private func hasActivePremium(_ info: CustomerInfo) -> Bool {
+        if info.entitlements[Self.entitlementId]?.isActive == true { return true }
+        if !info.entitlements.active.isEmpty { return true }
+        if !info.activeSubscriptions.isEmpty { return true }
+        // Lifetime / non-consumable ownership. Restrict to products we actually
+        // sell so a stray transaction can't grant access.
+        if !knownProductIds.isEmpty,
+           info.nonSubscriptions.contains(where: { knownProductIds.contains($0.productIdentifier) }) {
+            return true
+        }
+        return false
     }
 
     private func apply(info: CustomerInfo) {
         customerInfo = info
-        isPremium = info.entitlements[Self.entitlementId]?.isActive == true
-        log.info("Customer info updated — premium: \(self.isPremium)")
+        isPremium = hasActivePremium(info)
+        log.info("""
+            Customer info updated — premium: \(self.isPremium) \
+            (entitlement: \(info.entitlements[Self.entitlementId]?.isActive == true), \
+            activeEntitlements: \(info.entitlements.active.count), \
+            activeSubs: \(info.activeSubscriptions.count))
+            """)
     }
 }
