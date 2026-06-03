@@ -132,7 +132,7 @@ struct RootView: View {
                 }
                 .transition(.opacity)
             case .home:
-                ReminderListView()
+                MainTabView()
                     .transition(.opacity)
             case .loading:
                 ZStack {
@@ -324,34 +324,47 @@ struct RootView: View {
     }
 }
 
-struct BondMoreView: View {
+/// Primary navigation. Each core area is a tab so nothing is buried — the
+/// previous design hid Check-In, Milestones, Insights, and Settings behind a
+/// single top-left "..." that read as overflow, and most users never found
+/// them. Each tab root owns its own NavigationStack (Settings doesn't, so it's
+/// wrapped here).
+struct MainTabView: View {
+    @State private var router = NotificationRouter.shared
+    @State private var selection: Tab = .reminders
+
+    private enum Tab: Hashable { case reminders, checkIn, milestones, insights, settings }
+
     var body: some View {
-        List {
-            Section("Relationship") {
-                NavigationLink {
-                    DailyCheckInView()
-                } label: {
-                    Label("Check-In", systemImage: "questionmark.bubble")
-                }
-                NavigationLink {
-                    MilestonesView()
-                } label: {
-                    Label("Milestones", systemImage: "calendar.badge.plus")
-                }
-                NavigationLink {
-                    StatsView()
-                } label: {
-                    Label("Insights", systemImage: "chart.bar.xaxis")
-                }
-            }
-            Section("App") {
-                NavigationLink {
-                    SettingsView()
-                } label: {
-                    Label("Settings", systemImage: "gearshape")
-                }
-            }
+        TabView(selection: $selection) {
+            ReminderListView()
+                .tag(Tab.reminders)
+                .tabItem { Label("Reminders", systemImage: "bell.fill") }
+
+            DailyCheckInView()
+                .tag(Tab.checkIn)
+                .tabItem { Label("Check-In", systemImage: "questionmark.bubble.fill") }
+
+            MilestonesView()
+                .tag(Tab.milestones)
+                .tabItem { Label("Milestones", systemImage: "calendar") }
+
+            StatsView()
+                .tag(Tab.insights)
+                .tabItem { Label("Insights", systemImage: "chart.bar.fill") }
+
+            NavigationStack { SettingsView() }
+                .tag(Tab.settings)
+                .tabItem { Label("Settings", systemImage: "gearshape.fill") }
         }
-        .navigationTitle("More")
+        // A tapped reminder notification should land on the Reminders tab, where
+        // ReminderListView presents the editor — otherwise the editor sheet would
+        // pop up over whatever tab the user happened to be on.
+        .onChange(of: router.pendingReminderId) { _, id in
+            if id != nil { selection = .reminders }
+        }
+        .onAppear {
+            if router.pendingReminderId != nil { selection = .reminders }
+        }
     }
 }

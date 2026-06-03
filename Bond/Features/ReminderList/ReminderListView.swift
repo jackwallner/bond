@@ -43,16 +43,6 @@ struct ReminderListView: View {
                 }
             }
             .navigationTitle("Bond")
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    NavigationLink {
-                        BondMoreView()
-                    } label: {
-                        Image(systemName: "ellipsis.circle")
-                    }
-                    .accessibilityLabel("More")
-                }
-            }
             .safeAreaInset(edge: .bottom, alignment: .trailing) {
                 composeButton
             }
