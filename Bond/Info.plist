@@ -37,16 +37,8 @@
 	<dict/>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>remote-notification</string>
-	</array>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Bond uses your location to trigger reminders when you arrive at or leave specific places (e.g. remind you to hug your partner when you get home).</string>
-	<key>NSSpeechRecognitionUsageDescription</key>
-	<string>Bond uses speech recognition to let you dictate reminders from your Apple Watch.</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>Bond uses the microphone for dictating reminders.</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
