@@ -1,22 +1,31 @@
 Bond is fully usable with NO login. On first launch the app silently creates an anonymous account, so there is no demo username/password to enter — just open the app.
 
+NAVIGATION
+The app uses a bottom tab bar with five tabs: Reminders · Check-In · Milestones · Insights · Settings. (There is no top-left "..." / overflow menu.) "Settings" is the rightmost tab.
+
 ACCOUNT / SIGN IN
 - No credentials are required to review the core single-user experience.
 - "Sign in with Apple" is only used to (a) make an account recoverable across devices and (b) pair with a partner. It is not needed to evaluate the app.
 
 PAIRING (needs a second device/Apple ID)
 Pairing links two people, so a single reviewer cannot complete it alone. To test it with two devices:
-1. Device A: tap "..." (top-left) -> Settings -> "Connect a partner" (or the "Pair with your partner" card on Home) -> Send -> Generate code.
+1. Device A: Settings tab -> "Connect a partner" (or the "Pair with your partner" card on the Reminders tab) -> Send -> Generate code.
 2. Device B: same screen -> Receive -> enter the 6-character code (or open the shared invite link), then complete Sign in with Apple.
 Everything except Daily Check-In and partner-targeted reminders can be fully reviewed WITHOUT pairing.
 
+DAILY CHECK-IN (requires a paired partner)
+The Check-In tab shows "For Couples Only" until you pair, since it is a shared, two-person feature. If you are unable to pair two devices/Apple IDs, email or call us using the contact details below and we will provide a short screen recording of the paired Check-In flow.
+
 BOND+ (auto-renewable subscription, testable in sandbox)
-Bond+ unlocks templates, insights, smart/location/surprise reminders, and the Daily Check-In answer flow. Reach the paywall by tapping any locked feature — e.g. the reminder editor's "When" -> Location option, or the Templates card on the Home screen. It is purchased via StoreKit and works with a sandbox Apple ID.
+Bond+ unlocks templates, insights, location/surprise reminders, and the Daily Check-In answer flow. Reach the paywall by tapping any locked feature — e.g. open a reminder -> the "Schedule" picker -> "At a place" or "Random surprise"; or tap the templates card at the bottom of the Reminders tab. It is purchased via StoreKit and works with a sandbox Apple ID.
 
 ACCOUNT DELETION (Guideline 5.1.1(v))
-In-app deletion: "..." -> Settings -> Account -> "Delete account". It permanently deletes the account and all associated data. Any active App Store subscription is managed separately by the user in Apple ID settings.
+In-app deletion: Settings tab -> "Delete account" -> "Delete everything". It permanently deletes the account and all associated data. Any active App Store subscription is managed separately by the user in Apple ID settings.
+
+USER CONTENT / SAFETY (Guideline 1.2)
+Pairing is invite-only and strictly 1:1. A user can instantly sever a partner via Settings tab -> "Unpair", and can report abusive content via Settings tab -> "Report a concern" (emails us). There is no public feed or stranger-to-stranger contact.
 
 LOCATION
 Location is requested only When-In-Use, to capture a one-time anchor for optional location-based reminders (delivered via UNLocationNotificationTrigger). There is no background location use.
 
-Questions: bond@jackwallner.com
+Questions: bond@jackwallner.com / +1 425 753 3411
