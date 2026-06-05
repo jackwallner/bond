@@ -65,6 +65,12 @@ struct SettingsView: View {
                         }
                     }
                     Button("Unpair", role: .destructive) { confirmUnpair = true }
+                    Link(destination: URL(string: "mailto:bond@jackwallner.com?subject=Report%20a%20concern%20about%20my%20Bond%20partner")!) {
+                        Label("Report a concern", systemImage: "exclamationmark.bubble")
+                    }
+                    Text("Unpairing immediately stops your partner from sending you anything. Reporting lets us know about abusive content.")
+                        .font(.bond(.caption))
+                        .foregroundStyle(.secondary)
                 }
             }
 
@@ -197,7 +203,7 @@ struct SettingsView: View {
             Button("Delete everything", role: .destructive) { deleteAccount() }
             Button("Cancel", role: .cancel) {}
         } message: {
-            Text("This permanently deletes your account and all your reminders, milestones, and check-ins. If you're paired, your partner will be unpaired. This can't be undone. (Any App Store subscription is managed separately in Settings → Apple ID.)")
+            Text("This permanently deletes your account and everything in it. If you're paired, it also removes the reminders, milestones, and check-ins you shared — these disappear for your partner too, and they'll be unpaired (their account stays). This can't be undone. (Any App Store subscription is managed separately in Settings → Apple ID.)")
         }
     }
 
