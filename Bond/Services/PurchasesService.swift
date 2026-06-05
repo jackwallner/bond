@@ -104,7 +104,10 @@ final class PurchasesService {
 
     func isEligibleForIntroOffer(_ package: Package) -> Bool {
         guard package.bondIntroOfferLabel != nil else { return false }
-        return introEligibility[package.storeProduct.productIdentifier] ?? true
+        // Default to false until RevenueCat confirms eligibility, so the paywall
+        // never promises a free trial to a user StoreKit will charge immediately
+        // (previously-subscribed/ineligible Apple IDs). App Review tests this.
+        return introEligibility[package.storeProduct.productIdentifier] ?? false
     }
 
     /// Reports a custom-paywall impression to RevenueCat (required for native paywalls).

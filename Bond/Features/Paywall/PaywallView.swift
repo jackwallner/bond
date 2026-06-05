@@ -5,7 +5,6 @@ import SwiftUI
 enum PaywallLinks {
     static let privacyPolicy = URL(string: "https://jackwallner.com/bond/privacy")!
     static let terms = URL(string: "https://jackwallner.com/bond/terms")!
-    static let standardEULA = URL(string: "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/")!
 }
 
 /// Native Bond+ paywall. Purchases flow through `PurchasesService.purchase`
@@ -48,7 +47,7 @@ struct PaywallView: View {
     private var benefits: [(icon: String, title: String)] {
         if isSolo {
             return [
-                ("bell.badge.fill",          "Smart, location & surprise reminders"),
+                ("bell.badge.fill",          "Location & surprise reminders"),
                 ("square.stack.fill",        "Curated reminder templates"),
                 ("sparkles",                 "Love-language insights & trends"),
                 ("questionmark.bubble.fill", "Daily Check-In — when you pair")
@@ -57,7 +56,7 @@ struct PaywallView: View {
         return [
             ("questionmark.bubble.fill", "Daily Check-In, together"),
             ("sparkles",                  "Love-language insights & trends"),
-            ("bell.badge.fill",           "Smart, location & surprise reminders"),
+            ("bell.badge.fill",           "Location & surprise reminders"),
             ("square.stack.fill",         "Curated reminder templates")
         ]
     }
@@ -169,13 +168,23 @@ struct PaywallView: View {
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
-            Text("Start free. Stay intentional, together.")
+            Text(showsTrialPromise
+                 ? "Start free. Stay intentional, together."
+                 : "Stay intentional, together.")
                 .font(.bond(.footnote, weight: .semibold))
                 .foregroundStyle(Color.bondAccent)
                 .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
                 .padding(.top, BondSpacing.xs)
         }
+    }
+
+    /// Only promise a free trial when the selected (or default) package actually
+    /// has an intro offer the buyer is eligible for — never to ineligible/lifetime
+    /// buyers (3.1.2: no misleading free-trial claims).
+    private var showsTrialPromise: Bool {
+        guard let package = selectedPackage ?? purchases.products.first else { return false }
+        return purchases.isEligibleForIntroOffer(package)
     }
 
     private var benefitList: some View {
