@@ -159,6 +159,10 @@ struct RootView: View {
         .background(Color.bondBackgroundGradient.ignoresSafeArea())
         .font(.bond(.body))
         .tint(.bondAccent)
+        // Honor the Settings light/dark/system override; reading
+        // theme.appearance here registers the dependency so picking a new
+        // mode re-evaluates the body and flips every Color(light:dark:).
+        .preferredColorScheme(theme.appearance.colorScheme)
         .animation(.easeOut(duration: 0.35), value: currentDestination)
         .sheet(isPresented: Binding(
             get: { pairing.requiresSignInToPair },

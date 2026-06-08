@@ -125,6 +125,13 @@ struct SettingsView: View {
                 }
                 .pickerStyle(.inline)
                 .labelsHidden()
+
+                Picker("Appearance", selection: $theme.appearance) {
+                    ForEach(BondTheme.Appearance.allCases) { appearance in
+                        Text(appearance.title).tag(appearance)
+                    }
+                }
+                .pickerStyle(.menu)
             }
 
             Section("Notifications") {
