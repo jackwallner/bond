@@ -170,8 +170,10 @@ final class PairingService {
         }
     }
 
-    /// Leaves the current couple. Each partner keeps their own reminders;
-    /// the couple row is dissolved server-side by the `leave_couple` RPC.
+    /// Unpairs the current couple. The `leave_couple` RPC splits the shared
+    /// couple into two solo couples, re-homing each partner's own reminders,
+    /// check-ins, and event history and copying shared milestones to both — so
+    /// neither partner loses data.
     func leaveCouple() async {
         guard let me = supabase.currentUserId else {
             lastError = "Sign in first."

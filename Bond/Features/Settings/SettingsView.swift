@@ -203,7 +203,7 @@ struct SettingsView: View {
             Button("Delete everything", role: .destructive) { deleteAccount() }
             Button("Cancel", role: .cancel) {}
         } message: {
-            Text("This permanently deletes your account and everything in it. If you're paired, it also removes the reminders, milestones, and check-ins you shared — these disappear for your partner too, and they'll be unpaired (their account stays). This can't be undone. (Any App Store subscription is managed separately in Settings → Apple ID.)")
+            Text("This permanently deletes your account and everything you created. If you're paired, your partner keeps their own reminders, your shared milestones, and their account — they'll just be unpaired. This can't be undone. (Any App Store subscription is managed separately in Settings → Apple ID.)")
         }
     }
 
