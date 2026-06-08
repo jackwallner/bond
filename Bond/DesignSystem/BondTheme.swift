@@ -8,6 +8,34 @@ import SwiftUI
 final class BondTheme {
     static let shared = BondTheme()
 
+    /// Light/dark override. `.system` defers to the device setting; the other
+    /// two pin the app regardless of system appearance. Maps to SwiftUI's
+    /// `preferredColorScheme`, which in turn drives every `Color(light:dark:)`.
+    enum Appearance: String, CaseIterable, Identifiable {
+        case system
+        case light
+        case dark
+
+        var id: String { rawValue }
+
+        var title: String {
+            switch self {
+            case .system: "System"
+            case .light:  "Light"
+            case .dark:   "Dark"
+            }
+        }
+
+        /// `nil` lets SwiftUI fall through to the system setting.
+        var colorScheme: ColorScheme? {
+            switch self {
+            case .system: nil
+            case .light:  .light
+            case .dark:   .dark
+            }
+        }
+    }
+
     enum Accent: String, CaseIterable, Identifiable {
         case terracotta
         case pink
@@ -57,14 +85,21 @@ final class BondTheme {
         }
     }
 
-    private let defaultsKey = "theme.accent"
+    private let accentKey = "theme.accent"
+    private let appearanceKey = "theme.appearance"
 
     var accent: Accent {
-        didSet { UserDefaults.standard.set(accent.rawValue, forKey: defaultsKey) }
+        didSet { UserDefaults.standard.set(accent.rawValue, forKey: accentKey) }
+    }
+
+    var appearance: Appearance {
+        didSet { UserDefaults.standard.set(appearance.rawValue, forKey: appearanceKey) }
     }
 
     private init() {
-        accent = UserDefaults.standard.string(forKey: defaultsKey)
+        accent = UserDefaults.standard.string(forKey: accentKey)
             .flatMap(Accent.init(rawValue:)) ?? .terracotta
+        appearance = UserDefaults.standard.string(forKey: appearanceKey)
+            .flatMap(Appearance.init(rawValue:)) ?? .system
     }
 }
