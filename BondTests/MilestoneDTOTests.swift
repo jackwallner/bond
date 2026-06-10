@@ -73,6 +73,37 @@ struct MilestoneDTOTests {
         #expect(next == ref)
     }
 
+    // MARK: - Codable (Postgres `date` column is a bare y-m-d string)
+
+    @Test func decode_bareDateString_parsesToLocalMidnight() throws {
+        let json = """
+        {"id":"\(UUID().uuidString)","couple_id":"\(coupleId.uuidString)",
+         "kind":"anniversary","label":"Us","date":"2026-03-05","recur":true,
+         "created_at":null}
+        """
+        let m = try JSONDecoder().decode(MilestoneDTO.self, from: Data(json.utf8))
+        let expected = DateComponents(calendar: .current, year: 2026, month: 3, day: 5).date!
+        #expect(m.date == expected)
+        #expect(m.label == "Us")
+        #expect(m.recur)
+    }
+
+    @Test func encode_emitsBareDateString() throws {
+        let date = DateComponents(calendar: .current, year: 2026, month: 3, day: 5).date!
+        let m = MilestoneDTO(id: UUID(), coupleId: coupleId, kind: "anniversary", label: nil, date: date, recur: true)
+        let data = try JSONEncoder().encode(m)
+        let obj = try JSONSerialization.jsonObject(with: data) as! [String: Any]
+        #expect(obj["date"] as? String == "2026-03-05")
+    }
+
+    @Test func codable_roundTrip_preservesCalendarDay() throws {
+        let date = DateComponents(calendar: .current, year: 2024, month: 2, day: 29).date!
+        let m = MilestoneDTO(id: UUID(), coupleId: coupleId, kind: "birthday", label: "Leap", date: date, recur: true)
+        let decoded = try JSONDecoder().decode(MilestoneDTO.self, from: JSONEncoder().encode(m))
+        #expect(decoded.date == m.date)
+        #expect(decoded == m)
+    }
+
     // MARK: - Year boundary
 
     @Test func yearBoundary_dec31_advancesCorrectly() {
