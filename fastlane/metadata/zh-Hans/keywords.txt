@@ -1,1 +1,1 @@
-关系,tracker,伴侣,widget,配偶,异地,里程碑,提醒,计数器,paired,签到
+关系,tracker,伴侣,widget,配偶,异地,里程碑,计数器,paired,签到
