@@ -6,7 +6,7 @@ Implements the reusable 5-star review playbook (`app-store-5-star-review-strateg
 |-------|-------|
 | App Store ID | Set `BondAppStoreID` in `Bond/Info.plist` when ASC assigns the numeric ID |
 | Display name | Bond |
-| Feedback email | bond@jackwallner.com |
+| Feedback email | jackwallner+b@gmail.com |
 | Positive moment A | User marks a reminder done (swipe Done / Handled) |
 | Avoid | Cold launch, onboarding, pairing success, paywall sheets |
 | App group | `group.com.jackwallner.bond` |
