@@ -16,12 +16,10 @@ struct ReminderListView: View {
     @State private var showNotificationPrimer = false
     @State private var starterPrefill: StarterChip?
     @State private var hasLoadedOnce = false
-    @State private var showAllHandled = false
     @State private var isPairingPresented = false
     @AppStorage("pairingNudgeDismissed") private var pairingNudgeDismissed = false
 
     private let primerShownKey = "hasShownNotificationPrimer"
-    private let handledRecentDays = 7
 
     var body: some View {
         NavigationStack {
@@ -162,44 +160,23 @@ struct ReminderListView: View {
         sortByNextDate(myActiveReminders.filter(isPastDue))
     }
 
-    private var todayReminders: [ReminderDTO] {
-        sortByNextDate(myActiveReminders.filter {
-            guard !isPastDue($0), let next = nextDate(for: $0) else { return false }
-            return Calendar.current.isDateInToday(next)
+    /// Everything active that isn't past due, as one list: dated reminders in
+    /// fire order, then undated ("anytime") ones by recency. Each row already
+    /// states its own time ("in 3 hours", "tomorrow"), so the old
+    /// Today/This week/Later/Anytime buckets only added four headers' worth
+    /// of chrome to say what the rows said themselves.
+    private var upNextReminders: [ReminderDTO] {
+        let dated = sortByNextDate(myActiveReminders.filter {
+            !isPastDue($0) && nextDate(for: $0) != nil
         })
-    }
-
-    private var weekReminders: [ReminderDTO] {
-        let calendar = Calendar.current
-        let now = Date.now
-        let cutoff = calendar.date(byAdding: .day, value: 7, to: now) ?? now
-        return sortByNextDate(myActiveReminders.filter {
-            guard !isPastDue($0), let next = nextDate(for: $0) else { return false }
-            return !calendar.isDateInToday(next) && next <= cutoff
-        })
-    }
-
-    private var laterReminders: [ReminderDTO] {
-        let cutoff = Calendar.current.date(byAdding: .day, value: 7, to: Date.now) ?? Date.now
-        return sortByNextDate(myActiveReminders.filter {
-            guard !isPastDue($0), let next = nextDate(for: $0) else { return false }
-            return next > cutoff
-        })
-    }
-
-    private var anytimeReminders: [ReminderDTO] {
-        sortByCreatedDate(myActiveReminders.filter {
+        let undated = sortByCreatedDate(myActiveReminders.filter {
             !isPastDue($0) && nextDate(for: $0) == nil
         })
+        return dated + undated
     }
 
     private var handledReminders: [ReminderDTO] {
         sortByCreatedDate(visibleReminders.filter { isActedOn($0) })
-    }
-
-    private var recentHandledReminders: [ReminderDTO] {
-        let cutoff = Calendar.current.date(byAdding: .day, value: -handledRecentDays, to: Date.now) ?? Date.now
-        return handledReminders.filter { ($0.createdAt ?? .distantPast) >= cutoff }
     }
 
     private var composeButton: some View {
@@ -226,10 +203,13 @@ struct ReminderListView: View {
     //   1. One "act now" tier — check-in prompt and partner requests — rendered
     //      as floating elevated cards. At most one element on screen is loud
     //      (the reveal-ready check-in uses the accent gradient).
-    //   2. The reminder list itself: flat warm-white grouped rows under one
-    //      consistent header voice. Past due is the only tinted header.
-    //   3. Quiet utility tier: pairing nudge and templates entry are compact
-    //      hairline rows that no longer compete with the content above.
+    //   2. The reminder list itself: at most two sections — "Past due" (the
+    //      only tinted header, only when something slipped) and "Up next".
+    //      Rows carry their own relative time, so finer date buckets are
+    //      redundant chrome.
+    //   3. Quiet utility tier: pairing nudge, a one-row link to Handled, and
+    //      the templates entry — compact rows that don't compete with the
+    //      content above.
     private var list: some View {
         List {
             if let state = checkInCardState {
@@ -290,47 +270,33 @@ struct ReminderListView: View {
                 }
             }
 
-            if !todayReminders.isEmpty {
+            if !upNextReminders.isEmpty {
                 Section {
-                    ForEach(todayReminders) { row($0) }
-                        .onDelete { offsets in delete(todayReminders, at: offsets) }
+                    ForEach(upNextReminders) { row($0) }
+                        .onDelete { offsets in delete(upNextReminders, at: offsets) }
                         .bondWarmRow()
                 } header: {
-                    BondSectionHeader(title: "Today")
+                    BondSectionHeader(title: "Up next")
                 }
             }
 
-            if !weekReminders.isEmpty {
+            if !handledReminders.isEmpty {
                 Section {
-                    ForEach(weekReminders) { row($0) }
-                        .onDelete { offsets in delete(weekReminders, at: offsets) }
-                        .bondWarmRow()
-                } header: {
-                    BondSectionHeader(title: "This week")
+                    NavigationLink {
+                        HandledRemindersView()
+                    } label: {
+                        HStack {
+                            Text("Handled")
+                                .font(.bond(.subheadline))
+                            Spacer()
+                            Text("\(handledReminders.count)")
+                                .font(.bond(.subheadline))
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    .bondWarmRow()
                 }
             }
-
-            if !laterReminders.isEmpty {
-                Section {
-                    ForEach(laterReminders) { row($0) }
-                        .onDelete { offsets in delete(laterReminders, at: offsets) }
-                        .bondWarmRow()
-                } header: {
-                    BondSectionHeader(title: "Later")
-                }
-            }
-
-            if !anytimeReminders.isEmpty {
-                Section {
-                    ForEach(anytimeReminders) { row($0) }
-                        .onDelete { offsets in delete(anytimeReminders, at: offsets) }
-                        .bondWarmRow()
-                } header: {
-                    BondSectionHeader(title: "Anytime")
-                }
-            }
-
-            handledSection
 
             Section {
                 TemplatesHomePitch(isPremium: store.isPremium) {
@@ -344,29 +310,6 @@ struct ReminderListView: View {
         .listStyle(.insetGrouped)
         .listSectionSpacing(BondSpacing.base)
         .bondWarmList()
-    }
-
-    @ViewBuilder
-    private var handledSection: some View {
-        let recent = recentHandledReminders
-        let all = handledReminders
-        if !all.isEmpty {
-            let shown = showAllHandled ? all : recent
-            Section {
-                ForEach(shown) { row($0) }
-                    .onDelete { offsets in delete(shown, at: offsets) }
-                    .bondWarmRow()
-                if all.count > recent.count {
-                    Button(showAllHandled ? "Show recent only" : "Show all \(all.count) handled") {
-                        showAllHandled.toggle()
-                    }
-                    .font(.bond(.footnote))
-                    .bondWarmRow()
-                }
-            } header: {
-                BondSectionHeader(title: showAllHandled ? "Handled" : "Handled · last \(handledRecentDays) days")
-            }
-        }
     }
 
     private var partnerName: String {
@@ -498,6 +441,59 @@ struct ReminderListView: View {
                     forSelfUserId: me, reminders: repo.reminders
                 )
             }
+        }
+    }
+}
+
+/// Full handled history, pushed from the one-row "Handled" link on home so
+/// completed reminders stop occupying home-screen real estate.
+private struct HandledRemindersView: View {
+    @Environment(SupabaseService.self) private var supabase
+    @Environment(ReminderRepository.self) private var repo
+    @Environment(ReminderEventRepository.self) private var eventsRepo
+
+    @State private var editingReminder: ReminderDTO?
+
+    private var handled: [ReminderDTO] {
+        guard let me = supabase.currentUserId else { return [] }
+        return repo.reminders
+            .filter { $0.authorId == me || $0.targetId == me }
+            .filter { r in
+                eventsRepo.events.contains { $0.reminderId == r.id && $0.actedAt != nil }
+            }
+            .sorted { ($0.createdAt ?? .distantPast) > ($1.createdAt ?? .distantPast) }
+    }
+
+    var body: some View {
+        List {
+            ForEach(handled) { reminder in
+                Button {
+                    editingReminder = reminder
+                } label: {
+                    ReminderRow(
+                        reminder: reminder,
+                        currentUserId: supabase.currentUserId,
+                        isActedOn: true
+                    )
+                }
+                .buttonStyle(.plain)
+                .bondWarmRow()
+            }
+            .onDelete { offsets in
+                let source = handled
+                Task {
+                    for index in offsets {
+                        try? await repo.delete(source[index])
+                    }
+                }
+            }
+        }
+        .listStyle(.insetGrouped)
+        .bondWarmList()
+        .navigationTitle("Handled")
+        .navigationBarTitleDisplayMode(.inline)
+        .sheet(item: $editingReminder) { reminder in
+            ReminderEditorView(existing: reminder, prefill: nil)
         }
     }
 }

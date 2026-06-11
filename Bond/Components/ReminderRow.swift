@@ -61,7 +61,7 @@ struct ReminderRow: View {
                             Text(preset.title)
                                 .font(.bond(.caption2))
                                 .padding(.horizontal, 6).padding(.vertical, 2)
-                                .background(Color.gray.opacity(0.15), in: Capsule())
+                                .background(Color.bondHairline, in: Capsule())
                         }
                         if reminder.targetId != currentUserId {
                             Text("for partner")
