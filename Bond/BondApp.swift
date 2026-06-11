@@ -34,17 +34,25 @@ struct BondApp: App {
     /// default doesn't reach them. Point the title + large-title text attributes
     /// at the bundled brand face so navigation chrome matches in-content type.
     private static func applyNavigationBarFont() {
-        let appearance = UINavigationBarAppearance()
-        appearance.configureWithDefaultBackground()
-        if let title = UIFont(name: "PlusJakartaSans-Bold", size: 17) {
-            appearance.titleTextAttributes[.font] = title
+        let standard = UINavigationBarAppearance()
+        standard.configureWithDefaultBackground()
+        // At rest the bar must show the warm wash, not an opaque system
+        // material — a gray-white slab at the top of every screen is the one
+        // place the unified warm surface still broke in light mode. The blur
+        // returns only once content scrolls under the bar.
+        let scrollEdge = UINavigationBarAppearance()
+        scrollEdge.configureWithTransparentBackground()
+        for appearance in [standard, scrollEdge] {
+            if let title = UIFont(name: "PlusJakartaSans-Bold", size: 17) {
+                appearance.titleTextAttributes[.font] = title
+            }
+            if let large = UIFont(name: "PlusJakartaSans-Bold", size: 34) {
+                appearance.largeTitleTextAttributes[.font] = large
+            }
         }
-        if let large = UIFont(name: "PlusJakartaSans-Bold", size: 34) {
-            appearance.largeTitleTextAttributes[.font] = large
-        }
-        UINavigationBar.appearance().standardAppearance = appearance
-        UINavigationBar.appearance().scrollEdgeAppearance = appearance
-        UINavigationBar.appearance().compactAppearance = appearance
+        UINavigationBar.appearance().standardAppearance = standard
+        UINavigationBar.appearance().scrollEdgeAppearance = scrollEdge
+        UINavigationBar.appearance().compactAppearance = standard
     }
 
     var body: some Scene {

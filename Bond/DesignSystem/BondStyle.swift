@@ -82,17 +82,28 @@ extension Color {
     /// Warm drop-shadow tint for soft-tactile cards/buttons (sunset brown,
     /// never neutral gray). Opacity baked in for direct use in `.shadow`.
     static let bondShadow = Color(
-        light: Color(red: 0.45, green: 0.22, blue: 0.10).opacity(0.18),
+        light: Color(red: 0.45, green: 0.22, blue: 0.10).opacity(0.12),
         dark:  Color(red: 0.00, green: 0.00, blue: 0.00).opacity(0.45)
     )
 
+    /// Muted warm text for section headers and quiet labels. System
+    /// `.secondary` is a cool gray that reads dirty against the cream wash
+    /// in light mode; this keeps the same hierarchy in a warm brown.
+    static let bondMuted = Color(
+        light: Color(red: 0.478, green: 0.357, blue: 0.282),  // #7A5B48
+        dark:  Color(red: 0.788, green: 0.702, blue: 0.643)
+    )
+
     /// Full-screen warm wash (cream → peach) sitting behind app content.
+    /// The light bottom stop stays close to the base cream: a deeper peach
+    /// down there fights the warm-white list rows and washes out accent
+    /// buttons that sit near the bottom of the screen.
     static var bondBackgroundGradient: LinearGradient {
         LinearGradient(
             colors: [
                 Color(light: Color(red: 0.973, green: 0.886, blue: 0.776),
                       dark:  Color(red: 0.106, green: 0.082, blue: 0.075)),
-                Color(light: Color(red: 0.929, green: 0.690, blue: 0.561),
+                Color(light: Color(red: 0.949, green: 0.812, blue: 0.682),
                       dark:  Color(red: 0.157, green: 0.114, blue: 0.094))
             ],
             startPoint: .top,
@@ -137,7 +148,7 @@ extension View {
 /// for every section label so headers organize rather than compete.
 struct BondSectionHeader: View {
     let title: String
-    var tint: Color = .secondary
+    var tint: Color = .bondMuted
 
     var body: some View {
         Text(title)
