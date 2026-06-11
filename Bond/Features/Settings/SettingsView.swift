@@ -68,7 +68,7 @@ struct SettingsView: View {
                         }
                     }
                     Button("Unpair", role: .destructive) { confirmUnpair = true }
-                    Link(destination: URL(string: "mailto:bond@jackwallner.com?subject=Report%20a%20concern%20about%20my%20Bond%20partner")!) {
+                    Link(destination: URL(string: "mailto:jackwallner+b@gmail.com?subject=Report%20a%20concern%20about%20my%20Bond%20partner")!) {
                         Label("Report a concern", systemImage: "exclamationmark.bubble")
                     }
                     Text("Unpairing immediately stops your partner from sending you anything. Reporting lets us know about abusive content.")
@@ -181,7 +181,7 @@ struct SettingsView: View {
             Section {
                 Link("Privacy policy", destination: URL(string: "https://jackwallner.com/bond/privacy")!)
                 Link("Terms of service", destination: URL(string: "https://jackwallner.com/bond/terms")!)
-                Link("Support", destination: URL(string: "mailto:bond@jackwallner.com")!)
+                Link("Support", destination: URL(string: "mailto:jackwallner+b@gmail.com")!)
             } footer: {
                 HStack {
                     Spacer()
