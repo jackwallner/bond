@@ -10,11 +10,36 @@ struct ReminderRow: View {
     let reminder: ReminderDTO
     let currentUserId: UUID?
     let isActedOn: Bool
+    /// Tap handler for the leading check circle. Nil hides the affordance
+    /// (e.g. read-only contexts) and falls back to the love-language glyph.
+    var onToggleDone: (() -> Void)?
 
-    init(reminder: ReminderDTO, currentUserId: UUID?, isActedOn: Bool = false) {
+    init(
+        reminder: ReminderDTO,
+        currentUserId: UUID?,
+        isActedOn: Bool = false,
+        onToggleDone: (() -> Void)? = nil
+    ) {
         self.reminder = reminder
         self.currentUserId = currentUserId
         self.isActedOn = isActedOn
+        self.onToggleDone = onToggleDone
+    }
+
+    /// "Done today" / "Done this week" for repeating reminders; plain "Done"
+    /// for one-shots.
+    private var doneLabel: String {
+        guard case .recurring(let rrule, _) = reminder.trigger,
+              let preset = RecurrencePreset(rrule: rrule)
+        else {
+            return reminder.repeatsOnSchedule ? "Done today" : "Done"
+        }
+        switch preset {
+        case .daily:   return "Done today"
+        case .weekly:  return "Done this week"
+        case .monthly: return "Done this month"
+        case .yearly:  return "Done this year"
+        }
     }
 
     var body: some View {
@@ -24,21 +49,12 @@ struct ReminderRow: View {
             // sits vertically centered against the whole row — matching iOS
             // Reminders/Mail.
             HStack(alignment: .top, spacing: 12) {
-                Image(systemName: reminder.loveLanguage.symbolName)
-                    .foregroundStyle(isActedOn ? .green : reminder.loveLanguage.tint)
-                    .frame(width: 28, height: 28)
+                checkCircle
 
                 VStack(alignment: .leading, spacing: 4) {
-                    HStack(spacing: 6) {
-                        Text(reminder.title)
-                            .font(.bond(.headline))
-                            .lineLimit(2)
-                        if isActedOn {
-                            Image(systemName: "checkmark.circle.fill")
-                                .font(.bond(.caption))
-                                .foregroundStyle(.green)
-                        }
-                    }
+                    Text(reminder.title)
+                        .font(.bond(.headline))
+                        .lineLimit(2)
                     if let body = reminder.body, !body.isEmpty {
                         Text(body)
                             .font(.bond(.subheadline))
@@ -46,7 +62,11 @@ struct ReminderRow: View {
                             .lineLimit(2)
                     }
                     HStack(spacing: 8) {
-                        if let next = reminder.trigger?.upcomingFireDate() {
+                        if isActedOn {
+                            Text(doneLabel)
+                                .font(.bond(.caption, weight: .semibold))
+                                .foregroundStyle(.green)
+                        } else if let next = reminder.trigger?.upcomingFireDate() {
                             // Static relative string, formatted once at render. Using
                             // `Text(_, style: .relative)` here re-renders every second,
                             // which reads as a stopwatch the moment a reminder is set;
@@ -55,10 +75,8 @@ struct ReminderRow: View {
                                 .font(.bond(.caption))
                                 .foregroundStyle(.secondary)
                         }
-                        if reminder.triggerType == "recurring",
-                           let rrule = reminder.rrule,
-                           let preset = RecurrencePreset(rrule: rrule) {
-                            Text(preset.title)
+                        if let cadence = cadenceLabel {
+                            Text(cadence)
                                 .font(.bond(.caption2))
                                 .padding(.horizontal, 6).padding(.vertical, 2)
                                 .background(Color.bondHairline, in: Capsule())
@@ -82,5 +100,47 @@ struct ReminderRow: View {
         .contentShape(Rectangle())
         .opacity(isActedOn ? 0.6 : 1)
         .accessibilityHint("Edit reminder")
+    }
+
+    private var cadenceLabel: String? {
+        if case .randomRecurring = reminder.trigger { return "Daily surprise" }
+        guard reminder.triggerType == "recurring",
+              let rrule = reminder.rrule,
+              let preset = RecurrencePreset(rrule: rrule) else { return nil }
+        return preset.title
+    }
+
+    /// Leading mark-done affordance: love-language glyph in a tinted ring
+    /// when open, a filled green check when done. The whole circle is the
+    /// tap target so completing doesn't require discovering the swipe.
+    @ViewBuilder
+    private var checkCircle: some View {
+        if let onToggleDone {
+            Button(action: onToggleDone) {
+                circleContent
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(isActedOn ? "Mark as not done" : "Mark as done")
+        } else {
+            circleContent
+        }
+    }
+
+    private var circleContent: some View {
+        ZStack {
+            if isActedOn {
+                Image(systemName: "checkmark.circle.fill")
+                    .font(.system(size: 26))
+                    .foregroundStyle(.green)
+            } else {
+                Circle()
+                    .strokeBorder(reminder.loveLanguage.tint.opacity(0.45), lineWidth: 1.5)
+                Image(systemName: reminder.loveLanguage.symbolName)
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundStyle(reminder.loveLanguage.tint)
+            }
+        }
+        .frame(width: 28, height: 28)
+        .contentShape(Circle())
     }
 }

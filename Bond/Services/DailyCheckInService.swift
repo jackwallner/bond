@@ -39,9 +39,13 @@ final class DailyCheckInService {
             let coupleSeed = Self.stableSeed(from: coupleId)
             let questionIndex = abs((dayOffset &+ coupleSeed) % max(count, 1))
 
+            // Explicit ORDER BY: without it Postgres row order is unspecified,
+            // so the same index could resolve to different questions for the
+            // two partners — or change for one user mid-day.
             let questions: [DailyQuestionDTO] = try await supabase.client
                 .from("daily_questions")
                 .select()
+                .order("id", ascending: true)
                 .range(from: questionIndex, to: questionIndex)
                 .execute()
                 .value

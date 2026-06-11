@@ -72,6 +72,10 @@ struct StatsView: View {
                 balanceSection(a: a)
             } header: {
                 BondSectionHeader(title: "Balance score")
+            } footer: {
+                Text("How evenly your reminders cover the five love languages. 100 means a perfectly even spread; a low score means most of your reminders lean on one or two languages.")
+                    .font(.bond(.footnote))
+                    .foregroundStyle(.secondary)
             }
             .bondWarmRow()
 
@@ -88,29 +92,13 @@ struct StatsView: View {
                     }
                 }
                 .frame(height: 220)
-
-                // Mini completion bars
-                let completionRates = a.completionRates()
-                ForEach(completionRates, id: \.0) { lang, rate in
-                    HStack {
-                        Image(systemName: lang.symbolName)
-                            .foregroundStyle(lang.tint)
-                            .frame(width: 24)
-                        Text(lang.title)
-                            .font(.bond(.caption))
-                        Spacer()
-                        Text("\(Int(rate))%")
-                            .font(.bond(.caption).monospacedDigit())
-                            .foregroundStyle(.secondary)
-                        ProgressView(value: rate, total: 100)
-                            .tint(lang.tint)
-                            .frame(width: 60)
-                    }
-                }
             } header: {
-                BondSectionHeader(title: "Love language distribution")
+                BondSectionHeader(title: "Reminders per love language")
             }
             .bondWarmRow()
+
+            // Follow-through: completed vs. due, last 7 days
+            followThroughSection(a: a)
 
             // Trends chart
             let trends = a.weeklyTrends()
@@ -168,6 +156,57 @@ struct StatsView: View {
         .bondWarmList()
     }
 
+    /// "Did I actually do the things?" — completed vs. due over the last
+    /// week, per repeating reminder, with the per-language split below.
+    @ViewBuilder
+    private func followThroughSection(a: LoveLanguageAnalyzer) -> some View {
+        let items = a.followThrough()
+        let byLanguage = a.completionByLanguage().filter { $0.expected > 0 }
+
+        Section {
+            if items.isEmpty && byLanguage.isEmpty {
+                Text("Mark reminders done (tap the circle on a reminder) and your follow-through shows up here.")
+                    .font(.bond(.footnote))
+                    .foregroundStyle(.secondary)
+            } else {
+                ForEach(items) { item in
+                    HStack(spacing: BondSpacing.m) {
+                        Image(systemName: item.reminder.loveLanguage.symbolName)
+                            .foregroundStyle(item.reminder.loveLanguage.tint)
+                            .frame(width: 24)
+                        Text(item.reminder.title)
+                            .font(.bond(.subheadline))
+                            .lineLimit(1)
+                        Spacer()
+                        Text("\(item.completed) of \(item.expected)")
+                            .font(.bond(.subheadline).monospacedDigit())
+                            .foregroundStyle(.secondary)
+                        ProgressView(
+                            value: Double(item.completed),
+                            total: Double(max(item.expected, 1))
+                        )
+                        .tint(item.reminder.loveLanguage.tint)
+                        .frame(width: 56)
+                    }
+                }
+                ForEach(byLanguage, id: \.0) { lang, expected, completed in
+                    HStack(spacing: BondSpacing.m) {
+                        Text(lang.title)
+                            .font(.bond(.caption))
+                            .foregroundStyle(.secondary)
+                        Spacer()
+                        Text("\(completed) of \(expected) done")
+                            .font(.bond(.caption).monospacedDigit())
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            }
+        } header: {
+            BondSectionHeader(title: "Follow-through · last 7 days")
+        }
+        .bondWarmRow()
+    }
+
     private func streakSection(a: LoveLanguageAnalyzer) -> some View {
         let current = a.currentStreak()
         let longest = a.longestStreak()
@@ -197,10 +236,10 @@ struct StatsView: View {
             Divider().frame(height: 40)
 
             VStack(alignment: .center, spacing: 4) {
-                Text("\(Int(a.completionRate()))%")
+                Text(a.completionRate().map { "\(Int($0))%" } ?? "—")
                     .font(.bond(.title, weight: .bold))
                     .foregroundStyle(.green)
-                Text("completion")
+                Text("done this week")
                     .font(.bond(.caption))
                     .foregroundStyle(.secondary)
             }
@@ -260,7 +299,7 @@ struct StatsView: View {
         Group {
             LabeledContent("Total reminders", value: "\(total)")
             LabeledContent("For partner", value: "\(repo.reminders.filter { $0.authorId != $0.targetId }.count)")
-            LabeledContent("Recurring", value: "\(repo.reminders.filter { $0.triggerType == "recurring" }.count)")
+            LabeledContent("Repeating", value: "\(repo.reminders.filter(\.repeatsOnSchedule).count)")
             LabeledContent("Total actions", value: "\(eventsRepo.events.count)")
             LabeledContent("Actions completed", value: "\(eventsRepo.actedCount)")
         }

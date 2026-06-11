@@ -50,6 +50,11 @@ public struct ReminderDTO: Codable, Sendable, Identifiable, Hashable {
             return .location(geofence: geofence, onEntry: true)
         case "random_window":
             guard let windowStart, let windowEnd else { return nil }
+            // A repeating rule turns the absolute window into a daily
+            // time-of-day window ("random time between 6 and 9 every day").
+            if rrule != nil {
+                return .randomRecurring(start: windowStart, end: windowEnd)
+            }
             return .randomWindow(start: windowStart, end: windowEnd)
         default:
             return nil

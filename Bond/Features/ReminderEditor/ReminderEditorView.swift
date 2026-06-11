@@ -5,6 +5,7 @@ struct ReminderEditorView: View {
     @Environment(SupabaseService.self) private var supabase
     @Environment(PairingService.self) private var pairing
     @Environment(ReminderRepository.self) private var repo
+    @Environment(ReminderEventRepository.self) private var eventsRepo
     @Environment(PurchasesService.self) private var store
     @Environment(\.dismiss) private var dismiss
 
@@ -23,6 +24,11 @@ struct ReminderEditorView: View {
     @State private var surpriseHidden = false
     @State private var windowStart = Date().addingTimeInterval(60 * 60)
     @State private var windowEnd = Date().addingTimeInterval(60 * 60 * 24)
+    @State private var randomRepeatsDaily = false
+    @State private var dailyWindowStart = Calendar.current.date(
+        bySettingHour: 18, minute: 0, second: 0, of: .now) ?? .now
+    @State private var dailyWindowEnd = Calendar.current.date(
+        bySettingHour: 21, minute: 0, second: 0, of: .now) ?? .now
     @State private var geofenceLatitude: Double = 0
     @State private var geofenceLongitude: Double = 0
     @State private var geofenceLabel: String = "Home"
@@ -48,11 +54,7 @@ struct ReminderEditorView: View {
                 .bondWarmRow()
 
                 Section {
-                    Picker("Love language", selection: $loveLanguage) {
-                        ForEach(LoveLanguage.allCases) { lang in
-                            Label(lang.title, systemImage: lang.symbolName).tag(lang)
-                        }
-                    }
+                    loveLanguagePicker
                     if pairing.solo {
                         LabeledContent("For", value: "You")
                     } else {
@@ -125,6 +127,43 @@ struct ReminderEditorView: View {
         }
     }
 
+    /// Label on its own line, then one scrollable row of chips clearly below
+    /// it — the menu-style picker squeezed the icon+title onto the trailing
+    /// edge where long titles wrapped awkwardly.
+    private var loveLanguagePicker: some View {
+        VStack(alignment: .leading, spacing: BondSpacing.s) {
+            Text("Love language")
+                .font(.bond(.body))
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: BondSpacing.s) {
+                    ForEach(LoveLanguage.allCases) { lang in
+                        let selected = lang == loveLanguage
+                        Button {
+                            loveLanguage = lang
+                        } label: {
+                            HStack(spacing: BondSpacing.xs) {
+                                Image(systemName: lang.symbolName)
+                                    .font(.bond(.footnote))
+                                Text(lang.title)
+                                    .font(.bond(.footnote, weight: selected ? .semibold : .regular))
+                            }
+                            .padding(.horizontal, BondSpacing.m)
+                            .padding(.vertical, BondSpacing.s)
+                            .foregroundStyle(selected ? .white : lang.tint)
+                            .background(
+                                selected ? AnyShapeStyle(lang.tint) : AnyShapeStyle(lang.tint.opacity(0.12)),
+                                in: Capsule()
+                            )
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityAddTraits(selected ? .isSelected : [])
+                    }
+                }
+            }
+        }
+        .padding(.vertical, BondSpacing.xs)
+    }
+
     @ViewBuilder
     private var ideasAndTemplatesSection: some View {
         Section {
@@ -177,9 +216,17 @@ struct ReminderEditorView: View {
         guard !title.trimmingCharacters(in: .whitespaces).isEmpty else { return false }
         switch triggerKind {
         case .location:     return geofenceConfigured
-        case .randomWindow: return windowEnd > windowStart
+        case .randomWindow:
+            return randomRepeatsDaily
+                ? minutesOfDay(dailyWindowEnd) > minutesOfDay(dailyWindowStart)
+                : windowEnd > windowStart
         case .oneTime, .recurring: return true
         }
+    }
+
+    private func minutesOfDay(_ date: Date) -> Int {
+        let comps = Calendar.current.dateComponents([.hour, .minute], from: date)
+        return (comps.hour ?? 0) * 60 + (comps.minute ?? 0)
     }
 
     @ViewBuilder
@@ -218,16 +265,37 @@ struct ReminderEditorView: View {
                     .foregroundStyle(.orange)
             }
         case .randomWindow:
-            DatePicker("Earliest", selection: $windowStart)
-            DatePicker("Latest", selection: $windowEnd)
-            if windowEnd <= windowStart {
-                Text("Latest must be after Earliest.")
-                    .font(.bond(.caption2))
-                    .foregroundStyle(.orange)
+            Toggle("Repeat every day", isOn: $randomRepeatsDaily)
+            if randomRepeatsDaily {
+                DatePicker(
+                    "Between", selection: $dailyWindowStart,
+                    displayedComponents: .hourAndMinute
+                )
+                DatePicker(
+                    "and", selection: $dailyWindowEnd,
+                    displayedComponents: .hourAndMinute
+                )
+                if minutesOfDay(dailyWindowEnd) <= minutesOfDay(dailyWindowStart) {
+                    Text("The end time must be after the start time.")
+                        .font(.bond(.footnote))
+                        .foregroundStyle(.orange)
+                } else {
+                    Text("Fires once a day, at a different random time in this window each day.")
+                        .font(.bond(.footnote))
+                        .foregroundStyle(.secondary)
+                }
             } else {
-                Text("Bond will pick a random moment in this window.")
-                    .font(.bond(.caption2))
-                    .foregroundStyle(.secondary)
+                DatePicker("Earliest", selection: $windowStart)
+                DatePicker("Latest", selection: $windowEnd)
+                if windowEnd <= windowStart {
+                    Text("Latest must be after Earliest.")
+                        .font(.bond(.footnote))
+                        .foregroundStyle(.orange)
+                } else {
+                    Text("Bond will pick one random moment in this window.")
+                        .font(.bond(.footnote))
+                        .foregroundStyle(.secondary)
+                }
             }
         }
     }
@@ -275,8 +343,14 @@ struct ReminderEditorView: View {
             geofenceConfigured = true
         case .randomWindow(let s, let e):
             triggerKind = .randomWindow
+            randomRepeatsDaily = false
             windowStart = s
             windowEnd = e
+        case .randomRecurring(let s, let e):
+            triggerKind = .randomWindow
+            randomRepeatsDaily = true
+            dailyWindowStart = s
+            dailyWindowEnd = e
         default: break
         }
         if !triggerKind.isPremium {
@@ -361,24 +435,42 @@ struct ReminderEditorView: View {
             draft.windowStart = nil
             draft.windowEnd = nil
         case .randomWindow:
-            guard windowEnd > windowStart else {
-                errorMessage = "Window end must be after start."
-                return
+            if randomRepeatsDaily {
+                guard minutesOfDay(dailyWindowEnd) > minutesOfDay(dailyWindowStart) else {
+                    errorMessage = "The end time must be after the start time."
+                    return
+                }
+                draft.triggerType = "random_window"
+                draft.rrule = RecurrencePreset.daily.rrule
+                draft.windowStart = dailyWindowStart
+                draft.windowEnd = dailyWindowEnd
+                // fireAt is only used for ordering/widgets; the scheduler
+                // re-derives each day's random moment itself.
+                let trigger = ReminderTrigger.randomRecurring(
+                    start: dailyWindowStart, end: dailyWindowEnd
+                )
+                draft.fireAt = trigger.upcomingFireDate()
+                draft.geofence = nil
+            } else {
+                guard windowEnd > windowStart else {
+                    errorMessage = "Window end must be after start."
+                    return
+                }
+                let interval = windowEnd.timeIntervalSince(windowStart)
+                let pick = windowStart.addingTimeInterval(.random(in: 0...interval))
+                draft.triggerType = "random_window"
+                draft.fireAt = pick
+                draft.windowStart = windowStart
+                draft.windowEnd = windowEnd
+                draft.rrule = nil
+                draft.geofence = nil
             }
-            let interval = windowEnd.timeIntervalSince(windowStart)
-            let pick = windowStart.addingTimeInterval(.random(in: 0...interval))
-            draft.triggerType = "random_window"
-            draft.fireAt = pick
-            draft.windowStart = windowStart
-            draft.windowEnd = windowEnd
-            draft.rrule = nil
-            draft.geofence = nil
         }
 
         do {
             try await repo.upsert(draft)
             await NotificationScheduler.shared.reschedule(
-                forSelfUserId: me, reminders: repo.reminders
+                forSelfUserId: me, reminders: repo.reminders, events: eventsRepo.events
             )
             dismiss()
         } catch {

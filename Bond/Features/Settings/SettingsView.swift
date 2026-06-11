@@ -212,6 +212,10 @@ struct SettingsView: View {
                     await purchases.signOut()
                     await supabase.signOut()
                     pairing.reset()
+                    // The old account's reminders must stop firing and stop
+                    // showing on widgets for whoever signs in next.
+                    NotificationScheduler.shared.clearAll()
+                    WidgetSnapshotPump.clear()
                 }
             }
             Button("Cancel", role: .cancel) {}
@@ -243,6 +247,8 @@ struct SettingsView: View {
                 try await supabase.deleteAccount()
                 await purchases.signOut()
                 pairing.reset()
+                NotificationScheduler.shared.clearAll()
+                WidgetSnapshotPump.clear()
             } catch {
                 deleteError = "Couldn't delete your account. Check your connection and try again."
             }
