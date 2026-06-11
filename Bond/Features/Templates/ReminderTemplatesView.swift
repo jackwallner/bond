@@ -31,7 +31,7 @@ struct ReminderTemplatesView: View {
                     HStack(spacing: 12) {
                         Image(systemName: group.icon)
                             .font(.bond(.title2))
-                            .foregroundStyle(.pink)
+                            .foregroundStyle(Color.bondAccent)
                             .frame(width: 32)
                         VStack(alignment: .leading, spacing: 2) {
                             Text(group.title)
@@ -48,6 +48,7 @@ struct ReminderTemplatesView: View {
                     .padding(.vertical, 4)
                 }
             }
+            .bondWarmRow()
 
             Section {
                 BondUnlockCard(
@@ -60,6 +61,7 @@ struct ReminderTemplatesView: View {
                 .listRowBackground(Color.clear)
             }
         }
+        .bondWarmList()
     }
 
     private var list: some View {
@@ -71,7 +73,7 @@ struct ReminderTemplatesView: View {
                     HStack(spacing: 12) {
                         Image(systemName: group.icon)
                             .font(.bond(.title2))
-                            .foregroundStyle(.pink)
+                            .foregroundStyle(Color.bondAccent)
                             .frame(width: 32)
                         VStack(alignment: .leading, spacing: 2) {
                             Text(group.title)
@@ -84,11 +86,11 @@ struct ReminderTemplatesView: View {
                     .padding(.vertical, 4)
                 }
             } header: {
-                Text("\(group.reminders.count) reminders")
-                    .font(.bond(.caption))
-                    .foregroundStyle(.secondary)
+                BondSectionHeader(title: "\(group.reminders.count) reminders")
             }
+            .bondWarmRow()
         }
+        .bondWarmList()
     }
 }
 
@@ -115,8 +117,9 @@ struct TemplateGroupDetailView: View {
                 }
                 .padding(.vertical, 8)
             }
+            .bondWarmRow()
 
-            Section("Includes") {
+            Section {
                 ForEach(group.reminders) { template in
                     HStack(spacing: 12) {
                         Image(systemName: template.loveLanguage.symbolName)
@@ -144,7 +147,10 @@ struct TemplateGroupDetailView: View {
                         }
                     }
                 }
+            } header: {
+                BondSectionHeader(title: "Includes")
             }
+            .bondWarmRow()
 
             Section {
                 Button {
@@ -169,7 +175,9 @@ struct TemplateGroupDetailView: View {
                         .foregroundStyle(.red)
                 }
             }
+            .bondWarmRow()
         }
+        .bondWarmList()
         .alert("Templates added!", isPresented: $showConfirmation) {
             Button("Done") { dismiss() }
         } message: {

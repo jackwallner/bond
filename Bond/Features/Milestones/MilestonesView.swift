@@ -45,7 +45,7 @@ struct MilestonesView: View {
                 } label: {
                     HStack(spacing: 12) {
                         Image(systemName: m.kind == "birthday" ? "gift.fill" : "heart.fill")
-                            .foregroundStyle(.pink)
+                            .foregroundStyle(Color.bondAccent)
                             .frame(width: 28)
                         VStack(alignment: .leading) {
                             Text(m.label ?? m.kind.capitalized)
@@ -69,6 +69,8 @@ struct MilestonesView: View {
                     for i in offsets { try? await milestones.delete(sorted[i]) }
                 }
             }
+            .bondWarmRow()
         }
+        .bondWarmList()
     }
 }

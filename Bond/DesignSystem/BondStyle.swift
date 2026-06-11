@@ -113,4 +113,36 @@ extension View {
                     .strokeBorder(Color.bondHairline, lineWidth: 0.5)
             )
     }
+
+    /// Warm surface treatment for `List`/`Form` screens. System grouped lists
+    /// paint an opaque gray `systemGroupedBackground` over the whole screen,
+    /// which hides the app's cream→peach wash and makes those tabs look like
+    /// a different app than the ScrollView-based ones. Hiding the scroll
+    /// background and re-applying the wash (sheets don't inherit RootView's
+    /// background) keeps every screen on the same warm surface.
+    func bondWarmList() -> some View {
+        self
+            .scrollContentBackground(.hidden)
+            .background(Color.bondBackgroundGradient.ignoresSafeArea())
+    }
+
+    /// Row background for grouped rows on the warm wash: the brightest warm
+    /// white instead of the system's cold `secondarySystemGroupedBackground`.
+    func bondWarmRow() -> some View {
+        listRowBackground(Color.bondCardFill)
+    }
+}
+
+/// Consistent grouped-section header: small, bold, warm-secondary — one voice
+/// for every section label so headers organize rather than compete.
+struct BondSectionHeader: View {
+    let title: String
+    var tint: Color = .secondary
+
+    var body: some View {
+        Text(title)
+            .font(.bond(.footnote, weight: .semibold))
+            .foregroundStyle(tint)
+            .textCase(nil)
+    }
 }

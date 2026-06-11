@@ -19,7 +19,7 @@ struct SettingsView: View {
 
     var body: some View {
         Form {
-            Section("Account") {
+            Section {
                 if !supabase.isAnonymous {
                     Button("Sign out", role: .destructive) { confirmSignOut = true }
                 }
@@ -41,9 +41,12 @@ struct SettingsView: View {
                         .font(.bond(.footnote))
                         .foregroundStyle(.red)
                 }
+            } header: {
+                BondSectionHeader(title: "Account")
             }
+            .bondWarmRow()
 
-            Section("Pairing") {
+            Section {
                 if pairing.solo || pairing.coupleId == nil {
                     Button {
                         isPairingPresented = true
@@ -72,9 +75,12 @@ struct SettingsView: View {
                         .font(.bond(.caption))
                         .foregroundStyle(.secondary)
                 }
+            } header: {
+                BondSectionHeader(title: "Pairing")
             }
+            .bondWarmRow()
 
-            Section("Bond+") {
+            Section {
                 if purchases.isPremium {
                     if let since = purchases.premiumSince {
                         LabeledContent("Status") {
@@ -103,7 +109,10 @@ struct SettingsView: View {
                     if isRestoring { ProgressView() } else { Text("Restore purchases") }
                 }
                 .disabled(isRestoring)
+            } header: {
+                BondSectionHeader(title: "Bond+")
             }
+            .bondWarmRow()
             .alert("Restore Purchases", isPresented: $showRestoreResult) {
                 Button("OK", role: .cancel) {}
             } message: {
@@ -111,7 +120,7 @@ struct SettingsView: View {
                      ?? "No active Bond+ purchase found for this Apple ID.")
             }
 
-            Section("Theme") {
+            Section {
                 Picker("Accent", selection: $theme.accent) {
                     ForEach(BondTheme.Accent.allCases) { accent in
                         HStack {
@@ -132,9 +141,12 @@ struct SettingsView: View {
                     }
                 }
                 .pickerStyle(.menu)
+            } header: {
+                BondSectionHeader(title: "Theme")
             }
+            .bondWarmRow()
 
-            Section("Notifications") {
+            Section {
                 Button {
                     if let url = URL(string: UIApplication.openSettingsURLString) {
                         UIApplication.shared.open(url)
@@ -150,15 +162,21 @@ struct SettingsView: View {
                             .foregroundStyle(.secondary)
                     }
                 }
+            } header: {
+                BondSectionHeader(title: "Notifications")
             }
+            .bondWarmRow()
 
-            Section("Help") {
+            Section {
                 Button {
                     ReviewPromptCoordinator.shared.requestEnjoymentPrompt()
                 } label: {
                     Label("Rate or Send Feedback", systemImage: "star.bubble")
                 }
+            } header: {
+                BondSectionHeader(title: "Help")
             }
+            .bondWarmRow()
 
             Section {
                 Link("Privacy policy", destination: URL(string: "https://jackwallner.com/bond/privacy")!)
@@ -173,7 +191,9 @@ struct SettingsView: View {
                     Spacer()
                 }
             }
+            .bondWarmRow()
         }
+        .bondWarmList()
         .navigationTitle("Settings")
         .navigationBarTitleDisplayMode(.inline)
         .task {

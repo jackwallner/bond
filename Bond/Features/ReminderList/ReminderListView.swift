@@ -218,8 +218,41 @@ struct ReminderListView: View {
         .accessibilityLabel("Add reminder")
     }
 
+    /// Insets for the floating hero cards so their soft shadows have room to
+    /// breathe instead of clipping against the next row.
+    private static let heroCardInsets = EdgeInsets(top: 6, leading: 16, bottom: 10, trailing: 16)
+
+    // Visual hierarchy, top to bottom:
+    //   1. One "act now" tier — check-in prompt and partner requests — rendered
+    //      as floating elevated cards. At most one element on screen is loud
+    //      (the reveal-ready check-in uses the accent gradient).
+    //   2. The reminder list itself: flat warm-white grouped rows under one
+    //      consistent header voice. Past due is the only tinted header.
+    //   3. Quiet utility tier: pairing nudge and templates entry are compact
+    //      hairline rows that no longer compete with the content above.
     private var list: some View {
         List {
+            if let state = checkInCardState {
+                Section {
+                    NavigationLink {
+                        DailyCheckInView()
+                    } label: {
+                        CheckInPromptCard(state: state, partnerName: partnerName)
+                    }
+                    .listRowInsets(Self.heroCardInsets)
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                }
+            }
+
+            if !partnerRequests.isEmpty {
+                Section {
+                    ForEach(partnerRequests) { requestRow($0) }
+                } header: {
+                    BondSectionHeader(title: "From \(partnerName)")
+                }
+            }
+
             if pairing.solo && !pairingNudgeDismissed {
                 Section {
                     PairingNudgeCard(
@@ -229,26 +262,6 @@ struct ReminderListView: View {
                     .listRowInsets(EdgeInsets(top: 4, leading: 16, bottom: 4, trailing: 16))
                     .listRowBackground(Color.clear)
                     .listRowSeparator(.hidden)
-                }
-            }
-
-            if let state = checkInCardState {
-                Section {
-                    NavigationLink {
-                        DailyCheckInView()
-                    } label: {
-                        CheckInPromptCard(state: state, partnerName: partnerName)
-                    }
-                    .listRowInsets(EdgeInsets(top: 4, leading: 16, bottom: 4, trailing: 16))
-                    .listRowBackground(Color.clear)
-                }
-            }
-
-            if !partnerRequests.isEmpty {
-                Section {
-                    ForEach(partnerRequests) { requestRow($0) }
-                } header: {
-                    Text("\(partnerName) added")
                 }
             }
 
@@ -268,37 +281,52 @@ struct ReminderListView: View {
             }
 
             if !pastDueReminders.isEmpty {
-                Section("Past due") {
+                Section {
                     ForEach(pastDueReminders) { row($0) }
                         .onDelete { offsets in delete(pastDueReminders, at: offsets) }
+                        .bondWarmRow()
+                } header: {
+                    BondSectionHeader(title: "Past due", tint: .orange)
                 }
             }
 
             if !todayReminders.isEmpty {
-                Section("Today") {
+                Section {
                     ForEach(todayReminders) { row($0) }
                         .onDelete { offsets in delete(todayReminders, at: offsets) }
+                        .bondWarmRow()
+                } header: {
+                    BondSectionHeader(title: "Today")
                 }
             }
 
             if !weekReminders.isEmpty {
-                Section("This week") {
+                Section {
                     ForEach(weekReminders) { row($0) }
                         .onDelete { offsets in delete(weekReminders, at: offsets) }
+                        .bondWarmRow()
+                } header: {
+                    BondSectionHeader(title: "This week")
                 }
             }
 
             if !laterReminders.isEmpty {
-                Section("Later") {
+                Section {
                     ForEach(laterReminders) { row($0) }
                         .onDelete { offsets in delete(laterReminders, at: offsets) }
+                        .bondWarmRow()
+                } header: {
+                    BondSectionHeader(title: "Later")
                 }
             }
 
             if !anytimeReminders.isEmpty {
-                Section("Anytime") {
+                Section {
                     ForEach(anytimeReminders) { row($0) }
                         .onDelete { offsets in delete(anytimeReminders, at: offsets) }
+                        .bondWarmRow()
+                } header: {
+                    BondSectionHeader(title: "Anytime")
                 }
             }
 
@@ -314,6 +342,8 @@ struct ReminderListView: View {
             }
         }
         .listStyle(.insetGrouped)
+        .listSectionSpacing(BondSpacing.base)
+        .bondWarmList()
     }
 
     @ViewBuilder
@@ -325,14 +355,16 @@ struct ReminderListView: View {
             Section {
                 ForEach(shown) { row($0) }
                     .onDelete { offsets in delete(shown, at: offsets) }
+                    .bondWarmRow()
                 if all.count > recent.count {
                     Button(showAllHandled ? "Show recent only" : "Show all \(all.count) handled") {
                         showAllHandled.toggle()
                     }
                     .font(.bond(.footnote))
+                    .bondWarmRow()
                 }
             } header: {
-                Text(showAllHandled ? "Handled" : "Handled · last \(handledRecentDays) days")
+                BondSectionHeader(title: showAllHandled ? "Handled" : "Handled · last \(handledRecentDays) days")
             }
         }
     }
@@ -392,6 +424,7 @@ struct ReminderListView: View {
             },
             onDone: { markDone(reminder) }
         )
+        .listRowInsets(Self.heroCardInsets)
         .listRowSeparator(.hidden)
         .listRowBackground(Color.clear)
         .swipeActions(edge: .trailing) {
@@ -469,6 +502,43 @@ struct ReminderListView: View {
     }
 }
 
+/// Floating warm-white card with a hairline and a soft warm shadow — the
+/// shared shell for the "act now" tier so home has exactly one card language.
+private struct HomeHeroCardBackground: ViewModifier {
+    var fill: AnyShapeStyle = AnyShapeStyle(Color.bondCardFill)
+    var showsHairline = true
+
+    func body(content: Content) -> some View {
+        content
+            .padding(BondSpacing.base)
+            .background(fill, in: RoundedRectangle(cornerRadius: BondRadius.card, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: BondRadius.card, style: .continuous)
+                    .strokeBorder(showsHairline ? Color.bondHairline : .clear, lineWidth: 0.5)
+            )
+            .shadow(color: .bondShadow, radius: 6, x: 0, y: 3)
+    }
+}
+
+/// Circular tinted chip behind a card's leading SF Symbol — the consistent
+/// "this is an action card" marker across the hero tier.
+private struct CardIconChip: View {
+    let systemName: String
+    var tint: Color = .bondAccent
+    var onGradient = false
+
+    var body: some View {
+        Image(systemName: systemName)
+            .font(.bond(.subheadline, weight: .semibold))
+            .foregroundStyle(onGradient ? AnyShapeStyle(.white) : AnyShapeStyle(tint))
+            .frame(width: 36, height: 36)
+            .background(
+                onGradient ? AnyShapeStyle(.white.opacity(0.20)) : AnyShapeStyle(tint.opacity(0.12)),
+                in: Circle()
+            )
+    }
+}
+
 private struct PartnerRequestCard: View {
     let reminder: ReminderDTO
     let currentUserId: UUID?
@@ -484,10 +554,7 @@ private struct PartnerRequestCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: BondSpacing.m) {
             HStack(alignment: .top, spacing: BondSpacing.m) {
-                Image(systemName: "sparkles")
-                    .font(.bond(.title3))
-                    .foregroundStyle(Color.bondAccent)
-                    .frame(width: 28, height: 28)
+                CardIconChip(systemName: "sparkles")
                 VStack(alignment: .leading, spacing: BondSpacing.xs) {
                     Text("\(partnerName) added this")
                         .font(.bond(.caption, weight: .semibold))
@@ -517,8 +584,7 @@ private struct PartnerRequestCard: View {
                     .tint(.bondAccent)
             }
         }
-        .padding(BondSpacing.base)
-        .background(Color.bondAccent.opacity(0.10), in: RoundedRectangle(cornerRadius: BondRadius.hero))
+        .modifier(HomeHeroCardBackground())
         .accessibilityElement(children: .combine)
     }
 }
@@ -550,69 +616,86 @@ private struct CheckInPromptCard: View {
         }
     }
 
+    /// Reveal-ready is the one loud element on home: both partners have done
+    /// their part and the payoff is a tap away. Everything else stays on the
+    /// quiet warm-white shell, with the waiting state desaturated to gray so
+    /// "nothing for you to do" also reads that way.
+    private var isLoud: Bool { state == .readyToReveal }
+
     var body: some View {
         HStack(spacing: BondSpacing.m) {
-            Image(systemName: icon)
-                .font(.bond(.title2))
-                .foregroundStyle(Color.bondAccent)
-                .frame(width: 32, height: 32)
+            CardIconChip(
+                systemName: icon,
+                tint: state == .awaitingPartner ? .secondary : .bondAccent,
+                onGradient: isLoud
+            )
             VStack(alignment: .leading, spacing: 2) {
                 Text(headline)
                     .font(.bond(.subheadline, weight: .semibold))
-                    .foregroundStyle(.primary)
+                    .foregroundStyle(isLoud ? AnyShapeStyle(.white) : AnyShapeStyle(.primary))
                 Text(subhead)
                     .font(.bond(.caption))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(isLoud ? AnyShapeStyle(.white.opacity(0.85)) : AnyShapeStyle(.secondary))
             }
             Spacer()
             Image(systemName: "chevron.right")
                 .font(.bond(.caption, weight: .semibold))
-                .foregroundStyle(.tertiary)
+                .foregroundStyle(isLoud ? AnyShapeStyle(.white.opacity(0.7)) : AnyShapeStyle(.tertiary))
         }
-        .padding(BondSpacing.base)
-        .background(Color.bondAccent.opacity(0.10), in: RoundedRectangle(cornerRadius: BondRadius.hero))
+        .modifier(HomeHeroCardBackground(
+            fill: isLoud ? AnyShapeStyle(Color.bondAccentGradient) : AnyShapeStyle(Color.bondCardFill),
+            showsHairline: !isLoud
+        ))
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(headline). \(subhead)")
     }
 }
 
 /// Home-screen nudge shown to solo users so pairing isn't buried in Settings.
-/// Dismissible (persisted) so it never nags. Tapping opens the pairing sheet;
-/// the copy reassures that pairing keeps everything they've already added.
+/// Dismissible (persisted) so it never nags. Deliberately a compact hairline
+/// row — utility tier — so it stops competing with the reminders themselves.
 private struct PairingNudgeCard: View {
     let onPair: () -> Void
     let onDismiss: () -> Void
 
     var body: some View {
-        HStack(alignment: .top, spacing: BondSpacing.m) {
-            Image(systemName: "heart.circle.fill")
-                .font(.bond(.title2))
-                .foregroundStyle(Color.bondAccent)
-                .frame(width: 32, height: 32)
-            VStack(alignment: .leading, spacing: 2) {
-                Text("Pair with your partner")
-                    .font(.bond(.subheadline, weight: .semibold))
-                    .foregroundStyle(.primary)
-                Text("Share reminders and unlock your daily check-in together. You keep everything you've already added.")
-                    .font(.bond(.caption))
-                    .foregroundStyle(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
-                Button("Connect a partner", action: onPair)
-                    .font(.bond(.footnote, weight: .bold))
-                    .foregroundStyle(Color.bondAccent)
-                    .padding(.top, BondSpacing.xs)
+        HStack(spacing: BondSpacing.m) {
+            Button(action: onPair) {
+                HStack(spacing: BondSpacing.m) {
+                    Image(systemName: "heart.circle.fill")
+                        .font(.bond(.title3))
+                        .foregroundStyle(Color.bondAccent)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Pair with your partner")
+                            .font(.bond(.footnote, weight: .semibold))
+                            .foregroundStyle(.primary)
+                        Text("Share reminders and a daily check-in. You keep everything you've added.")
+                            .font(.bond(.caption2))
+                            .foregroundStyle(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    Spacer(minLength: BondSpacing.s)
+                    Text("Pair")
+                        .font(.bond(.footnote, weight: .bold))
+                        .foregroundStyle(Color.bondAccent)
+                }
             }
-            Spacer(minLength: 0)
+            .buttonStyle(.plain)
             Button(action: onDismiss) {
                 Image(systemName: "xmark")
-                    .font(.bond(.caption, weight: .semibold))
+                    .font(.bond(.caption2, weight: .semibold))
                     .foregroundStyle(.tertiary)
+                    .padding(BondSpacing.xs)
             }
             .buttonStyle(.plain)
             .accessibilityLabel("Dismiss")
         }
-        .padding(BondSpacing.base)
-        .background(Color.bondAccent.opacity(0.10), in: RoundedRectangle(cornerRadius: BondRadius.hero))
+        .padding(.horizontal, BondSpacing.base)
+        .padding(.vertical, BondSpacing.m)
+        .overlay(
+            RoundedRectangle(cornerRadius: BondRadius.inline, style: .continuous)
+                .strokeBorder(Color.bondHairline, lineWidth: 1)
+        )
         .accessibilityElement(children: .contain)
     }
 }
@@ -649,131 +732,62 @@ private struct MyListEmptyView: View {
     }
 }
 
-/// Always-visible templates entry point that lives at the bottom of the home
-/// list. Shows a blurred peek at the available template groups and a CTA so
-/// users discover packs without hunting in a toolbar. The destination handles
-/// its own gating (free users hit the templates paywall preview).
+/// Always-visible templates entry point at the bottom of the home list.
+/// One compact row for everyone — utility tier, matching the pairing nudge —
+/// with a small Bond+ badge as the only gating signal for free users. The
+/// destination handles its own gating (free users hit the templates preview).
+/// The old blurred-peek marketing block was the biggest single noise source
+/// on home; discovery survives as a calm row instead.
 private struct TemplatesHomePitch: View {
     let isPremium: Bool
     let onTap: () -> Void
 
-    private var previewGroups: [ReminderTemplateGroup] {
-        Array(ReminderTemplateStore.groups.prefix(3))
-    }
-
-    private var ctaText: String {
-        isPremium ? "Browse templates →" : "Preview templates →"
-    }
-
-    private var subtitle: String {
-        isPremium
-            ? "Packs for date nights, long distance, daily affirmations, and more."
-            : "Curated packs included with Bond+ — tap to preview."
-    }
-
     var body: some View {
         Button(action: onTap) {
-            if isPremium {
-                premiumLayout
-            } else {
-                gatedPitchLayout
+            HStack(spacing: BondSpacing.m) {
+                Image(systemName: "square.grid.2x2")
+                    .font(.bond(.subheadline, weight: .semibold))
+                    .foregroundStyle(Color.bondAccent)
+                    .frame(width: 36, height: 36)
+                    .background(Color.bondAccent.opacity(0.12), in: Circle())
+                VStack(alignment: .leading, spacing: 2) {
+                    HStack(spacing: BondSpacing.xs) {
+                        Text("Reminder templates")
+                            .font(.bond(.subheadline, weight: .semibold))
+                            .foregroundStyle(.primary)
+                        if !isPremium {
+                            HStack(spacing: 3) {
+                                Image(systemName: "lock.fill")
+                                    .font(.system(size: 8, weight: .bold))
+                                Text("Bond+")
+                                    .font(.bond(.caption2, weight: .heavy))
+                            }
+                            .foregroundStyle(.white)
+                            .padding(.horizontal, BondSpacing.s)
+                            .padding(.vertical, 3)
+                            .background(Color.bondAccent, in: Capsule())
+                        }
+                    }
+                    Text("Date nights, long distance, daily affirmations & more")
+                        .font(.bond(.caption))
+                        .foregroundStyle(.secondary)
+                        .lineLimit(2)
+                }
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .font(.bond(.caption, weight: .semibold))
+                    .foregroundStyle(.tertiary)
             }
+            .padding(BondSpacing.base)
+            .frame(maxWidth: .infinity)
+            .background(Color.bondCardFill, in: RoundedRectangle(cornerRadius: BondRadius.card, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: BondRadius.card, style: .continuous)
+                    .strokeBorder(Color.bondHairline, lineWidth: 0.5)
+            )
         }
         .buttonStyle(.plain)
         .accessibilityElement(children: .combine)
         .accessibilityLabel(isPremium ? "Browse reminder templates" : "Preview reminder templates")
-    }
-
-    /// Clean entry point — no blur, no marketing copy — for users who already
-    /// have access. Blurring everything was reading as "still gated" to
-    /// premium users.
-    private var premiumLayout: some View {
-        HStack(spacing: BondSpacing.m) {
-            Image(systemName: "square.grid.2x2")
-                .font(.bond(.title3))
-                .foregroundStyle(Color.bondAccent)
-                .frame(width: 32, height: 32)
-                .background(Color.bondAccent.opacity(0.12), in: Circle())
-            VStack(alignment: .leading, spacing: 2) {
-                Text("Reminder templates")
-                    .font(.bond(.subheadline, weight: .semibold))
-                    .foregroundStyle(.primary)
-                Text("Date nights, long distance, daily affirmations & more")
-                    .font(.bond(.caption))
-                    .foregroundStyle(.secondary)
-                    .lineLimit(2)
-            }
-            Spacer()
-            Image(systemName: "chevron.right")
-                .font(.bond(.caption, weight: .semibold))
-                .foregroundStyle(.tertiary)
-        }
-        .padding(BondSpacing.base)
-        .frame(maxWidth: .infinity)
-        .background(Color.bondCardFill, in: RoundedRectangle(cornerRadius: BondRadius.hero))
-    }
-
-    /// Blurred peek on top, marketing copy + CTA beneath it. The peek is the
-    /// whole point — an opaque card centered over it (the previous layout) hid
-    /// the very content it was teasing — so the lock signal is a small corner
-    /// badge and the copy never covers the preview.
-    private var gatedPitchLayout: some View {
-        VStack(spacing: BondSpacing.m) {
-            ZStack(alignment: .topTrailing) {
-                HStack(spacing: BondSpacing.s) {
-                    ForEach(previewGroups) { group in
-                        VStack(spacing: BondSpacing.xs) {
-                            Image(systemName: group.icon)
-                                .font(.bond(.title2))
-                                .foregroundStyle(.pink)
-                            Text(group.title)
-                                .font(.bond(.caption, weight: .semibold))
-                                .foregroundStyle(.primary)
-                                .lineLimit(1)
-                            Text(group.subtitle)
-                                .font(.bond(.caption2))
-                                .foregroundStyle(.secondary)
-                                .lineLimit(1)
-                        }
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, BondSpacing.base)
-                        .padding(.horizontal, BondSpacing.s)
-                        .background(Color.bondCardFill, in: RoundedRectangle(cornerRadius: BondRadius.inline))
-                    }
-                }
-                .blur(radius: 4)
-                .accessibilityHidden(true)
-
-                HStack(spacing: 4) {
-                    Image(systemName: "lock.fill")
-                        .font(.system(size: 9, weight: .bold))
-                    Text("Bond+")
-                        .font(.bond(.caption2, weight: .heavy))
-                }
-                .foregroundStyle(.white)
-                .padding(.horizontal, BondSpacing.s)
-                .padding(.vertical, 4)
-                .background(Color.bondAccent, in: Capsule())
-                .padding(BondSpacing.xs)
-            }
-
-            VStack(spacing: BondSpacing.xs) {
-                Text("Reminder templates")
-                    .font(.bond(.subheadline, weight: .bold))
-                    .foregroundStyle(.primary)
-                Text(subtitle)
-                    .font(.bond(.caption))
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
-                    .fixedSize(horizontal: false, vertical: true)
-                Text(ctaText)
-                    .font(.bond(.footnote, weight: .bold))
-                    .foregroundStyle(Color.bondAccent)
-                    .padding(.top, 2)
-            }
-        }
-        .padding(BondSpacing.base)
-        .frame(maxWidth: .infinity)
-        .background(Color.bondAccent.opacity(0.06), in: RoundedRectangle(cornerRadius: BondRadius.hero))
     }
 }
