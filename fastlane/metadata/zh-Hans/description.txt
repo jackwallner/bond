@@ -10,4 +10,5 @@
 
 BOND+ 订阅
 Bond+ 是可选的自动续期订阅：每月 $4.99 或每年 $29.99（价格可能因地区而异），新订阅用户可享 7 天免费试用。费用将通过你的 Apple ID 账户扣款；除非在当前周期结束前至少 24 小时取消，订阅将自动续期。可随时在 App Store 账户设置中管理或取消。
-隐私政策：https://jackwallner.com/bond/privacy/ · 服务条款：https://jackwallner.com/bond/terms/
+隐私政策：https://jackwallner.com/bond/privacy/
+服务条款 (EULA)：https://jackwallner.com/bond/terms/

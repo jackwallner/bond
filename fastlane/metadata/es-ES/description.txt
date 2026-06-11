@@ -10,4 +10,5 @@ Gratis para empezar. Bond+ para la experiencia completa. Privacidad — Sign in 
 
 SUSCRIPCIÓN BOND+
 Bond+ es una suscripción opcional con renovación automática: 4,99 $/mes o 29,99 $/año (los precios pueden variar según la región), con 7 días de prueba gratis para nuevos suscriptores. El pago se carga a tu cuenta de Apple ID; la suscripción se renueva automáticamente salvo que se cancele al menos 24 horas antes de que termine el período actual. Gestiona o cancela en los ajustes del App Store.
-Privacidad: https://jackwallner.com/bond/privacy/ · Términos: https://jackwallner.com/bond/terms/
+Privacidad: https://jackwallner.com/bond/privacy/
+Términos (EULA): https://jackwallner.com/bond/terms/
