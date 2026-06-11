@@ -24,9 +24,25 @@ final class LocationService: NSObject, CLLocationManagerDelegate {
         }
     }
 
+    struct LocationDeniedError: LocalizedError {
+        var errorDescription: String? {
+            "Location access is off for Bond. Enable it in Settings → Privacy & Security → Location Services."
+        }
+    }
+
     /// One-shot current location — used as the default geofence anchor.
     func currentLocation() async throws -> CLLocation {
         manager.requestWhenInUseAuthorization()
+        if manager.authorizationStatus == .denied || manager.authorizationStatus == .restricted {
+            throw LocationDeniedError()
+        }
+        // A second tap before the first fix lands would silently orphan the
+        // first continuation (an awaiting task that never resumes) — fail it
+        // fast and let the newest request own the delegate callbacks.
+        if let pending = continuation {
+            continuation = nil
+            pending.resume(throwing: CLError(.locationUnknown))
+        }
         return try await withCheckedThrowingContinuation { cont in
             self.continuation = cont
             manager.requestLocation()

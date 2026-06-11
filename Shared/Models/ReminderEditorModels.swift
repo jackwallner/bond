@@ -26,7 +26,7 @@ enum TriggerKind: String, CaseIterable, Identifiable {
         case .oneTime:      "Fires once at a chosen moment."
         case .recurring:    "Daily, weekly, monthly. Your call."
         case .location:     "Triggers when you arrive somewhere."
-        case .randomWindow: "Fires at a random moment in a window."
+        case .randomWindow: "A random moment — once, or at a random time every day."
         }
     }
     var symbolName: String {

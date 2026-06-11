@@ -34,6 +34,13 @@ enum WidgetSnapshotPump {
         WidgetCenter.shared.reloadAllTimelines()
     }
 
+    /// Empties the App Group snapshot so widgets stop showing the previous
+    /// account's data after sign-out or account deletion.
+    static func clear() {
+        WidgetSnapshot().write()
+        WidgetCenter.shared.reloadAllTimelines()
+    }
+
     private static func defaultLabel(for m: MilestoneDTO) -> String {
         switch m.kind {
         case "anniversary": "Anniversary"

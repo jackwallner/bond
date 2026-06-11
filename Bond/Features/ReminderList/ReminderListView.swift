@@ -17,6 +17,9 @@ struct ReminderListView: View {
     @State private var starterPrefill: StarterChip?
     @State private var hasLoadedOnce = false
     @State private var isPairingPresented = false
+    /// Reminders with a completion toggle in flight, so a double-tap can't
+    /// create duplicate completion events.
+    @State private var togglingIds: Set<UUID> = []
     @AppStorage("pairingNudgeDismissed") private var pairingNudgeDismissed = false
 
     private let primerShownKey = "hasShownNotificationPrimer"
@@ -65,6 +68,7 @@ struct ReminderListView: View {
                         await NotificationScheduler.shared.reschedule(
                             forSelfUserId: supabase.currentUserId ?? UUID(),
                             reminders: repo.reminders,
+                            events: eventsRepo.events,
                             requestAuthIfNeeded: false
                         )
                     }
@@ -86,6 +90,7 @@ struct ReminderListView: View {
                 await NotificationScheduler.shared.reschedule(
                     forSelfUserId: supabase.currentUserId ?? UUID(),
                     reminders: repo.reminders,
+                    events: eventsRepo.events,
                     requestAuthIfNeeded: false
                 )
                 await maybeShowNotificationPrimer()
@@ -94,6 +99,11 @@ struct ReminderListView: View {
                 openReminderFromNotification(id)
             }
             .onAppear { openReminderFromNotification(router.pendingReminderId) }
+            .onChange(of: pairing.justPaired) { _, paired in
+                // Drop the pairing sheet so RootView's success interstitial
+                // isn't hidden underneath it.
+                if paired { isPairingPresented = false }
+            }
             .onChange(of: pairing.coupleId) { _, _ in
                 // Re-subscribe after pair/unpair so realtime points at the
                 // new couple. Without this, a freshly-paired user keeps
@@ -141,8 +151,10 @@ struct ReminderListView: View {
         return repo.reminders.filter { $0.authorId == me || $0.targetId == me }
     }
 
+    /// Repeating reminders never leave the active list — completing one only
+    /// checks it off for the current period. One-shots drop to Handled.
     private var activeReminders: [ReminderDTO] {
-        visibleReminders.filter { !isActedOn($0) }
+        visibleReminders.filter { $0.repeatsOnSchedule || !isActedOn($0) }
     }
 
     private var partnerRequests: [ReminderDTO] {
@@ -176,7 +188,7 @@ struct ReminderListView: View {
     }
 
     private var handledReminders: [ReminderDTO] {
-        sortByCreatedDate(visibleReminders.filter { isActedOn($0) })
+        sortByCreatedDate(visibleReminders.filter { !$0.repeatsOnSchedule && isActedOn($0) })
     }
 
     private var composeButton: some View {
@@ -233,18 +245,6 @@ struct ReminderListView: View {
                 }
             }
 
-            if pairing.solo && !pairingNudgeDismissed {
-                Section {
-                    PairingNudgeCard(
-                        onPair: { isPairingPresented = true },
-                        onDismiss: { pairingNudgeDismissed = true }
-                    )
-                    .listRowInsets(EdgeInsets(top: 4, leading: 16, bottom: 4, trailing: 16))
-                    .listRowBackground(Color.clear)
-                    .listRowSeparator(.hidden)
-                }
-            }
-
             if myActiveReminders.isEmpty && partnerRequests.isEmpty {
                 Section {
                     MyListEmptyView(
@@ -298,13 +298,31 @@ struct ReminderListView: View {
                 }
             }
 
+            // Quiet utility tier: ordinary grouped rows, same language as the
+            // reminders above, so neither entry reads as a marketing card.
+            if pairing.solo && !pairingNudgeDismissed {
+                Section {
+                    PairingNudgeRow(
+                        onPair: { isPairingPresented = true },
+                        onDismiss: { pairingNudgeDismissed = true }
+                    )
+                    .bondWarmRow()
+                }
+            }
+
             Section {
-                TemplatesHomePitch(isPremium: store.isPremium) {
+                TemplatesHomeRow(isPremium: store.isPremium) {
                     isTemplatesPresented = true
                 }
-                .listRowInsets(EdgeInsets(top: 4, leading: 16, bottom: 80, trailing: 16))
-                .listRowBackground(Color.clear)
-                .listRowSeparator(.hidden)
+                .bondWarmRow()
+            }
+
+            // Clearance so the floating compose button never covers the last row.
+            Section {
+                Color.clear
+                    .frame(height: 56)
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
             }
         }
         .listStyle(.insetGrouped)
@@ -321,31 +339,34 @@ struct ReminderListView: View {
 
     @ViewBuilder
     private func row(_ reminder: ReminderDTO) -> some View {
+        let acted = isActedOn(reminder)
         Button {
             editingReminder = reminder
             isEditorPresented = true
         } label: {
-            let acted = eventsRepo.events
-                .filter { $0.reminderId == reminder.id && $0.actedAt != nil }
-                .count > 0
             ReminderRow(
                 reminder: reminder,
                 currentUserId: supabase.currentUserId,
-                isActedOn: acted
+                isActedOn: acted,
+                onToggleDone: { toggleDone(reminder) }
             )
         }
         .buttonStyle(.plain)
         .swipeActions(edge: .trailing) {
             Button(role: .destructive) {
-                Task { try? await repo.delete(reminder) }
+                Task { await deleteReminder(reminder) }
             } label: {
                 Label("Delete", systemImage: "trash")
             }
         }
         .swipeActions(edge: .leading) {
-            let hasEvent = eventsRepo.events
-                .contains { $0.reminderId == reminder.id && $0.actedAt != nil }
-            if !hasEvent {
+            if acted {
+                Button {
+                    Task { await uncompleteReminder(reminder) }
+                } label: {
+                    Label("Not done", systemImage: "arrow.uturn.backward")
+                }
+            } else {
                 Button {
                     Task { await completeReminder(reminder) }
                 } label: {
@@ -372,7 +393,7 @@ struct ReminderListView: View {
         .listRowBackground(Color.clear)
         .swipeActions(edge: .trailing) {
             Button(role: .destructive) {
-                Task { try? await repo.delete(reminder) }
+                Task { await deleteReminder(reminder) }
             } label: {
                 Label("Delete", systemImage: "trash")
             }
@@ -380,7 +401,17 @@ struct ReminderListView: View {
     }
 
     private func isActedOn(_ reminder: ReminderDTO) -> Bool {
-        eventsRepo.events.contains { $0.reminderId == reminder.id && $0.actedAt != nil }
+        reminder.isCompleted(in: eventsRepo.events)
+    }
+
+    private func toggleDone(_ reminder: ReminderDTO) {
+        Task {
+            if isActedOn(reminder) {
+                await uncompleteReminder(reminder)
+            } else {
+                await completeReminder(reminder)
+            }
+        }
     }
 
     private func nextDate(for reminder: ReminderDTO) -> Date? {
@@ -418,17 +449,43 @@ struct ReminderListView: View {
     }
 
     /// Records a handled reminder and may trigger the review funnel after a delay.
+    /// Repeating reminders complete per period (done today, back tomorrow).
     private func completeReminder(_ reminder: ReminderDTO) async {
         guard let coupleId = pairing.coupleId else { return }
-        let alreadyDone = eventsRepo.events.contains { $0.reminderId == reminder.id }
-        guard !alreadyDone else { return }
+        // The in-flight guard absorbs double-taps: without it, two quick taps
+        // both pass the isActedOn check (the first event hasn't landed yet)
+        // and write two completion events — which then makes undo look broken
+        // because deleting one still leaves the reminder "done".
+        guard !togglingIds.contains(reminder.id), !isActedOn(reminder) else { return }
+        togglingIds.insert(reminder.id)
+        defer { togglingIds.remove(reminder.id) }
         try? await eventsRepo.createEvent(reminderId: reminder.id, coupleId: coupleId)
-        await NotificationScheduler.shared.reschedule(
-            forSelfUserId: supabase.currentUserId ?? UUID(),
-            reminders: repo.reminders
-        )
+        await rescheduleNotifications()
         ReviewPromptTracker.recordPositiveMoment()
         NotificationCenter.default.post(name: .bondPositiveMomentForReview, object: nil)
+    }
+
+    /// Undo for a mis-tap: removes the completion covering the current period
+    /// and restores any notification the completion suppressed.
+    private func uncompleteReminder(_ reminder: ReminderDTO) async {
+        guard !togglingIds.contains(reminder.id) else { return }
+        togglingIds.insert(reminder.id)
+        defer { togglingIds.remove(reminder.id) }
+        guard let event = reminder.currentCompletionEvent(in: eventsRepo.events) else { return }
+        try? await eventsRepo.deleteEvent(event)
+        await rescheduleNotifications()
+    }
+
+    private func deleteReminder(_ reminder: ReminderDTO) async {
+        try? await repo.delete(reminder)
+        await rescheduleNotifications()
+    }
+
+    private func rescheduleNotifications() async {
+        guard let me = supabase.currentUserId else { return }
+        await NotificationScheduler.shared.reschedule(
+            forSelfUserId: me, reminders: repo.reminders, events: eventsRepo.events
+        )
     }
 
     private func delete(_ source: [ReminderDTO], at offsets: IndexSet) {
@@ -436,11 +493,7 @@ struct ReminderListView: View {
             for index in offsets {
                 try? await repo.delete(source[index])
             }
-            if let me = supabase.currentUserId {
-                await NotificationScheduler.shared.reschedule(
-                    forSelfUserId: me, reminders: repo.reminders
-                )
-            }
+            await rescheduleNotifications()
         }
     }
 }
@@ -458,9 +511,7 @@ private struct HandledRemindersView: View {
         guard let me = supabase.currentUserId else { return [] }
         return repo.reminders
             .filter { $0.authorId == me || $0.targetId == me }
-            .filter { r in
-                eventsRepo.events.contains { $0.reminderId == r.id && $0.actedAt != nil }
-            }
+            .filter { !$0.repeatsOnSchedule && $0.isCompleted(in: eventsRepo.events) }
             .sorted { ($0.createdAt ?? .distantPast) > ($1.createdAt ?? .distantPast) }
     }
 
@@ -484,6 +535,13 @@ private struct HandledRemindersView: View {
                 Task {
                     for index in offsets {
                         try? await repo.delete(source[index])
+                    }
+                    if let me = supabase.currentUserId {
+                        await NotificationScheduler.shared.reschedule(
+                            forSelfUserId: me,
+                            reminders: repo.reminders,
+                            events: eventsRepo.events
+                        )
                     }
                 }
             }
@@ -648,9 +706,10 @@ private struct CheckInPromptCard: View {
 }
 
 /// Home-screen nudge shown to solo users so pairing isn't buried in Settings.
-/// Dismissible (persisted) so it never nags. Deliberately a compact hairline
-/// row — utility tier — so it stops competing with the reminders themselves.
-private struct PairingNudgeCard: View {
+/// Dismissible (persisted) so it never nags. A plain grouped row in the
+/// utility tier at the bottom of the list — the old hairline-outline floating
+/// card read as a broken/empty card against the cream wash in light mode.
+private struct PairingNudgeRow: View {
     let onPair: () -> Void
     let onDismiss: () -> Void
 
@@ -663,35 +722,30 @@ private struct PairingNudgeCard: View {
                         .foregroundStyle(Color.bondAccent)
                     VStack(alignment: .leading, spacing: 2) {
                         Text("Pair with your partner")
-                            .font(.bond(.footnote, weight: .semibold))
+                            .font(.bond(.subheadline, weight: .semibold))
                             .foregroundStyle(.primary)
-                        Text("Share reminders and a daily check-in. You keep everything you've added.")
-                            .font(.bond(.caption2))
+                        Text("Share reminders and a daily check-in.")
+                            .font(.bond(.caption))
                             .foregroundStyle(.secondary)
                             .fixedSize(horizontal: false, vertical: true)
                     }
                     Spacer(minLength: BondSpacing.s)
                     Text("Pair")
-                        .font(.bond(.footnote, weight: .bold))
+                        .font(.bond(.subheadline, weight: .bold))
                         .foregroundStyle(Color.bondAccent)
                 }
             }
             .buttonStyle(.plain)
             Button(action: onDismiss) {
                 Image(systemName: "xmark")
-                    .font(.bond(.caption2, weight: .semibold))
-                    .foregroundStyle(.tertiary)
+                    .font(.bond(.caption, weight: .semibold))
+                    .foregroundStyle(.secondary)
                     .padding(BondSpacing.xs)
             }
             .buttonStyle(.plain)
             .accessibilityLabel("Dismiss")
         }
-        .padding(.horizontal, BondSpacing.base)
-        .padding(.vertical, BondSpacing.m)
-        .overlay(
-            RoundedRectangle(cornerRadius: BondRadius.inline, style: .continuous)
-                .strokeBorder(Color.bondHairline, lineWidth: 1)
-        )
+        .padding(.vertical, 4)
         .accessibilityElement(children: .contain)
     }
 }
@@ -728,13 +782,11 @@ private struct MyListEmptyView: View {
     }
 }
 
-/// Always-visible templates entry point at the bottom of the home list.
-/// One compact row for everyone — utility tier, matching the pairing nudge —
+/// Always-visible templates entry point at the bottom of the home list. A
+/// plain grouped row — same size and shape as the reminder rows above it —
 /// with a small Bond+ badge as the only gating signal for free users. The
 /// destination handles its own gating (free users hit the templates preview).
-/// The old blurred-peek marketing block was the biggest single noise source
-/// on home; discovery survives as a calm row instead.
-private struct TemplatesHomePitch: View {
+private struct TemplatesHomeRow: View {
     let isPremium: Bool
     let onTap: () -> Void
 
@@ -744,8 +796,7 @@ private struct TemplatesHomePitch: View {
                 Image(systemName: "square.grid.2x2")
                     .font(.bond(.subheadline, weight: .semibold))
                     .foregroundStyle(Color.bondAccent)
-                    .frame(width: 36, height: 36)
-                    .background(Color.bondAccent.opacity(0.12), in: Circle())
+                    .frame(width: 28)
                 VStack(alignment: .leading, spacing: 2) {
                     HStack(spacing: BondSpacing.xs) {
                         Text("Reminder templates")
@@ -774,13 +825,8 @@ private struct TemplatesHomePitch: View {
                     .font(.bond(.caption, weight: .semibold))
                     .foregroundStyle(.tertiary)
             }
-            .padding(BondSpacing.base)
-            .frame(maxWidth: .infinity)
-            .background(Color.bondCardFill, in: RoundedRectangle(cornerRadius: BondRadius.card, style: .continuous))
-            .overlay(
-                RoundedRectangle(cornerRadius: BondRadius.card, style: .continuous)
-                    .strokeBorder(Color.bondHairline, lineWidth: 0.5)
-            )
+            .padding(.vertical, 4)
+            .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
         .accessibilityElement(children: .combine)

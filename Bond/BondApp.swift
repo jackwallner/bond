@@ -90,6 +90,12 @@ struct BondApp: App {
                     // stale isPremium=false until they reopen the app.
                     if phase == .active {
                         Task { await store.refresh() }
+                        // A solo user may have been paired while backgrounded
+                        // (their partner consumed the invite). Refresh so the
+                        // app notices without a relaunch.
+                        if pairingService.solo {
+                            Task { await pairingService.loadCouple() }
+                        }
                     }
                 }
         }

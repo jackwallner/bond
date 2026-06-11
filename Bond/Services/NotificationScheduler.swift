@@ -21,9 +21,13 @@ final class NotificationScheduler {
     ///   (`NotificationPrimerSheet`) gets to explain *why* before the bare iOS
     ///   dialog appears — otherwise the primer's `.notDetermined` guard never
     ///   passes and the primer is effectively dead.
+    /// - Parameter events: completion events, so a handled one-shot stops
+    ///   pinging and a daily-random reminder completed today skips today's
+    ///   occurrence. Callers without event access may pass `[]`.
     func reschedule(
         forSelfUserId selfId: UUID,
         reminders: [ReminderDTO],
+        events: [ReminderEventDTO] = [],
         requestAuthIfNeeded: Bool = true
     ) async {
         if requestAuthIfNeeded {
@@ -40,8 +44,17 @@ final class NotificationScheduler {
         center.removePendingNotificationRequests(withIdentifiers: toRemove)
 
         for reminder in reminders where reminder.targetId == selfId {
-            await schedule(reminder)
+            let completed = reminder.isCompleted(in: events)
+            // A handled one-shot is done forever — never ping it again.
+            if completed && !reminder.repeatsOnSchedule { continue }
+            await schedule(reminder, completedThisPeriod: completed)
         }
+    }
+
+    /// Wipes every pending request (reminders + milestones). For sign-out and
+    /// account deletion, so the previous account's reminders stop firing.
+    func clearAll() {
+        UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
     }
 
     /// Re-schedules local notifications for milestones. Each milestone fires
@@ -108,9 +121,87 @@ final class NotificationScheduler {
         }
     }
 
-    private func schedule(_ reminder: ReminderDTO) async {
+    private func schedule(_ reminder: ReminderDTO, completedThisPeriod: Bool = false) async {
+        if case .randomRecurring = reminder.trigger {
+            await scheduleRandomRecurring(reminder, skipToday: completedThisPeriod)
+            return
+        }
         guard let trigger = makeTrigger(for: reminder) else { return }
+        await add(reminder, trigger: trigger, identifier: reminder.id.uuidString)
+    }
 
+    /// iOS has no "repeat daily at a random time" trigger, so we lay down the
+    /// next few days as individual one-time notifications, each at its own
+    /// random moment inside the window. Every reschedule (app open, save,
+    /// completion) re-extends the runway.
+    private static let randomRecurringRunwayDays = 5
+
+    private func scheduleRandomRecurring(_ reminder: ReminderDTO, skipToday: Bool = false) async {
+        guard case .randomRecurring(let start, let end) = reminder.trigger else { return }
+        let cal = Calendar.current
+        let now = Date.now
+        let startComps = cal.dateComponents([.hour, .minute], from: start)
+        let endComps = cal.dateComponents([.hour, .minute], from: end)
+
+        for dayOffset in 0..<Self.randomRecurringRunwayDays {
+            if dayOffset == 0 && skipToday { continue }
+            guard
+                let day = cal.date(byAdding: .day, value: dayOffset, to: cal.startOfDay(for: now)),
+                let windowStart = cal.date(
+                    bySettingHour: startComps.hour ?? 0, minute: startComps.minute ?? 0,
+                    second: 0, of: day),
+                let windowEnd = cal.date(
+                    bySettingHour: endComps.hour ?? 0, minute: endComps.minute ?? 0,
+                    second: 0, of: day),
+                windowEnd > windowStart
+            else { continue }
+
+            var fireAt = Self.stablePick(in: windowStart...windowEnd, reminderId: reminder.id, day: day)
+            if fireAt <= now {
+                // Today's stable pick already passed. Re-picking later in the
+                // window would ping again on every reschedule (each app open
+                // re-runs this — including the open caused by tapping today's
+                // notification). Only a reminder created today *after* its
+                // pick — which therefore never got scheduled — falls forward
+                // into what's left of the window; everyone else skips today.
+                let created = reminder.createdAt ?? .distantPast
+                guard windowEnd > now,
+                      created > fireAt,
+                      cal.isDate(created, inSameDayAs: now)
+                else { continue }
+                fireAt = Date(
+                    timeIntervalSince1970: .random(
+                        in: now.timeIntervalSince1970...windowEnd.timeIntervalSince1970
+                    )
+                )
+            }
+
+            let comps = cal.dateComponents([.year, .month, .day, .hour, .minute], from: fireAt)
+            let trigger = UNCalendarNotificationTrigger(dateMatching: comps, repeats: false)
+            await add(reminder, trigger: trigger, identifier: "\(reminder.id.uuidString).day\(dayOffset)")
+        }
+    }
+
+    /// Deterministic "random" moment inside the window for a given reminder +
+    /// day. Stable across reschedules so reopening the app mid-window can't
+    /// silently move today's pick into the past and drop the notification.
+    static func stablePick(in window: ClosedRange<Date>, reminderId: UUID, day: Date) -> Date {
+        // FNV-1a over the uuid + day ordinal — UUID.hashValue is salted per
+        // process, so it can't be the seed.
+        var hash: UInt64 = 0xcbf29ce484222325
+        let dayOrdinal = Int(day.timeIntervalSince1970 / 86_400)
+        for byte in Array(reminderId.uuidString.utf8) + Array("\(dayOrdinal)".utf8) {
+            hash ^= UInt64(byte)
+            hash = hash &* 0x100000001b3
+        }
+        let unit = Double(hash % 1_000_000) / 1_000_000.0
+        let interval = window.upperBound.timeIntervalSince(window.lowerBound)
+        return window.lowerBound.addingTimeInterval(interval * unit)
+    }
+
+    private func add(
+        _ reminder: ReminderDTO, trigger: UNNotificationTrigger, identifier: String
+    ) async {
         let content = UNMutableNotificationContent()
         content.title = reminder.title
         if let body = reminder.body, !body.isEmpty {
@@ -125,7 +216,7 @@ final class NotificationScheduler {
         content.threadIdentifier = reminder.loveLanguage.rawValue
 
         let request = UNNotificationRequest(
-            identifier: reminder.id.uuidString,
+            identifier: identifier,
             content: content,
             trigger: trigger
         )
@@ -167,6 +258,10 @@ final class NotificationScheduler {
                 [.year, .month, .day, .hour, .minute], from: fireAt
             )
             return UNCalendarNotificationTrigger(dateMatching: comps, repeats: false)
+
+        case .randomRecurring:
+            // Handled by scheduleRandomRecurring — never reaches here.
+            return nil
 
         case .none:
             return nil

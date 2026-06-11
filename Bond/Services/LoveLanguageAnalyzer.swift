@@ -76,32 +76,127 @@ public struct LoveLanguageAnalyzer: Sendable {
         reminderCounts().max { $0.1 < $1.1 }
     }
 
-    // MARK: - Completion Rate
+    // MARK: - Follow-through (completion vs. expected occurrences)
 
-    /// Overall completion rate (acted / total events) as percentage
-    public func completionRate() -> Double {
-        let total = events.count
-        guard total > 0 else { return 0 }
-        let acted = events.filter { $0.actedAt != nil }.count
-        return (Double(acted) / Double(total)) * 100
+    // Events are only written when someone marks a reminder done, so
+    // "acted / total events" was always 100% (or 0% before the acted_at fix).
+    // Real follow-through compares completions against how many occurrences
+    // the schedule *expected* in the window: a daily reminder expects 7 in a
+    // week; a one-time reminder that came due expects 1.
+
+    public struct FollowThrough: Identifiable, Sendable {
+        public let reminder: ReminderDTO
+        public let expected: Int
+        public let completed: Int
+        public var id: UUID { reminder.id }
     }
 
-    /// Completion rate per love language
-    public func completionRates() -> [(LoveLanguage, rate: Double)] {
-        let reminderMap = Dictionary(uniqueKeysWithValues: reminders.map { ($0.id, $0) })
-        var langEvents: [LoveLanguage: (total: Int, acted: Int)] = [:]
+    /// Per-reminder follow-through for repeating reminders over the trailing
+    /// `days` days. One row per repeating reminder that expected at least one
+    /// occurrence in the window.
+    public func followThrough(days: Int = 7, now: Date = .now) -> [FollowThrough] {
+        let calendar = Calendar.current
+        guard let windowStart = calendar.date(
+            byAdding: .day, value: -(days - 1), to: calendar.startOfDay(for: now)
+        ) else { return [] }
 
-        for e in events {
-            guard let reminder = reminderMap[e.reminderId] else { continue }
-            let acted = e.actedAt != nil ? 1 : 0
-            let current = langEvents[reminder.loveLanguage] ?? (0, 0)
-            langEvents[reminder.loveLanguage] = (current.total + 1, current.acted + acted)
+        return reminders.compactMap { reminder in
+            let starts = periodStarts(for: reminder, since: windowStart, now: now, calendar: calendar)
+            guard !starts.isEmpty, let preset = recurrencePreset(for: reminder) else { return nil }
+            let actedDates = events
+                .filter { $0.reminderId == reminder.id }
+                .compactMap(\.actedAt)
+            let completed = starts.filter { start in
+                let end = preset.nextOccurrence(after: start, calendar: calendar)
+                return actedDates.contains { $0 >= start && $0 < end }
+            }.count
+            return FollowThrough(reminder: reminder, expected: starts.count, completed: completed)
+        }
+        .sorted { $0.expected > $1.expected }
+    }
+
+    /// Expected vs. completed per love language over the trailing `days`
+    /// days. Repeating reminders contribute one expectation per period;
+    /// one-shot reminders that came due in the window contribute one.
+    public func completionByLanguage(days: Int = 7, now: Date = .now)
+        -> [(LoveLanguage, expected: Int, completed: Int)]
+    {
+        let calendar = Calendar.current
+        let windowStart = calendar.date(
+            byAdding: .day, value: -(days - 1), to: calendar.startOfDay(for: now)
+        ) ?? now
+
+        var tally: [LoveLanguage: (expected: Int, completed: Int)] = [:]
+        let repeating = followThrough(days: days, now: now)
+        for item in repeating {
+            let current = tally[item.reminder.loveLanguage] ?? (0, 0)
+            tally[item.reminder.loveLanguage] = (
+                current.expected + item.expected, current.completed + item.completed
+            )
+        }
+        for reminder in reminders where recurrencePreset(for: reminder) == nil {
+            guard let due = reminder.fireAt, due >= windowStart, due <= now else { continue }
+            let done = events.contains { $0.reminderId == reminder.id && $0.actedAt != nil }
+            let current = tally[reminder.loveLanguage] ?? (0, 0)
+            tally[reminder.loveLanguage] = (current.expected + 1, current.completed + (done ? 1 : 0))
         }
 
         return LoveLanguage.allCases.map { lang in
-            let stats = langEvents[lang] ?? (0, 0)
-            let rate = stats.total > 0 ? (Double(stats.acted) / Double(stats.total)) * 100 : 0
-            return (lang, rate)
+            let stats = tally[lang] ?? (0, 0)
+            return (lang, stats.expected, stats.completed)
+        }
+    }
+
+    /// Overall follow-through (0–100) over the trailing `days` days, or nil
+    /// when nothing was expected yet.
+    public func completionRate(days: Int = 7, now: Date = .now) -> Double? {
+        let perLanguage = completionByLanguage(days: days, now: now)
+        let expected = perLanguage.map(\.expected).reduce(0, +)
+        guard expected > 0 else { return nil }
+        let completed = perLanguage.map(\.completed).reduce(0, +)
+        return Double(completed) / Double(expected) * 100
+    }
+
+    private func recurrencePreset(for reminder: ReminderDTO) -> RecurrencePreset? {
+        switch reminder.trigger {
+        case .recurring(let rrule, _): return RecurrencePreset(rrule: rrule) ?? .daily
+        case .randomRecurring:         return .daily
+        default:                       return nil
+        }
+    }
+
+    /// Period start dates for a repeating reminder that overlap the window
+    /// and the reminder's lifetime, oldest first.
+    private func periodStarts(
+        for reminder: ReminderDTO, since windowStart: Date, now: Date, calendar: Calendar
+    ) -> [Date] {
+        guard let preset = recurrencePreset(for: reminder),
+              var start = reminder.currentPeriodStart(at: now, calendar: calendar)
+        else { return [] }
+
+        let born = reminder.createdAt ?? .distantPast
+        var starts: [Date] = []
+        for _ in 0..<60 {
+            let end = preset.nextOccurrence(after: start, calendar: calendar)
+            // A period counts if it overlaps both the window and the time the
+            // reminder has existed (keyed on the period's end so a weekly or
+            // monthly period that closes inside the window still counts).
+            if end <= windowStart || end <= born { break }
+            starts.append(start)
+            guard let previous = calendar.date(
+                byAdding: periodComponent(for: preset), value: -1, to: start
+            ) else { break }
+            start = previous
+        }
+        return starts.reversed()
+    }
+
+    private func periodComponent(for preset: RecurrencePreset) -> Calendar.Component {
+        switch preset {
+        case .daily:   .day
+        case .weekly:  .weekOfYear
+        case .monthly: .month
+        case .yearly:  .year
         }
     }
 
@@ -160,13 +255,14 @@ public struct LoveLanguageAnalyzer: Sendable {
             result.append("\(neglected.0.title) is your least expressed love language. Consider adding more \(neglected.0.title.lowercased()) reminders.")
         }
 
-        let rate = completionRate()
-        if rate > 75 {
-            result.append("Excellent follow-through! You're acting on \(Int(rate))% of your reminders.")
-        } else if rate > 50 {
-            result.append("Good progress. You're completing \(Int(rate))% of reminders. Try to act on more when they fire.")
-        } else if rate > 0 {
-            result.append("You've completed \(Int(rate))% of reminders. Small consistent actions build strong habits.")
+        if let rate = completionRate() {
+            if rate > 75 {
+                result.append("Excellent follow-through! You completed \(Int(rate))% of what was due this week.")
+            } else if rate > 50 {
+                result.append("Good progress — \(Int(rate))% of this week's reminders done. Try to act on more when they fire.")
+            } else {
+                result.append("You completed \(Int(rate))% of this week's reminders. Small consistent actions build strong habits.")
+            }
         }
 
         return result
@@ -185,6 +281,13 @@ public struct LoveLanguageAnalyzer: Sendable {
         let calendar = Calendar.current
         var streak = 0
         var checkDate = calendar.startOfDay(for: Date())
+
+        // No completion *yet* today shouldn't read as a broken streak — the
+        // day isn't over. Anchor on yesterday and let today extend it.
+        if !actedDates.contains(checkDate),
+           let yesterday = calendar.date(byAdding: .day, value: -1, to: checkDate) {
+            checkDate = yesterday
+        }
 
         while actedDates.contains(checkDate) {
             streak += 1

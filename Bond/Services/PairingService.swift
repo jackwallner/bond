@@ -39,14 +39,19 @@ final class PairingService {
     func loadCouple() async {
         guard let me = supabase.currentUserId else { return }
         do {
-            let row: CoupleDTO? = try await supabase.client
+            // No `.single()`: zero rows must be distinguishable from a failed
+            // request. With `.single()` both threw, and the catch below wiped
+            // coupleId — so one flaky request on launch dumped an existing
+            // (even paired) user back into intent setup, where the solo-couple
+            // RPC then failed with "already in a couple".
+            let rows: [CoupleDTO] = try await supabase.client
                 .from("couples")
                 .select()
                 .or("partner_a.eq.\(me.uuidString),partner_b.eq.\(me.uuidString)")
                 .limit(1)
-                .single()
                 .execute()
                 .value
+            let row = rows.first
             coupleId = row?.id
             solo = row?.solo ?? false
             if let partnerUUID = row?.partnerId(forSelf: me), partnerUUID != me {
@@ -62,9 +67,31 @@ final class PairingService {
             }
             log.info("Loaded couple \(self.coupleId?.uuidString ?? "nil") (solo: \(self.solo))")
         } catch {
-            coupleId = nil
-            solo = false
-            log.notice("No couple found — new account: \(error.localizedDescription)")
+            // Transport/auth failure — keep whatever state we had rather than
+            // pretending the user has no couple.
+            log.error("loadCouple failed (state kept): \(error.localizedDescription)")
+        }
+    }
+
+    /// Polls while the inviter sits on the "share this code" screen. Nothing
+    /// notifies this device when the partner consumes the code on theirs —
+    /// without polling, the inviter stays "solo" until an app restart and the
+    /// pairing looks broken. Returns when paired, when the task is cancelled
+    /// (view dismissed), or when the invite expires.
+    func waitForPartnerToPair() async {
+        while !Task.isCancelled {
+            guard pendingInviteCode != nil else { return }
+            if let expiry = pendingInviteExpiresAt, expiry < .now { return }
+            try? await Task.sleep(nanoseconds: 3_000_000_000)
+            guard !Task.isCancelled else { return }
+            await loadCouple()
+            if coupleId != nil && !solo {
+                pendingInviteCode = nil
+                pendingInviteURL = nil
+                pendingInviteExpiresAt = nil
+                justPaired = true
+                return
+            }
         }
     }
 
@@ -118,6 +145,13 @@ final class PairingService {
             return nil
         }
         lastError = nil
+        // Best-effort: retire any earlier codes from this user so only the
+        // most recently shared one works and stale rows don't accumulate.
+        _ = try? await supabase.client
+            .from("invite_codes")
+            .delete()
+            .eq("created_by", value: me.uuidString)
+            .execute()
         let code = (0..<inviteCodeLength)
             .map { _ in inviteCodeAlphabet.randomElement()! }
             .reduce(into: "") { $0.append($1) }
@@ -166,8 +200,28 @@ final class PairingService {
                 // their server-side love_language; nothing to push here.
             }
         } catch {
-            lastError = error.localizedDescription
+            lastError = Self.friendlyPairingError(error)
         }
+    }
+
+    /// The pairing RPC raises terse Postgres exceptions ("invalid or expired
+    /// code") that PostgREST passes through verbatim — translate the known
+    /// ones into copy a person on the pairing screen can act on.
+    private static func friendlyPairingError(_ error: Error) -> String {
+        let text = error.localizedDescription.lowercased()
+        if text.contains("invalid or expired code") {
+            return "That code didn't work — it may have expired. Ask your partner for a fresh one."
+        }
+        if text.contains("cannot pair with yourself") {
+            return "That's your own code. Share it with your partner and enter theirs here."
+        }
+        if text.contains("you are already in a couple") {
+            return "You're already paired. Unpair in Settings before using a new code."
+        }
+        if text.contains("inviter already in a couple") {
+            return "Whoever shared that code is already paired with someone."
+        }
+        return "Pairing didn't work. Check the code and try again."
     }
 
     /// Unpairs the current couple. The `leave_couple` RPC splits the shared

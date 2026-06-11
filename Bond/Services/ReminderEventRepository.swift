@@ -34,11 +34,17 @@ final class ReminderEventRepository {
         }
     }
 
+    /// Records "I did this" for a reminder. `acted_at` is what every consumer
+    /// keys on (Handled list, streaks, completion stats) — an event without it
+    /// is just a firing log entry, so it must be set here or marking done is
+    /// invisible everywhere.
     func createEvent(reminderId: UUID, coupleId: UUID) async throws {
+        let now = ISO8601DateFormatter().string(from: Date())
         let payload: [String: AnyJSON] = [
             "reminder_id": .string(reminderId.uuidString),
             "couple_id": .string(coupleId.uuidString),
-            "fired_at": .string(ISO8601DateFormatter().string(from: Date()))
+            "fired_at": .string(now),
+            "acted_at": .string(now)
         ]
         try await supabase.client
             .from("reminder_events")
@@ -46,6 +52,17 @@ final class ReminderEventRepository {
             .execute()
         log.info("Created event for reminder \(reminderId)")
         await refresh()
+    }
+
+    /// Removes a completion (e.g. undo "done today" after a mis-tap).
+    func deleteEvent(_ event: ReminderEventDTO) async throws {
+        try await supabase.client
+            .from("reminder_events")
+            .delete()
+            .eq("id", value: event.id.uuidString)
+            .execute()
+        events.removeAll { $0.id == event.id }
+        log.info("Deleted event \(event.id)")
     }
 
     var actedCount: Int {

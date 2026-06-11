@@ -30,6 +30,13 @@ struct PairingView: View {
             .onChange(of: mode) { _, new in
                 if new == .receive { isCodeFocused = true }
             }
+            // While the inviter has a live code on screen, watch for the
+            // partner consuming it on their device. Cancelled automatically
+            // when the sheet is dismissed or the code changes.
+            .task(id: pairing.pendingInviteCode) {
+                guard pairing.pendingInviteCode != nil else { return }
+                await pairing.waitForPartnerToPair()
+            }
         }
     }
 
@@ -65,8 +72,14 @@ struct PairingView: View {
                 .padding(.horizontal, BondSpacing.base)
 
             if let expiresAt = pairing.pendingInviteExpiresAt {
-                ExpiryCaption(expiresAt: expiresAt)
-                    .padding(.horizontal, BondSpacing.base)
+                ExpiryCaption(expiresAt: expiresAt) {
+                    Task {
+                        isGenerating = true
+                        defer { isGenerating = false }
+                        _ = await pairing.generateInviteCode()
+                    }
+                }
+                .padding(.horizontal, BondSpacing.base)
             }
 
             if let url = pairing.pendingInviteURL {
@@ -174,13 +187,19 @@ private struct CodeCard: View {
 
 private struct ExpiryCaption: View {
     let expiresAt: Date
+    let onRegenerate: () -> Void
 
     var body: some View {
         TimelineView(.periodic(from: .now, by: 60)) { context in
             let remaining = expiresAt.timeIntervalSince(context.date)
             Group {
                 if remaining <= 0 {
-                    Text("Expired. Generate a new code.")
+                    VStack(alignment: .leading, spacing: BondSpacing.s) {
+                        Text("This code has expired.")
+                        Button("Generate a new code", action: onRegenerate)
+                            .font(.bond(.footnote, weight: .semibold))
+                            .foregroundStyle(Color.bondAccent)
+                    }
                 } else {
                     let hours = Int(remaining) / 3600
                     let minutes = (Int(remaining) % 3600) / 60
@@ -188,7 +207,7 @@ private struct ExpiryCaption: View {
                         .monospacedDigit()
                 }
             }
-            .font(.bond(.caption))
+            .font(.bond(.footnote))
             .foregroundStyle(.secondary)
         }
     }
