@@ -28,4 +28,4 @@ Pairing is invite-only and strictly 1:1. A user can instantly sever a partner vi
 LOCATION
 Location is requested only When-In-Use, to capture a one-time anchor for optional location-based reminders (delivered via UNLocationNotificationTrigger). There is no background location use.
 
-Questions: bond@jackwallner.com / +1 425 753 3411
+Questions: jackwallner+b@gmail.com / +1 425 753 3411
