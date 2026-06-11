@@ -45,6 +45,7 @@ struct ReminderEditorView: View {
                         Text("Add a title to save.")
                     }
                 }
+                .bondWarmRow()
 
                 Section {
                     Picker("Love language", selection: $loveLanguage) {
@@ -64,6 +65,7 @@ struct ReminderEditorView: View {
                         }
                     }
                 }
+                .bondWarmRow()
 
                 Section {
                     Picker("Schedule", selection: $triggerKind) {
@@ -81,7 +83,7 @@ struct ReminderEditorView: View {
                     }
                     triggerDetail
                 } header: {
-                    Text("When")
+                    BondSectionHeader(title: "When")
                 } footer: {
                     if !store.isPremium {
                         Text("Location & surprise-in-a-window need Bond+.")
@@ -89,6 +91,7 @@ struct ReminderEditorView: View {
                             .foregroundStyle(.secondary)
                     }
                 }
+                .bondWarmRow()
 
                 if let errorMessage {
                     Section {
@@ -96,10 +99,12 @@ struct ReminderEditorView: View {
                             .foregroundStyle(.red)
                             .font(.bond(.footnote))
                     }
+                    .bondWarmRow()
                 }
 
                 ideasAndTemplatesSection
             }
+            .bondWarmList()
             .navigationTitle(existing == nil ? "New reminder" : "Edit reminder")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -162,8 +167,9 @@ struct ReminderEditorView: View {
             } label: {
                 Label("Browse reminder templates", systemImage: "square.grid.2x2")
             }
+            .bondWarmRow()
         } header: {
-            Text(existing == nil ? "Need an idea?" : "Templates")
+            BondSectionHeader(title: existing == nil ? "Need an idea?" : "Templates")
         }
     }
 

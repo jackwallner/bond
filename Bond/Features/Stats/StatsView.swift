@@ -38,6 +38,7 @@ struct StatsView: View {
             Section {
                 streakSection(a: a)
             }
+            .bondWarmRow()
 
             Section {
                 BondUnlockCard(
@@ -51,6 +52,7 @@ struct StatsView: View {
                 .listRowBackground(Color.clear)
             }
         }
+        .bondWarmList()
     }
 
     private var content: some View {
@@ -63,14 +65,18 @@ struct StatsView: View {
             Section {
                 streakSection(a: a)
             }
+            .bondWarmRow()
 
             // Balance score
-            Section("Balance Score") {
+            Section {
                 balanceSection(a: a)
+            } header: {
+                BondSectionHeader(title: "Balance score")
             }
+            .bondWarmRow()
 
             // Distribution chart
-            Section("Love Language Distribution") {
+            Section {
                 Chart(counts, id: \.0) { item in
                     BarMark(
                         x: .value("Count", item.1),
@@ -101,12 +107,15 @@ struct StatsView: View {
                             .frame(width: 60)
                     }
                 }
+            } header: {
+                BondSectionHeader(title: "Love language distribution")
             }
+            .bondWarmRow()
 
             // Trends chart
             let trends = a.weeklyTrends()
             if !trends.isEmpty {
-                Section("Weekly Activity") {
+                Section {
                     Chart(trends) { week in
                         ForEach(week.counts, id: \.0) { lang, count in
                             BarMark(
@@ -123,13 +132,16 @@ struct StatsView: View {
                         }
                     }
                     .frame(height: 200)
+                } header: {
+                    BondSectionHeader(title: "Weekly activity")
                 }
+                .bondWarmRow()
             }
 
             // Insights
             let insights = a.insights()
             if !insights.isEmpty {
-                Section("Insights") {
+                Section {
                     ForEach(insights, id: \.self) { insight in
                         HStack(alignment: .top, spacing: 8) {
                             Image(systemName: "lightbulb.fill")
@@ -139,14 +151,21 @@ struct StatsView: View {
                                 .font(.bond(.subheadline))
                         }
                     }
+                } header: {
+                    BondSectionHeader(title: "Insights")
                 }
+                .bondWarmRow()
             }
 
             // Summary
-            Section("Summary") {
+            Section {
                 summarySection(a: a, total: total)
+            } header: {
+                BondSectionHeader(title: "Summary")
             }
+            .bondWarmRow()
         }
+        .bondWarmList()
     }
 
     private func streakSection(a: LoveLanguageAnalyzer) -> some View {
