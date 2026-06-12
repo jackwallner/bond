@@ -10,11 +10,18 @@ struct PairingView: View {
         var title: String { self == .send ? "Send" : "Receive" }
     }
 
-    @State private var mode: PairMode = .send
+    @State private var mode: PairMode
     @State private var manualCode = ""
     @State private var isGenerating = false
     @State private var showQR = false
     @FocusState private var isCodeFocused: Bool
+
+    /// Defaults to Send (the host flow). Onboarding's "Have an invite code?"
+    /// path opens straight onto Receive so the invitee isn't shown a screen
+    /// for generating their own code.
+    init(initialMode: PairMode = .send) {
+        _mode = State(initialValue: initialMode)
+    }
 
     var body: some View {
         NavigationStack {

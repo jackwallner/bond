@@ -108,6 +108,7 @@ struct RootView: View {
     @Environment(PairingService.self) private var pairing
     @StateObject private var reviewPromptCoordinator = ReviewPromptCoordinator.shared
     @State private var theme = BondTheme.shared
+    @State private var onboardingPrefs = OnboardingPreferences.shared
     // Stays false until both auth bootstrap AND the initial couple load have
     // settled. Without this single gate, the destination resolved off
     // mid-flight state and flashed intent-setup → loading → home on launch.
@@ -129,6 +130,12 @@ struct RootView: View {
             switch currentDestination {
             case .intentSetup:
                 IntentSetupView()
+                    .transition(.opacity.combined(with: .move(edge: .trailing)))
+            case .inviteWelcome:
+                InviteWelcomeView()
+                    .transition(.opacity.combined(with: .move(edge: .trailing)))
+            case .inviteeIntake:
+                IntentSetupView(mode: .invitee)
                     .transition(.opacity.combined(with: .move(edge: .trailing)))
             case .pairingSuccess:
                 PairingSuccessView(partnerName: pairing.partnerProfile?.displayName) {
@@ -179,7 +186,11 @@ struct RootView: View {
         .preferredColorScheme(theme.appearance.colorScheme)
         .animation(.easeOut(duration: 0.35), value: currentDestination)
         .sheet(isPresented: Binding(
-            get: { pairing.requiresSignInToPair },
+            // Only for users who already finished setup (a couple exists).
+            // Pre-setup, the same state routes to the full-screen
+            // InviteWelcomeView instead — presenting both stacked a Settings
+            // -style sheet on top of the invitee's own onboarding.
+            get: { pairing.requiresSignInToPair && pairing.coupleId != nil },
             set: { if !$0 { pairing.requiresSignInToPair = false } }
         )) {
             // Universal-link arrived for an anonymous user. Surface the gate
@@ -323,20 +334,27 @@ struct RootView: View {
         showReviewPrompt = true
     }
 
-    private enum Destination { case loading, intentSetup, pairingSuccess, home }
+    private enum Destination { case loading, intentSetup, inviteWelcome, inviteeIntake, pairingSuccess, home }
 
     private var currentDestination: Destination {
         if !isAppBootstrapped || !supabase.isAuthenticated {
             return .loading
         }
-        // No couple at all = brand-new account. Everyone starts solo; the
-        // intent screen captures preferences and creates the solo couple.
-        // Pairing is opt-in from Settings, not a setup gate.
+        // No couple at all = brand-new account. Someone arriving from a
+        // partner's invite link gets invite-first onboarding; everyone else
+        // starts solo via the intent screen, and pairing stays opt-in from
+        // Settings.
         if pairing.coupleId == nil {
-            return .intentSetup
+            return pairing.deferredInviteCode != nil ? .inviteWelcome : .intentSetup
         }
         if pairing.justPaired {
             return .pairingSuccess
+        }
+        // Paired, but this device never captured onboarding preferences —
+        // the invitee path skips intent setup entirely. Run the trimmed
+        // intake (love language + focus areas) once before home.
+        if !pairing.solo, onboardingPrefs.committedAt == nil, onboardingPrefs.focusAreas.isEmpty {
+            return .inviteeIntake
         }
         return .home
     }

@@ -33,9 +33,17 @@ struct BondScreenHeader: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: BondSpacing.xs) {
-            Text(title).font(.bond(.title, weight: .bold))
+            // fixedSize keeps the texts at their natural height when an
+            // ancestor compresses (e.g. keyboard up between two Spacers) —
+            // without it the title truncated to "Who do you want to s…".
+            Text(title)
+                .font(.bond(.title, weight: .bold))
+                .fixedSize(horizontal: false, vertical: true)
             if let subtitle {
-                Text(subtitle).font(.bond(.body)).foregroundStyle(.secondary)
+                Text(subtitle)
+                    .font(.bond(.body))
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)

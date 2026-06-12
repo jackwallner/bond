@@ -14,6 +14,7 @@
 		0ED8EEED9492C17B5A9C0D64 /* PairingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4651927088C4AF8826E38EE /* PairingView.swift */; };
 		12DDA525B7FEF1ADB275837A /* ReminderCompletion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BDDAA7F2842175D1F8A1645 /* ReminderCompletion.swift */; };
 		14271AAE2B1B55F6F1300DA3 /* CoupleDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 614F6A4AF63E9073387D83DA /* CoupleDTO.swift */; };
+		150E4B6C972333CBB81A9ED4 /* InviteWelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43B58C09D7106616ACA40759 /* InviteWelcomeView.swift */; };
 		15F323D3A66EDD111C27312C /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = 79DA0CE0B85E6A75ACD31F75 /* Supabase */; };
 		19CC6DAF32A9EAEB84D31290 /* ReminderEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E1C46FF806BE5F4CFA6483B /* ReminderEditorView.swift */; };
 		1AD98BC93C4B7A3128EE2499 /* LoveLanguageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E44B9DF2E598986B1F41F82 /* LoveLanguageTests.swift */; };
@@ -200,6 +201,7 @@
 		3F2E4B1106B687E94A91D464 /* PremiumGate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PremiumGate.swift; sourceTree = "<group>"; };
 		3F3F10AF06A234B8B995372A /* EmptyRemindersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyRemindersView.swift; sourceTree = "<group>"; };
 		431E38A9565DAF005868FFB8 /* ReminderDTOTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderDTOTests.swift; sourceTree = "<group>"; };
+		43B58C09D7106616ACA40759 /* InviteWelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteWelcomeView.swift; sourceTree = "<group>"; };
 		4749EF61AE27675A3976D9E8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4A157DD27E1A47C5DB812074 /* WatchConnectivityBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConnectivityBridge.swift; sourceTree = "<group>"; };
 		4A6CFD466E5A10EC3632F8A8 /* DailyCheckInService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyCheckInService.swift; sourceTree = "<group>"; };
@@ -302,6 +304,7 @@
 			isa = PBXGroup;
 			children = (
 				CE93E308C0FE103E72C1E816 /* IntentSetupView.swift */,
+				43B58C09D7106616ACA40759 /* InviteWelcomeView.swift */,
 				6817074B516199A1A5B909F4 /* NotificationPrimerSheet.swift */,
 			);
 			path = Onboarding;
@@ -814,6 +817,7 @@
 				819BFBFEDE556903A09401C4 /* EmptyRemindersView.swift in Sources */,
 				228F5CBF7BCA960AF4460003 /* GateSampleContent.swift in Sources */,
 				59AFA28B71534A359A9F6EC7 /* IntentSetupView.swift in Sources */,
+				150E4B6C972333CBB81A9ED4 /* InviteWelcomeView.swift in Sources */,
 				E5743F3B95401D7F92110EAB /* LocationService.swift in Sources */,
 				8408C38ED1DBEDDFB1944904 /* LoveLanguage.swift in Sources */,
 				B25775643F9198940939DD61 /* LoveLanguageAnalyzer.swift in Sources */,

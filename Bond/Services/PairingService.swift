@@ -62,6 +62,15 @@ final class PairingService {
                     .single()
                     .execute()
                     .value
+                // An invitee who paired during onboarding never typed a
+                // partner name — seed it from the partner's profile so
+                // prompts and headers don't address "them".
+                let prefs = OnboardingPreferences.shared
+                if prefs.partnerName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+                   let name = partnerProfile?.displayName,
+                   !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                    prefs.partnerName = name
+                }
             } else {
                 partnerProfile = nil
             }
@@ -261,11 +270,18 @@ final class PairingService {
     }
 
     func handleIncomingURL(_ url: URL) {
-        guard let host = url.host, host == universalLinkHost || url.scheme == "bond" else { return }
-        let parts = url.pathComponents
+        let isUniversalLink = url.host == universalLinkHost
+        let isCustomScheme = url.scheme == "bond"
+        guard isUniversalLink || isCustomScheme else { return }
+        // In bond://pair/CODE the "pair" segment is the URL *host*, not a
+        // path component — fold it back in so both link forms parse the same.
+        var parts = url.pathComponents.filter { $0 != "/" }
+        if isCustomScheme, let host = url.host {
+            parts.insert(host, at: 0)
+        }
         guard let pairIndex = parts.firstIndex(of: "pair"),
               pairIndex + 1 < parts.count else { return }
-        let code = parts[pairIndex + 1]
+        let code = parts[pairIndex + 1].uppercased()
         // Anonymous users cannot pair via deep link without first establishing
         // a recoverable identity, otherwise the partner ends up linked to a
         // throwaway account that vanishes on reinstall. Defer until the gate
@@ -280,10 +296,16 @@ final class PairingService {
 
     /// Consume an invite code captured before the user had a recoverable
     /// identity. Called by [[AppleSignInPairingGate]] after sign-in succeeds.
+    /// The code is only cleared once pairing actually succeeds — clearing it
+    /// up front meant one failed RPC silently dropped the invite, and the
+    /// invitee onboarding flow (which exists while the code does) vanished
+    /// out from under the user with no way to retry.
     func consumeDeferredInviteIfNeeded() async {
         guard let code = deferredInviteCode else { return }
-        deferredInviteCode = nil
         requiresSignInToPair = false
         await consumeInviteCode(code)
+        if coupleId != nil && !solo {
+            deferredInviteCode = nil
+        }
     }
 }

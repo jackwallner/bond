@@ -128,11 +128,26 @@ final class OnboardingPreferences {
 }
 
 struct IntentSetupView: View {
+    /// `.solo` is the full first-run flow (name → commit → love language →
+    /// focus areas) ending in solo-couple creation. `.invitee` is the
+    /// trimmed intake shown right after pairing via an invite: the partner
+    /// is already known (name comes from their profile), so it starts at
+    /// the love-language step and finishes without touching the server.
+    enum Mode { case solo, invitee }
+
     @Environment(PairingService.self) private var pairing
     @State private var prefs = OnboardingPreferences.shared
-    @State private var step = 0
+    @State private var step: Int
     @State private var isFinishing = false
+    @State private var showInvitePairing = false
     @FocusState private var nameFocused: Bool
+
+    private let mode: Mode
+
+    init(mode: Mode = .solo) {
+        self.mode = mode
+        _step = State(initialValue: mode == .invitee ? 2 : 0)
+    }
 
     private var nameTrimmed: String {
         prefs.partnerName.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -175,6 +190,13 @@ struct IntentSetupView: View {
         .animation(.easeOut(duration: 0.25), value: step)
         // Don't carry a stale error in from a previous failed attempt.
         .onAppear { pairing.lastError = nil }
+        // "Have an invite code?" — a fresh install whose partner already uses
+        // Bond shouldn't have to finish solo setup just to reach Settings →
+        // Connect a partner. Pairing here flips RootView straight to the
+        // success screen, abandoning the rest of this flow.
+        .sheet(isPresented: $showInvitePairing) {
+            PairingView(initialMode: .receive)
+        }
     }
 
     private var continueTitle: String {
@@ -231,6 +253,16 @@ struct IntentSetupView: View {
                 .padding(.horizontal, BondSpacing.base)
                 .onAppear { nameFocused = true }
                 .onSubmit { if canContinue { advance() } }
+
+            Button {
+                nameFocused = false
+                showInvitePairing = true
+            } label: {
+                Label("Have an invite from your partner?", systemImage: "envelope.open.fill")
+                    .font(.bond(.subheadline, weight: .medium))
+            }
+            .foregroundStyle(Color.bondAccent)
+            .padding(.horizontal, BondSpacing.base)
         }
     }
 
@@ -342,8 +374,15 @@ struct IntentSetupView: View {
     }
 
     private func finish() async {
-        isFinishing = true
-        defer { isFinishing = false }
-        await pairing.createSoloCouple()
+        switch mode {
+        case .solo:
+            isFinishing = true
+            defer { isFinishing = false }
+            await pairing.createSoloCouple()
+        case .invitee:
+            // Already paired — the couple exists. Stamping committedAt marks
+            // the intake complete, which is what flips RootView to home.
+            prefs.committedAt = Date()
+        }
     }
 }
