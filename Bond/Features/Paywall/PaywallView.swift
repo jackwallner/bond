@@ -3,8 +3,8 @@ import SwiftUI
 
 /// Legal links required by App Store guideline 3.1.2 adjacent to purchase controls.
 enum PaywallLinks {
-    static let privacyPolicy = URL(string: "https://jackwallner.com/bond/privacy")!
-    static let terms = URL(string: "https://jackwallner.com/bond/terms")!
+    static let privacyPolicy = URL(string: "https://jackwallner.github.io/bond/privacy")!
+    static let terms = URL(string: "https://jackwallner.github.io/bond/terms")!
 }
 
 /// Native Bond+ paywall. Purchases flow through `PurchasesService.purchase`
