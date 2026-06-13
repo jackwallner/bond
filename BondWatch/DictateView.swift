@@ -56,10 +56,10 @@ struct DictateView: View {
         )
         switch outcome {
         case .confirmed:
-            statusMessage = "Saved — you'll be reminded in about an hour."
+            statusMessage = "Saved. You'll be reminded in about an hour."
             text = ""
         case .queued:
-            statusMessage = "Queued — open Bond on your phone to confirm."
+            statusMessage = "Queued. Open Bond on your phone to confirm."
             text = ""
         case .failed:
             statusMessage = sender.lastError ?? "Send failed."

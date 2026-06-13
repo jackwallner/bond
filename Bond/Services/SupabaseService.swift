@@ -26,7 +26,7 @@ final class SupabaseService {
     /// Idempotent session bootstrap. The first caller kicks off
     /// `restoreSession()`; concurrent callers await the same task. This
     /// prevents the launch race where `init` and `RootView.task` both fire
-    /// `signInAnonymously()` independently and create two anon users — the
+    /// `signInAnonymously()` independently and create two anon users - the
     /// client session ends up signed in as one while `currentUserId` caches
     /// the other, which makes `p_user <> auth.uid()` RPC checks fail with
     /// "unauthorized".
@@ -41,9 +41,9 @@ final class SupabaseService {
     }
 
     /// Force a fresh bootstrap attempt. `bootstrap()` caches its task, so once
-    /// the first attempt finishes — even if it failed to establish a session
+    /// the first attempt finishes - even if it failed to establish a session
     /// (e.g. the device was offline at first launch, so anonymous sign-in
-    /// couldn't run) — re-calling it just re-awaits the failed task. The
+    /// couldn't run) - re-calling it just re-awaits the failed task. The
     /// loading screen's "Try again" calls this so a retry actually re-attempts.
     func retryBootstrap() async {
         bootstrapTask = nil
@@ -61,7 +61,7 @@ final class SupabaseService {
             isAnonymous = session.user.isAnonymous
             log.info("Session restored for user \(session.user.id) (anon: \(self.isAnonymous))")
         } catch {
-            log.notice("No cached session — signing in anonymously")
+            log.notice("No cached session - signing in anonymously")
             await signInAnonymously()
         }
     }
@@ -71,7 +71,7 @@ final class SupabaseService {
             let session = try await client.auth.signInAnonymously()
             currentUserId = session.user.id
             isAnonymous = true
-            log.info("Signed in anonymously — user \(session.user.id)")
+            log.info("Signed in anonymously - user \(session.user.id)")
         } catch {
             // Don't nuke an already-restored session on failure: restoreSession()
             // and this method can race at launch, and clearing currentUserId here
@@ -101,7 +101,7 @@ final class SupabaseService {
                 // signed in with Apple on another device), fall back to a
                 // straight sign-in so they can recover that account. Their
                 // anonymous-session data is lost in that case, which is the
-                // correct tradeoff — the recoverable account wins.
+                // correct tradeoff - the recoverable account wins.
                 log.notice("linkIdentityWithIdToken failed (\(error.localizedDescription)); falling back to signInWithIdToken")
                 session = try await client.auth.signInWithIdToken(credentials: credentials)
             }
@@ -110,7 +110,7 @@ final class SupabaseService {
         }
         currentUserId = session.user.id
         isAnonymous = session.user.isAnonymous
-        log.info("Signed in with Apple — user \(session.user.id)")
+        log.info("Signed in with Apple - user \(session.user.id)")
     }
 
     func signOut() async {
@@ -121,7 +121,7 @@ final class SupabaseService {
         log.info("Signed out")
         // Immediately establish a fresh anonymous session so the router
         // doesn't strand the user on the loading spinner. Sign-out is a
-        // "new guest session" event, not a terminal state — without this,
+        // "new guest session" event, not a terminal state - without this,
         // `RootView` keeps rendering `.loading` because nothing else
         // re-runs `bootstrap()`.
         await bootstrap()

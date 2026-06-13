@@ -34,7 +34,7 @@ struct BondScreenHeader: View {
     var body: some View {
         VStack(alignment: .leading, spacing: BondSpacing.xs) {
             // fixedSize keeps the texts at their natural height when an
-            // ancestor compresses (e.g. keyboard up between two Spacers) —
+            // ancestor compresses (e.g. keyboard up between two Spacers) -
             // without it the title truncated to "Who do you want to s…".
             Text(title)
                 .font(.bond(.title, weight: .bold))
@@ -77,7 +77,7 @@ struct BondPrimaryButton: View {
 /// Soft Tactile primary button: top-lit gradient fill, warm halo shadow, and
 /// a faint top highlight so it reads as a raised physical control. Presses
 /// dim + sink slightly rather than flashing a system tint. When disabled it
-/// desaturates and flattens (no shadow) so it visibly reads as inactive —
+/// desaturates and flattens (no shadow) so it visibly reads as inactive -
 /// otherwise a `.disabled()` CTA looked fully tappable and a tap did nothing.
 struct BondSoftButtonStyle: ButtonStyle {
     var role: ButtonRole?
@@ -107,7 +107,7 @@ struct BondSoftButtonStyle: ButtonStyle {
                         } else {
                             shape.fill(Color.bondAccentGradient)
                         }
-                        // Inset top highlight — the "lit from above" cue.
+                        // Inset top highlight - the "lit from above" cue.
                         shape.stroke(.white.opacity(0.25), lineWidth: 0.5)
                             .blur(radius: 0.5)
                             .mask(LinearGradient(colors: [.white, .clear],

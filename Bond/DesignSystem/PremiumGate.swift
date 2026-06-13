@@ -23,7 +23,7 @@ enum PremiumFeature {
 }
 
 /// Restore button shared by every gate card. Restoring success flips
-/// `isPremium`, which dismisses the surrounding gate — so the only thing this
+/// `isPremium`, which dismisses the surrounding gate - so the only thing this
 /// has to surface itself is the *failure* case (nothing to restore, or a
 /// network error). Without this feedback the button silently stops spinning,
 /// which reads as "broken" and is exactly what App Review tends to test.

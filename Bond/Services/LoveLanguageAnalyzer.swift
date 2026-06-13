@@ -259,7 +259,7 @@ public struct LoveLanguageAnalyzer: Sendable {
             if rate > 75 {
                 result.append("Excellent follow-through! You completed \(Int(rate))% of what was due this week.")
             } else if rate > 50 {
-                result.append("Good progress — \(Int(rate))% of this week's reminders done. Try to act on more when they fire.")
+                result.append("Good progress: \(Int(rate))% of this week's reminders done. Try to act on more when they fire.")
             } else {
                 result.append("You completed \(Int(rate))% of this week's reminders. Small consistent actions build strong habits.")
             }
@@ -282,7 +282,7 @@ public struct LoveLanguageAnalyzer: Sendable {
         var streak = 0
         var checkDate = calendar.startOfDay(for: Date())
 
-        // No completion *yet* today shouldn't read as a broken streak — the
+        // No completion *yet* today shouldn't read as a broken streak - the
         // day isn't over. Anchor on yesterday and let today extend it.
         if !actedDates.contains(checkDate),
            let yesterday = calendar.date(byAdding: .day, value: -1, to: checkDate) {

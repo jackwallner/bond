@@ -4,7 +4,7 @@ import UserNotifications
 /// Receives notification taps and surfaces the reminder id so the UI can
 /// deep-link into the editor. Without this, `userInfo["reminder_id"]` is set
 /// on every scheduled notification but tapping a Bond banner just opens the
-/// last-active screen — breaking the nudge-to-act loop the product depends on.
+/// last-active screen - breaking the nudge-to-act loop the product depends on.
 @MainActor
 @Observable
 final class NotificationRouter: NSObject {

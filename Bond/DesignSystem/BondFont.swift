@@ -1,12 +1,12 @@
 import SwiftUI
 
-// Plus Jakarta Sans — the app's brand typeface. The static weights live in
+// Plus Jakarta Sans - the app's brand typeface. The static weights live in
 // `Resources/Fonts/` and are registered via `UIAppFonts` in Info.plist.
 //
 // Use `Font.bond(_:weight:)` in place of the system text styles (`.headline`,
 // `.caption`, …). It renders in Plus Jakarta Sans while still scaling with
 // Dynamic Type through `relativeTo:`, and maps SwiftUI weights onto the four
-// bundled faces. SF Symbol glyphs keep using `.system(size:)` — a text face
+// bundled faces. SF Symbol glyphs keep using `.system(size:)` - a text face
 // doesn't apply to them.
 
 enum BondFontFamily {
@@ -41,8 +41,8 @@ enum BondFontFamily {
         }
     }
 
-    /// System default weight per text style — headline is semibold, the rest
-    /// regular — so an un-weighted `.bond(.headline)` matches the platform.
+    /// System default weight per text style - headline is semibold, the rest
+    /// regular - so an un-weighted `.bond(.headline)` matches the platform.
     static func defaultWeight(for style: Font.TextStyle) -> Font.Weight {
         style == .headline ? .semibold : .regular
     }

@@ -35,7 +35,7 @@ public enum LoveLanguage: String, CaseIterable, Codable, Identifiable, Sendable 
         case .acts:  .orange
         case .gifts: .purple
         case .time:  .blue
-        // Touch was system red — indistinguishable from Words (.pink) in low
+        // Touch was system red - indistinguishable from Words (.pink) in low
         // light. Deep terracotta keeps the warmth while reading distinct.
         case .touch: .bondTouchTerracotta
         }

@@ -49,7 +49,7 @@ final class BondTheme {
             }
         }
 
-        /// Solid accent — a richer terracotta-rose so flat fills, tints, and
+        /// Solid accent - a richer terracotta-rose so flat fills, tints, and
         /// SF Symbols read as one warm, saturated hue (less drab than the old
         /// muted brown-terracotta).
         var color: Color {

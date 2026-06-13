@@ -35,7 +35,7 @@ final class ReminderEventRepository {
     }
 
     /// Records "I did this" for a reminder. `acted_at` is what every consumer
-    /// keys on (Handled list, streaks, completion stats) — an event without it
+    /// keys on (Handled list, streaks, completion stats) - an event without it
     /// is just a firing log entry, so it must be set here or marking done is
     /// invisible everywhere.
     func createEvent(reminderId: UUID, coupleId: UUID) async throws {

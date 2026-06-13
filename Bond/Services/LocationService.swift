@@ -15,7 +15,7 @@ final class LocationService: NSObject, CLLocationManagerDelegate {
     }
 
     /// Geofence reminders fire through `UNLocationNotificationTrigger`, which
-    /// only needs When-In-Use authorization — Bond never does continuous
+    /// only needs When-In-Use authorization - Bond never does continuous
     /// background location, so we never request "Always" (declaring it without
     /// using it is an App Review rejection vector).
     func requestAuthorizationIfNeeded() {
@@ -30,14 +30,14 @@ final class LocationService: NSObject, CLLocationManagerDelegate {
         }
     }
 
-    /// One-shot current location — used as the default geofence anchor.
+    /// One-shot current location - used as the default geofence anchor.
     func currentLocation() async throws -> CLLocation {
         manager.requestWhenInUseAuthorization()
         if manager.authorizationStatus == .denied || manager.authorizationStatus == .restricted {
             throw LocationDeniedError()
         }
         // A second tap before the first fix lands would silently orphan the
-        // first continuation (an awaiting task that never resumes) — fail it
+        // first continuation (an awaiting task that never resumes) - fail it
         // fast and let the newest request own the delegate callbacks.
         if let pending = continuation {
             continuation = nil

@@ -14,7 +14,7 @@ final class ReminderRepository {
     var lastError: String?
 
     /// Set by the app at launch so the repo can refresh the widget snapshot
-    /// after every change. Optional — empty closure is fine for previews/tests.
+    /// after every change. Optional - empty closure is fine for previews/tests.
     var onChange: ([ReminderDTO]) -> Void = { _ in }
 
     private var realtimeChannel: RealtimeChannelV2?
@@ -89,7 +89,7 @@ final class ReminderRepository {
             await unsubscribeRealtime()
             return
         }
-        // Already subscribed to *this* couple — nothing to do. But if we're
+        // Already subscribed to *this* couple - nothing to do. But if we're
         // bound to a different couple (e.g. solo → paired), tear down first
         // so the new channel uses the right filter.
         if realtimeChannel != nil {

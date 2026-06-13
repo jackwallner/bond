@@ -31,12 +31,12 @@ struct PaywallView: View {
     @State private var restoreMessage: String?
     @State private var isRestoring = false
     /// Set when a purchase completes at StoreKit but the entitlement hasn't
-    /// landed after our retry budget — surfaces a prominent inline Restore
+    /// landed after our retry budget - surfaces a prominent inline Restore
     /// CTA instead of the small one in the legal footer.
     @State private var needsManualRestore = false
 
     /// True when the buyer has no partner yet. Everyone starts solo (pairing is
-    /// opt-in), so the headline couples benefit — Daily Check-In — isn't usable
+    /// opt-in), so the headline couples benefit - Daily Check-In - isn't usable
     /// for them. Leading with it would sell a feature they can't access, which
     /// kills conversion and risks an "advertised feature unavailable" review hit.
     private var isSolo: Bool { pairing.solo || pairing.coupleId == nil }
@@ -50,7 +50,7 @@ struct PaywallView: View {
                 ("bell.badge.fill",          "Location & surprise reminders"),
                 ("square.stack.fill",        "Curated reminder templates"),
                 ("sparkles",                 "Love-language insights & trends"),
-                ("questionmark.bubble.fill", "Daily Check-In — when you pair")
+                ("questionmark.bubble.fill", "Daily Check-In, when you pair")
             ]
         }
         return [
@@ -180,7 +180,7 @@ struct PaywallView: View {
     }
 
     /// Only promise a free trial when the selected (or default) package actually
-    /// has an intro offer the buyer is eligible for — never to ineligible/lifetime
+    /// has an intro offer the buyer is eligible for - never to ineligible/lifetime
     /// buyers (3.1.2: no misleading free-trial claims).
     private var showsTrialPromise: Bool {
         guard let package = selectedPackage ?? purchases.products.first else { return false }
@@ -342,13 +342,13 @@ struct PaywallView: View {
         let price = package.bondPriceLabel
         if purchases.isEligibleForIntroOffer(package) {
             // "No payment due now" is the single highest-leverage reassurance
-            // for trial starts — it answers the exact fear that stops the tap.
+            // for trial starts - it answers the exact fear that stops the tap.
             return "No payment due now. Then \(price). Cancel anytime."
         }
         return "\(price). Renews automatically."
     }
 
-    /// Compact auto-renew disclosure (3.1.2) — shown for subscriptions only, not lifetime.
+    /// Compact auto-renew disclosure (3.1.2) - shown for subscriptions only, not lifetime.
     private var autoRenewDisclosure: String? {
         guard let package = selectedPackage, package.storeProduct.subscriptionPeriod != nil else {
             return nil
@@ -379,7 +379,7 @@ struct PaywallView: View {
                     statusMessage = nil
                     closePaywall()
                 case .pending:
-                    // Payment cleared but entitlement hasn't propagated yet —
+                    // Payment cleared but entitlement hasn't propagated yet -
                     // common in sandbox. Show a calm finalizing state; the
                     // `onChange(of: isPremium)` will auto-dismiss as soon as
                     // RevenueCat catches up.
