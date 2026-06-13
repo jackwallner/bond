@@ -341,7 +341,9 @@ struct PaywallView: View {
         if package.bondPackageKind == .lifetime { return nil }
         let price = package.bondPriceLabel
         if purchases.isEligibleForIntroOffer(package) {
-            return "Then \(price). Cancel anytime."
+            // "No payment due now" is the single highest-leverage reassurance
+            // for trial starts — it answers the exact fear that stops the tap.
+            return "No payment due now. Then \(price). Cancel anytime."
         }
         return "\(price). Renews automatically."
     }

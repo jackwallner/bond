@@ -116,6 +116,9 @@ struct RootView: View {
     @State private var showReviewPrompt = false
     @State private var showPostPairPaywall = false
     private let postPairPaywallKey = "hasShownPostPairPaywall"
+    @State private var showPostOnboardingPaywall = false
+    @State private var pendingPostOnboardingPaywall = false
+    private let postOnboardingPaywallKey = "hasShownPostOnboardingPaywall"
     @State private var reviewPromptInitialStep: ReviewPromptSheet.Step = .enjoyment
     @State private var reviewPromptShownThisSession = false
     @State private var pendingNativeReviewAfterDismiss = false
@@ -259,6 +262,36 @@ struct RootView: View {
         // dismissal advances past the success screen to home.
         .sheet(isPresented: $showPostPairPaywall, onDismiss: { pairing.justPaired = false }) {
             PaywallView(onClose: { showPostPairPaywall = false }, impressionId: "post_pairing")
+                .presentationDragIndicator(.visible)
+        }
+        // Proactive post-onboarding paywall for the solo path. Most users
+        // start solo and may never pair, so without this the only people who
+        // ever see a proactive offer are the minority who reach
+        // pairing-success — everyone else has to stumble into a gate.
+        // Finishing setup is the solo flow's peak-intent moment.
+        .onChange(of: currentDestination) { old, new in
+            guard old == .intentSetup, new == .home,
+                  !store.isPremium,
+                  !UserDefaults.standard.bool(forKey: postOnboardingPaywallKey)
+            else { return }
+            UserDefaults.standard.set(true, forKey: postOnboardingPaywallKey)
+            // Don't present yet: the notification primer (presented by
+            // ReminderListView on first home arrival) would win the sheet
+            // race and this paywall would silently never appear. Wait for
+            // its resolved signal below.
+            pendingPostOnboardingPaywall = true
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .bondNotificationPrimerResolved)) { _ in
+            guard pendingPostOnboardingPaywall else { return }
+            pendingPostOnboardingPaywall = false
+            Task { @MainActor in
+                // Let the primer sheet finish its dismissal animation first.
+                try? await Task.sleep(nanoseconds: 500_000_000)
+                showPostOnboardingPaywall = true
+            }
+        }
+        .sheet(isPresented: $showPostOnboardingPaywall) {
+            PaywallView(onClose: { showPostOnboardingPaywall = false }, impressionId: "post_onboarding")
                 .presentationDragIndicator(.visible)
         }
     }

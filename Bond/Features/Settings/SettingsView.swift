@@ -15,6 +15,7 @@ struct SettingsView: View {
     @State private var isRestoring = false
     @State private var showRestoreResult = false
     @State private var isPairingPresented = false
+    @State private var isPaywallPresented = false
     @State private var notificationStatus: UNAuthorizationStatus = .notDetermined
 
     var body: some View {
@@ -95,6 +96,16 @@ struct SettingsView: View {
                          destination: URL(string: "https://apps.apple.com/account/subscriptions")!)
                 } else {
                     LabeledContent("Status", value: "Free")
+                    // Free users previously had no purchase path here at all —
+                    // only a Restore button. Settings is where people go
+                    // looking to upgrade; never leave them without a door.
+                    Button {
+                        isPaywallPresented = true
+                    } label: {
+                        Label("Try Bond+ free", systemImage: "sparkles")
+                            .font(.bond(.body, weight: .semibold))
+                            .foregroundStyle(Color.bondAccent)
+                    }
                 }
                 Button {
                     Task {
@@ -203,6 +214,7 @@ struct SettingsView: View {
         .sheet(isPresented: $isPairingPresented) {
             PairingView()
         }
+        .paywallSheet(isPresented: $isPaywallPresented)
         .onChange(of: pairing.justPaired) { _, paired in
             if paired { isPairingPresented = false }
         }

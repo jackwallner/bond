@@ -14,6 +14,7 @@ struct ReminderListView: View {
     @State private var isTemplatesPresented = false
     @State private var editingReminder: ReminderDTO?
     @State private var showNotificationPrimer = false
+    @State private var primerRequestedAuth = false
     @State private var starterPrefill: StarterChip?
     @State private var hasLoadedOnce = false
     @State private var isPairingPresented = false
@@ -59,8 +60,15 @@ struct ReminderListView: View {
             .sheet(isPresented: $isPairingPresented) {
                 PairingView()
             }
-            .sheet(isPresented: $showNotificationPrimer) {
+            .sheet(isPresented: $showNotificationPrimer, onDismiss: {
+                // "Maybe later" path. The request path posts from its Task
+                // instead, after the system dialog has been answered.
+                if !primerRequestedAuth {
+                    NotificationCenter.default.post(name: .bondNotificationPrimerResolved, object: nil)
+                }
+            }) {
                 NotificationPrimerSheet {
+                    primerRequestedAuth = true
                     Task {
                         await NotificationScheduler.shared.requestAuthorizationIfNeeded()
                         // Now that permission is (hopefully) granted, schedule
@@ -71,6 +79,7 @@ struct ReminderListView: View {
                             events: eventsRepo.events,
                             requestAuthIfNeeded: false
                         )
+                        NotificationCenter.default.post(name: .bondNotificationPrimerResolved, object: nil)
                     }
                 }
             }
@@ -136,10 +145,16 @@ struct ReminderListView: View {
     /// would hit the bare iOS dialog with no context and tap "Don't Allow",
     /// then wonder why nothing ever fires.
     private func maybeShowNotificationPrimer() async {
-        guard !UserDefaults.standard.bool(forKey: primerShownKey) else { return }
+        guard !UserDefaults.standard.bool(forKey: primerShownKey) else {
+            NotificationCenter.default.post(name: .bondNotificationPrimerResolved, object: nil)
+            return
+        }
         let status = await UNUserNotificationCenter.current()
             .notificationSettings().authorizationStatus
-        guard status == .notDetermined else { return }
+        guard status == .notDetermined else {
+            NotificationCenter.default.post(name: .bondNotificationPrimerResolved, object: nil)
+            return
+        }
         UserDefaults.standard.set(true, forKey: primerShownKey)
         showNotificationPrimer = true
     }
