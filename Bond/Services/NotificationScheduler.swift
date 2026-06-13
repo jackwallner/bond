@@ -19,7 +19,7 @@ final class NotificationScheduler {
     ///   still undetermined, this surfaces the system permission prompt. The
     ///   first-launch home load passes `false` so the pre-permission primer
     ///   (`NotificationPrimerSheet`) gets to explain *why* before the bare iOS
-    ///   dialog appears — otherwise the primer's `.notDetermined` guard never
+    ///   dialog appears - otherwise the primer's `.notDetermined` guard never
     ///   passes and the primer is effectively dead.
     /// - Parameter events: completion events, so a handled one-shot stops
     ///   pinging and a daily-random reminder completed today skips today's
@@ -45,7 +45,7 @@ final class NotificationScheduler {
 
         for reminder in reminders where reminder.targetId == selfId {
             let completed = reminder.isCompleted(in: events)
-            // A handled one-shot is done forever — never ping it again.
+            // A handled one-shot is done forever - never ping it again.
             if completed && !reminder.repeatsOnSchedule { continue }
             await schedule(reminder, completedThisPeriod: completed)
         }
@@ -160,9 +160,9 @@ final class NotificationScheduler {
             if fireAt <= now {
                 // Today's stable pick already passed. Re-picking later in the
                 // window would ping again on every reschedule (each app open
-                // re-runs this — including the open caused by tapping today's
+                // re-runs this - including the open caused by tapping today's
                 // notification). Only a reminder created today *after* its
-                // pick — which therefore never got scheduled — falls forward
+                // pick - which therefore never got scheduled - falls forward
                 // into what's left of the window; everyone else skips today.
                 let created = reminder.createdAt ?? .distantPast
                 guard windowEnd > now,
@@ -186,7 +186,7 @@ final class NotificationScheduler {
     /// day. Stable across reschedules so reopening the app mid-window can't
     /// silently move today's pick into the past and drop the notification.
     static func stablePick(in window: ClosedRange<Date>, reminderId: UUID, day: Date) -> Date {
-        // FNV-1a over the uuid + day ordinal — UUID.hashValue is salted per
+        // FNV-1a over the uuid + day ordinal - UUID.hashValue is salted per
         // process, so it can't be the seed.
         var hash: UInt64 = 0xcbf29ce484222325
         let dayOrdinal = Int(day.timeIntervalSince1970 / 86_400)
@@ -252,7 +252,7 @@ final class NotificationScheduler {
             return UNLocationNotificationTrigger(region: region, repeats: false)
 
         case .randomWindow:
-            // fireAt was already randomized at save time — schedule as one-time.
+            // fireAt was already randomized at save time - schedule as one-time.
             guard let fireAt = reminder.fireAt, fireAt > .now else { return nil }
             let comps = Calendar.current.dateComponents(
                 [.year, .month, .day, .hour, .minute], from: fireAt
@@ -260,7 +260,7 @@ final class NotificationScheduler {
             return UNCalendarNotificationTrigger(dateMatching: comps, repeats: false)
 
         case .randomRecurring:
-            // Handled by scheduleRandomRecurring — never reaches here.
+            // Handled by scheduleRandomRecurring - never reaches here.
             return nil
 
         case .none:

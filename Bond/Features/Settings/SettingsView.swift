@@ -96,7 +96,7 @@ struct SettingsView: View {
                          destination: URL(string: "https://apps.apple.com/account/subscriptions")!)
                 } else {
                     LabeledContent("Status", value: "Free")
-                    // Free users previously had no purchase path here at all —
+                    // Free users previously had no purchase path here at all -
                     // only a Restore button. Settings is where people go
                     // looking to upgrade; never leave them without a door.
                     Button {
@@ -246,7 +246,7 @@ struct SettingsView: View {
             Button("Delete everything", role: .destructive) { deleteAccount() }
             Button("Cancel", role: .cancel) {}
         } message: {
-            Text("This permanently deletes your account and everything you created. If you're paired, your partner keeps their own reminders, your shared milestones, and their account — they'll just be unpaired. This can't be undone. (Any App Store subscription is managed separately in Settings → Apple ID.)")
+            Text("This permanently deletes your account and everything you created. If you're paired, your partner keeps their own reminders, your shared milestones, and their account, they'll just be unpaired. This can't be undone. (Any App Store subscription is managed separately in Settings → Apple ID.)")
         }
     }
 

@@ -12,7 +12,7 @@ extension Color {
     init(light: Color, dark: Color) {
         #if os(watchOS)
         // watchOS has no dynamic UIColor provider and its UI is always
-        // presented on black — use the dark variant.
+        // presented on black - use the dark variant.
         self = dark
         #elseif canImport(UIKit)
         self.init(UIColor { trait in
@@ -23,7 +23,7 @@ extension Color {
         #endif
     }
 
-    /// Deep terracotta — warm but clearly distinct from `.pink` in low light.
+    /// Deep terracotta - warm but clearly distinct from `.pink` in low light.
     /// Light ≈ #B5573F, Dark ≈ #D87156.
     static let bondTouchTerracotta = Color(
         light: Color(red: 0.71, green: 0.34, blue: 0.25),

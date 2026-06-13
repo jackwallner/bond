@@ -14,7 +14,7 @@ final class WatchConnectivitySender: NSObject {
     enum SendOutcome {
         /// Phone confirmed the reminder was saved.
         case confirmed
-        /// Handed off via background application context — phone will process
+        /// Handed off via background application context - phone will process
         /// it when it next wakes, but we have no confirmation yet.
         case queued
         case failed
@@ -58,7 +58,7 @@ final class WatchConnectivitySender: NSObject {
                 [WatchPayload.createReminderKey: data]
             )
             log.info("Queued reminder via application context (background)")
-            // No reply on this path — the phone confirms only when it wakes.
+            // No reply on this path - the phone confirms only when it wakes.
             return .queued
         } catch {
             lastError = error.localizedDescription
@@ -105,7 +105,7 @@ extension WatchConnectivitySender: WCSessionDelegate {
         }
     }
 
-    // These two are iOS-only WCSessionDelegate requirements — they are
+    // These two are iOS-only WCSessionDelegate requirements - they are
     // marked unavailable on watchOS, so the watch target must not declare them.
     #if os(iOS)
     nonisolated func sessionDidBecomeInactive(_ session: WCSession) {

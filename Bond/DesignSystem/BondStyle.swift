@@ -7,7 +7,7 @@ import SwiftUI
 // radii, warm-tinted shadows, and gradient accents so the in-app feel matches
 // the soft 3D app-icon language. Type is SF Rounded, applied globally from
 // `RootView` via `.fontDesign(.rounded)` (system stand-in for Plus Jakarta
-// Sans — swap in the real face by bundling it + `UIAppFonts` if desired).
+// Sans - swap in the real face by bundling it + `UIAppFonts` if desired).
 
 enum BondSpacing {
     static let xs: CGFloat   = 4
@@ -36,12 +36,12 @@ extension Color {
     @MainActor
     static var bondAccent: Color { BondTheme.shared.accent.color }
 
-    /// Two-tone gradient form of the accent — top-lit, like the icon's tubes.
+    /// Two-tone gradient form of the accent - top-lit, like the icon's tubes.
     /// Use as the fill for primary buttons / avatars to echo the 3D quality.
     @MainActor
     static var bondAccentGradient: LinearGradient { BondTheme.shared.accent.gradient }
 
-    /// Secondary accent — dusty plum. A cool foil to the warm terracotta so
+    /// Secondary accent - dusty plum. A cool foil to the warm terracotta so
     /// the palette reads dimensional instead of monochrome. Use sparingly for
     /// secondary emphasis, alternate tints, and accents that shouldn't compete
     /// with the primary action color.
@@ -49,7 +49,7 @@ extension Color {
         light: Color(red: 0.549, green: 0.353, blue: 0.451),  // #8C5A73
         dark:  Color(red: 0.780, green: 0.604, blue: 0.690)
     )
-    /// Tertiary warm accent — soft gold. For highlights, streaks, and small
+    /// Tertiary warm accent - soft gold. For highlights, streaks, and small
     /// celebratory moments where terracotta would feel heavy.
     static let bondGold = Color(
         light: Color(red: 0.784, green: 0.580, blue: 0.235),  // #C8943C
@@ -58,23 +58,23 @@ extension Color {
 
     // Warm surface palette. Deeper cream base + brighter warm-white cards, so
     // raised surfaces lift off the background with more contrast than before.
-    /// Screen base — warm cream `#F8E2C6`, lit by sunset rather than flash.
+    /// Screen base - warm cream `#F8E2C6`, lit by sunset rather than flash.
     static let bondSurface = Color(
         light: Color(red: 0.973, green: 0.886, blue: 0.776),
         dark:  Color(red: 0.106, green: 0.082, blue: 0.075)
     )
-    /// Raised panels / sheets — warm white `#FFF1DE`.
+    /// Raised panels / sheets - warm white `#FFF1DE`.
     static let bondSurfaceElevated = Color(
         light: Color(red: 1.000, green: 0.945, blue: 0.871),
         dark:  Color(red: 0.176, green: 0.141, blue: 0.129)
     )
-    /// Inline content card fill — the brightest warm white so cards lift off
+    /// Inline content card fill - the brightest warm white so cards lift off
     /// the cream base. Replaces ad-hoc `Color.gray.opacity(0.08)`.
     static let bondCardFill = Color(
         light: Color(red: 1.000, green: 0.976, blue: 0.945),
         dark:  Color(red: 0.208, green: 0.173, blue: 0.157)
     )
-    /// Hairline border / divider — warm brown, not gray.
+    /// Hairline border / divider - warm brown, not gray.
     static let bondHairline = Color(
         light: Color(red: 0.71, green: 0.45, blue: 0.30).opacity(0.18),
         dark:  Color(red: 1.00, green: 0.85, blue: 0.70).opacity(0.14)
@@ -144,7 +144,7 @@ extension View {
     }
 }
 
-/// Consistent grouped-section header: small, bold, warm-secondary — one voice
+/// Consistent grouped-section header: small, bold, warm-secondary - one voice
 /// for every section label so headers organize rather than compete.
 struct BondSectionHeader: View {
     let title: String

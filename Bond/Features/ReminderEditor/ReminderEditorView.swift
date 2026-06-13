@@ -128,7 +128,7 @@ struct ReminderEditorView: View {
     }
 
     /// Label on its own line, then one scrollable row of chips clearly below
-    /// it — the menu-style picker squeezed the icon+title onto the trailing
+    /// it - the menu-style picker squeezed the icon+title onto the trailing
     /// edge where long titles wrapped awkwardly.
     private var loveLanguagePicker: some View {
         VStack(alignment: .leading, spacing: BondSpacing.s) {

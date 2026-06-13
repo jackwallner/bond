@@ -93,7 +93,7 @@ struct ReminderListView: View {
                 hasLoadedOnce = true
                 openReminderFromNotification(router.pendingReminderId)
                 await repo.subscribeRealtime()
-                // Don't let rescheduling fire the bare system prompt here — the
+                // Don't let rescheduling fire the bare system prompt here - the
                 // primer below explains *why* first, then requests. Without this
                 // the primer's `.notDetermined` guard never passes.
                 await NotificationScheduler.shared.reschedule(
@@ -141,7 +141,7 @@ struct ReminderListView: View {
     }
 
     /// Show the pre-prompt primer once, only if the system hasn't been asked
-    /// yet. Both solo and paired users get a primer — without it solo users
+    /// yet. Both solo and paired users get a primer - without it solo users
     /// would hit the bare iOS dialog with no context and tap "Don't Allow",
     /// then wonder why nothing ever fires.
     private func maybeShowNotificationPrimer() async {
@@ -166,7 +166,7 @@ struct ReminderListView: View {
         return repo.reminders.filter { $0.authorId == me || $0.targetId == me }
     }
 
-    /// Repeating reminders never leave the active list — completing one only
+    /// Repeating reminders never leave the active list - completing one only
     /// checks it off for the current period. One-shots drop to Handled.
     private var activeReminders: [ReminderDTO] {
         visibleReminders.filter { $0.repeatsOnSchedule || !isActedOn($0) }
@@ -227,15 +227,15 @@ struct ReminderListView: View {
     private static let heroCardInsets = EdgeInsets(top: 6, leading: 16, bottom: 10, trailing: 16)
 
     // Visual hierarchy, top to bottom:
-    //   1. One "act now" tier — check-in prompt and partner requests — rendered
+    //   1. One "act now" tier - check-in prompt and partner requests - rendered
     //      as floating elevated cards. At most one element on screen is loud
     //      (the reveal-ready check-in uses the accent gradient).
-    //   2. The reminder list itself: at most two sections — "Past due" (the
+    //   2. The reminder list itself: at most two sections - "Past due" (the
     //      only tinted header, only when something slipped) and "Up next".
     //      Rows carry their own relative time, so finer date buckets are
     //      redundant chrome.
     //   3. Quiet utility tier: pairing nudge, a one-row link to Handled, and
-    //      the templates entry — compact rows that don't compete with the
+    //      the templates entry - compact rows that don't compete with the
     //      content above.
     private var list: some View {
         List {
@@ -469,7 +469,7 @@ struct ReminderListView: View {
         guard let coupleId = pairing.coupleId else { return }
         // The in-flight guard absorbs double-taps: without it, two quick taps
         // both pass the isActedOn check (the first event hasn't landed yet)
-        // and write two completion events — which then makes undo look broken
+        // and write two completion events - which then makes undo look broken
         // because deleting one still leaves the reminder "done".
         guard !togglingIds.contains(reminder.id), !isActedOn(reminder) else { return }
         togglingIds.insert(reminder.id)
@@ -571,7 +571,7 @@ private struct HandledRemindersView: View {
     }
 }
 
-/// Floating warm-white card with a hairline and a soft warm shadow — the
+/// Floating warm-white card with a hairline and a soft warm shadow - the
 /// shared shell for the "act now" tier so home has exactly one card language.
 private struct HomeHeroCardBackground: ViewModifier {
     var fill: AnyShapeStyle = AnyShapeStyle(Color.bondCardFill)
@@ -589,7 +589,7 @@ private struct HomeHeroCardBackground: ViewModifier {
     }
 }
 
-/// Circular tinted chip behind a card's leading SF Symbol — the consistent
+/// Circular tinted chip behind a card's leading SF Symbol - the consistent
 /// "this is an action card" marker across the hero tier.
 private struct CardIconChip: View {
     let systemName: String
@@ -722,7 +722,7 @@ private struct CheckInPromptCard: View {
 
 /// Home-screen nudge shown to solo users so pairing isn't buried in Settings.
 /// Dismissible (persisted) so it never nags. A plain grouped row in the
-/// utility tier at the bottom of the list — the old hairline-outline floating
+/// utility tier at the bottom of the list - the old hairline-outline floating
 /// card read as a broken/empty card against the cream wash in light mode.
 private struct PairingNudgeRow: View {
     let onPair: () -> Void
@@ -773,8 +773,8 @@ private struct MyListEmptyView: View {
 
     private var subtitle: String {
         isPaired
-            ? "Add something for you or \(partnerName) — or pick a template below."
-            : "Add a reminder — or pick a template below."
+            ? "Add something for you or \(partnerName), or pick a template below."
+            : "Add a reminder, or pick a template below."
     }
 
     var body: some View {
@@ -798,7 +798,7 @@ private struct MyListEmptyView: View {
 }
 
 /// Always-visible templates entry point at the bottom of the home list. A
-/// plain grouped row — same size and shape as the reminder rows above it —
+/// plain grouped row - same size and shape as the reminder rows above it -
 /// with a small Bond+ badge as the only gating signal for free users. The
 /// destination handles its own gating (free users hit the templates preview).
 private struct TemplatesHomeRow: View {

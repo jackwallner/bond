@@ -304,7 +304,7 @@ private struct QRCodeView: View {
 /// users get to use the rest of the app without an account, but pairing
 /// requires a recoverable identity so their partner can keep reaching them
 /// across reinstalls and device swaps. Supabase promotes the anonymous user
-/// to a permanent Apple-linked user in place — no data migration needed.
+/// to a permanent Apple-linked user in place - no data migration needed.
 struct AppleSignInPairingGate: View {
     @Environment(SupabaseService.self) private var supabase
     @Environment(PairingService.self) private var pairing

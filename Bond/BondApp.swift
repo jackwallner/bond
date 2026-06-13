@@ -37,7 +37,7 @@ struct BondApp: App {
         let standard = UINavigationBarAppearance()
         standard.configureWithDefaultBackground()
         // At rest the bar must show the warm wash, not an opaque system
-        // material — a gray-white slab at the top of every screen is the one
+        // material - a gray-white slab at the top of every screen is the one
         // place the unified warm surface still broke in light mode. The blur
         // returns only once content scrolls under the bar.
         let scrollEdge = UINavigationBarAppearance()
@@ -86,7 +86,7 @@ struct BondApp: App {
                 .onChange(of: scenePhase) { _, phase in
                     // Re-pull entitlements when returning to foreground.
                     // App Store transactions can take a moment to propagate
-                    // to RevenueCat — without this, a paid user can sit on a
+                    // to RevenueCat - without this, a paid user can sit on a
                     // stale isPremium=false until they reopen the app.
                     if phase == .active {
                         Task { await store.refresh() }
@@ -162,7 +162,7 @@ struct RootView: View {
                 ZStack {
                     Color.bondSurface.ignoresSafeArea()
                     if isAppBootstrapped && !supabase.isAuthenticated {
-                        // Bootstrap finished but no session exists — almost
+                        // Bootstrap finished but no session exists - almost
                         // always a first-launch network failure (anonymous
                         // sign-in needs the network). Offer a way forward
                         // instead of an indefinite spinner.
@@ -191,7 +191,7 @@ struct RootView: View {
         .sheet(isPresented: Binding(
             // Only for users who already finished setup (a couple exists).
             // Pre-setup, the same state routes to the full-screen
-            // InviteWelcomeView instead — presenting both stacked a Settings
+            // InviteWelcomeView instead - presenting both stacked a Settings
             // -style sheet on top of the invitee's own onboarding.
             get: { pairing.requiresSignInToPair && pairing.coupleId != nil },
             set: { if !$0 { pairing.requiresSignInToPair = false } }
@@ -216,7 +216,7 @@ struct RootView: View {
         .task {
             // Single, idempotent session bootstrap. Restores a cached session
             // or silently signs in anonymously on first launch. Must be the
-            // only entry point — calling signInAnonymously() in parallel with
+            // only entry point - calling signInAnonymously() in parallel with
             // init's restoreSession() can mint two anon users and leave the
             // client session out of sync with currentUserId.
             await supabase.bootstrap()
@@ -267,7 +267,7 @@ struct RootView: View {
         // Proactive post-onboarding paywall for the solo path. Most users
         // start solo and may never pair, so without this the only people who
         // ever see a proactive offer are the minority who reach
-        // pairing-success — everyone else has to stumble into a gate.
+        // pairing-success - everyone else has to stumble into a gate.
         // Finishing setup is the solo flow's peak-intent moment.
         .onChange(of: currentDestination) { old, new in
             guard old == .intentSetup, new == .home,
@@ -383,7 +383,7 @@ struct RootView: View {
         if pairing.justPaired {
             return .pairingSuccess
         }
-        // Paired, but this device never captured onboarding preferences —
+        // Paired, but this device never captured onboarding preferences -
         // the invitee path skips intent setup entirely. Run the trimmed
         // intake (love language + focus areas) once before home.
         if !pairing.solo, onboardingPrefs.committedAt == nil, onboardingPrefs.focusAreas.isEmpty {
@@ -393,7 +393,7 @@ struct RootView: View {
     }
 }
 
-/// Primary navigation. Each core area is a tab so nothing is buried — the
+/// Primary navigation. Each core area is a tab so nothing is buried - the
 /// previous design hid Check-In, Milestones, Insights, and Settings behind a
 /// single top-left "..." that read as overflow, and most users never found
 /// them. Each tab root owns its own NavigationStack (Settings doesn't, so it's
@@ -427,7 +427,7 @@ struct MainTabView: View {
                 .tabItem { Label("Settings", systemImage: "gearshape.fill") }
         }
         // A tapped reminder notification should land on the Reminders tab, where
-        // ReminderListView presents the editor — otherwise the editor sheet would
+        // ReminderListView presents the editor - otherwise the editor sheet would
         // pop up over whatever tab the user happened to be on.
         .onChange(of: router.pendingReminderId) { _, id in
             if id != nil { selection = .reminders }

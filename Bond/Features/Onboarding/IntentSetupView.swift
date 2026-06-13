@@ -69,7 +69,7 @@ final class OnboardingPreferences {
     }
 
     /// Ordered list of love languages the user picked for their partner.
-    /// First element is the primary — it drives prompt weighting and the
+    /// First element is the primary - it drives prompt weighting and the
     /// `partnerLoveLanguage` compatibility shim below.
     var partnerLoveLanguages: [LoveLanguage] {
         didSet {
@@ -190,7 +190,7 @@ struct IntentSetupView: View {
         .animation(.easeOut(duration: 0.25), value: step)
         // Don't carry a stale error in from a previous failed attempt.
         .onAppear { pairing.lastError = nil }
-        // "Have an invite code?" — a fresh install whose partner already uses
+        // "Have an invite code?" - a fresh install whose partner already uses
         // Bond shouldn't have to finish solo setup just to reach Settings →
         // Connect a partner. Pairing here flips RootView straight to the
         // success screen, abandoning the rest of this flow.
@@ -380,7 +380,7 @@ struct IntentSetupView: View {
             defer { isFinishing = false }
             await pairing.createSoloCouple()
         case .invitee:
-            // Already paired — the couple exists. Stamping committedAt marks
+            // Already paired - the couple exists. Stamping committedAt marks
             // the intake complete, which is what flips RootView to home.
             prefs.committedAt = Date()
         }

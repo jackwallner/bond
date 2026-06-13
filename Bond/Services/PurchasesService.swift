@@ -17,7 +17,7 @@ final class PurchasesService {
     static let apiKey = "appl_mNANfaYASZUZZwdRZuLHXzovffW"
     /// MUST exactly match the entitlement *identifier* in the RevenueCat
     /// dashboard (Product catalog → Entitlements), NOT the display name. It is
-    /// `Husband & Wife Reminder - Bond Pro` — the long-standing "payment went
+    /// `Husband & Wife Reminder - Bond Pro` - the long-standing "payment went
     /// through but still syncing" bug was this checking `"premium"`, which never
     /// existed, so a successful purchase could never resolve to an entitlement.
     static let entitlementId = "Husband & Wife Reminder - Bond Pro"
@@ -33,7 +33,7 @@ final class PurchasesService {
     private(set) var introEligibility: [String: Bool] = [:]
     var lastError: String?
     /// True when the most recent purchase failure is one where Apple may have
-    /// already taken payment (receipt/ownership conflicts) — i.e. a Restore
+    /// already taken payment (receipt/ownership conflicts) - i.e. a Restore
     /// could complete the unlock. Lets the paywall avoid offering Restore for
     /// failures (network, store outage) where there's nothing to restore.
     private(set) var lastErrorSuggestsRestore = false
@@ -134,12 +134,12 @@ final class PurchasesService {
             result = try await Purchases.shared.purchase(package: package)
         } catch let error as RevenueCat.ErrorCode {
             // RevenueCat can throw ErrorCode directly. A user backing out of
-            // Apple's payment sheet is a cancel, not a failure — surface no
+            // Apple's payment sheet is a cancel, not a failure - surface no
             // error and no Restore prompt.
             if error == .purchaseCancelledError { return .cancelled }
             log.error("Purchase threw ErrorCode \(error.rawValue): \(error.localizedDescription)")
             // Some codes mean Apple accepted payment but RC couldn't attach it
-            // to this user — a restore usually completes the unlock.
+            // to this user - a restore usually completes the unlock.
             if await recoverFromKnownPurchaseError(error) {
                 return .purchased
             }
@@ -149,10 +149,10 @@ final class PurchasesService {
         } catch {
             // RevenueCat normally surfaces failures as a bridged NSError in its
             // own domain. Only interpret the numeric code as an RC ErrorCode
-            // when the domain matches — otherwise an unrelated NSError code
+            // when the domain matches - otherwise an unrelated NSError code
             // could collide with an RC raw value and trigger a bogus restore.
             let nsError = error as NSError
-            log.error("Purchase threw \(nsError.domain):\(nsError.code) — \(error.localizedDescription)")
+            log.error("Purchase threw \(nsError.domain):\(nsError.code) - \(error.localizedDescription)")
             if nsError.domain == RevenueCat.ErrorCode.errorDomain,
                let code = RevenueCat.ErrorCode(rawValue: nsError.code) {
                 if code == .purchaseCancelledError { return .cancelled }
@@ -173,7 +173,7 @@ final class PurchasesService {
         if isPremium {
             return .purchased
         }
-        // StoreKit → RevenueCat can lag a beat after Apple confirms payment —
+        // StoreKit → RevenueCat can lag a beat after Apple confirms payment -
         // especially in sandbox/TestFlight where transactions can take several
         // seconds to propagate. Force a sync (stronger than `customerInfo()`
         // which can return cached data) and poll until the entitlement lands
@@ -198,7 +198,7 @@ final class PurchasesService {
     }
 
     /// Some RC errors mean "Apple took the payment, but the entitlement is
-    /// attached to a different RC user / receipt" — restore reattaches it.
+    /// attached to a different RC user / receipt" - restore reattaches it.
     /// Returns true when a restore successfully unlocked premium.
     private func recoverFromKnownPurchaseError(_ code: RevenueCat.ErrorCode) async -> Bool {
         switch code {
@@ -266,7 +266,7 @@ final class PurchasesService {
         do {
             let (info, _) = try await Purchases.shared.logIn(supabaseUserId.uuidString)
             apply(info: info)
-            log.info("Identified user \(supabaseUserId) — premium: \(self.isPremium)")
+            log.info("Identified user \(supabaseUserId) - premium: \(self.isPremium)")
         } catch {
             lastError = error.localizedDescription
             log.error("Identify failed: \(error.localizedDescription)")
@@ -289,7 +289,7 @@ final class PurchasesService {
             let info = try await Purchases.shared.restorePurchases()
             apply(info: info)
             lastError = isPremium ? nil : "No active Bond+ purchase found for this Apple ID."
-            log.info("Restored purchases — premium: \(self.isPremium)")
+            log.info("Restored purchases - premium: \(self.isPremium)")
         } catch {
             lastError = "Couldn't restore purchases. Try again."
             log.error("Restore failed: \(error.localizedDescription)")
@@ -304,11 +304,11 @@ final class PurchasesService {
     /// Whether this customer should have Bond+ unlocked.
     ///
     /// Bond sells exactly one paid tier, so we unlock on the first signal that
-    /// the user has paid — in priority order:
+    /// the user has paid - in priority order:
     ///   1. the configured `premium` entitlement is active (the happy path), or
-    ///   2. *any* entitlement is active — covers an entitlement-identifier
+    ///   2. *any* entitlement is active - covers an entitlement-identifier
     ///      mismatch between this app and the RevenueCat dashboard, or
-    ///   3. they own an active subscription / a known Bond+ product — covers a
+    ///   3. they own an active subscription / a known Bond+ product - covers a
     ///      missing or broken product→entitlement mapping in the dashboard.
     ///
     /// (2) and (3) are the recurring TestFlight/sandbox failure mode: Apple
@@ -333,7 +333,7 @@ final class PurchasesService {
         customerInfo = info
         isPremium = hasActivePremium(info)
         log.info("""
-            Customer info updated — premium: \(self.isPremium) \
+            Customer info updated - premium: \(self.isPremium) \
             (entitlement: \(info.entitlements[Self.entitlementId]?.isActive == true), \
             activeEntitlements: \(info.entitlements.active.count), \
             activeSubs: \(info.activeSubscriptions.count))

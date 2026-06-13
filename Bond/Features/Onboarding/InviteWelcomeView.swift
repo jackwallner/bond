@@ -2,7 +2,7 @@ import AuthenticationServices
 import SwiftUI
 
 /// First-run onboarding for someone who opened Bond from their partner's
-/// invite link. They didn't choose Bond — their partner did — so instead of
+/// invite link. They didn't choose Bond - their partner did - so instead of
 /// the solo intent setup ("Who do you want to show up for?") this screen
 /// acknowledges the invite, explains what pairing gives them, and walks the
 /// one required step (Apple Sign-In) before consuming the code. RootView
@@ -28,7 +28,7 @@ struct InviteWelcomeView: View {
                 Text("Your partner invited you")
                     .font(.bond(.title, weight: .bold))
                     .multilineTextAlignment(.center)
-                Text("Bond is a small app for the two of you — little reminders, shared milestones, and a daily check-in.")
+                Text("Bond is a small app for the two of you, little reminders, shared milestones, and a daily check-in.")
                     .font(.bond(.body))
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
@@ -64,7 +64,7 @@ struct InviteWelcomeView: View {
                         .padding(.horizontal, BondSpacing.xl)
                 } else {
                     // Already signed in (e.g. the first pairing attempt
-                    // failed after sign-in) — offer the pair step directly.
+                    // failed after sign-in) - offer the pair step directly.
                     BondPrimaryButton(title: "Accept invite") {
                         Task { await pairing.consumeDeferredInviteIfNeeded() }
                     }

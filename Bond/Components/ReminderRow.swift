@@ -46,7 +46,7 @@ struct ReminderRow: View {
         HStack(spacing: 12) {
             // Inner block keeps icon top-aligned against multi-line content.
             // The outer HStack uses default (center) alignment so the chevron
-            // sits vertically centered against the whole row — matching iOS
+            // sits vertically centered against the whole row - matching iOS
             // Reminders/Mail.
             HStack(alignment: .top, spacing: 12) {
                 checkCircle

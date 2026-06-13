@@ -1,4 +1,4 @@
-Bond is fully usable with NO login. On first launch the app silently creates an anonymous account, so there is no demo username/password to enter — just open the app.
+Bond is fully usable with NO login. On first launch the app silently creates an anonymous account, so there is no demo username/password to enter, just open the app.
 
 NAVIGATION
 The app uses a bottom tab bar with five tabs: Reminders · Check-In · Milestones · Insights · Settings. (There is no top-left "..." / overflow menu.) "Settings" is the rightmost tab.
@@ -17,7 +17,7 @@ DAILY CHECK-IN (requires a paired partner)
 The Check-In tab shows "For Couples Only" until you pair, since it is a shared, two-person feature. If you are unable to pair two devices/Apple IDs, email or call us using the contact details below and we will provide a short screen recording of the paired Check-In flow.
 
 BOND+ (auto-renewable subscription, testable in sandbox)
-Bond+ unlocks templates, insights, location/surprise reminders, and the Daily Check-In answer flow. Reach the paywall by tapping any locked feature — e.g. open a reminder -> the "Schedule" picker -> "At a place" or "Random surprise"; or tap the templates card at the bottom of the Reminders tab. It is purchased via StoreKit and works with a sandbox Apple ID.
+Bond+ unlocks templates, insights, location/surprise reminders, and the Daily Check-In answer flow. Reach the paywall by tapping any locked feature, e.g. open a reminder -> the "Schedule" picker -> "At a place" or "Random surprise"; or tap the templates card at the bottom of the Reminders tab. It is purchased via StoreKit and works with a sandbox Apple ID.
 
 ACCOUNT DELETION (Guideline 5.1.1(v))
 In-app deletion: Settings tab -> "Delete account" -> "Delete everything". It permanently deletes the account and all associated data. Any active App Store subscription is managed separately by the user in Apple ID settings.

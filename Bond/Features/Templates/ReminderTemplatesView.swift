@@ -181,7 +181,7 @@ struct TemplateGroupDetailView: View {
         .alert("Templates added!", isPresented: $showConfirmation) {
             Button("Done") { dismiss() }
         } message: {
-            Text("\(createdCount) reminders added — spread across the coming days so they arrive one at a time, not all at once. Customize any of them anytime.")
+            Text("\(createdCount) reminders added, spread across the coming days so they arrive one at a time, not all at once. Customize any of them anytime.")
         }
     }
 
@@ -200,8 +200,8 @@ struct TemplateGroupDetailView: View {
         let now = Date()
 
         let drafts: [ReminderDTO] = group.reminders.enumerated().map { index, template in
-            // Anchor each reminder to a friendly clock time — recurring packs at
-            // 9am, one-time nudges at 2pm — then stagger one day apart so
+            // Anchor each reminder to a friendly clock time - recurring packs at
+            // 9am, one-time nudges at 2pm - then stagger one day apart so
             // importing a whole pack doesn't dogpile notifications into one
             // moment. Start from the next occurrence of that hour so one-time
             // items are always in the future (a past fireAt would be dropped

@@ -2,7 +2,7 @@ import SwiftUI
 
 extension Notification.Name {
     /// Posted once the notification-primer question is fully resolved for this
-    /// launch — it won't show, the user dismissed it, or the system permission
+    /// launch - it won't show, the user dismissed it, or the system permission
     /// dialog has been answered. Lets RootView queue follow-up presentations
     /// (the post-onboarding paywall) without racing the primer's sheet.
     static let bondNotificationPrimerResolved =
@@ -10,7 +10,7 @@ extension Notification.Name {
 }
 
 /// Pre-prompt primer shown once before the system notification dialog.
-/// Presented as a medium sheet — never a takeover, always escapable.
+/// Presented as a medium sheet - never a takeover, always escapable.
 struct NotificationPrimerSheet: View {
     @Environment(\.dismiss) private var dismiss
     let onRequest: () -> Void

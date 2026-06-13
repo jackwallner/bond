@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// One-time interstitial shown right after pairing completes. It exists for a
-/// single beat of weight — no CTA, no upsell, no onboarding.
+/// single beat of weight - no CTA, no upsell, no onboarding.
 struct PairingSuccessView: View {
     let partnerName: String?
     let onDone: () -> Void
@@ -25,7 +25,7 @@ struct PairingSuccessView: View {
 
             Spacer()
 
-            // Always an explicit Continue — pairing is an emotionally
+            // Always an explicit Continue - pairing is an emotionally
             // meaningful moment; don't auto-dismiss it out from under the
             // user before they can read the names or screenshot it.
             BondPrimaryButton(title: "Continue", action: onDone)

@@ -41,7 +41,7 @@ final class DailyCheckInService {
 
             // Explicit ORDER BY: without it Postgres row order is unspecified,
             // so the same index could resolve to different questions for the
-            // two partners — or change for one user mid-day.
+            // two partners - or change for one user mid-day.
             let questions: [DailyQuestionDTO] = try await supabase.client
                 .from("daily_questions")
                 .select()
@@ -51,7 +51,7 @@ final class DailyCheckInService {
                 .value
 
             guard let question = questions.first else {
-                log.error("No questions found in DB — using fallback")
+                log.error("No questions found in DB - using fallback")
                 todaysQuestion = DailyQuestionDTO(
                     id: UUID(),
                     question: "What is one thing you appreciated about your partner today?",
@@ -129,7 +129,7 @@ final class DailyCheckInService {
         myResponse != nil && partnerResponse != nil
     }
 
-    /// Deterministic integer derived from a UUID — stable across processes.
+    /// Deterministic integer derived from a UUID - stable across processes.
     private static func stableSeed(from uuid: UUID) -> Int {
         withUnsafeBytes(of: uuid.uuid) { bytes in
             bytes.reduce(0) { ($0 &* 31) &+ Int($1) }

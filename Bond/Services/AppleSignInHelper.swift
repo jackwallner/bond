@@ -3,7 +3,7 @@ import CryptoKit
 import Foundation
 
 /// Nonce management for Sign in with Apple. The button itself is the native
-/// `SignInWithAppleButton` (driven from its own `onRequest`/`onCompletion`) —
+/// `SignInWithAppleButton` (driven from its own `onRequest`/`onCompletion`) -
 /// no transparent overlay. This type only owns the nonce lifecycle and
 /// credential extraction.
 @MainActor

@@ -41,7 +41,7 @@ final class PairingService {
         do {
             // No `.single()`: zero rows must be distinguishable from a failed
             // request. With `.single()` both threw, and the catch below wiped
-            // coupleId — so one flaky request on launch dumped an existing
+            // coupleId - so one flaky request on launch dumped an existing
             // (even paired) user back into intent setup, where the solo-couple
             // RPC then failed with "already in a couple".
             let rows: [CoupleDTO] = try await supabase.client
@@ -63,7 +63,7 @@ final class PairingService {
                     .execute()
                     .value
                 // An invitee who paired during onboarding never typed a
-                // partner name — seed it from the partner's profile so
+                // partner name - seed it from the partner's profile so
                 // prompts and headers don't address "them".
                 let prefs = OnboardingPreferences.shared
                 if prefs.partnerName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
@@ -76,14 +76,14 @@ final class PairingService {
             }
             log.info("Loaded couple \(self.coupleId?.uuidString ?? "nil") (solo: \(self.solo))")
         } catch {
-            // Transport/auth failure — keep whatever state we had rather than
+            // Transport/auth failure - keep whatever state we had rather than
             // pretending the user has no couple.
             log.error("loadCouple failed (state kept): \(error.localizedDescription)")
         }
     }
 
     /// Polls while the inviter sits on the "share this code" screen. Nothing
-    /// notifies this device when the partner consumes the code on theirs —
+    /// notifies this device when the partner consumes the code on theirs -
     /// without polling, the inviter stays "solo" until an app restart and the
     /// pairing looks broken. Returns when paired, when the task is cancelled
     /// (view dismissed), or when the invite expires.
@@ -214,12 +214,12 @@ final class PairingService {
     }
 
     /// The pairing RPC raises terse Postgres exceptions ("invalid or expired
-    /// code") that PostgREST passes through verbatim — translate the known
+    /// code") that PostgREST passes through verbatim - translate the known
     /// ones into copy a person on the pairing screen can act on.
     private static func friendlyPairingError(_ error: Error) -> String {
         let text = error.localizedDescription.lowercased()
         if text.contains("invalid or expired code") {
-            return "That code didn't work — it may have expired. Ask your partner for a fresh one."
+            return "That code didn't work. It may have expired. Ask your partner for a fresh one."
         }
         if text.contains("cannot pair with yourself") {
             return "That's your own code. Share it with your partner and enter theirs here."
@@ -235,7 +235,7 @@ final class PairingService {
 
     /// Unpairs the current couple. The `leave_couple` RPC splits the shared
     /// couple into two solo couples, re-homing each partner's own reminders,
-    /// check-ins, and event history and copying shared milestones to both — so
+    /// check-ins, and event history and copying shared milestones to both - so
     /// neither partner loses data.
     func leaveCouple() async {
         guard let me = supabase.currentUserId else {
@@ -274,7 +274,7 @@ final class PairingService {
         let isCustomScheme = url.scheme == "bond"
         guard isUniversalLink || isCustomScheme else { return }
         // In bond://pair/CODE the "pair" segment is the URL *host*, not a
-        // path component — fold it back in so both link forms parse the same.
+        // path component - fold it back in so both link forms parse the same.
         var parts = url.pathComponents.filter { $0 != "/" }
         if isCustomScheme, let host = url.host {
             parts.insert(host, at: 0)
@@ -296,7 +296,7 @@ final class PairingService {
 
     /// Consume an invite code captured before the user had a recoverable
     /// identity. Called by [[AppleSignInPairingGate]] after sign-in succeeds.
-    /// The code is only cleared once pairing actually succeeds — clearing it
+    /// The code is only cleared once pairing actually succeeds - clearing it
     /// up front meant one failed RPC silently dropped the invite, and the
     /// invitee onboarding flow (which exists while the code does) vanished
     /// out from under the user with no way to retry.

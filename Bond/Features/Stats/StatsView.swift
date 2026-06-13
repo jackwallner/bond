@@ -156,7 +156,7 @@ struct StatsView: View {
         .bondWarmList()
     }
 
-    /// "Did I actually do the things?" — completed vs. due over the last
+    /// "Did I actually do the things?" - completed vs. due over the last
     /// week, per repeating reminder, with the per-language split below.
     @ViewBuilder
     private func followThroughSection(a: LoveLanguageAnalyzer) -> some View {
@@ -236,7 +236,7 @@ struct StatsView: View {
             Divider().frame(height: 40)
 
             VStack(alignment: .center, spacing: 4) {
-                Text(a.completionRate().map { "\(Int($0))%" } ?? "—")
+                Text(a.completionRate().map { "\(Int($0))%" } ?? "–")
                     .font(.bond(.title, weight: .bold))
                     .foregroundStyle(.green)
                 Text("done this week")

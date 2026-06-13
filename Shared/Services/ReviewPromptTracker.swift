@@ -1,7 +1,7 @@
 import Foundation
 
 extension Notification.Name {
-    /// Posted when the user completes a reminder — host may present the enjoyment funnel after a short delay.
+    /// Posted when the user completes a reminder - host may present the enjoyment funnel after a short delay.
     static let bondPositiveMomentForReview = Notification.Name("com.jackwallner.bond.positiveMomentForReview")
 }
 

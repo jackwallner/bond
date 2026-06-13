@@ -56,7 +56,7 @@ public enum ReminderTrigger: Codable, Sendable, Hashable {
     }
 
     /// For `.randomRecurring`: the next daily window whose end is still ahead
-    /// of `reference` — today's window if it hasn't closed yet, else
+    /// of `reference` - today's window if it hasn't closed yet, else
     /// tomorrow's. Returns nil for other trigger kinds.
     public func nextWindow(
         after reference: Date = .now, calendar: Calendar = .current

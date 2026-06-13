@@ -2,8 +2,8 @@ import Foundation
 
 // Per-occurrence completion semantics. A one-shot reminder (one time, at a
 // place, single random surprise) is completed forever by one acted event. A
-// repeating reminder is completed only for its current period — done today,
-// back tomorrow — which is what makes "mark it done" meaningful for a daily
+// repeating reminder is completed only for its current period - done today,
+// back tomorrow - which is what makes "mark it done" meaningful for a daily
 // habit instead of a one-way trip to the Handled pile.
 public extension ReminderDTO {
     /// True when this reminder comes back on a schedule (recurring rrule or

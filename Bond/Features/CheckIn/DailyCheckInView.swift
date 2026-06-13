@@ -36,7 +36,7 @@ struct DailyCheckInView: View {
         }
     }
 
-    /// Free, paired users see today's real question — the answer flow stays
+    /// Free, paired users see today's real question - the answer flow stays
     /// paywalled. Question text alone isn't sensitive: the value of Premium
     /// is in the back-and-forth, not in knowing the prompt.
     private var teaserContent: some View {
@@ -215,7 +215,7 @@ struct DailyCheckInView: View {
 
     private func runRevealIfNeeded() {
         let key = "reveal-shown-\(Self.dayKey())"
-        // Subsequent visits skip the ceremony — they've already had their
+        // Subsequent visits skip the ceremony - they've already had their
         // moment today.
         if UserDefaults.standard.bool(forKey: key) {
             revealPhase = .revealed
@@ -223,7 +223,7 @@ struct DailyCheckInView: View {
         }
         UserDefaults.standard.set(true, forKey: key)
         // First visit of the day stays sealed. The user taps the envelope to
-        // flip it (see [[FlipRevealCard]]) — interactive reveal feels more
+        // flip it (see [[FlipRevealCard]]) - interactive reveal feels more
         // intentional than an auto-fade and matches the "envelope" framing.
         revealPhase = .sealed
     }
