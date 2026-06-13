@@ -1,1 +1,1 @@
-związek,tracker,partner,widget,małżonek,dystans,kamień,przypomnienie,licznik,paired,checkin
+związek,partner,małżonek,dystans,przypomnienie,odliczanie,wiadomości,notatki,randka,pytania

@@ -1,1 +1,1 @@
-razmerje,tracker,partner,widget,zakonec,razdalja,mejnik,opomnik,števec,paired
+razmerje,partner,zakonec,razdalja,opomnik,odštevanje,sporočila,beležke,zmenek,vprašanja,poroka

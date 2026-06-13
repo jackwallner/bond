@@ -1,1 +1,1 @@
-relationship,tracker,partner,widget,milestone,paired,marriage,checkin,lovemo,inlove,questions,nudge
+relationship,tracker,countdown,long,distance,messages,notes,date,partner,questions,marriage,paired

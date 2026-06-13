@@ -1,1 +1,1 @@
-relacionamento,tracker,parceiro,widget,cônjuge,distância,marco,lembrete,contador,paired,checkin
+relacionamento,distância,mensagens,notas,encontro,perguntas,parceiro,cônjuge,casamento,lembrete

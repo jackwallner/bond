@@ -1,1 +1,1 @@
-forhold,tracker,partner,widget,ektefelle,avstand,milepæl,påminnelse,teller,paired,checkin
+forhold,partner,ektefelle,avstand,påminnelse,nedtelling,meldinger,notater,date,spørsmål,ekteskap
