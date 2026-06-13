@@ -1,1 +1,1 @@
-relació,tracker,widget,cònjuge,distància,fita,recordatori,comptador,paired,checkin
+relació,cònjuge,distància,recordatori,missatges,notes,cita,preguntes,matrimoni,parelles,seguiment

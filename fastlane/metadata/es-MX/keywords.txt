@@ -1,1 +1,1 @@
-relación,tracker,widget,cónyuge,distancia,hito,recordatorio,contador,paired,checkin,matrimonio
+days,together,calendar,memory,timer,streak,moments,girlfriend,boyfriend,husband,wife,spouse

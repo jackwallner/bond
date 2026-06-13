@@ -1,1 +1,1 @@
-ilişki,tracker,partner,widget,eş,mesafe,noktası,hatırlatıcı,sayaç,paired,checkin
+ilişki,partner,eş,mesafe,hatırlatıcı,mesajlar,notlar,randevu,sorular,evlilik,geri sayım

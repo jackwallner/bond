@@ -1,1 +1,1 @@
-hubungan,tracker,widget,jarak,tonggak,pengingat,penghitung,paired,checkin
+hubungan,pasangan,jarak,pengingat,pesan,catatan,kencan,pertanyaan,pernikahan,pacar,mundur

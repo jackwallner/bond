@@ -1,1 +1,1 @@
-relație,tracker,partener,widget,soț,distanță,reper,reminder,contor,paired,checkin
+relație,partener,soț,distanță,memento,mesaje,notițe,întâlnire,întrebări,căsătorie

@@ -1,1 +1,1 @@
-kapcsolat,tracker,partner,widget,házastárs,távolság,mérföldkő,emlékeztető,számláló,paired
+kapcsolat,partner,házastárs,távolság,emlékeztető,üzenetek,jegyzetek,randi,kérdések,házasság

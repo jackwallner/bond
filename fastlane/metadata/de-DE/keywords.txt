@@ -1,1 +1,1 @@
-beziehung,tracker,partner,widget,ehepartner,fernbeziehung,meilenstein,erinnerung,zähler,pärchen,ehe
+beziehung,tracker,fernbeziehung,countdown,nachrichten,notizen,erinnerung,partner,ehepartner,date,ehe

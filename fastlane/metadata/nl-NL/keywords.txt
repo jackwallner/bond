@@ -1,1 +1,1 @@
-relatie,tracker,partner,widget,echtgenoot,afstand,mijlpaal,herinnering,teller,paired,stel,checkin
+relatie,afstand,herinnering,berichten,notities,aftellen,vragen,partner,echtgenoot,huwelijk,date
