@@ -14,7 +14,7 @@ ASC API key (shared across apps): `~/.baseball_credentials` (`ASC_API_KEY_ID`, `
 ## Marketing site
 
 - Pages: `docs/index.html`, `privacy-policy.html`, `terms.html`, `support.html` (+ `privacy/`, `terms/`, `support/` index routes for clean URLs)
-- Production host: `https://jackwallner.com/bond/` via portfolio repo — run `./scripts/sync-site-to-portfolio.sh` then push `~/portfolio` `main`
+- Production host: `https://jackwallner.github.io/bond/` — served by **this repo's own** GitHub Pages (main branch, `/docs`). Just push `main` to publish; no separate site repo. (This repo is public so Pages works; same setup as the `vitals` repo.)
 
 **Review prompt:** See `docs/review-prompt.md` (5-star funnel; set `BondAppStoreID` in Info.plist before App Store launch).
 

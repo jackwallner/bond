@@ -2,7 +2,7 @@
 
 ---
 
-Produce exactly 6 finished PNGs and nothing else. No preamble, no
+Produce exactly 5 finished PNGs and nothing else. No preamble, no
 explanations, no alternates, no manifest, no follow-up questions.
 
 ## The one rule that overrides everything else
@@ -56,9 +56,9 @@ even if it looks better.
 5. `raw-5-templates.png` → `store-5-templates.png`
    Headline: "Date nights to long distance"
    Subline: "Ready-made reminder packs for every couple"
-6. `raw-6-insights.png` → `store-6-insights.png`
-   Headline: "See how you show up"
-   Subline: "Streaks and balance across love languages"
+
+(An Insights frame was intentionally dropped — five strong frames beat a
+sixth padded one when the Insights data reads sparse.)
 
 If a listed raw is missing from `claude-design/raw/`, skip that frame and
 produce the rest — do not invent a screen to fill the slot.

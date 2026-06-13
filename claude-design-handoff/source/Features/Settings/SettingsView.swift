@@ -109,8 +109,8 @@ struct SettingsView: View {
             }
 
             Section {
-                Link("Privacy policy", destination: URL(string: "https://jackwallner.com/bond/privacy")!)
-                Link("Terms of service", destination: URL(string: "https://jackwallner.com/bond/terms")!)
+                Link("Privacy policy", destination: URL(string: "https://jackwallner.github.io/bond/privacy")!)
+                Link("Terms of service", destination: URL(string: "https://jackwallner.github.io/bond/terms")!)
                 Link("Support", destination: URL(string: "mailto:bond@jackwallner.com")!)
             } footer: {
                 HStack {

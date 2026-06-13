@@ -46,7 +46,7 @@ struct OnboardingView: View {
     }
 
     private var legalFooter: some View {
-        Text("By continuing you accept the [Terms](https://jackwallner.com/bond/terms) and [Privacy Policy](https://jackwallner.com/bond/privacy).")
+        Text("By continuing you accept the [Terms](https://jackwallner.github.io/bond/terms) and [Privacy Policy](https://jackwallner.github.io/bond/privacy).")
             .font(.footnote)
             .foregroundStyle(.secondary)
             .tint(.bondAccent)

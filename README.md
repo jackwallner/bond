@@ -66,10 +66,10 @@ Static pages live in `docs/` (same layout as Vitals: landing, privacy, terms, su
 
 | Page | URL (production) |
 |------|------------------|
-| Landing | https://jackwallner.com/bond/ |
-| Privacy | https://jackwallner.com/bond/privacy |
-| Terms | https://jackwallner.com/bond/terms |
-| Support | https://jackwallner.com/bond/support |
+| Landing | https://jackwallner.github.io/bond/ |
+| Privacy | https://jackwallner.github.io/bond/privacy |
+| Terms | https://jackwallner.github.io/bond/terms |
+| Support | https://jackwallner.github.io/bond/support |
 
 Publish: `./scripts/sync-site-to-portfolio.sh` then commit & push the [portfolio](https://github.com/jackwallner/portfolio) repo (`main` / `/docs` → GitHub Pages on `jackwallner.com`).
 
