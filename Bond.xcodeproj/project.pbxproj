@@ -89,6 +89,7 @@
 		B41BE25B58B6E887BA3B7C52 /* RecurrencePresetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB62C0231491EE4F65A95A2C /* RecurrencePresetTests.swift */; };
 		B42C73BC3E1E71858F9531DE /* WatchPayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD85E0386762BF4BEEBA39E7 /* WatchPayload.swift */; };
 		B4BBB555EDB39A162C36CA54 /* ReminderTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301EDB6E9D1A234A90519B12 /* ReminderTemplate.swift */; };
+		B65D13BAD4CEC94C5AF31EB6 /* ReviewPromptSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F0920FA522D143B8C679CC2 /* ReviewPromptSheet.swift */; };
 		B8A4BD8347DD2D9141E150D0 /* ReminderEventDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18775E994B22E961A54F8E3D /* ReminderEventDTO.swift */; };
 		BC6A2BB0AAC48DDE56E8BEE6 /* BondWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F49157A02B5BD4DD60E4D6A9 /* BondWatchApp.swift */; };
 		BC994AD8DBC607F4A4E7A579 /* AppStoreReviewLinks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 957E650367A6CEF403C68524 /* AppStoreReviewLinks.swift */; };
@@ -178,6 +179,7 @@
 /* Begin PBXFileReference section */
 		046ACADF7DDF5DD6D6E4F7DD /* WatchConnectivitySender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConnectivitySender.swift; sourceTree = "<group>"; };
 		05B10D58B2719BBE3B32C681 /* BondTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = BondTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		0F0920FA522D143B8C679CC2 /* ReviewPromptSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewPromptSheet.swift; sourceTree = "<group>"; };
 		113F2620C6CB170BE5DFAC2C /* MilestonesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MilestonesService.swift; sourceTree = "<group>"; };
 		12B0502E3CD2A5CE2602DE00 /* SupabaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseService.swift; sourceTree = "<group>"; };
 		167CA752300A93B733B1F99B /* PairingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PairingService.swift; sourceTree = "<group>"; };
@@ -506,6 +508,14 @@
 			path = DesignSystem;
 			sourceTree = "<group>";
 		};
+		B2014F66628444080F80E980 /* Review */ = {
+			isa = PBXGroup;
+			children = (
+				0F0920FA522D143B8C679CC2 /* ReviewPromptSheet.swift */,
+			);
+			path = Review;
+			sourceTree = "<group>";
+		};
 		B897F2680C88444499C5EB72 /* BondWidgets */ = {
 			isa = PBXGroup;
 			children = (
@@ -558,6 +568,7 @@
 				C561270B6F58BA0276007B29 /* Paywall */,
 				A7C3BE35BC3AA10A5C6E7232 /* ReminderEditor */,
 				718E99AAE0CB74E56B210C8F /* ReminderList */,
+				B2014F66628444080F80E980 /* Review */,
 				0FF0CE4A3C6E2C9AE28B6F95 /* Settings */,
 				9E074D2E52E6F995F29DBC7B /* Stats */,
 				446752AF7734854EBD41D4A8 /* Templates */,
@@ -839,6 +850,7 @@
 				4EF4BBC8BE8D354A50EA4900 /* ReminderTemplate.swift in Sources */,
 				BD9D1E3117B1A08C546A7445 /* ReminderTemplatesView.swift in Sources */,
 				27F0B2AF1AE96E58B63A4F3A /* ReminderTrigger.swift in Sources */,
+				B65D13BAD4CEC94C5AF31EB6 /* ReviewPromptSheet.swift in Sources */,
 				CBA5BD9A31D30EE2E8D1443A /* ReviewPromptTracker.swift in Sources */,
 				CA1994BE538E18DE8180A6AA /* SettingsView.swift in Sources */,
 				D901243B3926F226062C57E2 /* StatsView.swift in Sources */,
@@ -997,7 +1009,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 59;
+				CURRENT_PROJECT_VERSION = 60;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = YXG4MP6W39;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -1065,7 +1077,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 59;
+				CURRENT_PROJECT_VERSION = 60;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = YXG4MP6W39;
 				ENABLE_NS_ASSERTIONS = NO;

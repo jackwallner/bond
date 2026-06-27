@@ -1,9 +1,6 @@
 # Bond — App Store review prompt
 
-Bond uses Apple's **native** rating prompt (`requestReview()` / StoreKit). We do
-**not** filter users by sentiment or pre-screen with an "Are you enjoying it?"
-question before routing to the App Store — that is prohibited under App Store
-Guideline 5.6.1 (it manipulates reviews by steering only happy users to rate).
+Bond uses the same enjoyment funnel as Vitals across the portfolio.
 
 | Field | Value |
 |-------|-------|
@@ -18,14 +15,14 @@ Guideline 5.6.1 (it manipulates reviews by steering only happy users to rate).
 
 - **Automatic:** after a positive moment (reminder completed), and once throttle
   thresholds pass (`ReviewPromptTracker`: launch count, days-since-first-open,
-  120-day cooldown), the host calls Apple's native `requestReview()`. Apple shows
-  its standard 1-5 star dialog and decides whether to display it at all. No
-  sentiment gate, no custom pre-prompt.
-- **Manual (Settings → Help):** two ungated, direct actions — "Rate Bond on the
-  App Store" (write-review deep link) and "Send Feedback" (mail draft). Every
-  user sees both regardless of how they feel.
+  120-day cooldown), the host presents the enjoyment sheet → review pitch →
+  explicit write-review deep link. `requestReview()` only fires on "Maybe later"
+  dismiss.
+- **Manual (Settings → Help):** "Rate or Send Feedback" opens the same funnel
+  (enjoyment step, or feedback-only when routed from coordinator).
 
-**Code:** `Shared/Services/ReviewPromptTracker.swift` (throttling),
-`Shared/Utilities/AppStoreReviewLinks.swift` (write-review link),
+**Code:** `Shared/Services/ReviewPromptTracker.swift`,
+`Shared/Utilities/AppStoreReviewLinks.swift` (storefront-aware write-review link),
+`Bond/Features/Review/ReviewPromptSheet.swift`,
 `Bond/Features/Settings/SettingsView.swift` (Help section),
-host in `Bond/BondApp.swift` (`RootView.requestNativeReviewAfterPositiveMoment`).
+host in `Bond/BondApp.swift` (`RootView.scheduleReviewPromptAfterPositiveMoment`).
