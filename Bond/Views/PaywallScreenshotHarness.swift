@@ -40,9 +40,11 @@ struct PaywallScreenshotHarness: View {
         }
         .environment(purchases)
         .environment(pairing)
+        .onAppear { isReady = true }
         .task {
-            await purchases.bootstrap()
-            isReady = true
+            if purchases.products.isEmpty {
+                await purchases.bootstrap()
+            }
         }
     }
 
