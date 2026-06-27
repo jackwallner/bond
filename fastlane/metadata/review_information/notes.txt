@@ -29,3 +29,5 @@ LOCATION
 Location is requested only When-In-Use, to capture a one-time anchor for optional location-based reminders (delivered via UNLocationNotificationTrigger). There is no background location use.
 
 Questions: jackwallner+b@gmail.com / +1 425 753 3411
+
+Re: Guideline 5.6.1 rejection. We removed the review prompt that asked users whether they were enjoying the app and only routed positive users to the App Store rating. The app now uses Apple's native StoreKit rating prompt (requestReview()) with no sentiment pre-screening, and Settings offers two ungated options shown to every user: "Rate Bond on the App Store" and "Send Feedback." No user reviews are filtered.

@@ -117,7 +117,11 @@ struct RootView: View {
     @State private var showPostOnboardingPaywall = false
     @State private var pendingPostOnboardingPaywall = false
     private let postOnboardingPaywallKey = "hasShownPostOnboardingPaywall"
-    @State private var reviewRequestedThisSession = false
+    @StateObject private var reviewPromptCoordinator = ReviewPromptCoordinator.shared
+    @State private var showReviewPrompt = false
+    @State private var reviewPromptInitialStep: ReviewPromptSheet.Step = .enjoyment
+    @State private var reviewPromptShownThisSession = false
+    @State private var pendingNativeReviewAfterDismiss = false
     @Environment(\.requestReview) private var requestReview
 
     var body: some View {
@@ -231,7 +235,33 @@ struct RootView: View {
             }
         }
         .onReceive(NotificationCenter.default.publisher(for: .bondPositiveMomentForReview)) { _ in
-            requestNativeReviewAfterPositiveMoment()
+            scheduleReviewPromptAfterPositiveMoment()
+        }
+        .onChange(of: reviewPromptCoordinator.pendingPresentation) { _, presentation in
+            guard let presentation else { return }
+            defer { reviewPromptCoordinator.clear() }
+            guard currentDestination == .home,
+                  !pairing.justPaired,
+                  !pairing.requiresSignInToPair,
+                  !showReviewPrompt,
+                  !showPostPairPaywall,
+                  !showPostOnboardingPaywall
+            else { return }
+            switch presentation {
+            case .enjoymentPrompt:
+                presentReviewPrompt(step: .enjoyment)
+            case .feedbackOnly:
+                presentReviewPrompt(step: .feedback)
+            }
+        }
+        .sheet(isPresented: $showReviewPrompt, onDismiss: {
+            ReviewPromptTracker.markShown()
+            if pendingNativeReviewAfterDismiss {
+                pendingNativeReviewAfterDismiss = false
+                requestReview()
+            }
+        }) {
+            ReviewPromptSheet(initialStep: reviewPromptInitialStep, onFinish: handleReviewPromptFinish)
         }
         // Proactive post-pairing paywall. Whether the user buys or closes it,
         // dismissal advances past the success screen to home.
@@ -305,16 +335,15 @@ struct RootView: View {
         }
     }
 
-    /// After a positive moment, hand off to Apple's native rating prompt. We do
-    /// not gate by sentiment or ask users how they feel first - `requestReview()`
-    /// shows the standard 1-5 star system dialog (and Apple decides whether to
-    /// display it at all). Compliant with App Store Guideline 5.6.1.
-    private func requestNativeReviewAfterPositiveMoment() {
+    private func scheduleReviewPromptAfterPositiveMoment() {
         guard currentDestination == .home,
               !pairing.justPaired,
               !pairing.requiresSignInToPair,
-              !reviewRequestedThisSession,
-              ReviewPromptTracker.shouldRequestAfterPositiveMoment(hasCompletedSetup: hasCompletedSetup)
+              !reviewPromptShownThisSession,
+              !showReviewPrompt,
+              !showPostPairPaywall,
+              !showPostOnboardingPaywall,
+              ReviewPromptTracker.shouldShowAfterPositiveMoment(hasCompletedSetup: hasCompletedSetup)
         else { return }
 
         Task { @MainActor in
@@ -322,13 +351,28 @@ struct RootView: View {
             guard currentDestination == .home,
                   !pairing.justPaired,
                   !pairing.requiresSignInToPair,
-                  !reviewRequestedThisSession,
-                  ReviewPromptTracker.shouldRequestAfterPositiveMoment(hasCompletedSetup: hasCompletedSetup)
+                  !reviewPromptShownThisSession,
+                  !showReviewPrompt,
+                  !showPostPairPaywall,
+                  !showPostOnboardingPaywall,
+                  ReviewPromptTracker.shouldShowAfterPositiveMoment(hasCompletedSetup: hasCompletedSetup)
             else { return }
-            reviewRequestedThisSession = true
-            ReviewPromptTracker.markRequested()
-            requestReview()
+            ReviewPromptTracker.consumePendingPositiveMoment()
+            presentReviewPrompt(step: .enjoyment)
         }
+    }
+
+    private func handleReviewPromptFinish(_ outcome: ReviewPromptDismissOutcome) {
+        showReviewPrompt = false
+        if outcome == .enjoyedMaybeLater {
+            pendingNativeReviewAfterDismiss = true
+        }
+    }
+
+    private func presentReviewPrompt(step: ReviewPromptSheet.Step) {
+        reviewPromptInitialStep = step
+        reviewPromptShownThisSession = true
+        showReviewPrompt = true
     }
 
     private enum Destination { case loading, intentSetup, inviteWelcome, inviteeIntake, pairingSuccess, home }

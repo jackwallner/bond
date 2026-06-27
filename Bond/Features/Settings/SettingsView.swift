@@ -179,15 +179,10 @@ struct SettingsView: View {
             .bondWarmRow()
 
             Section {
-                if let reviewURL = AppStoreReviewLinks.writeReviewURL {
-                    Link(destination: reviewURL) {
-                        Label("Rate Bond on the App Store", systemImage: "star")
-                    }
-                }
-                if let feedbackURL = Self.feedbackMailURL {
-                    Link(destination: feedbackURL) {
-                        Label("Send Feedback", systemImage: "envelope")
-                    }
+                Button {
+                    ReviewPromptCoordinator.shared.requestEnjoymentPrompt()
+                } label: {
+                    Label("Rate or Send Feedback", systemImage: "star.bubble")
                 }
             } header: {
                 BondSectionHeader(title: "Help")
@@ -286,15 +281,6 @@ struct SettingsView: View {
 
     private var appBuild: String {
         Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "Unknown"
-    }
-
-    /// Pre-addressed mail draft for product feedback.
-    private static var feedbackMailURL: URL? {
-        var components = URLComponents()
-        components.scheme = "mailto"
-        components.path = "jackwallner+b@gmail.com"
-        components.queryItems = [URLQueryItem(name: "subject", value: "Bond feedback")]
-        return components.url
     }
 }
 
