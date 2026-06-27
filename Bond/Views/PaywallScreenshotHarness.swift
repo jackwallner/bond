@@ -1,5 +1,6 @@
 #if DEBUG
 import SwiftUI
+@preconcurrency import RevenueCat
 
 struct PaywallScreenshotHarness: View {
     let mode: PaywallScreenshotMode
@@ -7,25 +8,38 @@ struct PaywallScreenshotHarness: View {
     @State private var pairing = PairingService()
     @State private var isReady = false
 
+    private var isSolo: Bool { pairing.solo || pairing.coupleId == nil }
+
+    private var trialPackage: Package? {
+        purchases.products.first { $0.bondPackageKind == .yearly } ?? purchases.products.first
+    }
+
     var body: some View {
-        NavigationStack {
-            Group {
-                if isReady {
-                    if mode == .trial {
-                        trialBackdrop {
-                            PaywallView(displayCloseButton: true, impressionId: "snapshot_trial")
-                        }
-                    } else {
-                        PaywallView(displayCloseButton: false, impressionId: "snapshot")
+        Group {
+            if isReady {
+                if mode == .trial {
+                    trialBackdrop {
+                        TrialOfferSheet(
+                            isSolo: isSolo,
+                            offerLabel: trialPackage?.bondIntroOfferLabel ?? "7-day free trial",
+                            priceLabel: trialPackage?.bondPriceLabel ?? "$29.99 / year",
+                            isPurchasing: false,
+                            errorMessage: nil,
+                            onStartTrial: {},
+                            onSeeAllPlans: {},
+                            onDismiss: {}
+                        )
                     }
                 } else {
-                    ProgressView("Loading plans…")
-                        .controlSize(.large)
+                    PaywallView(displayCloseButton: false, impressionId: "snapshot")
                 }
+            } else {
+                ProgressView("Loading plans…")
+                    .controlSize(.large)
             }
-            .environment(purchases)
-            .environment(pairing)
         }
+        .environment(purchases)
+        .environment(pairing)
         .task {
             await purchases.bootstrap()
             isReady = true
@@ -34,7 +48,8 @@ struct PaywallScreenshotHarness: View {
 
     private func trialBackdrop<Content: View>(@ViewBuilder content: () -> Content) -> some View {
         ZStack {
-            Color.bondSurface.opacity(0.9).ignoresSafeArea()
+            Color.bondSurface.ignoresSafeArea()
+            Color.black.opacity(0.12).ignoresSafeArea()
             VStack {
                 Spacer()
                 content()

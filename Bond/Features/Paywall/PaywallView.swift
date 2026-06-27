@@ -11,9 +11,8 @@ enum PaywallLinks {
 /// → `Purchases.shared.purchase(package:)` so RevenueCat records transactions,
 /// trials, and renewals exactly as with the hosted UI.
 ///
-/// Layout target: fit on a single screen on standard iPhone sizes (no scroll
-/// at default text sizes) so the offer + CTA are always visible. Scroll is
-/// retained as a graceful fallback for Dynamic Type or very small devices.
+/// Layout target: fit on a single screen on standard iPhone sizes (no scroll)
+/// so the offer + CTA are always visible — scroll adds conversion friction.
 struct PaywallView: View {
     @Environment(PurchasesService.self) private var purchases
     @Environment(PairingService.self) private var pairing
@@ -42,23 +41,9 @@ struct PaywallView: View {
     private var isSolo: Bool { pairing.solo || pairing.coupleId == nil }
 
     /// Concrete Bond+ features framed as outcomes. For paired users we lead with
-    /// the daily hook; for solo users we lead with the wins they can use today
-    /// and frame Check-In as something that unlocks once they pair.
-    private var benefits: [(icon: String, title: String)] {
-        if isSolo {
-            return [
-                ("bell.badge.fill",          "Location & surprise reminders"),
-                ("square.stack.fill",        "Curated reminder templates"),
-                ("sparkles",                 "Love-language insights & trends"),
-                ("questionmark.bubble.fill", "Daily Check-In, when you pair")
-            ]
-        }
-        return [
-            ("questionmark.bubble.fill", "Daily Check-In, together"),
-            ("sparkles",                  "Love-language insights & trends"),
-            ("bell.badge.fill",           "Location & surprise reminders"),
-            ("square.stack.fill",         "Curated reminder templates")
-        ]
+    /// the daily hook; for solo users we lead with the wins they can use today.
+    private var benefits: [BondPlusBenefit] {
+        BondPlusBenefits.benefits(isSolo: isSolo)
     }
 
     var body: some View {
@@ -142,66 +127,59 @@ struct PaywallView: View {
     }
 
     private var content: some View {
-        ScrollView(showsIndicators: false) {
-            VStack(spacing: BondSpacing.l) {
-                header
-                benefitList
-                planCards
-                purchaseSection
-                legalFooter
-            }
-            .padding(.horizontal, BondSpacing.xl)
-            .padding(.top, displayCloseButton ? 52 : BondSpacing.xl)
-            .padding(.bottom, BondSpacing.base)
+        VStack(spacing: BondSpacing.m) {
+            header
+            benefitList
+            planCards
+            Spacer(minLength: 0)
+            purchaseSection
+            legalFooter
         }
+        .padding(.horizontal, BondSpacing.xl)
+        .padding(.top, displayCloseButton ? BondSpacing.s : BondSpacing.m)
+        .padding(.bottom, BondSpacing.base)
+        .frame(maxHeight: .infinity)
     }
 
     private var header: some View {
         VStack(spacing: BondSpacing.xs) {
             Text("Bond+")
-                .font(.bond(.title, weight: .heavy))
+                .font(.bond(.title2, weight: .heavy))
                 .foregroundStyle(Color.bondAccent.gradient)
-            Text(isSolo
-                 ? "Everything you need to keep showing up for your partner."
-                 : "The full Bond experience for couples who want to stay close, on purpose.")
-                .font(.bond(.subheadline))
+            Text(BondPlusBenefits.paywallSubheadline(isSolo: isSolo))
+                .font(.bond(.footnote))
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
-                .fixedSize(horizontal: false, vertical: true)
-            Text(showsTrialPromise
-                 ? "Start free. Stay intentional, together."
-                 : "Stay intentional, together.")
-                .font(.bond(.footnote, weight: .semibold))
-                .foregroundStyle(Color.bondAccent)
-                .multilineTextAlignment(.center)
-                .fixedSize(horizontal: false, vertical: true)
-                .padding(.top, BondSpacing.xs)
+                .lineLimit(2)
+                .minimumScaleFactor(0.9)
         }
-    }
-
-    /// Only promise a free trial when the selected (or default) package actually
-    /// has an intro offer the buyer is eligible for - never to ineligible/lifetime
-    /// buyers (3.1.2: no misleading free-trial claims).
-    private var showsTrialPromise: Bool {
-        guard let package = selectedPackage ?? purchases.products.first else { return false }
-        return purchases.isEligibleForIntroOffer(package)
     }
 
     private var benefitList: some View {
         VStack(alignment: .leading, spacing: BondSpacing.s) {
-            ForEach(benefits, id: \.title) { benefit in
-                HStack(spacing: BondSpacing.m) {
+            ForEach(benefits) { benefit in
+                HStack(alignment: .top, spacing: BondSpacing.s) {
                     Image(systemName: benefit.icon)
-                        .font(.system(size: 14, weight: .semibold))
+                        .font(.system(size: 13, weight: .semibold))
                         .foregroundStyle(Color.bondAccent)
-                        .frame(width: 26, height: 26)
+                        .frame(width: 24, height: 24)
                         .background(Color.bondAccent.opacity(0.12), in: Circle())
-                    Text(benefit.title)
-                        .font(.bond(.subheadline, weight: .semibold))
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(benefit.title)
+                            .font(.bond(.subheadline, weight: .semibold))
+                            .lineLimit(1)
+                        Text(benefit.detail)
+                            .font(.bond(.caption))
+                            .foregroundStyle(.secondary)
+                            .lineLimit(2)
+                            .minimumScaleFactor(0.85)
+                    }
                     Spacer(minLength: 0)
                 }
             }
         }
+        .padding(.horizontal, BondSpacing.m)
+        .padding(.vertical, BondSpacing.s)
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
@@ -234,7 +212,15 @@ struct PaywallView: View {
                     .font(.bond(.footnote, weight: .semibold))
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
-                    .fixedSize(horizontal: false, vertical: true)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.85)
+                    .frame(minHeight: 36, alignment: .top)
+            } else {
+                Text(" ")
+                    .font(.bond(.footnote, weight: .semibold))
+                    .frame(minHeight: 36)
+                    .opacity(0)
+                    .accessibilityHidden(true)
             }
 
             if let statusMessage {
@@ -272,13 +258,15 @@ struct PaywallView: View {
 
     private var legalFooter: some View {
         VStack(spacing: BondSpacing.xs) {
-            if let autoRenewDisclosure {
-                Text(autoRenewDisclosure)
-                    .font(.bond(.caption2))
-                    .foregroundStyle(.tertiary)
-                    .multilineTextAlignment(.center)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
+            Text(autoRenewDisclosure ?? " ")
+                .font(.bond(.caption2))
+                .foregroundStyle(.tertiary)
+                .multilineTextAlignment(.center)
+                .lineLimit(3)
+                .minimumScaleFactor(0.9)
+                .frame(minHeight: 44, alignment: .top)
+                .opacity(autoRenewDisclosure == nil ? 0 : 1)
+                .accessibilityHidden(autoRenewDisclosure == nil)
 
             HStack(spacing: BondSpacing.m) {
                 Button {
@@ -359,6 +347,19 @@ struct PaywallView: View {
     // MARK: - Actions
 
     private func selectDefaultPackageIfNeeded() {
+        #if DEBUG
+        if let mode = PaywallScreenshotMode.current, !purchases.products.isEmpty {
+            switch mode {
+            case .monthly:
+                selectedPackage = purchases.products.first { $0.bondPackageKind == .monthly }
+            case .lifetime:
+                selectedPackage = purchases.products.first { $0.bondPackageKind == .lifetime }
+            case .yearly, .trial:
+                selectedPackage = purchases.products.first { $0.bondPackageKind == .yearly }
+            }
+            return
+        }
+        #endif
         guard selectedPackage == nil, !purchases.products.isEmpty else { return }
         selectedPackage = purchases.products.first { $0.bondPackageKind == .yearly }
             ?? purchases.products.first
