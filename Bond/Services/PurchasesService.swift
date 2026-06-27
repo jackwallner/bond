@@ -41,13 +41,22 @@ final class PurchasesService {
     private var streamTask: Task<Void, Never>?
     private var paywallImpressionsThisSession: Set<String> = []
 
-    private init() {}
+    private init() {
+        Self.ensureConfigured()
+    }
 
-    func bootstrap() async {
+    /// RevenueCat must be configured before any `Purchases.shared` call. The
+    /// screenshot harness and paywall `.task` can race `bondRoot.onAppear`
+    /// bootstrap, which previously crashed with a fatal "not configured" error.
+    private static func ensureConfigured() {
         Purchases.logLevel = .info
         if !Purchases.isConfigured {
-            Purchases.configure(withAPIKey: Self.apiKey)
+            Purchases.configure(withAPIKey: apiKey)
         }
+    }
+
+    func bootstrap() async {
+        Self.ensureConfigured()
         await refresh()
         await fetchProducts()
 
