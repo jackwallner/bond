@@ -57,6 +57,27 @@ struct BondApp: App {
 
     var body: some Scene {
         WindowGroup {
+            #if DEBUG
+            if let mode = PaywallScreenshotMode.current {
+                PaywallScreenshotHarness(mode: mode)
+                    .environment(supabase)
+                    .environment(store)
+                    .environment(pairingService)
+                    .environment(reminderRepo)
+                    .environment(milestonesService)
+                    .environment(eventsRepo)
+                    .environment(checkInService)
+            } else {
+                bondRoot
+            }
+            #else
+            bondRoot
+            #endif
+        }
+    }
+
+    @ViewBuilder
+    private var bondRoot: some View {
             RootView()
                 .environment(supabase)
                 .environment(store)
@@ -98,7 +119,6 @@ struct BondApp: App {
                         }
                     }
                 }
-        }
     }
 }
 
@@ -266,8 +286,7 @@ struct RootView: View {
         // Proactive post-pairing paywall. Whether the user buys or closes it,
         // dismissal advances past the success screen to home.
         .sheet(isPresented: $showPostPairPaywall, onDismiss: { pairing.justPaired = false }) {
-            PaywallView(onClose: { showPostPairPaywall = false }, impressionId: "post_pairing")
-                .presentationDragIndicator(.visible)
+            PaywallFlowSheet(impressionId: "post_pairing", onClose: { showPostPairPaywall = false })
         }
         // Proactive post-onboarding paywall for the solo path. Most users
         // start solo and may never pair, so without this the only people who
@@ -296,8 +315,7 @@ struct RootView: View {
             }
         }
         .sheet(isPresented: $showPostOnboardingPaywall) {
-            PaywallView(onClose: { showPostOnboardingPaywall = false }, impressionId: "post_onboarding")
-                .presentationDragIndicator(.visible)
+            PaywallFlowSheet(impressionId: "post_onboarding", onClose: { showPostOnboardingPaywall = false })
         }
     }
 
