@@ -1,1 +1,1 @@
-days,together,calendar,memory,timer,streak,moments,girlfriend,boyfriend,husband,wife,spouse
+relación,seguimiento,distancia,mensajes,notas,cita,preguntas,matrimonio,cónyuge,regalo,novio,novia

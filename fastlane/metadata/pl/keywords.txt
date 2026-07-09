@@ -1,1 +1,1 @@
-związek,partner,małżonek,dystans,przypomnienie,odliczanie,wiadomości,notatki,randka,pytania
+związek,partner,małżonek,dystans,przypomnienie,wiadomości,notatki,randka,pytania,prezent,notes,watch

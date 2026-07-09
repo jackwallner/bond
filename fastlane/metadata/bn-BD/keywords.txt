@@ -1,1 +1,1 @@
-relationship,tracker,countdown,long,distance,messages,notes,date,partner,questions,marriage,paired
+সম্পর্ক,ট্র্যাকার,কাউন্টডাউন,দূরত্ব,বার্তা,নোট,ডেট,প্রশ্ন,বিবাহ,যুগল,প্রেমিক,স্বামী,স্ত্রী,উপহার

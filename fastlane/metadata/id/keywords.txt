@@ -1,1 +1,1 @@
-hubungan,pasangan,jarak,pengingat,pesan,catatan,kencan,pertanyaan,pernikahan,pacar,mundur
+hubungan,jarak,pengingat,pesan,catatan,kencan,pertanyaan,pernikahan,hadiah,notes,widget,watch,timer

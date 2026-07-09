@@ -1,1 +1,1 @@
-ilişki,partner,eş,mesafe,hatırlatıcı,mesajlar,notlar,randevu,sorular,evlilik,geri sayım
+ilişki,partner,eş,mesafe,hatırlatıcı,mesajlar,notlar,randevu,sorular,evlilik,hediye,sevgili,takvim

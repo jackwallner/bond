@@ -1,1 +1,1 @@
-relationship,tracker,countdown,long,distance,messages,notes,date,partner,questions,marriage,paired
+تعلق,ٹریکر,کاؤنٹ ڈاؤن,پیغام,نوٹ,ڈیٹ,سوال,شادی,محبوب,شوہر,بیوی,تحفہ,countdown,notes,watch,widget,date

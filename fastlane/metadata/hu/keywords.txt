@@ -1,1 +1,1 @@
-kapcsolat,partner,házastárs,távolság,emlékeztető,üzenetek,jegyzetek,randi,kérdések,házasság
+kapcsolat,partner,házastárs,távolság,emlékeztető,üzenetek,jegyzetek,randi,kérdések,házasság,ajándék
