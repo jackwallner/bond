@@ -1,1 +1,1 @@
-relationship,tracker,countdown,long,distance,messages,notes,date,partner,questions,marriage,paired
+సంబంధం,ట్రాకర్,కౌంట్డౌన్,సందేశం,నోట్,డేట్,ప్రశ్న,వివాహం,ప్రేమికుడు,భర్త,భార్య,బహుమతి,calendar,watch

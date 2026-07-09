@@ -1,1 +1,1 @@
-coppia,relazione,distanza,messaggi,note,appuntamento,domande,partner,coniuge,matrimonio,promemoria
+relazione,distanza,messaggi,note,appuntamento,domande,partner,coniuge,matrimonio,regalo,countdown

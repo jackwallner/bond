@@ -1,1 +1,1 @@
-suhde,kumppani,puoliso,etäisyys,muistutus,viestit,treffit,kysymykset,avioliitto,lähtölaskenta
+suhde,kumppani,puoliso,etäisyys,muistutus,viestit,treffit,kysymykset,avioliitto,lahja,countdown,date

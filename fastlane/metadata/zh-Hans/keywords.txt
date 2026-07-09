@@ -1,1 +1,1 @@
-关系,伴侣,配偶,异地,倒计时,消息,备忘,约会,问题,结婚,恋爱,夫妻
+伴侣,倒计时,消息,备忘,问题,结婚,夫妻,男友,女友,周年,日历,小组件,计时,配对,watch,calendar,widget,timer,reminder,together,girlfriend

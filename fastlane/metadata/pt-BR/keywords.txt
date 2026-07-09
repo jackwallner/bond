@@ -1,1 +1,1 @@
-relacionamento,distância,mensagens,notas,encontro,perguntas,parceiro,cônjuge,casamento,lembrete
+relacionamento,distância,mensagens,notas,encontro,perguntas,parceiro,cônjuge,casamento,presente

@@ -1,1 +1,1 @@
-veza,partner,suprug,udaljenost,podsjetnik,odbrojavanje,poruke,bilješke,spoj,pitanja,brak
+veza,partner,suprug,udaljenost,podsjetnik,poruke,bilješke,spoj,pitanja,brak,poklon,countdown,notes
