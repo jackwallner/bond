@@ -33,9 +33,11 @@ schemes:
       config: Debug
     run:
       config: Debug
+      storeKitConfiguration: Bond/Products.storekit
     test:
       config: Debug
       gatherCoverageData: true
+      storeKitConfiguration: Bond/Products.storekit
       targets:
         - BondTests
   BondWatch:
@@ -66,6 +68,11 @@ targets:
     platform: iOS
     sources:
       - path: Bond
+        excludes:
+          # Dev-only StoreKit config: wired into the scheme's run/test action so
+          # the sim can load products, never bundled into the shipping app
+          # (production uses live RevenueCat / App Store products).
+          - Products.storekit
       - path: Shared
     settings:
       base:
