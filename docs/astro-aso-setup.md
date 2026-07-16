@@ -1,6 +1,6 @@
 # Astro ASO setup — Bond
 
-> Process: [`astro-setup-process.md`](astro-setup-process.md) · Playbook: [`astro-global-aso-go-2026.md`](astro-global-aso-go-2026.md)
+> Process: [Astro setup process](~/ios/aso/astro-setup-process.md) · Playbook: [global ASO rollout archive](~/ios/archive/aso/2026-05/astro-global-aso-go-2026.md)
 
 Last full **go** run: **2026-05-25**
 
