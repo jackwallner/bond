@@ -81,6 +81,9 @@ final class PurchasesService {
     }
 
     func refresh() async {
+        #if targetEnvironment(simulator)
+        return
+        #else
         do {
             let info = try await Purchases.shared.customerInfo()
             apply(info: info)
@@ -88,9 +91,13 @@ final class PurchasesService {
             lastError = error.localizedDescription
             log.error("Refresh failed: \(error.localizedDescription)")
         }
+        #endif
     }
 
     func fetchProducts() async {
+        #if targetEnvironment(simulator)
+        return
+        #else
         isLoadingProducts = true
         defer { isLoadingProducts = false }
         do {
@@ -107,6 +114,7 @@ final class PurchasesService {
             lastError = "Couldn't load subscription options. Check your connection and try again."
             log.error("Product fetch failed: \(error.localizedDescription)")
         }
+        #endif
     }
 
     private func refreshIntroEligibility() async {
@@ -133,6 +141,9 @@ final class PurchasesService {
 
     /// Reports a custom-paywall impression to RevenueCat (required for native paywalls).
     func trackPaywallImpression(id: String, oncePerSession: Bool = false) {
+        #if targetEnvironment(simulator)
+        return
+        #else
         if oncePerSession {
             guard !paywallImpressionsThisSession.contains(id) else { return }
             paywallImpressionsThisSession.insert(id)
@@ -142,6 +153,7 @@ final class PurchasesService {
             CustomPaywallImpressionParams(paywallId: id)
         )
         log.info("Tracked paywall impression: \(id)")
+        #endif
     }
 
     @discardableResult
