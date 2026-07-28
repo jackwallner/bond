@@ -230,20 +230,6 @@ struct IntentSetupView: View {
     private var ctaRegion: some View {
         VStack(spacing: BondSpacing.s) {
             if isTrialStep {
-                Button { Task { await finish() } } label: {
-                    Text("Get Started")
-                        .font(.bond(.headline))
-                        .foregroundStyle(.primary)
-                        .frame(maxWidth: .infinity, minHeight: 52)
-                        .background(Color.bondCardFill, in: RoundedRectangle(cornerRadius: BondRadius.inline, style: .continuous))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: BondRadius.inline, style: .continuous)
-                                .strokeBorder(Color.bondHairline, lineWidth: 0.5)
-                        )
-                }
-                .buttonStyle(.plain)
-                .disabled(isPurchasing || isFinishing)
-
                 if let disclosure = trialDisclosure {
                     Text(disclosure)
                         .font(.bond(.caption2))
@@ -268,6 +254,17 @@ struct IntentSetupView: View {
                 advance()
             }
             .disabled(!canContinue)
+
+            if isTrialStep {
+                Button { Task { await finish() } } label: {
+                    Text("Continue with free Bond")
+                        .font(.bond(.subheadline, weight: .semibold))
+                        .foregroundStyle(.secondary)
+                        .frame(maxWidth: .infinity, minHeight: 34)
+                }
+                .buttonStyle(.plain)
+                .disabled(isPurchasing || isFinishing)
+            }
 
             legalFooterSlot
         }
@@ -360,6 +357,7 @@ struct IntentSetupView: View {
     /// creation) makes RootView's guard skip it whether the user buys or exits.
     private func enterTrialStep() {
         UserDefaults.standard.set(true, forKey: "hasShownPostOnboardingPaywall")
+        store.trackPaywallImpression(id: "onboarding_personalized_plan", oncePerSession: true)
         purchaseError = nil
         step = Self.trialStep
     }
@@ -379,8 +377,8 @@ struct IntentSetupView: View {
     /// otherwise a plain upgrade label (never promise a trial StoreKit won't
     /// honor for a previously-subscribed Apple ID).
     private var trialCTATitle: String {
-        if introEligible, let days = trialPackage?.bondTrialDays {
-            return "Start \(days)-Day Free Trial"
+        if introEligible {
+            return "Try Bond+ Free"
         }
         return "Get Bond+"
     }
@@ -389,7 +387,7 @@ struct IntentSetupView: View {
         guard let price = trialPackage?.bondPriceLabel else { return nil }
         if introEligible, let days = trialPackage?.bondTrialDays {
             let phrase = days == 1 ? "1 day" : "\(days) days"
-            return "Free for \(phrase), then \(price). Auto-renews unless cancelled 24h before trial ends."
+            return "No payment today. Free for \(phrase), then \(price). Cancel anytime in App Store settings."
         }
         return "\(price). Auto-renews unless cancelled."
     }
@@ -563,7 +561,9 @@ struct IntentSetupView: View {
         case .solo:
             isFinishing = true
             defer { isFinishing = false }
-            await pairing.createSoloCouple()
+            if pairing.coupleId == nil {
+                await pairing.createSoloCouple()
+            }
         case .invitee:
             // Already paired - the couple exists. Stamping committedAt marks
             // the intake complete, which is what flips RootView to home.

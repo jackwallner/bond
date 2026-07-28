@@ -24,10 +24,10 @@ struct TrialOfferSheet: View {
     }
 
     private var headline: String {
-        if let period = trialPeriodPhrase {
-            return "\(period) of Bond+, free."
+        if trialPeriodPhrase != nil {
+            return "Turn intentions into actions."
         }
-        return "Try Bond+ free."
+        return "Unlock your full Bond plan."
     }
 
     private var subheadline: String {
@@ -44,7 +44,7 @@ struct TrialOfferSheet: View {
     private var billingDisclosure: String? {
         guard let priceLabel else { return nil }
         if let period = trialPeriodPhrase {
-            return "Free for \(period), then \(priceLabel). Auto-renews unless cancelled 24h before trial ends."
+            return "No payment today. Free for \(period), then \(priceLabel). Cancel anytime in App Store settings."
         }
         return "Then \(priceLabel). Auto-renews unless cancelled 24h before trial ends."
     }
@@ -157,10 +157,9 @@ struct TrialOfferSheet: View {
     }
 
     private var trialCTATitle: String {
-        if let days = trialPeriodPhrase?.split(separator: " ").first,
-           let dayCount = Int(days) {
-            return "Start \(dayCount)-Day Free Trial"
+        if trialPeriodPhrase != nil {
+            return "Try Bond+ Free"
         }
-        return "Start My Free Trial"
+        return "Unlock Bond+"
     }
 }

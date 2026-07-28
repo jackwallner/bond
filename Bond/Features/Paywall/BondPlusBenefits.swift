@@ -13,19 +13,19 @@ enum BondPlusBenefits {
         if isSolo {
             return [
                 BondPlusBenefit(
-                    icon: "bell.badge.fill",
-                    title: "Surprise reminders",
-                    detail: "Nudge when you're near their spot."
+                    icon: "square.stack.fill",
+                    title: "Ideas matched to your partner",
+                    detail: "Start with prompts based on what matters to them."
                 ),
                 BondPlusBenefit(
-                    icon: "square.stack.fill",
-                    title: "Reminder templates",
-                    detail: "Curated prompts so you never blank."
+                    icon: "bell.badge.fill",
+                    title: "Remember at the right moment",
+                    detail: "Schedule thoughtful nudges before the moment passes."
                 ),
                 BondPlusBenefit(
                     icon: "sparkles",
-                    title: "Love-language insights",
-                    detail: "See what lands over time."
+                    title: "Learn what lands",
+                    detail: "See which love languages you act on over time."
                 )
             ]
         }
@@ -50,15 +50,15 @@ enum BondPlusBenefits {
 
     static func paywallSubheadline(isSolo: Bool) -> String {
         if isSolo {
-            return "Everything you need to keep showing up for your partner."
+            return "Turn what matters to your partner into actions you remember."
         }
         return "Stay close on purpose with the full Bond experience."
     }
 
     static func trialSubheadline(isSolo: Bool) -> String {
         if isSolo {
-            return "Templates, surprise reminders, and insights. No charge until your trial ends."
+            return "Your personalized plan is ready. No payment today, cancel anytime."
         }
-        return "Daily Check-In, insights, and surprise reminders. No charge until your trial ends."
+        return "Daily Check-In, insights, and thoughtful reminders. No payment today."
     }
 }
