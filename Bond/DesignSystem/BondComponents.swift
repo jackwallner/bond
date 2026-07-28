@@ -64,7 +64,10 @@ struct BondPrimaryButton: View {
                     ProgressView().tint(.white)
                 } else {
                     if let systemImage { Image(systemName: systemImage) }
-                    Text(title).font(.bond(.headline))
+                    Text(title)
+                        .font(.bond(.headline))
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.75)
                 }
             }
             .frame(maxWidth: .infinity, minHeight: 52)

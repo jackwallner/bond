@@ -318,7 +318,7 @@ struct PaywallView: View {
         guard let package = selectedPackage else { return "Continue" }
         if package.bondPackageKind == .lifetime { return "Unlock Lifetime" }
         if purchases.isEligibleForIntroOffer(package), let days = package.bondTrialDays {
-            return "Start \(days)-Day Free Trial"
+            return "Try Bond+ Free"
         }
         if purchases.isEligibleForIntroOffer(package) { return "Start Free Trial" }
         return "Get Bond+"
@@ -331,7 +331,7 @@ struct PaywallView: View {
         if purchases.isEligibleForIntroOffer(package) {
             // "No payment due now" is the single highest-leverage reassurance
             // for trial starts - it answers the exact fear that stops the tap.
-            return "No payment due now. Then \(price). Cancel anytime."
+            return "No payment today. Then \(price). Cancel anytime in App Store settings."
         }
         return "\(price). Renews automatically."
     }

@@ -40,6 +40,7 @@ final class PurchasesService {
 
     private var streamTask: Task<Void, Never>?
     private var paywallImpressionsThisSession: Set<String> = []
+    private(set) var lastPaywallImpressionId: String?
 
     private init() {
         Self.ensureConfigured()
@@ -49,13 +50,23 @@ final class PurchasesService {
     /// screenshot harness and paywall `.task` can race `bondRoot.onAppear`
     /// bootstrap, which previously crashed with a fatal "not configured" error.
     private static func ensureConfigured() {
+        #if targetEnvironment(simulator)
+        // Agent/simulator runs must not create RevenueCat customers in the
+        // production project. StoreKit Testing or local overrides provide the
+        // purchase surface for development instead.
+        return
+        #else
         Purchases.logLevel = .info
         if !Purchases.isConfigured {
             Purchases.configure(withAPIKey: apiKey)
         }
+        #endif
     }
 
     func bootstrap() async {
+        #if targetEnvironment(simulator)
+        return
+        #else
         Self.ensureConfigured()
         await refresh()
         await fetchProducts()
@@ -66,6 +77,7 @@ final class PurchasesService {
                 self?.apply(info: info)
             }
         }
+        #endif
     }
 
     func refresh() async {
@@ -125,6 +137,7 @@ final class PurchasesService {
             guard !paywallImpressionsThisSession.contains(id) else { return }
             paywallImpressionsThisSession.insert(id)
         }
+        lastPaywallImpressionId = id
         Purchases.shared.trackCustomPaywallImpression(
             CustomPaywallImpressionParams(paywallId: id)
         )
@@ -137,6 +150,8 @@ final class PurchasesService {
         defer { purchaseInFlight = false }
         lastError = nil
         lastErrorSuggestsRestore = false
+        let source = lastPaywallImpressionId ?? "unknown"
+        log.info("Purchase started: \(package.storeProduct.productIdentifier), source: \(source)")
 
         let result: PurchaseResultData
         do {
@@ -145,7 +160,10 @@ final class PurchasesService {
             // RevenueCat can throw ErrorCode directly. A user backing out of
             // Apple's payment sheet is a cancel, not a failure - surface no
             // error and no Restore prompt.
-            if error == .purchaseCancelledError { return .cancelled }
+            if error == .purchaseCancelledError {
+                log.info("Purchase cancelled: source \(source)")
+                return .cancelled
+            }
             log.error("Purchase threw ErrorCode \(error.rawValue): \(error.localizedDescription)")
             // Some codes mean Apple accepted payment but RC couldn't attach it
             // to this user - a restore usually completes the unlock.
@@ -180,6 +198,7 @@ final class PurchasesService {
             return .cancelled
         }
         if isPremium {
+            log.info("Purchase completed: source \(source)")
             return .purchased
         }
         // StoreKit → RevenueCat can lag a beat after Apple confirms payment -
@@ -190,7 +209,10 @@ final class PurchasesService {
         do {
             let synced = try await Purchases.shared.syncPurchases()
             apply(info: synced)
-            if isPremium { return .purchased }
+            if isPremium {
+                log.info("Purchase completed after sync: source \(source)")
+                return .purchased
+            }
         } catch {
             log.warning("syncPurchases after purchase failed: \(error.localizedDescription)")
         }
@@ -198,11 +220,11 @@ final class PurchasesService {
             try await Task.sleep(nanoseconds: 600_000_000)
             await refresh()
             if isPremium {
-                log.info("Premium unlocked after purchase (attempt \(attempt))")
+                log.info("Premium unlocked after purchase (attempt \(attempt)), source: \(source)")
                 return .purchased
             }
         }
-        log.warning("Purchase completed but entitlement still inactive")
+        log.warning("Purchase completed but entitlement still inactive, source: \(source)")
         return .pending
     }
 

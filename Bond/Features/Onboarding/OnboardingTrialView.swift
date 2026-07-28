@@ -19,12 +19,16 @@ struct OnboardingTrialView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: BondSpacing.xl) {
             BondScreenHeader(
-                title: "Keep showing up for \(displayName).",
-                subtitle: "Bond+ has everything you need to make it a habit. Start with a free trial, cancel anytime."
+                title: "Your Bond plan for \(displayName).",
+                subtitle: "Start your free trial to unlock every idea and turn the little things into a habit."
             )
             .padding(.horizontal, BondSpacing.base)
 
-            VStack(spacing: BondSpacing.s) {
+            VStack(alignment: .leading, spacing: BondSpacing.s) {
+                Label("Chosen for your setup", systemImage: "checkmark.seal.fill")
+                    .font(.bond(.subheadline, weight: .semibold))
+                    .foregroundStyle(Color.bondAccent)
+
                 ForEach(benefits) { benefit in
                     HStack(alignment: .top, spacing: BondSpacing.m) {
                         Image(systemName: benefit.icon)

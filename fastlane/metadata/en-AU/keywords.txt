@@ -1,1 +1,1 @@
-relationship,tracker,countdown,long,distance,messages,notes,date,partner,questions,marriage,paired
+couple,partner,spouse,relationship,marriage,nudge,notes,date,anniversary,widget,questions,romance

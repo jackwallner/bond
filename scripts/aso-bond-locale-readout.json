@@ -1,0 +1,1185 @@
+{
+  "locales": {
+    "ar-SA": {
+      "store": "sa",
+      "title": "لغات الحب والعلاقة للأزواج",
+      "subtitle": "عداد الأزواج · ذكرى سنوية · بع",
+      "keywords": "شريك,مسافة,تذكير,رسائل,ملاحظات,موعد,أسئلة,بعيدة,تنازلي,هدية,خطيبة,زوج,زوجة,تقويم,countdown,notes",
+      "title_len": 26,
+      "subtitle_len": 30,
+      "keywords_len": 96,
+      "keyword_overlaps": [],
+      "astro_en_kept": [
+        "countdown(69)",
+        "notes(65)",
+        "watch(61)",
+        "widget(55)",
+        "calendar(47)",
+        "timer(45)",
+        "reminder(43)",
+        "date(42)",
+        "messages(40)"
+      ],
+      "astro_proof": [
+        "EN loanwords Astro pop≥6: countdown(69), notes(65), watch(61), widget(55), calendar(47), timer(45), reminder(43), date(42), messages(40)"
+      ],
+      "rationale": "Localized title; Bond dropped outside en-*. Keywords deduped vs title+subtitle, packed 96/100.",
+      "ok": true
+    },
+    "bn-BD": {
+      "store": "in",
+      "title": "ভালোবাসার ভাষা: জোড়া ট্র্যাকা",
+      "subtitle": "দম্পতি · কাউন্টার · বার্ষিকী ·",
+      "keywords": "সম্পর্ক,ট্র্যাকার,কাউন্টডাউন,দূরত্ব,বার্তা,নোট,ডেট,প্রশ্ন,বিবাহ,যুগল,প্রেমিক,স্বামী,স্ত্রী,উপহার",
+      "title_len": 30,
+      "subtitle_len": 30,
+      "keywords_len": 96,
+      "keyword_overlaps": [],
+      "astro_en_kept": [
+        "calendar(59)",
+        "watch(57)",
+        "reminder(55)",
+        "timer(47)",
+        "widget(46)"
+      ],
+      "astro_proof": [
+        "EN loanwords Astro pop≥6: calendar(59), watch(57), reminder(55), timer(47), widget(46)"
+      ],
+      "rationale": "Localized title; Bond dropped outside en-*. Keywords deduped vs title+subtitle, packed 96/100.",
+      "ok": true
+    },
+    "ca": {
+      "store": "es",
+      "title": "Llenguatges de l'amor parella",
+      "subtitle": "Comptador parella · Aniversari",
+      "keywords": "relació,cònjuge,distància,recordatori,missatges,notes,cita,preguntes,matrimoni,parelles,seguiment",
+      "title_len": 29,
+      "subtitle_len": 30,
+      "keywords_len": 97,
+      "keyword_overlaps": [],
+      "astro_en_kept": [
+        "calendar(63)",
+        "watch(62)",
+        "widget(60)",
+        "timer(51)",
+        "couple(50)",
+        "together(37)",
+        "reminder(34)",
+        "gift(8)"
+      ],
+      "astro_proof": [
+        "EN loanwords Astro pop≥6: calendar(63), watch(62), widget(60), timer(51), couple(50), together(37), reminder(34), gift(8)"
+      ],
+      "rationale": "Localized title; Bond dropped outside en-*. Keywords deduped vs title+subtitle, packed 97/100.",
+      "ok": true
+    },
+    "cs": {
+      "store": "cz",
+      "title": "Jazyky lásky pár · Připomínky",
+      "subtitle": "Počítadlo páru · Výročí · Dáre",
+      "keywords": "vztah,partner,manžel,vzdálenost,připomínka,zprávy,poznámky,rande,otázky,manželství,dárek,watch,timer",
+      "title_len": 29,
+      "subtitle_len": 30,
+      "keywords_len": 100,
+      "keyword_overlaps": [],
+      "astro_en_kept": [
+        "watch(63)",
+        "calendar(62)",
+        "widget(61)",
+        "timer(54)",
+        "couple(54)",
+        "reminder(31)",
+        "gift(26)"
+      ],
+      "astro_proof": [
+        "EN loanwords Astro pop≥6: watch(63), calendar(62), widget(61), timer(54), couple(54), reminder(31), gift(26)"
+      ],
+      "rationale": "Localized title; Bond dropped outside en-*. Keywords deduped vs title+subtitle, packed 100/100.",
+      "ok": true
+    },
+    "da": {
+      "store": "dk",
+      "title": "Kærlighedssprog påmindelse",
+      "subtitle": "Par tæller · Jubilæum · Kalend",
+      "keywords": "forhold,partner,ægtefælle,afstand,beskeder,noter,date,spørgsmål,ægteskab,gave,widget,watch,timer",
+      "title_len": 26,
+      "subtitle_len": 30,
+      "keywords_len": 96,
+      "keyword_overlaps": [],
+      "astro_en_kept": [
+        "widget(61)",
+        "watch(59)",
+        "timer(56)",
+        "together(53)",
+        "calendar(44)",
+        "reminder(37)",
+        "couple(29)"
+      ],
+      "astro_proof": [
+        "EN loanwords Astro pop≥6: widget(61), watch(59), timer(56), together(53), calendar(44), reminder(37), couple(29)"
+      ],
+      "rationale": "Localized title; Bond dropped outside en-*. Keywords deduped vs title+subtitle, packed 96/100.",
+      "ok": true
+    },
+    "de-DE": {
+      "store": "de",
+      "title": "Liebessprachen Erinnerung",
+      "subtitle": "Paar Zähler · Jahrestag · Fern",
+      "keywords": "beziehung,fernbeziehung,nachrichten,notizen,ehepartner,ehe,geschenk,fragen,geliebte,watch,widget",
+      "title_len": 25,
+      "subtitle_len": 30,
+      "keywords_len": 96,
+      "keyword_overlaps": [],
+      "astro_en_kept": [
+        "watch(65)",
+        "widget(62)",
+        "timer(60)",
+        "calendar(60)",
+        "couple(49)",
+        "reminder(44)",
+        "girlfriend(41)",
+        "together(37)",
+        "gift(9)"
+      ],
+      "astro_proof": [
+        "EN loanwords Astro pop≥6: watch(65), widget(62), timer(60), calendar(60), couple(49), reminder(44), girlfriend(41), together(37), gift(9)"
+      ],
+      "rationale": "Localized title; Bond dropped outside en-*. Keywords deduped vs title+subtitle, packed 96/100.",
+      "ok": true
+    },
+    "el": {
+      "store": "gr",
+      "title": "Γλώσσες αγάπης για ζευγάρι",
+      "subtitle": "Μετρητής ζευγαριού · Επέτειος",
+      "keywords": "σχέση,σύντροφος,σύζυγος,απόσταση,υπενθύμιση,μηνύματα,σημειώσεις,ραντεβού,ερωτήσεις,γάμος,δώρο,μαζί",
+      "title_len": 26,
+      "subtitle_len": 29,
+      "keywords_len": 98,
+      "keyword_overlaps": [],
+      "astro_en_kept": [],
+      "astro_proof": [
+        "Native/transliterated keywords only; no EN loanwords met pop≥6 in this store."
+      ],
+      "rationale": "Localized title; Bond dropped outside en-*. Keywords deduped vs title+subtitle, packed 98/100.",
+      "ok": true
+    },
+    "en-AU": {
+      "store": "au",
+      "title": "Bond: Love Language Reminders",
+      "subtitle": "Couple Counter · Anniversary",
+      "keywords": "relationship,tracker,countdown,long,distance,messages,notes,date,partner,questions,marriage,paired",
+      "title_len": 29,
+      "subtitle_len": 28,
+      "keywords_len": 98,
+      "keyword_overlaps": [],
+      "astro_en_kept": [],
+      "astro_proof": [
+        "Native/transliterated keywords only; no EN loanwords met pop≥6 in this store."
+      ],
+      "rationale": "Bond brand in title (en-*). Keywords deduped vs title+subtitle, packed 98/100.",
+      "ok": true
+    },
+    "en-CA": {
+      "store": "ca",
+      "title": "Bond: Love Language Reminders",
+      "subtitle": "Couple Counter · Anniversary",
+      "keywords": "relationship,tracker,countdown,long,distance,messages,notes,date,partner,questions,marriage,paired",
+      "title_len": 29,
+      "subtitle_len": 28,
+      "keywords_len": 98,
+      "keyword_overlaps": [],
+      "astro_en_kept": [],
+      "astro_proof": [
+        "Native/transliterated keywords only; no EN loanwords met pop≥6 in this store."
+      ],
+      "rationale": "Bond brand in title (en-*). Keywords deduped vs title+subtitle, packed 98/100.",
+      "ok": true
+    },
+    "en-GB": {
+      "store": "gb",
+      "title": "Bond: Love Language Reminders",
+      "subtitle": "Couple Counter · Anniversary",
+      "keywords": "relationship,tracker,countdown,long,distance,messages,notes,date,partner,questions,marriage,paired",
+      "title_len": 29,
+      "subtitle_len": 28,
+      "keywords_len": 98,
+      "keyword_overlaps": [],
+      "astro_en_kept": [],
+      "astro_proof": [
+        "Native/transliterated keywords only; no EN loanwords met pop≥6 in this store."
+      ],
+      "rationale": "Bond brand in title (en-*). Keywords deduped vs title+subtitle, packed 98/100.",
+      "ok": true
+    },
+    "en-US": {
+      "store": "us",
+      "title": "Bond: Love Language Reminders",
+      "subtitle": "Couple Counter · Anniversary",
+      "keywords": "relationship,tracker,countdown,long,distance,messages,notes,date,partner,questions,marriage,paired",
+      "title_len": 29,
+      "subtitle_len": 28,
+      "keywords_len": 98,
+      "keyword_overlaps": [],
+      "astro_en_kept": [],
+      "astro_proof": [
+        "Native/transliterated keywords only; no EN loanwords met pop≥6 in this store."
+      ],
+      "rationale": "Bond brand in title (en-*). Keywords deduped vs title+subtitle, packed 98/100.",
+      "ok": true
+    },
+    "es-ES": {
+      "store": "es",
+      "title": "Lenguajes del amor pareja",
+      "subtitle": "Contador pareja · Aniversario",
+      "keywords": "relación,seguimiento,distancia,mensajes,notas,cita,preguntas,matrimonio,cónyuge,regalo,novio,novia",
+      "title_len": 25,
+      "subtitle_len": 29,
+      "keywords_len": 98,
+      "keyword_overlaps": [],
+      "astro_en_kept": [
+        "calendar(63)",
+        "widget(60)",
+        "timer(51)",
+        "couple(50)",
+        "together(37)",
+        "reminder(34)",
+        "gift(8)"
+      ],
+      "astro_proof": [
+        "EN loanwords Astro pop≥6: calendar(63), widget(60), timer(51), couple(50), together(37), reminder(34), gift(8)"
+      ],
+      "rationale": "Localized title; Bond dropped outside en-*. Keywords deduped vs title+subtitle, packed 98/100.",
+      "ok": true
+    },
+    "es-MX": {
+      "store": "mx",
+      "title": "Lenguajes del amor pareja",
+      "subtitle": "Pareja · Watch · Aniversario",
+      "keywords": "relación,seguimiento,distancia,mensajes,notas,cita,preguntas,matrimonio,cónyuge,regalo,novio,novia",
+      "title_len": 25,
+      "subtitle_len": 28,
+      "keywords_len": 98,
+      "keyword_overlaps": [],
+      "astro_en_kept": [
+        "widget(60)",
+        "couple(52)",
+        "reminder(42)"
+      ],
+      "astro_proof": [
+        "EN loanwords Astro pop≥6: widget(60), couple(52), reminder(42)"
+      ],
+      "rationale": "Localized title; Bond dropped outside en-*. Keywords deduped vs title+subtitle, packed 98/100.",
+      "ok": true
+    },
+    "fi": {
+      "store": "fi",
+      "title": "Rakkauden kielet parille",
+      "subtitle": "Pari laskuri · Vuosipäivä",
+      "keywords": "suhde,kumppani,puoliso,etäisyys,muistutus,viestit,treffit,kysymykset,avioliitto,lahja,countdown,date",
+      "title_len": 24,
+      "subtitle_len": 25,
+      "keywords_len": 100,
+      "keyword_overlaps": [],
+      "astro_en_kept": [
+        "countdown(65)",
+        "tracker(63)",
+        "notes(61)",
+        "calendar(61)",
+        "widget(59)",
+        "timer(55)",
+        "watch(54)",
+        "date(42)",
+        "reminder(37)",
+        "couple(30)",
+        "messages(29)",
+        "paired(25)"
+      ],
+      "astro_proof": [
+        "EN loanwords Astro pop≥6: countdown(65), tracker(63), notes(61), calendar(61), widget(59), timer(55), watch(54), date(42), reminder(37), couple(30), messages(29), paired(25)"
+      ],
+      "rationale": "Localized title; Bond dropped outside en-*. Keywords deduped vs title+subtitle, packed 100/100.",
+      "ok": true
+    },
+    "fr-CA": {
+      "store": "ca",
+      "title": "Langages de l'amour couple",
+      "subtitle": "Compteur couple · Anniversaire",
+      "keywords": "relation,suivi,distance,messages,notes,questions,partenaire,conjoint,mariage,cadeau,petite,calendar",
+      "title_len": 26,
+      "subtitle_len": 30,
+      "keywords_len": 99,
+      "keyword_overlaps": [],
+      "astro_en_kept": [
+        "calendar(71)",
+        "widget(65)",
+        "watch(63)",
+        "timer(58)",
+        "reminder(54)",
+        "girlfriend(47)",
+        "together(37)",
+        "gift(9)"
+      ],
+      "astro_proof": [
+        "EN loanwords Astro pop≥6: calendar(71), widget(65), watch(63), timer(58), reminder(54), girlfriend(47), together(37), gift(9)"
+      ],
+      "rationale": "Localized title; Bond dropped outside en-*. Keywords deduped vs title+subtitle, packed 99/100.",
+      "ok": true
+    },
+    "fr-FR": {
+      "store": "fr",
+      "title": "Langages de l'amour couple",
+      "subtitle": "Compteur couple · Anniversaire",
+      "keywords": "relation,suivi,distance,messages,notes,questions,partenaire,conjoint,mariage,cadeau,petite,widget",
+      "title_len": 26,
+      "subtitle_len": 30,
+      "keywords_len": 97,
+      "keyword_overlaps": [],
+      "astro_en_kept": [
+        "widget(68)",
+        "watch(64)",
+        "timer(58)",
+        "calendar(57)",
+        "reminder(39)",
+        "together(37)",
+        "girlfriend(36)",
+        "gift(8)"
+      ],
+      "astro_proof": [
+        "EN loanwords Astro pop≥6: widget(68), watch(64), timer(58), calendar(57), reminder(39), together(37), girlfriend(36), gift(8)"
+      ],
+      "rationale": "Localized title; Bond dropped outside en-*. Keywords deduped vs title+subtitle, packed 97/100.",
+      "ok": true
+    },
+    "gu-IN": {
+      "store": "in",
+      "title": "પ્રેમ ભાષા યાદદાસ્ત જોડી એપ",
+      "subtitle": "જોડી · કાઉન્ટર · વર્ષગાંઠ · દૂ",
+      "keywords": "સંબંધ,ટ્રેકર,કાઉન્ટડાઉન,દૂર,સંદેશ,નોંધ,ડેટ,પ્રશ્ન,લગ્ન,પ્રેમી,પતિ,પત્ની,ભેટ,કેલેન્ડર,સાથે,પ્રેમિકા",
+      "title_len": 27,
+      "subtitle_len": 30,
+      "keywords_len": 98,
+      "keyword_overlaps": [],
+      "astro_en_kept": [
+        "calendar(59)",
+        "watch(57)",
+        "reminder(55)",
+        "timer(47)",
+        "widget(46)"
+      ],
+      "astro_proof": [
+        "EN loanwords Astro pop≥6: calendar(59), watch(57), reminder(55), timer(47), widget(46)"
+      ],
+      "rationale": "Localized title; Bond dropped outside en-*. Keywords deduped vs title+subtitle, packed 98/100.",
+      "ok": true
+    },
+    "he": {
+      "store": "il",
+      "title": "שפות אהבה וזוגיות לזוגות",
+      "subtitle": "מונה זוגות · יום שנה · מרחק",
+      "keywords": "תזכורת,הודעות,הערות,דייט,שאלות,נישואים,ספירה,מתנה,ארוסה,יומולדת,בעל,אישה,חבר,חברה,מחברת,לוח,זוג,אהבה",
+      "title_len": 24,
+      "subtitle_len": 27,
+      "keywords_len": 100,
+      "keyword_overlaps": [],
+      "astro_en_kept": [],
+      "astro_proof": [
+        "Native/transliterated keywords only; no EN loanwords met pop≥6 in this store."
+      ],
+      "rationale": "Localized title; Bond dropped outside en-*. Keywords deduped vs title+subtitle, packed 100/100.",
+      "ok": true
+    },
+    "hi": {
+      "store": "in",
+      "title": "प्रेम भाषा याददाश्त कपल ऐप",
+      "subtitle": "जोड़ा · काउंटर · सालगिरह · दूर",
+      "keywords": "संबंध,ट्रैकर,काउंटडाउन,दूरी,संदेश,नोट,डेट,सवाल,विवाह,युगल,प्रेमी,पति,पत्नी,उपहार,calendar,watch",
+      "title_len": 26,
+      "subtitle_len": 30,
+      "keywords_len": 95,
+      "keyword_overlaps": [],
+      "astro_en_kept": [
+        "calendar(59)",
+        "watch(57)",
+        "reminder(55)",
+        "timer(47)",
+        "widget(46)"
+      ],
+      "astro_proof": [
+        "EN loanwords Astro pop≥6: calendar(59), watch(57), reminder(55), timer(47), widget(46)"
+      ],
+      "rationale": "Localized title; Bond dropped outside en-*. Keywords deduped vs title+subtitle, packed 95/100.",
+      "ok": true
+    },
+    "hr": {
+      "store": "hr",
+      "title": "Jezici ljubavi par · Par",
+      "subtitle": "Par brojač · Godišnjica · Dar",
+      "keywords": "veza,partner,suprug,udaljenost,podsjetnik,poruke,bilješke,spoj,pitanja,brak,poklon,countdown,notes",
+      "title_len": 24,
+      "subtitle_len": 29,
+      "keywords_len": 98,
+      "keyword_overlaps": [],
+      "astro_en_kept": [
+        "countdown(63)",
+        "notes(61)",
+        "calendar(59)",
+        "widget(56)",
+        "watch(42)",
+        "timer(35)",
+        "reminder(33)",
+        "date(32)",
+        "paired(26)",
+        "messages(26)",
+        "couple(26)"
+      ],
+      "astro_proof": [
+        "EN loanwords Astro pop≥6: countdown(63), notes(61), calendar(59), widget(56), watch(42), timer(35), reminder(33), date(32), paired(26), messages(26), couple(26)"
+      ],
+      "rationale": "Localized title; Bond dropped outside en-*. Keywords deduped vs title+subtitle, packed 98/100.",
+      "ok": true
+    },
+    "hu": {
+      "store": "hu",
+      "title": "Szeretetnyelvek párknak · Pár",
+      "subtitle": "Pár számláló · Évforduló",
+      "keywords": "kapcsolat,partner,házastárs,távolság,emlékeztető,üzenetek,jegyzetek,randi,kérdések,házasság,ajándék",
+      "title_len": 29,
+      "subtitle_len": 24,
+      "keywords_len": 99,
+      "keyword_overlaps": [],
+      "astro_en_kept": [
+        "watch(65)",
+        "widget(64)",
+        "calendar(61)",
+        "timer(41)",
+        "reminder(33)",
+        "couple(33)",
+        "paired(32)"
+      ],
+      "astro_proof": [
+        "EN loanwords Astro pop≥6: watch(65), widget(64), calendar(61), timer(41), reminder(33), couple(33), paired(32)"
+      ],
+      "rationale": "Localized title; Bond dropped outside en-*. Keywords deduped vs title+subtitle, packed 99/100.",
+      "ok": true
+    },
+    "id": {
+      "store": "id",
+      "title": "Bahasa cinta pasangan · Pasang",
+      "subtitle": "Penghitung pasangan · Ulang ta",
+      "keywords": "hubungan,jarak,pengingat,pesan,catatan,kencan,pertanyaan,pernikahan,hadiah,notes,widget,watch,timer",
+      "title_len": 30,
+      "subtitle_len": 30,
+      "keywords_len": 99,
+      "keyword_overlaps": [],
+      "astro_en_kept": [
+        "notes(65)",
+        "widget(63)",
+        "watch(59)",
+        "countdown(59)",
+        "calendar(59)",
+        "timer(53)",
+        "tracker(50)",
+        "messages(49)",
+        "reminder(34)",
+        "couple(27)"
+      ],
+      "astro_proof": [
+        "EN loanwords Astro pop≥6: notes(65), widget(63), watch(59), countdown(59), calendar(59), timer(53), tracker(50), messages(49), reminder(34), couple(27)"
+      ],
+      "rationale": "Localized title; Bond dropped outside en-*. Keywords deduped vs title+subtitle, packed 99/100.",
+      "ok": true
+    },
+    "it": {
+      "store": "it",
+      "title": "Linguaggi dell'amore coppia",
+      "subtitle": "Contatore coppia · Anniversari",
+      "keywords": "relazione,distanza,messaggi,note,appuntamento,domande,partner,coniuge,matrimonio,regalo,countdown",
+      "title_len": 27,
+      "subtitle_len": 30,
+      "keywords_len": 97,
+      "keyword_overlaps": [],
+      "astro_en_kept": [
+        "countdown(75)",
+        "widget(67)",
+        "calendar(66)",
+        "watch(63)",
+        "notes(61)",
+        "timer(58)",
+        "date(46)",
+        "couple(46)",
+        "tracker(40)",
+        "together(37)",
+        "reminder(36)",
+        "paired(36)",
+        "messages(33)",
+        "gift(9)",
+        "girlfriend(6)"
+      ],
+      "astro_proof": [
+        "EN loanwords Astro pop≥6: countdown(75), widget(67), calendar(66), watch(63), notes(61), timer(58), date(46), couple(46), tracker(40), together(37), reminder(36), paired(36), messages(33), gift(9), girlfriend(6)"
+      ],
+      "rationale": "Localized title; Bond dropped outside en-*. Keywords deduped vs title+subtitle, packed 97/100.",
+      "ok": true
+    },
+    "ja": {
+      "store": "jp",
+      "title": "愛の言語リマインダー・カップル用アプリ遠距離恋愛",
+      "subtitle": "カップル · カウンター · 記念日 · 遠距離恋愛",
+      "keywords": "関係,パートナー,配偶者,カウントダウン,メッセージ,メモ,デート,質問,結婚,恋人,夫婦,彼氏,彼女,贈り物,カレンダー,ウィジェット,watch,calendar,widget,timer,愛,夫",
+      "title_len": 24,
+      "subtitle_len": 26,
+      "keywords_len": 100,
+      "keyword_overlaps": [],
+      "astro_en_kept": [
+        "watch(66)",
+        "calendar(53)",
+        "widget(50)",
+        "timer(42)",
+        "reminder(40)",
+        "together(37)",
+        "gift(8)",
+        "couple(7)"
+      ],
+      "astro_proof": [
+        "EN loanwords Astro pop≥6: watch(66), calendar(53), widget(50), timer(42), reminder(40), together(37), gift(8), couple(7)"
+      ],
+      "rationale": "Localized title; Bond dropped outside en-*. Keywords deduped vs title+subtitle, packed 100/100.",
+      "ok": true
+    },
+    "kn-IN": {
+      "store": "in",
+      "title": "ಪ್ರೀತಿ ಭಾಷೆ ಜ್ಞಾಪಕ ಜೋಡಿ ಆ್ಯಪ್",
+      "subtitle": "ಜೋಡಿ · ಕೌಂಟರ್ · ವಾರ್ಷಿಕೋ · ದೂರ",
+      "keywords": "ಸಂಬಂಧ,ಟ್ರ್ಯಾಕರ್,ಕೌಂಟ್ಡೌನ್,ಸಂದೇಶ,ನೋಟ್,ಡೇಟ್,ಪ್ರಶ್ನೆ,ಮದುವೆ,ಪ್ರೇಮಿ,ಗಂಡ,ಹೆಂಡತಿ,ಉಡುಗೊರೆ,calendar,watch",
+      "title_len": 29,
+      "subtitle_len": 30,
+      "keywords_len": 96,
+      "keyword_overlaps": [],
+      "astro_en_kept": [
+        "calendar(59)",
+        "watch(57)",
+        "reminder(55)",
+        "timer(47)",
+        "widget(46)"
+      ],
+      "astro_proof": [
+        "EN loanwords Astro pop≥6: calendar(59), watch(57), reminder(55), timer(47), widget(46)"
+      ],
+      "rationale": "Localized title; Bond dropped outside en-*. Keywords deduped vs title+subtitle, packed 96/100.",
+      "ok": true
+    },
+    "ko": {
+      "store": "kr",
+      "title": "사랑의 언어 알림 및 커플 카운터 앱 도구용",
+      "subtitle": "커플 · 카운터 · 기념일 · 장거리 연애앱",
+      "keywords": "관계,파트너,배우자,카운트다운,메시지,메모,데이트,질문,결혼,연인,부부,선물,남친,여친,캘린더,위젯,타이머,watch,timer,calendar,widget,reminder,기념",
+      "title_len": 24,
+      "subtitle_len": 24,
+      "keywords_len": 99,
+      "keyword_overlaps": [],
+      "astro_en_kept": [
+        "watch(66)",
+        "timer(49)",
+        "calendar(42)",
+        "widget(41)",
+        "reminder(25)"
+      ],
+      "astro_proof": [
+        "EN loanwords Astro pop≥6: watch(66), timer(49), calendar(42), widget(41), reminder(25)"
+      ],
+      "rationale": "Localized title; Bond dropped outside en-*. Keywords deduped vs title+subtitle, packed 99/100.",
+      "ok": true
+    },
+    "ml-IN": {
+      "store": "in",
+      "title": "സ്നേഹ ഭാഷ ഓർമ്മ ദമ്പതി ആപ്പ്",
+      "subtitle": "ജോഡി · കൗണ്ടർ · വാർഷികം · ദൂരം",
+      "keywords": "ബന്ധം,ട്രാക്കർ,കൗണ്ട്ഡൗൺ,സന്ദേശം,കുറിപ്പ്,ഡേറ്റ്,ചോദ്യം,വിവാഹം,പ്രേമി,ഭർത്താവ്,ഭാര്യ,സമ്മാനം,watch",
+      "title_len": 28,
+      "subtitle_len": 30,
+      "keywords_len": 98,
+      "keyword_overlaps": [],
+      "astro_en_kept": [
+        "calendar(59)",
+        "watch(57)",
+        "reminder(55)",
+        "timer(47)",
+        "widget(46)"
+      ],
+      "astro_proof": [
+        "EN loanwords Astro pop≥6: calendar(59), watch(57), reminder(55), timer(47), widget(46)"
+      ],
+      "rationale": "Localized title; Bond dropped outside en-*. Keywords deduped vs title+subtitle, packed 98/100.",
+      "ok": true
+    },
+    "mr-IN": {
+      "store": "in",
+      "title": "प्रेम भाषा आठवण जोडी अॅप",
+      "subtitle": "जोडी · काउंटर · वर्धापन · अंतर",
+      "keywords": "नाते,ट्रॅकर,काउंटडाउन,संदेश,नोट,डेट,प्रश्न,लग्न,प्रिय,नवरा,बायको,भेट,स्मरण,कॅलेंडर,सोबत,calendar",
+      "title_len": 24,
+      "subtitle_len": 30,
+      "keywords_len": 96,
+      "keyword_overlaps": [],
+      "astro_en_kept": [
+        "calendar(59)",
+        "watch(57)",
+        "reminder(55)",
+        "timer(47)",
+        "widget(46)"
+      ],
+      "astro_proof": [
+        "EN loanwords Astro pop≥6: calendar(59), watch(57), reminder(55), timer(47), widget(46)"
+      ],
+      "rationale": "Localized title; Bond dropped outside en-*. Keywords deduped vs title+subtitle, packed 96/100.",
+      "ok": true
+    },
+    "ms": {
+      "store": "my",
+      "title": "Bahasa kasih pasangan · Pasang",
+      "subtitle": "Pembilang pasangan · Ulang tah",
+      "keywords": "hubungan,jarak,peringatan,mesej,nota,temujanji,soalan,perkahwinan,hadiah,notes,countdown,calendar",
+      "title_len": 30,
+      "subtitle_len": 30,
+      "keywords_len": 97,
+      "keyword_overlaps": [],
+      "astro_en_kept": [
+        "notes(71)",
+        "countdown(70)",
+        "calendar(67)",
+        "widget(66)",
+        "watch(60)",
+        "reminder(54)",
+        "couple(54)",
+        "tracker(51)",
+        "timer(51)",
+        "together(47)",
+        "date(47)"
+      ],
+      "astro_proof": [
+        "EN loanwords Astro pop≥6: notes(71), countdown(70), calendar(67), widget(66), watch(60), reminder(54), couple(54), tracker(51), timer(51), together(47), date(47)"
+      ],
+      "rationale": "Localized title; Bond dropped outside en-*. Keywords deduped vs title+subtitle, packed 97/100.",
+      "ok": true
+    },
+    "nl-NL": {
+      "store": "nl",
+      "title": "Liefdestaal herinneringen",
+      "subtitle": "Koppel teller · Jubileum",
+      "keywords": "relatie,afstand,berichten,notities,aftellen,vragen,echtgenoot,huwelijk,cadeau,date,widget,calendar",
+      "title_len": 25,
+      "subtitle_len": 24,
+      "keywords_len": 98,
+      "keyword_overlaps": [],
+      "astro_en_kept": [
+        "widget(68)",
+        "calendar(62)",
+        "watch(61)",
+        "timer(60)",
+        "couple(47)",
+        "reminder(41)"
+      ],
+      "astro_proof": [
+        "EN loanwords Astro pop≥6: widget(68), calendar(62), watch(61), timer(60), couple(47), reminder(41)"
+      ],
+      "rationale": "Localized title; Bond dropped outside en-*. Keywords deduped vs title+subtitle, packed 98/100.",
+      "ok": true
+    },
+    "no": {
+      "store": "no",
+      "title": "Kjærlighetsspråk tips par",
+      "subtitle": "Par teller · Jubileum · Kalend",
+      "keywords": "forhold,partner,ektefelle,avstand,nedtelling,meldinger,notater,date,spørsmål,ekteskap,gave,countdown",
+      "title_len": 25,
+      "subtitle_len": 30,
+      "keywords_len": 100,
+      "keyword_overlaps": [],
+      "astro_en_kept": [
+        "countdown(71)",
+        "together(65)",
+        "widget(64)",
+        "notes(64)",
+        "calendar(61)",
+        "tracker(57)",
+        "timer(53)",
+        "watch(47)",
+        "reminder(40)",
+        "paired(34)",
+        "couple(34)",
+        "messages(28)",
+        "girlfriend(27)",
+        "gift(27)"
+      ],
+      "astro_proof": [
+        "EN loanwords Astro pop≥6: countdown(71), together(65), widget(64), notes(64), calendar(61), tracker(57), timer(53), watch(47), reminder(40), paired(34), couple(34), messages(28), girlfriend(27), gift(27)"
+      ],
+      "rationale": "Localized title; Bond dropped outside en-*. Keywords deduped vs title+subtitle, packed 100/100.",
+      "ok": true
+    },
+    "or-IN": {
+      "store": "in",
+      "title": "ପ୍ରେମ ଭାଷା ସ୍ମରଣ ଯୋଡ଼ି ଆପ୍",
+      "subtitle": "ଯୋଡ଼ି · କାଉଣ୍ଟର · ବାର୍ଷିକୀ",
+      "keywords": "ସମ୍ପର୍କ,ଟ୍ରାକର,କାଉଣ୍ଟଡାଉନ,ଦୂରତା,ବାର୍ତ୍ତା,ନୋଟ,ଡେଟ,ପ୍ରଶ୍ନ,ବିବାହ,ପ୍ରେମିକ,ସ୍ଵାମୀ,ସ୍ତ୍ରୀ,ଉପହାର,calendar",
+      "title_len": 26,
+      "subtitle_len": 26,
+      "keywords_len": 98,
+      "keyword_overlaps": [],
+      "astro_en_kept": [
+        "calendar(59)",
+        "watch(57)",
+        "reminder(55)",
+        "timer(47)",
+        "widget(46)"
+      ],
+      "astro_proof": [
+        "EN loanwords Astro pop≥6: calendar(59), watch(57), reminder(55), timer(47), widget(46)"
+      ],
+      "rationale": "Localized title; Bond dropped outside en-*. Keywords deduped vs title+subtitle, packed 98/100.",
+      "ok": true
+    },
+    "pa-IN": {
+      "store": "in",
+      "title": "ਪਿਆਰ ਭਾਸ਼ਾ ਯਾਦਦਾਸ਼ਤ ਜੋੜਾ ਐਪ",
+      "subtitle": "ਜੋੜਾ · ਕਾਊਂਟਰ · ਸਾਲਗਿਰਹ · ਦੂਰੀ",
+      "keywords": "ਰਿਸ਼ਤਾ,ਟ੍ਰੈਕਰ,ਕਾਊਂਟਡਾਉਨ,ਸੁਨੇਹਾ,ਨੋਟ,ਡੇਟ,ਸਵਾਲ,ਵਿਆਹ,ਪ੍ਰੇਮੀ,ਪਤੀ,ਪਤਨੀ,ਤੋਹਫ਼ਾ,ਕੈਲੰਡਰ,ਨਾਲ,ਪ੍ਰੇਮਿਕਾ,calendar",
+      "title_len": 27,
+      "subtitle_len": 30,
+      "keywords_len": 100,
+      "keyword_overlaps": [],
+      "astro_en_kept": [
+        "calendar(59)",
+        "watch(57)",
+        "reminder(55)",
+        "timer(47)",
+        "widget(46)"
+      ],
+      "astro_proof": [
+        "EN loanwords Astro pop≥6: calendar(59), watch(57), reminder(55), timer(47), widget(46)"
+      ],
+      "rationale": "Localized title; Bond dropped outside en-*. Keywords deduped vs title+subtitle, packed 100/100.",
+      "ok": true
+    },
+    "pl": {
+      "store": "pl",
+      "title": "Języki miłości para · Para",
+      "subtitle": "Licznik pary · Rocznica · Dyst",
+      "keywords": "związek,partner,małżonek,dystans,przypomnienie,wiadomości,notatki,randka,pytania,prezent,notes,watch",
+      "title_len": 26,
+      "subtitle_len": 30,
+      "keywords_len": 100,
+      "keyword_overlaps": [],
+      "astro_en_kept": [
+        "notes(67)",
+        "countdown(64)",
+        "widget(63)",
+        "watch(62)",
+        "calendar(58)",
+        "timer(54)",
+        "date(49)",
+        "couple(48)",
+        "messages(47)",
+        "tracker(43)",
+        "paired(36)",
+        "reminder(35)"
+      ],
+      "astro_proof": [
+        "EN loanwords Astro pop≥6: notes(67), countdown(64), widget(63), watch(62), calendar(58), timer(54), date(49), couple(48), messages(47), tracker(43), paired(36), reminder(35)"
+      ],
+      "rationale": "Localized title; Bond dropped outside en-*. Keywords deduped vs title+subtitle, packed 100/100.",
+      "ok": true
+    },
+    "pt-BR": {
+      "store": "br",
+      "title": "Linguagens do amor casal",
+      "subtitle": "Contador casal · Aniversário",
+      "keywords": "relacionamento,distância,mensagens,notas,encontro,perguntas,parceiro,cônjuge,casamento,presente",
+      "title_len": 24,
+      "subtitle_len": 28,
+      "keywords_len": 95,
+      "keyword_overlaps": [],
+      "astro_en_kept": [
+        "watch(64)",
+        "widget(61)",
+        "timer(53)",
+        "reminder(46)",
+        "calendar(44)",
+        "together(37)",
+        "girlfriend(37)",
+        "couple(7)"
+      ],
+      "astro_proof": [
+        "EN loanwords Astro pop≥6: watch(64), widget(61), timer(53), reminder(46), calendar(44), together(37), girlfriend(37), couple(7)"
+      ],
+      "rationale": "Localized title; Bond dropped outside en-*. Keywords deduped vs title+subtitle, packed 95/100.",
+      "ok": true
+    },
+    "pt-PT": {
+      "store": "pt",
+      "title": "Linguagens do amor casal",
+      "subtitle": "Contador casal · Aniversário",
+      "keywords": "relacionamento,distância,mensagens,notas,encontro,perguntas,parceiro,cônjuge,casamento,presente,date",
+      "title_len": 24,
+      "subtitle_len": 28,
+      "keywords_len": 100,
+      "keyword_overlaps": [],
+      "astro_en_kept": [
+        "widget(62)",
+        "notes(62)",
+        "countdown(61)",
+        "watch(60)",
+        "calendar(56)",
+        "timer(51)",
+        "date(51)",
+        "paired(38)",
+        "reminder(34)",
+        "tracker(33)",
+        "couple(32)",
+        "gift(27)",
+        "messages(26)"
+      ],
+      "astro_proof": [
+        "EN loanwords Astro pop≥6: widget(62), notes(62), countdown(61), watch(60), calendar(56), timer(51), date(51), paired(38), reminder(34), tracker(33), couple(32), gift(27), messages(26)"
+      ],
+      "rationale": "Localized title; Bond dropped outside en-*. Keywords deduped vs title+subtitle, packed 100/100.",
+      "ok": true
+    },
+    "ro": {
+      "store": "ro",
+      "title": "Limbaje ale iubirii cuplu",
+      "subtitle": "Contor cuplu · Aniversare",
+      "keywords": "relație,partener,soț,distanță,memento,mesaje,notițe,întâlnire,întrebări,căsătorie,cadou,calendar",
+      "title_len": 25,
+      "subtitle_len": 25,
+      "keywords_len": 96,
+      "keyword_overlaps": [],
+      "astro_en_kept": [
+        "calendar(69)",
+        "countdown(68)",
+        "notes(67)",
+        "watch(62)",
+        "widget(60)",
+        "date(56)",
+        "couple(52)",
+        "timer(50)",
+        "reminder(37)",
+        "tracker(33)",
+        "messages(32)",
+        "paired(31)"
+      ],
+      "astro_proof": [
+        "EN loanwords Astro pop≥6: calendar(69), countdown(68), notes(67), watch(62), widget(60), date(56), couple(52), timer(50), reminder(37), tracker(33), messages(32), paired(31)"
+      ],
+      "rationale": "Localized title; Bond dropped outside en-*. Keywords deduped vs title+subtitle, packed 96/100.",
+      "ok": true
+    },
+    "ru": {
+      "store": "ru",
+      "title": "Языки любви для пары · Пара",
+      "subtitle": "Счётчик пары · Годовщина · Дис",
+      "keywords": "отношения,партнёр,супруг,расстояние,напоминание,сообщения,заметки,свидание,вопросы,брак,отсчёт",
+      "title_len": 27,
+      "subtitle_len": 30,
+      "keywords_len": 94,
+      "keyword_overlaps": [],
+      "astro_en_kept": [],
+      "astro_proof": [
+        "Native/transliterated keywords only; no EN loanwords met pop≥6 in this store."
+      ],
+      "rationale": "Localized title; Bond dropped outside en-*. Keywords deduped vs title+subtitle, packed 94/100.",
+      "ok": true
+    },
+    "sk": {
+      "store": "sk",
+      "title": "Jazyky lásky pre pár · Pár",
+      "subtitle": "Počítadlo páru · Výročie · Dar",
+      "keywords": "vzťah,partner,manžel,vzdialenosť,pripomienka,správy,poznámky,rande,otázky,manželstvo,darček,láska",
+      "title_len": 26,
+      "subtitle_len": 30,
+      "keywords_len": 97,
+      "keyword_overlaps": [],
+      "astro_en_kept": [],
+      "astro_proof": [
+        "Native/transliterated keywords only; no EN loanwords met pop≥6 in this store."
+      ],
+      "rationale": "Localized title; Bond dropped outside en-*. Keywords deduped vs title+subtitle, packed 97/100.",
+      "ok": true
+    },
+    "sl-SI": {
+      "store": "si",
+      "title": "Jeziki ljubezni par · Par",
+      "subtitle": "Števec para · Obletnica · Dari",
+      "keywords": "razmerje,partner,zakonec,razdalja,opomnik,sporočila,beležke,zmenek,vprašanja,poroka,darilo,ljubezen",
+      "title_len": 25,
+      "subtitle_len": 30,
+      "keywords_len": 99,
+      "keyword_overlaps": [],
+      "astro_en_kept": [
+        "countdown(63)",
+        "notes(61)",
+        "calendar(59)",
+        "widget(56)",
+        "watch(42)",
+        "timer(35)",
+        "reminder(33)",
+        "date(32)",
+        "paired(26)",
+        "messages(26)",
+        "couple(26)"
+      ],
+      "astro_proof": [
+        "EN loanwords Astro pop≥6: countdown(63), notes(61), calendar(59), widget(56), watch(42), timer(35), reminder(33), date(32), paired(26), messages(26), couple(26)"
+      ],
+      "rationale": "Localized title; Bond dropped outside en-*. Keywords deduped vs title+subtitle, packed 99/100.",
+      "ok": true
+    },
+    "sv": {
+      "store": "se",
+      "title": "Kärleksspråk påminnelser par",
+      "subtitle": "Par räknare · Årsdag · Kalende",
+      "keywords": "relation,maka,avstånd,nedräkning,meddelanden,dejt,frågor,äktenskap,anteckningar,present,countdown",
+      "title_len": 28,
+      "subtitle_len": 30,
+      "keywords_len": 97,
+      "keyword_overlaps": [],
+      "astro_en_kept": [
+        "countdown(69)",
+        "widget(66)",
+        "notes(63)",
+        "timer(60)",
+        "calendar(60)",
+        "tracker(58)",
+        "watch(57)",
+        "date(53)",
+        "messages(52)",
+        "reminder(40)",
+        "couple(36)",
+        "paired(33)",
+        "girlfriend(31)"
+      ],
+      "astro_proof": [
+        "EN loanwords Astro pop≥6: countdown(69), widget(66), notes(63), timer(60), calendar(60), tracker(58), watch(57), date(53), messages(52), reminder(40), couple(36), paired(33), girlfriend(31)"
+      ],
+      "rationale": "Localized title; Bond dropped outside en-*. Keywords deduped vs title+subtitle, packed 97/100.",
+      "ok": true
+    },
+    "ta-IN": {
+      "store": "in",
+      "title": "அன்பு மொழி நினைவூட்ட ஜோடி",
+      "subtitle": "ஜோடி · கவுண்டர் · ஆண்டுவிழா",
+      "keywords": "உறவு,ட்ராக்கர்,கவுண்டவுன்,தூரம்,செய்தி,குறிப்பு,டேட்,கேள்வி,திருமணம்,காதலன்,கணவன்,மனைவி,பரிசு,watch",
+      "title_len": 25,
+      "subtitle_len": 27,
+      "keywords_len": 99,
+      "keyword_overlaps": [],
+      "astro_en_kept": [
+        "calendar(59)",
+        "watch(57)",
+        "reminder(55)",
+        "timer(47)",
+        "widget(46)"
+      ],
+      "astro_proof": [
+        "EN loanwords Astro pop≥6: calendar(59), watch(57), reminder(55), timer(47), widget(46)"
+      ],
+      "rationale": "Localized title; Bond dropped outside en-*. Keywords deduped vs title+subtitle, packed 99/100.",
+      "ok": true
+    },
+    "te-IN": {
+      "store": "in",
+      "title": "ప్రేమ భాష జ్ఞాపకం జంట యాప్",
+      "subtitle": "జంట · కౌంటర్ · వార్షికో · దూరం",
+      "keywords": "సంబంధం,ట్రాకర్,కౌంట్డౌన్,సందేశం,నోట్,డేట్,ప్రశ్న,వివాహం,ప్రేమికుడు,భర్త,భార్య,బహుమతి,calendar,watch",
+      "title_len": 26,
+      "subtitle_len": 30,
+      "keywords_len": 99,
+      "keyword_overlaps": [],
+      "astro_en_kept": [
+        "calendar(59)",
+        "watch(57)",
+        "reminder(55)",
+        "timer(47)",
+        "widget(46)"
+      ],
+      "astro_proof": [
+        "EN loanwords Astro pop≥6: calendar(59), watch(57), reminder(55), timer(47), widget(46)"
+      ],
+      "rationale": "Localized title; Bond dropped outside en-*. Keywords deduped vs title+subtitle, packed 99/100.",
+      "ok": true
+    },
+    "th": {
+      "store": "th",
+      "title": "ภาษารักสำหรับคู่รัก · คู่",
+      "subtitle": "ตัวนับคู่รัก · ครบรอบ · ระยะทา",
+      "keywords": "ความสัมพันธ์,คู่สมรส,ระยะทาง,เตือน,ข้อความ,โน้ต,เดท,คำถาม,แต่งงาน,นับถอยหลัง,ของขวัญ,calendar,watch",
+      "title_len": 25,
+      "subtitle_len": 30,
+      "keywords_len": 99,
+      "keyword_overlaps": [],
+      "astro_en_kept": [
+        "calendar(67)",
+        "watch(62)",
+        "widget(61)",
+        "notes(58)",
+        "countdown(58)",
+        "timer(47)",
+        "reminder(44)",
+        "date(43)",
+        "messages(41)",
+        "tracker(16)"
+      ],
+      "astro_proof": [
+        "EN loanwords Astro pop≥6: calendar(67), watch(62), widget(61), notes(58), countdown(58), timer(47), reminder(44), date(43), messages(41), tracker(16)"
+      ],
+      "rationale": "Localized title; Bond dropped outside en-*. Keywords deduped vs title+subtitle, packed 99/100.",
+      "ok": true
+    },
+    "tr": {
+      "store": "tr",
+      "title": "Sevgi dilleri çift · Hatırlatm",
+      "subtitle": "Çift sayaç · Yıldönümü · Mesaf",
+      "keywords": "ilişki,partner,eş,mesafe,hatırlatıcı,mesajlar,notlar,randevu,sorular,evlilik,hediye,sevgili,takvim",
+      "title_len": 30,
+      "subtitle_len": 30,
+      "keywords_len": 98,
+      "keyword_overlaps": [],
+      "astro_en_kept": [],
+      "astro_proof": [
+        "Native/transliterated keywords only; no EN loanwords met pop≥6 in this store."
+      ],
+      "rationale": "Localized title; Bond dropped outside en-*. Keywords deduped vs title+subtitle, packed 98/100.",
+      "ok": true
+    },
+    "uk": {
+      "store": "ua",
+      "title": "Мови кохання для пари · Пара",
+      "subtitle": "Лічильник пари · Річниця · Від",
+      "keywords": "стосунки,партнер,подружжя,відстань,нагадування,повідомлення,нотатки,побачення,запитання,шлюб,watch",
+      "title_len": 28,
+      "subtitle_len": 30,
+      "keywords_len": 98,
+      "keyword_overlaps": [],
+      "astro_en_kept": [
+        "watch(68)",
+        "notes(61)",
+        "calendar(60)",
+        "widget(58)",
+        "countdown(57)",
+        "timer(38)",
+        "tracker(37)",
+        "paired(35)",
+        "reminder(32)",
+        "date(31)",
+        "couple(30)"
+      ],
+      "astro_proof": [
+        "EN loanwords Astro pop≥6: watch(68), notes(61), calendar(60), widget(58), countdown(57), timer(38), tracker(37), paired(35), reminder(32), date(31), couple(30)"
+      ],
+      "rationale": "Localized title; Bond dropped outside en-*. Keywords deduped vs title+subtitle, packed 98/100.",
+      "ok": true
+    },
+    "ur-PK": {
+      "store": "sa",
+      "title": "محبت کی زبان جوڑا یادداشت ایپ",
+      "subtitle": "جوڑا · کاؤنٹر · سالگرہ · فاصلہ",
+      "keywords": "تعلق,ٹریکر,کاؤنٹ ڈاؤن,پیغام,نوٹ,ڈیٹ,سوال,شادی,محبوب,شوہر,بیوی,تحفہ,countdown,notes,watch,widget,date",
+      "title_len": 29,
+      "subtitle_len": 30,
+      "keywords_len": 100,
+      "keyword_overlaps": [],
+      "astro_en_kept": [
+        "countdown(69)",
+        "notes(65)",
+        "watch(61)",
+        "widget(55)",
+        "calendar(47)",
+        "timer(45)",
+        "reminder(43)",
+        "date(42)",
+        "messages(40)"
+      ],
+      "astro_proof": [
+        "EN loanwords Astro pop≥6: countdown(69), notes(65), watch(61), widget(55), calendar(47), timer(45), reminder(43), date(42), messages(40)"
+      ],
+      "rationale": "Localized title; Bond dropped outside en-*. Keywords deduped vs title+subtitle, packed 100/100.",
+      "ok": true
+    },
+    "vi": {
+      "store": "vn",
+      "title": "Ngôn ngữ tình yêu đôi · Nhắc",
+      "subtitle": "Bộ đếm đôi · Kỷ niệm · Xa cách",
+      "keywords": "mối quan hệ,đối tác,vợ chồng,khoảng cách,nhắc nhở,tin nhắn,ghi chú,hẹn hò,câu hỏi,hôn nhân,quà,watch",
+      "title_len": 28,
+      "subtitle_len": 30,
+      "keywords_len": 100,
+      "keyword_overlaps": [],
+      "astro_en_kept": [
+        "widget(64)",
+        "watch(59)",
+        "calendar(59)",
+        "countdown(55)",
+        "notes(45)",
+        "tracker(44)",
+        "couple(43)",
+        "timer(42)",
+        "reminder(34)",
+        "together(30)"
+      ],
+      "astro_proof": [
+        "EN loanwords Astro pop≥6: widget(64), watch(59), calendar(59), countdown(55), notes(45), tracker(44), couple(43), timer(42), reminder(34), together(30)"
+      ],
+      "rationale": "Localized title; Bond dropped outside en-*. Keywords deduped vs title+subtitle, packed 100/100.",
+      "ok": true
+    },
+    "zh-Hans": {
+      "store": "cn",
+      "title": "爱的五种语言情侣提醒应用与异地纪念日计数器帮手爱",
+      "subtitle": "情侣异地计数器与纪念日礼物提醒恋爱关系配偶约会问",
+      "keywords": "伴侣,倒计时,消息,备忘,问题,结婚,夫妻,男友,女友,周年,日历,小组件,计时,配对,watch,calendar,widget,timer,reminder,together,girlfriend",
+      "title_len": 24,
+      "subtitle_len": 24,
+      "keywords_len": 100,
+      "keyword_overlaps": [],
+      "astro_en_kept": [
+        "watch(71)",
+        "calendar(66)",
+        "widget(60)",
+        "timer(54)",
+        "reminder(46)",
+        "together(37)",
+        "girlfriend(9)",
+        "couple(7)"
+      ],
+      "astro_proof": [
+        "EN loanwords Astro pop≥6: watch(71), calendar(66), widget(60), timer(54), reminder(46), together(37), girlfriend(9), couple(7)"
+      ],
+      "rationale": "Localized title; Bond dropped outside en-*. Keywords deduped vs title+subtitle, packed 100/100.",
+      "ok": true
+    },
+    "zh-Hant": {
+      "store": "tw",
+      "title": "愛的五種語言情侶提醒應用與遠距紀念日計數器幫手愛",
+      "subtitle": "情侶遠距計數器與紀念日禮物提醒戀愛關係配偶約會問",
+      "keywords": "伴侶,倒數計時,訊息,備忘,問題,結婚,夫妻,男友,女友,週年,日曆,小組件,計時,配對,watch,calendar,together,timer,widget,reminder,couple,提醒",
+      "title_len": 24,
+      "subtitle_len": 24,
+      "keywords_len": 100,
+      "keyword_overlaps": [],
+      "astro_en_kept": [
+        "watch(64)",
+        "calendar(58)",
+        "together(54)",
+        "timer(47)",
+        "widget(46)",
+        "reminder(39)",
+        "couple(38)"
+      ],
+      "astro_proof": [
+        "EN loanwords Astro pop≥6: watch(64), calendar(58), together(54), timer(47), widget(46), reminder(39), couple(38)"
+      ],
+      "rationale": "Localized title; Bond dropped outside en-*. Keywords deduped vs title+subtitle, packed 100/100.",
+      "ok": true
+    }
+  },
+  "issues": []
+}
