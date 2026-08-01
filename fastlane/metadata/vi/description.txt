@@ -1,20 +1,23 @@
-Stay intentional in your relationship with Bond: love-language reminders, shared milestones, and daily check-ins for couples on iPhone and Apple Watch.
+Ý định tốt thì dễ. Nhớ đúng lúc mới khó. Bond biến những điều quan trọng với người ấy thành lời nhắc đơn giản mà bạn có thể hành động ngay.
 
-WHAT YOU GET
-• Love-language reminders: tag acts of service, words of affirmation, quality time, gifts, and touch
-• Shared milestones and an anniversary countdown, right on your Home Screen
-• Pair with your partner to sync reminders and celebrate wins together
-• Add a reminder by voice from your Apple Watch, and see what's next at a glance with Home Screen widgets
-• Bond+: daily check-ins, insights, location & surprise reminders, and template packs
+BẮT ĐẦU VỚI NGƯỜI ẤY
+Cho Bond biết tên của người ấy, những ngôn ngữ tình yêu phù hợp nhất và điều bạn muốn ghi nhớ. Bond giúp bạn khởi đầu bằng những gợi ý nhắc nhở hữu ích thay vì một màn hình trống.
 
-WHY BOND
-Most couples apps feel like another social feed. Bond is narrower: help two people remember to act on love languages, celebrate milestones, and check in once a day.
+BẠN NHẬN ĐƯỢC GÌ
+• Lời nhắc theo ngôn ngữ tình yêu được cá nhân hóa: hành động giúp đỡ, lời khẳng định, thời gian chất lượng, quà tặng và cử chỉ thân mật
+• Bộ lời nhắc dựng sẵn cho buổi hẹn hò, lời cảm ơn mỗi ngày, yêu xa và nhiều hơn nữa
+• Cột mốc chung và đếm ngược kỷ niệm ngay trên Màn hình chính
+• Kết nối với người ấy để check-in mỗi ngày và chia sẻ khoảnh khắc
+• Thêm lời nhắc bằng giọng nói từ Apple Watch
 
-Free to start. Bond+ when you want the full experience.
+VÌ SAO CHỌN BOND
+Bond không phải thêm một mạng xã hội nữa. Đây là cách riêng tư, thiết thực để nhớ những điều nhỏ bé và thực hiện đến cùng.
 
-BOND+ SUBSCRIPTION
-Bond+ is an optional auto-renewable subscription: $4.99/month or $29.99/year (prices may vary by region), with a 7-day free trial for new subscribers. Payment is charged to your Apple ID account; your subscription renews automatically unless cancelled at least 24 hours before the current period ends. Manage or cancel anytime in your App Store account settings.
-Privacy Policy: https://jackwallner.github.io/bond/privacy/
-Terms of Use (EULA): https://jackwallner.github.io/bond/terms/
+Miễn phí khi bắt đầu. Người đăng ký mới đủ điều kiện có thể dùng thử Bond+ miễn phí 7 ngày.
 
-Privacy-first: Sign in with Apple, no ads, no data sold.
+GÓI ĐĂNG KÝ BOND+
+Bond+ là gói đăng ký tự động gia hạn không bắt buộc: $2.99/tháng hoặc $19.99/năm (giá có thể thay đổi theo khu vực), kèm 7 ngày dùng thử miễn phí cho người đăng ký mới. Khoản thanh toán được tính vào tài khoản Apple ID của bạn; gói sẽ tự động gia hạn trừ khi bạn hủy ít nhất 24 giờ trước khi kỳ hạn hiện tại kết thúc. Quản lý hoặc hủy bất cứ lúc nào trong cài đặt tài khoản App Store.
+Chính sách quyền riêng tư: https://jackwallner.github.io/bond/privacy/
+Điều khoản sử dụng (EULA): https://jackwallner.github.io/bond/terms/
+
+Ưu tiên quyền riêng tư: Đăng nhập bằng Apple, không quảng cáo, không bán dữ liệu.

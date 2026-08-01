@@ -1,20 +1,23 @@
-Stay intentional in your relationship with Bond: love-language reminders, shared milestones, and daily check-ins for couples on iPhone and Apple Watch.
+Gode intentioner er nemme. Det svære er at huske det i det rigtige øjeblik. Bond forvandler det, der betyder noget for din partner, til enkle påmindelser, du rent faktisk kan handle på.
 
-WHAT YOU GET
-• Love-language reminders: tag acts of service, words of affirmation, quality time, gifts, and touch
-• Shared milestones and an anniversary countdown, right on your Home Screen
-• Pair with your partner to sync reminders and celebrate wins together
-• Add a reminder by voice from your Apple Watch, and see what's next at a glance with Home Screen widgets
-• Bond+: daily check-ins, insights, location & surprise reminders, and template packs
+START MED DIN PARTNER
+Fortæl Bond, hvad din partner hedder, hvilke kærlighedssprog der virker bedst, og hvad du gerne vil huske. Bond hjælper dig i gang med brugbare idéer til påmindelser i stedet for en tom skærm.
 
-WHY BOND
-Most couples apps feel like another social feed. Bond is narrower: help two people remember to act on love languages, celebrate milestones, and check in once a day.
+DET FÅR DU
+• Personlige påmindelser efter kærlighedssprog: hjælpsomme handlinger, anerkendende ord, kvalitetstid, gaver og berøring
+• Færdige påmindelsespakker til dateaftener, daglig anerkendelse, forhold på afstand og meget mere
+• Fælles milepæle og nedtælling til mærkedage på hjemmeskærmen
+• Par med din partner for daglige tjek-ind og fælles øjeblikke
+• Tilføj påmindelser med stemmen fra Apple Watch
 
-Free to start. Bond+ when you want the full experience.
+HVORFOR BOND
+Bond er ikke endnu et socialt feed. Det er en privat og praktisk måde at huske de små ting på og få dem gjort.
 
-BOND+ SUBSCRIPTION
-Bond+ is an optional auto-renewable subscription: $4.99/month or $29.99/year (prices may vary by region), with a 7-day free trial for new subscribers. Payment is charged to your Apple ID account; your subscription renews automatically unless cancelled at least 24 hours before the current period ends. Manage or cancel anytime in your App Store account settings.
-Privacy Policy: https://jackwallner.github.io/bond/privacy/
-Terms of Use (EULA): https://jackwallner.github.io/bond/terms/
+Gratis at komme i gang. Nye abonnenter, der opfylder betingelserne, kan prøve Bond+ gratis i 7 dage.
 
-Privacy-first: Sign in with Apple, no ads, no data sold.
+BOND+ ABONNEMENT
+Bond+ er et valgfrit abonnement med automatisk fornyelse: $2.99 pr. måned eller $19.99 pr. år (priserne kan variere fra region til region), med 7 dages gratis prøveperiode for nye abonnenter. Betalingen trækkes fra din Apple ID-konto, og abonnementet fornyes automatisk, medmindre det opsiges mindst 24 timer før den nuværende periode slutter. Administrer eller opsig når som helst i indstillingerne for din App Store-konto.
+Privatlivspolitik: https://jackwallner.github.io/bond/privacy/
+Vilkår for brug (EULA): https://jackwallner.github.io/bond/terms/
+
+Privatliv først: Log ind med Apple, ingen reklamer, ingen salg af data.

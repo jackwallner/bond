@@ -1,20 +1,23 @@
-Stay intentional in your relationship with Bond: love-language reminders, shared milestones, and daily check-ins for couples on iPhone and Apple Watch.
+좋은 마음을 먹기는 쉽습니다. 어려운 건 딱 맞는 순간에 떠올리는 일이죠. Bond는 연인에게 소중한 것들을 바로 실천할 수 있는 간단한 알림으로 바꿔 줍니다.
 
-WHAT YOU GET
-• Love-language reminders: tag acts of service, words of affirmation, quality time, gifts, and touch
-• Shared milestones and an anniversary countdown, right on your Home Screen
-• Pair with your partner to sync reminders and celebrate wins together
-• Add a reminder by voice from your Apple Watch, and see what's next at a glance with Home Screen widgets
-• Bond+: daily check-ins, insights, location & surprise reminders, and template packs
+연인 정보로 시작하기
+연인의 이름, 가장 잘 통하는 사랑의 언어, 기억하고 싶은 것을 Bond에 알려 주세요. 빈 화면 대신 바로 쓸 수 있는 알림 아이디어로 시작할 수 있습니다.
 
-WHY BOND
-Most couples apps feel like another social feed. Bond is narrower: help two people remember to act on love languages, celebrate milestones, and check in once a day.
+주요 기능
+• 봉사, 인정하는 말, 함께하는 시간, 선물, 스킨십까지 사랑의 언어별 맞춤 알림
+• 데이트 날, 매일의 감사 표현, 장거리 연애 등을 위한 완성형 알림 팩
+• 홈 화면에서 보는 공유 기념일과 D-day 카운트다운
+• 연인과 연결해 매일 체크인하고 순간을 함께 나누기
+• Apple Watch에서 음성으로 알림 추가
 
-Free to start. Bond+ when you want the full experience.
+BOND를 선택하는 이유
+Bond는 또 하나의 소셜 피드가 아닙니다. 사소한 것들을 기억하고 끝까지 실천하게 해 주는, 사적이고 실용적인 방법입니다.
 
-BOND+ SUBSCRIPTION
-Bond+ is an optional auto-renewable subscription: $4.99/month or $29.99/year (prices may vary by region), with a 7-day free trial for new subscribers. Payment is charged to your Apple ID account; your subscription renews automatically unless cancelled at least 24 hours before the current period ends. Manage or cancel anytime in your App Store account settings.
-Privacy Policy: https://jackwallner.github.io/bond/privacy/
-Terms of Use (EULA): https://jackwallner.github.io/bond/terms/
+무료로 시작하세요. 자격이 되는 신규 구독자는 Bond+를 7일간 무료로 사용해 볼 수 있습니다.
 
-Privacy-first: Sign in with Apple, no ads, no data sold.
+BOND+ 구독
+Bond+는 선택 사항인 자동 갱신 구독입니다: 월 $2.99 또는 연 $19.99(가격은 지역에 따라 다를 수 있음), 신규 구독자에게는 7일 무료 체험이 제공됩니다. 결제는 Apple ID 계정으로 청구되며, 현재 기간 종료 24시간 전까지 취소하지 않으면 자동으로 갱신됩니다. App Store 계정 설정에서 언제든지 관리하거나 취소할 수 있습니다.
+개인정보 처리방침: https://jackwallner.github.io/bond/privacy/
+이용약관(EULA): https://jackwallner.github.io/bond/terms/
+
+프라이버시 우선: Apple로 로그인, 광고 없음, 데이터 판매 없음.

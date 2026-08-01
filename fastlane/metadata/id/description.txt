@@ -1,20 +1,23 @@
-Stay intentional in your relationship with Bond: love-language reminders, shared milestones, and daily check-ins for couples on iPhone and Apple Watch.
+Niat baik itu mudah. Yang sulit adalah mengingatnya di saat yang tepat. Bond mengubah hal-hal yang berarti bagi pasangan Anda menjadi pengingat sederhana yang bisa langsung Anda lakukan.
 
-WHAT YOU GET
-• Love-language reminders: tag acts of service, words of affirmation, quality time, gifts, and touch
-• Shared milestones and an anniversary countdown, right on your Home Screen
-• Pair with your partner to sync reminders and celebrate wins together
-• Add a reminder by voice from your Apple Watch, and see what's next at a glance with Home Screen widgets
-• Bond+: daily check-ins, insights, location & surprise reminders, and template packs
+MULAI DARI PASANGAN ANDA
+Beri tahu Bond nama pasangan Anda, bahasa kasih yang paling mengena, dan hal yang ingin Anda ingat. Bond membantu Anda memulai dengan ide pengingat yang berguna, bukan layar kosong.
 
-WHY BOND
-Most couples apps feel like another social feed. Bond is narrower: help two people remember to act on love languages, celebrate milestones, and check in once a day.
+APA YANG ANDA DAPAT
+• Pengingat bahasa kasih yang dipersonalisasi untuk tindakan melayani, kata-kata penguatan, waktu berkualitas, hadiah, dan sentuhan
+• Paket pengingat siap pakai untuk malam kencan, apresiasi harian, hubungan jarak jauh, dan lainnya
+• Momen penting bersama dan hitung mundur hari jadi di Layar Utama
+• Terhubung dengan pasangan untuk check-in harian dan momen bersama
+• Tambahkan pengingat lewat suara dari Apple Watch
 
-Free to start. Bond+ when you want the full experience.
+MENGAPA BOND
+Bond bukan lini masa media sosial lainnya. Ini cara yang privat dan praktis untuk mengingat hal-hal kecil dan benar-benar menjalankannya.
 
-BOND+ SUBSCRIPTION
-Bond+ is an optional auto-renewable subscription: $4.99/month or $29.99/year (prices may vary by region), with a 7-day free trial for new subscribers. Payment is charged to your Apple ID account; your subscription renews automatically unless cancelled at least 24 hours before the current period ends. Manage or cancel anytime in your App Store account settings.
-Privacy Policy: https://jackwallner.github.io/bond/privacy/
-Terms of Use (EULA): https://jackwallner.github.io/bond/terms/
+Mulai gratis. Pelanggan baru yang memenuhi syarat dapat mencoba Bond+ gratis selama 7 hari.
 
-Privacy-first: Sign in with Apple, no ads, no data sold.
+LANGGANAN BOND+
+Bond+ adalah langganan opsional yang diperpanjang otomatis: $2.99/bulan atau $19.99/tahun (harga dapat berbeda menurut wilayah), dengan uji coba gratis 7 hari untuk pelanggan baru. Pembayaran dibebankan ke akun Apple ID Anda; langganan diperpanjang otomatis kecuali dibatalkan setidaknya 24 jam sebelum periode berjalan berakhir. Kelola atau batalkan kapan saja di pengaturan akun App Store Anda.
+Kebijakan Privasi: https://jackwallner.github.io/bond/privacy/
+Ketentuan Penggunaan (EULA): https://jackwallner.github.io/bond/terms/
+
+Mengutamakan privasi: Masuk dengan Apple, tanpa iklan, tanpa penjualan data.

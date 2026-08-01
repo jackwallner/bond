@@ -1,20 +1,23 @@
-Stay intentional in your relationship with Bond: love-language reminders, shared milestones, and daily check-ins for couples on iPhone and Apple Watch.
+Dobri nameni so lahki. Težje se je spomniti nanje v pravem trenutku. Bond spremeni tisto, kar je pomembno za tvojega partnerja, v preproste opomnike, ki jih res lahko uresničiš.
 
-WHAT YOU GET
-• Love-language reminders: tag acts of service, words of affirmation, quality time, gifts, and touch
-• Shared milestones and an anniversary countdown, right on your Home Screen
-• Pair with your partner to sync reminders and celebrate wins together
-• Add a reminder by voice from your Apple Watch, and see what's next at a glance with Home Screen widgets
-• Bond+: daily check-ins, insights, location & surprise reminders, and template packs
+ZAČNI PRI PARTNERJU
+Bondu povej njegovo ime, jezike ljubezni, ki najbolje delujejo, in tisto, česar se želiš spomniti. Bond ti pomaga začeti z uporabnimi idejami za opomnike namesto s praznim zaslonom.
 
-WHY BOND
-Most couples apps feel like another social feed. Bond is narrower: help two people remember to act on love languages, celebrate milestones, and check in once a day.
+KAJ DOBIŠ
+• Osebne opomnike po jezikih ljubezni: dejanja pomoči, besede potrditve, kakovosten čas, darila in dotik
+• Pripravljene pakete opomnikov za zmenke, vsakodnevno hvaležnost, razmerje na daljavo in še več
+• Skupne mejnike in odštevanje do obletnic na začetnem zaslonu
+• Poveži se s partnerjem za dnevne prijave in skupne trenutke
+• Dodajaj opomnike z glasom prek ure Apple Watch
 
-Free to start. Bond+ when you want the full experience.
+ZAKAJ BOND
+Bond ni še eno družbeno omrežje. Je zaseben in praktičen način, da se spomniš na majhne stvari in jih tudi izpelješ.
 
-BOND+ SUBSCRIPTION
-Bond+ is an optional auto-renewable subscription: $4.99/month or $29.99/year (prices may vary by region), with a 7-day free trial for new subscribers. Payment is charged to your Apple ID account; your subscription renews automatically unless cancelled at least 24 hours before the current period ends. Manage or cancel anytime in your App Store account settings.
-Privacy Policy: https://jackwallner.github.io/bond/privacy/
-Terms of Use (EULA): https://jackwallner.github.io/bond/terms/
+Začetek je brezplačen. Novi naročniki, ki izpolnjujejo pogoje, lahko Bond+ brezplačno preizkusijo 7 dni.
 
-Privacy-first: Sign in with Apple, no ads, no data sold.
+NAROČNINA BOND+
+Bond+ je izbirna naročnina s samodejnim podaljševanjem: $2.99 na mesec ali $19.99 na leto (cene se lahko razlikujejo glede na regijo), s 7-dnevnim brezplačnim preizkusom za nove naročnike. Plačilo se obračuna na tvojem računu Apple ID; naročnina se samodejno podaljša, razen če jo prekličeš vsaj 24 ur pred koncem trenutnega obdobja. Upravljaj ali prekliči jo kadar koli v nastavitvah računa App Store.
+Pravilnik o zasebnosti: https://jackwallner.github.io/bond/privacy/
+Pogoji uporabe (EULA): https://jackwallner.github.io/bond/terms/
+
+Zasebnost na prvem mestu: Prijava z Apple, brez oglasov, brez prodaje podatkov.

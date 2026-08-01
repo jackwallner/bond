@@ -1,20 +1,23 @@
-Stay intentional in your relationship with Bond: love-language reminders, shared milestones, and daily check-ins for couples on iPhone and Apple Watch.
+İyi niyetli olmak kolaydır. Zor olan, doğru anda hatırlamaktır. Bond, partneriniz için önemli olan şeyleri hemen harekete geçebileceğiniz basit hatırlatıcılara dönüştürür.
 
-WHAT YOU GET
-• Love-language reminders: tag acts of service, words of affirmation, quality time, gifts, and touch
-• Shared milestones and an anniversary countdown, right on your Home Screen
-• Pair with your partner to sync reminders and celebrate wins together
-• Add a reminder by voice from your Apple Watch, and see what's next at a glance with Home Screen widgets
-• Bond+: daily check-ins, insights, location & surprise reminders, and template packs
+PARTNERİNİZLE BAŞLAYIN
+Bond'a partnerinizin adını, en çok işe yarayan sevgi dillerini ve hatırlamak istediklerinizi söyleyin. Bond, boş bir ekran yerine kullanışlı hatırlatıcı fikirleriyle başlamanızı sağlar.
 
-WHY BOND
-Most couples apps feel like another social feed. Bond is narrower: help two people remember to act on love languages, celebrate milestones, and check in once a day.
+NELER SUNUYOR
+• Hizmet davranışları, onaylayıcı sözler, kaliteli zaman, hediyeler ve dokunuş için kişiselleştirilmiş sevgi dili hatırlatıcıları
+• Buluşma geceleri, günlük takdir, uzun mesafe ve daha fazlası için hazır hatırlatıcı paketleri
+• Ana Ekranınızda ortak dönüm noktaları ve yıl dönümü geri sayımları
+• Günlük yoklamalar ve paylaşılan anlar için partnerinizle eşleşin
+• Apple Watch'tan sesle hatırlatıcı ekleyin
 
-Free to start. Bond+ when you want the full experience.
+NEDEN BOND
+Bond bir sosyal akış uygulaması değildir. Küçük şeyleri hatırlamanın ve sözünüzü tutmanın özel ve pratik bir yoludur.
 
-BOND+ SUBSCRIPTION
-Bond+ is an optional auto-renewable subscription: $4.99/month or $29.99/year (prices may vary by region), with a 7-day free trial for new subscribers. Payment is charged to your Apple ID account; your subscription renews automatically unless cancelled at least 24 hours before the current period ends. Manage or cancel anytime in your App Store account settings.
-Privacy Policy: https://jackwallner.github.io/bond/privacy/
-Terms of Use (EULA): https://jackwallner.github.io/bond/terms/
+Ücretsiz başlayın. Uygun yeni aboneler Bond+'ı 7 gün boyunca ücretsiz deneyebilir.
 
-Privacy-first: Sign in with Apple, no ads, no data sold.
+BOND+ ABONELİĞİ
+Bond+ isteğe bağlı, otomatik yenilenen bir aboneliktir: ayda $2.99 veya yılda $19.99 (fiyatlar bölgeye göre değişebilir), yeni aboneler için 7 günlük ücretsiz deneme ile. Ödeme Apple Kimliği hesabınızdan tahsil edilir; mevcut dönem bitmeden en az 24 saat önce iptal edilmediği sürece aboneliğiniz otomatik olarak yenilenir. App Store hesap ayarlarınızdan dilediğiniz zaman yönetebilir veya iptal edebilirsiniz.
+Gizlilik Politikası: https://jackwallner.github.io/bond/privacy/
+Kullanım Koşulları (EULA): https://jackwallner.github.io/bond/terms/
+
+Önce gizlilik: Apple ile Oturum Aç, reklam yok, veri satışı yok.

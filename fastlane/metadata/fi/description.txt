@@ -1,20 +1,23 @@
-Stay intentional in your relationship with Bond: love-language reminders, shared milestones, and daily check-ins for couples on iPhone and Apple Watch.
+Hyvät aikeet ovat helppoja. Vaikeampaa on muistaa ne oikealla hetkellä. Bond muuttaa kumppanillesi tärkeät asiat yksinkertaisiksi muistutuksiksi, joiden mukaan voit toimia.
 
-WHAT YOU GET
-• Love-language reminders: tag acts of service, words of affirmation, quality time, gifts, and touch
-• Shared milestones and an anniversary countdown, right on your Home Screen
-• Pair with your partner to sync reminders and celebrate wins together
-• Add a reminder by voice from your Apple Watch, and see what's next at a glance with Home Screen widgets
-• Bond+: daily check-ins, insights, location & surprise reminders, and template packs
+ALOITA KUMPPANISTASI
+Kerro Bondille hänen nimensä, parhaiten toimivat rakkauden kielet ja se, mitä haluat muistaa. Bond auttaa sinut alkuun hyödyllisillä muistutusideoilla tyhjän ruudun sijaan.
 
-WHY BOND
-Most couples apps feel like another social feed. Bond is narrower: help two people remember to act on love languages, celebrate milestones, and check in once a day.
+MITÄ SAAT
+• Yksilölliset rakkauden kielten mukaiset muistutukset: palvelevat teot, kannustavat sanat, yhteinen aika, lahjat ja kosketus
+• Valmiit muistutuspaketit treffi-illoille, päivittäiselle arvostukselle, etäsuhteelle ja muille tilanteille
+• Yhteiset merkkipaalut ja vuosipäivien lähtölaskenta Koti-valikossa
+• Yhdistä kumppanisi kanssa päivittäisiä kuulumisia ja yhteisiä hetkiä varten
+• Lisää muistutuksia äänellä Apple Watchista
 
-Free to start. Bond+ when you want the full experience.
+MIKSI BOND
+Bond ei ole taas yksi sosiaalinen syöte. Se on yksityinen ja käytännöllinen tapa muistaa pienet asiat ja myös tehdä ne.
 
-BOND+ SUBSCRIPTION
-Bond+ is an optional auto-renewable subscription: $4.99/month or $29.99/year (prices may vary by region), with a 7-day free trial for new subscribers. Payment is charged to your Apple ID account; your subscription renews automatically unless cancelled at least 24 hours before the current period ends. Manage or cancel anytime in your App Store account settings.
-Privacy Policy: https://jackwallner.github.io/bond/privacy/
-Terms of Use (EULA): https://jackwallner.github.io/bond/terms/
+Aloitus on ilmaista. Ehdot täyttävät uudet tilaajat voivat kokeilla Bond+:aa ilmaiseksi 7 päivän ajan.
 
-Privacy-first: Sign in with Apple, no ads, no data sold.
+BOND+ TILAUS
+Bond+ on valinnainen automaattisesti uusiutuva tilaus: $2.99/kk tai $19.99/vuosi (hinnat voivat vaihdella alueittain), ja siihen sisältyy 7 päivän ilmainen kokeilujakso uusille tilaajille. Maksu veloitetaan Apple ID -tililtäsi, ja tilaus uusiutuu automaattisesti, ellei sitä peruuteta vähintään 24 tuntia ennen kuluvan jakson päättymistä. Voit hallita tai peruuttaa tilauksen milloin tahansa App Store -tilisi asetuksissa.
+Tietosuojakäytäntö: https://jackwallner.github.io/bond/privacy/
+Käyttöehdot (EULA): https://jackwallner.github.io/bond/terms/
+
+Yksityisyys edellä: Kirjaudu Apple-tunnuksella, ei mainoksia, ei tietojen myyntiä.

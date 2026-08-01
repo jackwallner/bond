@@ -9,6 +9,6 @@ Restez intentionnels dans votre couple avec Bond: rappels des langages de l'amou
 Gratuit pour commencer. Bond+ pour l'expérience complète. Confidentialité: Sign in with Apple, sans pub, sans revente de données.
 
 ABONNEMENT BOND+
-Bond+ est un abonnement optionnel à renouvellement automatique : 4,99 $/mois ou 29,99 $/an (les prix peuvent varier selon la région), avec 7 jours d'essai gratuit pour les nouveaux abonnés. Le paiement est débité de votre compte Apple ID ; l'abonnement se renouvelle automatiquement sauf annulation au moins 24 heures avant la fin de la période en cours. Gérez ou annulez à tout moment dans les réglages de l'App Store.
+Bond+ est un abonnement optionnel à renouvellement automatique : 2,99 $/mois ou 19,99 $/an (les prix peuvent varier selon la région), avec 7 jours d'essai gratuit pour les nouveaux abonnés. Le paiement est débité de votre compte Apple ID ; l'abonnement se renouvelle automatiquement sauf annulation au moins 24 heures avant la fin de la période en cours. Gérez ou annulez à tout moment dans les réglages de l'App Store.
 Confidentialité: https://jackwallner.github.io/bond/privacy/
 Conditions (EULA): https://jackwallner.github.io/bond/terms/
