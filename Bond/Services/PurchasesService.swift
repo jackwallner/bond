@@ -158,6 +158,9 @@ final class PurchasesService {
 
     @discardableResult
     func purchase(_ package: Package) async throws -> PurchaseState {
+        #if targetEnvironment(simulator)
+        return .cancelled
+        #else
         purchaseInFlight = true
         defer { purchaseInFlight = false }
         lastError = nil
@@ -238,6 +241,7 @@ final class PurchasesService {
         }
         log.warning("Purchase completed but entitlement still inactive, source: \(source)")
         return .pending
+        #endif
     }
 
     /// Some RC errors mean "Apple took the payment, but the entitlement is
@@ -306,6 +310,9 @@ final class PurchasesService {
     }
 
     func identify(supabaseUserId: UUID) async {
+        #if targetEnvironment(simulator)
+        return
+        #else
         do {
             let (info, _) = try await Purchases.shared.logIn(supabaseUserId.uuidString)
             apply(info: info)
@@ -314,9 +321,13 @@ final class PurchasesService {
             lastError = error.localizedDescription
             log.error("Identify failed: \(error.localizedDescription)")
         }
+        #endif
     }
 
     func signOut() async {
+        #if targetEnvironment(simulator)
+        return
+        #else
         do {
             let info = try await Purchases.shared.logOut()
             apply(info: info)
@@ -325,9 +336,13 @@ final class PurchasesService {
             lastError = error.localizedDescription
             log.error("Sign out failed: \(error.localizedDescription)")
         }
+        #endif
     }
 
     func restore() async {
+        #if targetEnvironment(simulator)
+        return
+        #else
         do {
             let info = try await Purchases.shared.restorePurchases()
             apply(info: info)
@@ -337,6 +352,7 @@ final class PurchasesService {
             lastError = "Couldn't restore purchases. Try again."
             log.error("Restore failed: \(error.localizedDescription)")
         }
+        #endif
     }
 
     var premiumSince: Date? {
