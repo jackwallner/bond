@@ -1,20 +1,23 @@
-Stay intentional in your relationship with Bond: love-language reminders, shared milestones, and daily check-ins for couples on iPhone and Apple Watch.
+A jó szándék a könnyebbik rész. Nehezebb a megfelelő pillanatban eszünkbe jutnia. A Bond egyszerű, azonnal teljesíthető emlékeztetőkké alakítja azt, ami a párodnak fontos.
 
-WHAT YOU GET
-• Love-language reminders: tag acts of service, words of affirmation, quality time, gifts, and touch
-• Shared milestones and an anniversary countdown, right on your Home Screen
-• Pair with your partner to sync reminders and celebrate wins together
-• Add a reminder by voice from your Apple Watch, and see what's next at a glance with Home Screen widgets
-• Bond+: daily check-ins, insights, location & surprise reminders, and template packs
+KEZDD A PÁROD ADATAIVAL
+Add meg a Bondnak a neve, a nála legjobban működő szeretetnyelveket és azt, amire emlékezni szeretnél. A Bond hasznos emlékeztető-ötletekkel indít, nem üres képernyővel.
 
-WHY BOND
-Most couples apps feel like another social feed. Bond is narrower: help two people remember to act on love languages, celebrate milestones, and check in once a day.
+MIT KAPSZ
+• Személyre szabott emlékeztetők szeretetnyelvek szerint: segítő tettek, elismerő szavak, minőségi idő, ajándékok és érintés
+• Kész emlékeztetőcsomagok randiestékre, napi hálára, távkapcsolatra és még sok másra
+• Közös mérföldkövek és évfordulós visszaszámlálás a kezdőképernyőn
+• Párosítsd a pároddal a napi bejelentkezésekhez és a közös pillanatokhoz
+• Adj hozzá emlékeztetőket hanggal az Apple Watchról
 
-Free to start. Bond+ when you want the full experience.
+MIÉRT A BOND
+A Bond nem egy újabb közösségi hírfolyam. Ez egy privát és gyakorlatias módja annak, hogy emlékezz az apróságokra, és véghez is vidd őket.
 
-BOND+ SUBSCRIPTION
-Bond+ is an optional auto-renewable subscription: $4.99/month or $29.99/year (prices may vary by region), with a 7-day free trial for new subscribers. Payment is charged to your Apple ID account; your subscription renews automatically unless cancelled at least 24 hours before the current period ends. Manage or cancel anytime in your App Store account settings.
-Privacy Policy: https://jackwallner.github.io/bond/privacy/
-Terms of Use (EULA): https://jackwallner.github.io/bond/terms/
+Ingyenesen kezdheted. A jogosult új előfizetők 7 napig ingyen kipróbálhatják a Bond+-t.
 
-Privacy-first: Sign in with Apple, no ads, no data sold.
+BOND+ ELŐFIZETÉS
+A Bond+ opcionális, automatikusan megújuló előfizetés: $2.99/hó vagy $19.99/év (az árak régiónként eltérhetnek), új előfizetőknek 7 napos ingyenes próbaidőszakkal. A díjat az Apple ID-fiókod terheli; az előfizetés automatikusan megújul, hacsak legalább 24 órával az aktuális időszak vége előtt nem mondod le. Bármikor kezelheted vagy lemondhatod az App Store-fiókod beállításaiban.
+Adatvédelmi irányelvek: https://jackwallner.github.io/bond/privacy/
+Felhasználási feltételek (EULA): https://jackwallner.github.io/bond/terms/
+
+Adatvédelem mindenekelőtt: Bejelentkezés Apple-lel, hirdetések nélkül, adateladás nélkül.

@@ -1,20 +1,23 @@
-Stay intentional in your relationship with Bond: love-language reminders, shared milestones, and daily check-ins for couples on iPhone and Apple Watch.
+Intențiile bune sunt ușoare. Mai greu e să-ți amintești în momentul potrivit. Bond transformă ceea ce contează pentru partenerul tău în memento-uri simple, pe care chiar le poți duce la capăt.
 
-WHAT YOU GET
-• Love-language reminders: tag acts of service, words of affirmation, quality time, gifts, and touch
-• Shared milestones and an anniversary countdown, right on your Home Screen
-• Pair with your partner to sync reminders and celebrate wins together
-• Add a reminder by voice from your Apple Watch, and see what's next at a glance with Home Screen widgets
-• Bond+: daily check-ins, insights, location & surprise reminders, and template packs
+ÎNCEPE CU PARTENERUL TĂU
+Spune-i lui Bond numele lui, limbajele iubirii care funcționează cel mai bine și ce vrei să ții minte. Bond te ajută să începi cu idei utile de memento-uri, în loc de un ecran gol.
 
-WHY BOND
-Most couples apps feel like another social feed. Bond is narrower: help two people remember to act on love languages, celebrate milestones, and check in once a day.
+CE PRIMEȘTI
+• Memento-uri personalizate pe limbaje ale iubirii: acte de serviciu, cuvinte de apreciere, timp de calitate, cadouri și atingere
+• Pachete de memento-uri gata făcute pentru serile romantice, aprecierea zilnică, relațiile la distanță și altele
+• Momente importante comune și numărătoare inversă până la aniversări pe ecranul principal
+• Conectează-te cu partenerul pentru check-in-uri zilnice și momente împărtășite
+• Adaugă memento-uri vocal de pe Apple Watch
 
-Free to start. Bond+ when you want the full experience.
+DE CE BOND
+Bond nu este încă un flux de socializare. Este un mod privat și practic de a-ți aminti lucrurile mici și de a le duce la bun sfârșit.
 
-BOND+ SUBSCRIPTION
-Bond+ is an optional auto-renewable subscription: $4.99/month or $29.99/year (prices may vary by region), with a 7-day free trial for new subscribers. Payment is charged to your Apple ID account; your subscription renews automatically unless cancelled at least 24 hours before the current period ends. Manage or cancel anytime in your App Store account settings.
-Privacy Policy: https://jackwallner.github.io/bond/privacy/
-Terms of Use (EULA): https://jackwallner.github.io/bond/terms/
+Începi gratuit. Abonații noi eligibili pot încerca Bond+ gratuit timp de 7 zile.
 
-Privacy-first: Sign in with Apple, no ads, no data sold.
+ABONAMENTUL BOND+
+Bond+ este un abonament opțional cu reînnoire automată: $2.99/lună sau $19.99/an (prețurile pot varia în funcție de regiune), cu 7 zile de probă gratuită pentru abonații noi. Plata este debitată din contul tău Apple ID; abonamentul se reînnoiește automat dacă nu este anulat cu cel puțin 24 de ore înainte de încheierea perioadei curente. Îl poți gestiona sau anula oricând din setările contului App Store.
+Politica de confidențialitate: https://jackwallner.github.io/bond/privacy/
+Termeni de utilizare (EULA): https://jackwallner.github.io/bond/terms/
+
+Confidențialitatea pe primul loc: Autentificare cu Apple, fără reclame, fără vânzarea datelor.

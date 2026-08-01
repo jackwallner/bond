@@ -1,20 +1,23 @@
-Stay intentional in your relationship with Bond: love-language reminders, shared milestones, and daily check-ins for couples on iPhone and Apple Watch.
+अच्छे इरादे रखना आसान है। मुश्किल है सही पल पर याद रखना। Bond उन बातों को, जो आपके साथी के लिए मायने रखती हैं, ऐसे आसान रिमाइंडर में बदल देता है जिन पर आप तुरंत अमल कर सकें।
 
-WHAT YOU GET
-• Love-language reminders: tag acts of service, words of affirmation, quality time, gifts, and touch
-• Shared milestones and an anniversary countdown, right on your Home Screen
-• Pair with your partner to sync reminders and celebrate wins together
-• Add a reminder by voice from your Apple Watch, and see what's next at a glance with Home Screen widgets
-• Bond+: daily check-ins, insights, location & surprise reminders, and template packs
+अपने साथी से शुरुआत करें
+Bond को उनका नाम बताएं, वे प्रेम भाषाएं जो सबसे ज़्यादा असर करती हैं, और वह सब जो आप याद रखना चाहते हैं। खाली स्क्रीन के बजाय Bond आपको काम के रिमाइंडर सुझावों के साथ शुरुआत करने में मदद करता है।
 
-WHY BOND
-Most couples apps feel like another social feed. Bond is narrower: help two people remember to act on love languages, celebrate milestones, and check in once a day.
+आपको क्या मिलेगा
+• प्रेम भाषाओं के अनुसार निजी रिमाइंडर: सेवा के कार्य, प्रशंसा के शब्द, साथ बिताया समय, उपहार और स्पर्श
+• डेट नाइट, रोज़ की सराहना, लॉन्ग डिस्टेंस और बहुत कुछ के लिए तैयार रिमाइंडर पैक
+• होम स्क्रीन पर साझा माइलस्टोन और सालगिरह का काउंटडाउन
+• रोज़ के चेक-इन और साझा पलों के लिए अपने साथी से जुड़ें
+• Apple Watch से बोलकर रिमाइंडर जोड़ें
 
-Free to start. Bond+ when you want the full experience.
+Bond ही क्यों
+Bond कोई और सोशल फ़ीड नहीं है। यह छोटी-छोटी बातें याद रखने और उन्हें पूरा करने का एक निजी और व्यावहारिक तरीका है।
 
-BOND+ SUBSCRIPTION
-Bond+ is an optional auto-renewable subscription: $4.99/month or $29.99/year (prices may vary by region), with a 7-day free trial for new subscribers. Payment is charged to your Apple ID account; your subscription renews automatically unless cancelled at least 24 hours before the current period ends. Manage or cancel anytime in your App Store account settings.
-Privacy Policy: https://jackwallner.github.io/bond/privacy/
-Terms of Use (EULA): https://jackwallner.github.io/bond/terms/
+शुरुआत मुफ़्त। योग्य नए सब्सक्राइबर Bond+ को 7 दिन मुफ़्त आज़मा सकते हैं।
 
-Privacy-first: Sign in with Apple, no ads, no data sold.
+BOND+ सब्सक्रिप्शन
+Bond+ एक वैकल्पिक, स्वतः नवीनीकृत होने वाला सब्सक्रिप्शन है: $2.99/माह या $19.99/वर्ष (कीमतें क्षेत्र के अनुसार अलग हो सकती हैं), नए सब्सक्राइबर के लिए 7 दिन के मुफ़्त ट्रायल के साथ। भुगतान आपके Apple ID खाते से लिया जाता है; मौजूदा अवधि समाप्त होने से कम से कम 24 घंटे पहले रद्द न करने पर सब्सक्रिप्शन अपने आप नवीनीकृत हो जाता है। आप इसे कभी भी अपने App Store खाता सेटिंग में प्रबंधित या रद्द कर सकते हैं।
+गोपनीयता नीति: https://jackwallner.github.io/bond/privacy/
+उपयोग की शर्तें (EULA): https://jackwallner.github.io/bond/terms/
+
+गोपनीयता सबसे पहले: Apple से साइन इन, कोई विज्ञापन नहीं, डेटा की कोई बिक्री नहीं।

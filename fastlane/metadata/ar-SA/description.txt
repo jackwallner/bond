@@ -1,20 +1,23 @@
-Stay intentional in your relationship with Bond: love-language reminders, shared milestones, and daily check-ins for couples on iPhone and Apple Watch.
+النوايا الطيبة سهلة، لكن الأصعب هو تذكّرها في اللحظة المناسبة. يحوّل Bond ما يهمّ شريكك إلى تذكيرات بسيطة يمكنك تنفيذها فعلاً.
 
-WHAT YOU GET
-• Love-language reminders: tag acts of service, words of affirmation, quality time, gifts, and touch
-• Shared milestones and an anniversary countdown, right on your Home Screen
-• Pair with your partner to sync reminders and celebrate wins together
-• Add a reminder by voice from your Apple Watch, and see what's next at a glance with Home Screen widgets
-• Bond+: daily check-ins, insights, location & surprise reminders, and template packs
+ابدأ من شريكك
+أخبر Bond باسمه، وبلغات الحب الأكثر تأثيراً لديه، وبما تريد تذكّره. يساعدك Bond على البدء بأفكار تذكيرات مفيدة بدلاً من شاشة فارغة.
 
-WHY BOND
-Most couples apps feel like another social feed. Bond is narrower: help two people remember to act on love languages, celebrate milestones, and check in once a day.
+ما الذي ستحصل عليه
+• تذكيرات مخصّصة حسب لغات الحب: أفعال الخدمة، وكلمات التقدير، والوقت النوعي، والهدايا، واللمسة
+• حزم تذكيرات جاهزة لليالي المواعيد، والامتنان اليومي، والعلاقات عن بُعد، وغيرها
+• محطات مشتركة وعدّ تنازلي للمناسبات السنوية على الشاشة الرئيسية
+• اقترن بشريكك لتسجيل الحضور اليومي ومشاركة اللحظات
+• أضف التذكيرات بصوتك من Apple Watch
 
-Free to start. Bond+ when you want the full experience.
+لماذا Bond
+‏Bond ليس تطبيق تواصل اجتماعي آخر، بل طريقة خاصة وعملية لتتذكّر التفاصيل الصغيرة وتنفّذها.
 
-BOND+ SUBSCRIPTION
-Bond+ is an optional auto-renewable subscription: $4.99/month or $29.99/year (prices may vary by region), with a 7-day free trial for new subscribers. Payment is charged to your Apple ID account; your subscription renews automatically unless cancelled at least 24 hours before the current period ends. Manage or cancel anytime in your App Store account settings.
-Privacy Policy: https://jackwallner.github.io/bond/privacy/
-Terms of Use (EULA): https://jackwallner.github.io/bond/terms/
+ابدأ مجاناً. يمكن للمشتركين الجدد المؤهّلين تجربة Bond+ مجاناً لمدة 7 أيام.
 
-Privacy-first: Sign in with Apple, no ads, no data sold.
+اشتراك BOND+
+‏Bond+ اشتراك اختياري يتجدّد تلقائياً: ‎$2.99 شهرياً أو ‎$19.99 سنوياً (قد تختلف الأسعار حسب المنطقة)، مع تجربة مجانية لمدة 7 أيام للمشتركين الجدد. يتم خصم المبلغ من حساب Apple ID الخاص بك، ويتجدّد الاشتراك تلقائياً ما لم يتم إلغاؤه قبل 24 ساعة على الأقل من انتهاء الفترة الحالية. يمكنك إدارته أو إلغاؤه في أي وقت من إعدادات حساب App Store.
+سياسة الخصوصية: https://jackwallner.github.io/bond/privacy/
+شروط الاستخدام (EULA): https://jackwallner.github.io/bond/terms/
+
+الخصوصية أولاً: تسجيل الدخول باستخدام Apple، بلا إعلانات، وبلا بيع للبيانات.

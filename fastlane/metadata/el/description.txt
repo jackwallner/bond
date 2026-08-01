@@ -1,20 +1,23 @@
-Stay intentional in your relationship with Bond: love-language reminders, shared milestones, and daily check-ins for couples on iPhone and Apple Watch.
+Οι καλές προθέσεις είναι το εύκολο μέρος. Το δύσκολο είναι να το θυμηθείς τη σωστή στιγμή. Το Bond μετατρέπει αυτά που έχουν σημασία για τον σύντροφό σου σε απλές υπενθυμίσεις που μπορείς πραγματικά να υλοποιήσεις.
 
-WHAT YOU GET
-• Love-language reminders: tag acts of service, words of affirmation, quality time, gifts, and touch
-• Shared milestones and an anniversary countdown, right on your Home Screen
-• Pair with your partner to sync reminders and celebrate wins together
-• Add a reminder by voice from your Apple Watch, and see what's next at a glance with Home Screen widgets
-• Bond+: daily check-ins, insights, location & surprise reminders, and template packs
+ΞΕΚΙΝΑ ΑΠΟ ΤΟΝ ΣΥΝΤΡΟΦΟ ΣΟΥ
+Πες στο Bond το όνομά του, ποιες γλώσσες αγάπης λειτουργούν καλύτερα και τι θέλεις να θυμάσαι. Το Bond σε βοηθά να ξεκινήσεις με χρήσιμες ιδέες για υπενθυμίσεις αντί για μια άδεια οθόνη.
 
-WHY BOND
-Most couples apps feel like another social feed. Bond is narrower: help two people remember to act on love languages, celebrate milestones, and check in once a day.
+ΤΙ ΠΕΡΙΛΑΜΒΑΝΕΙ
+• Εξατομικευμένες υπενθυμίσεις ανά γλώσσα αγάπης: πράξεις προσφοράς, λόγια επιβεβαίωσης, ποιοτικός χρόνος, δώρα και άγγιγμα
+• Έτοιμα πακέτα υπενθυμίσεων για ραντεβού, καθημερινή εκτίμηση, σχέσεις από απόσταση και άλλα
+• Κοινά ορόσημα και αντίστροφη μέτρηση για επετείους στην οθόνη Home
+• Σύνδεσε τον σύντροφό σου για καθημερινά check-in και κοινές στιγμές
+• Πρόσθεσε υπενθυμίσεις με τη φωνή σου από το Apple Watch
 
-Free to start. Bond+ when you want the full experience.
+ΓΙΑΤΙ BOND
+Το Bond δεν είναι άλλο ένα κοινωνικό feed. Είναι ένας ιδιωτικός και πρακτικός τρόπος να θυμάσαι τα μικρά πράγματα και να τα κάνεις πράξη.
 
-BOND+ SUBSCRIPTION
-Bond+ is an optional auto-renewable subscription: $4.99/month or $29.99/year (prices may vary by region), with a 7-day free trial for new subscribers. Payment is charged to your Apple ID account; your subscription renews automatically unless cancelled at least 24 hours before the current period ends. Manage or cancel anytime in your App Store account settings.
-Privacy Policy: https://jackwallner.github.io/bond/privacy/
-Terms of Use (EULA): https://jackwallner.github.io/bond/terms/
+Ξεκίνα δωρεάν. Οι νέοι συνδρομητές που πληρούν τις προϋποθέσεις μπορούν να δοκιμάσουν το Bond+ δωρεάν για 7 ημέρες.
 
-Privacy-first: Sign in with Apple, no ads, no data sold.
+ΣΥΝΔΡΟΜΗ BOND+
+Το Bond+ είναι μια προαιρετική συνδρομή με αυτόματη ανανέωση: $2.99/μήνα ή $19.99/έτος (οι τιμές ενδέχεται να διαφέρουν ανά περιοχή), με 7 ημέρες δωρεάν δοκιμής για νέους συνδρομητές. Η χρέωση γίνεται στον λογαριασμό σου Apple ID και η συνδρομή ανανεώνεται αυτόματα, εκτός αν ακυρωθεί τουλάχιστον 24 ώρες πριν από τη λήξη της τρέχουσας περιόδου. Διαχειρίσου ή ακύρωσέ την οποιαδήποτε στιγμή από τις ρυθμίσεις του λογαριασμού σου στο App Store.
+Πολιτική Απορρήτου: https://jackwallner.github.io/bond/privacy/
+Όροι Χρήσης (EULA): https://jackwallner.github.io/bond/terms/
+
+Απόρρητο πρώτα: Σύνδεση με Apple, χωρίς διαφημίσεις, χωρίς πώληση δεδομένων.

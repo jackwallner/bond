@@ -1,20 +1,23 @@
-Stay intentional in your relationship with Bond: love-language reminders, shared milestones, and daily check-ins for couples on iPhone and Apple Watch.
+有好的心意並不難，難的是在對的時刻想起來。Bond 把對另一半重要的事，變成你隨手就能完成的簡單提醒。
 
-WHAT YOU GET
-• Love-language reminders: tag acts of service, words of affirmation, quality time, gifts, and touch
-• Shared milestones and an anniversary countdown, right on your Home Screen
-• Pair with your partner to sync reminders and celebrate wins together
-• Add a reminder by voice from your Apple Watch, and see what's next at a glance with Home Screen widgets
-• Bond+: daily check-ins, insights, location & surprise reminders, and template packs
+從另一半開始
+告訴 Bond 對方的名字、最有效的愛之語，以及你想記住的事。Bond 會用實用的提醒靈感幫你開始，而不是給你一片空白。
 
-WHY BOND
-Most couples apps feel like another social feed. Bond is narrower: help two people remember to act on love languages, celebrate milestones, and check in once a day.
+你會得到什麼
+• 依五種愛之語量身打造的提醒：服務的行動、肯定的言語、精心的時刻、真心的禮物、身體的接觸
+• 現成的提醒組合，適用約會夜、每日感謝、遠距離戀愛等情境
+• 共享的重要里程碑與紀念日倒數，直接顯示在主畫面
+• 與另一半配對，進行每日簽到並分享彼此的時刻
+• 用 Apple Watch 語音新增提醒
 
-Free to start. Bond+ when you want the full experience.
+為什麼選 Bond
+Bond 不是又一個社群動態。它是一種私密而實用的方式，讓你記住那些小事並真正做到。
 
-BOND+ SUBSCRIPTION
-Bond+ is an optional auto-renewable subscription: $4.99/month or $29.99/year (prices may vary by region), with a 7-day free trial for new subscribers. Payment is charged to your Apple ID account; your subscription renews automatically unless cancelled at least 24 hours before the current period ends. Manage or cancel anytime in your App Store account settings.
-Privacy Policy: https://jackwallner.github.io/bond/privacy/
-Terms of Use (EULA): https://jackwallner.github.io/bond/terms/
+免費開始使用。符合資格的新訂閱者可免費試用 Bond+ 7 天。
 
-Privacy-first: Sign in with Apple, no ads, no data sold.
+BOND+ 訂閱
+Bond+ 為選購的自動續訂訂閱：每月 $2.99 或每年 $19.99（價格可能因地區而異），新訂閱者享 7 天免費試用。費用將由你的 Apple ID 帳戶扣款；除非在目前訂閱期結束前至少 24 小時取消，否則訂閱將自動續訂。你可以隨時在 App Store 帳戶設定中管理或取消。
+隱私權政策：https://jackwallner.github.io/bond/privacy/
+使用條款（EULA）：https://jackwallner.github.io/bond/terms/
+
+隱私優先：使用 Apple 登入、沒有廣告、絕不販售資料。
