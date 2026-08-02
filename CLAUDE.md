@@ -1,7 +1,7 @@
 # Bond — Project Guide
 
 See memory `project_bond.md` for app overview, stack, and phased plan.
-XcodeGen project/scheme: `Bond`, simulator device `agent-bond`.
+XcodeGen project/scheme: `Bond`, sim lease owner `bond`.
 
 ## Marketing site
 
