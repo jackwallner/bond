@@ -1101,3 +1101,44 @@ These are important to prevent an implementation agent from redoing old work:
 ## Implementation handoff
 
 Start with BOND-01, BOND-02, and BOND-03. Then implement the event schema and scanner before selecting an A/B test. Use the scanner as the release gate, and use the watchdog only after each signal has a real source, a baseline, a minimum-count threshold, a cooldown, and a runbook link.
+
+## Activity and success context, 2026-08-23
+
+Classification: **traffic without monetization**. Confidence: **medium**. Trend: **no ASC comparison displayed**.
+
+ASC release state: `iOS 1.0.5 Ready for Distribution`. ASC evidence: [Analytics Overview](https://appstoreconnect.apple.com/apps/6768514177/analytics/overview?dateSpec=d90), selected range `dateSpec=d90`.
+RevenueCat evidence: [Project Overview](https://app.revenuecat.com/projects/4e53c2c5/overview), production mode, selected range `Last 28 days, 2026-07-27 through 2026-08-23`.
+
+### Observed activity
+
+| Source | Metric | Value | Window or comparison |
+| --- | --- | ---: | --- |
+| ASC | first-time downloads | 34 | 90-day Analytics Overview |
+| ASC | redownloads | 1 | 90-day Analytics Overview |
+| ASC | conversion rate | 0.8% | comparison not displayed |
+| ASC | proceeds | not available | 90-day Analytics Overview |
+| ASC | in-app purchases | not available | 90-day Analytics Overview |
+| RevenueCat | new customers | 24 | last 28 days |
+| RevenueCat | active customers | 47 | last 28 days |
+| RevenueCat | active trials | 0 | current total |
+| RevenueCat | active subscriptions | 0 | current total |
+| RevenueCat | MRR | $0 | current total |
+| RevenueCat | revenue | $0 | last 28 days |
+
+A missing value above means the source did not expose that metric in this read-only snapshot. It is not a zero.
+
+### Interpretation and implementation focus
+
+Bond has real traffic, 34 ASC first-time downloads and 24 RevenueCat new customers, but no active trials, subscriptions, MRR, or RevenueCat revenue in the current window. That is evidence of an activation or offer problem, not evidence that the app is dead. The first implementation pass should make the first relationship value moment measurable, confirm that the native paywall loads with an eligible product, and test a free-first path before changing price.
+
+The deterministic classifier recommends: Treat this as an activation and offer problem until a mature paid cohort appears. Verify the free-to-trial path and product loading.
+
+- Join ASC first-time download, first launch, first value, paywall shown, offer loaded, trial started, trial canceled, trial converted, entitlement active, restore, and purchase failure events with the app version and build.
+- Keep ASC's 90-day acquisition and proceeds window separate from RevenueCat's 28-day customer and revenue window. Do not calculate a conversion rate by dividing values from different windows.
+- Use a mature trial cohort and a minimum sample before choosing a native paywall or onboarding A/B winner. Record the offering identifier, package, placement, experiment variant, and build.
+- Put the app's classification and the next baseline date in the release handoff so Cursor, Claude, and Codex do not optimize from an old qualitative audit.
+
+### Boundary on success or death
+
+This snapshot supports the label **traffic without monetization**, not a lifetime verdict. The app has downloads or new customers, but no current paid signal was supplied. A later decision should include a clean 28-day RevenueCat trend, ASC acquisition and conversion trend, ratings and review count, crash and hang evidence, and a release-specific cohort.
+This dated section supersedes earlier statements in this file that per-app ASC or RevenueCat activity was unavailable as of 2026-08-23. Earlier statements remain historical evidence boundaries for their original audit pass.
