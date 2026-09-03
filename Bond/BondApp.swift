@@ -28,6 +28,18 @@ struct BondApp: App {
 
         Self.applyNavigationBarFont()
         ReviewPromptTracker.recordAppLaunch()
+        ConversionDiagnostics.recordAppOpen()
+        #if DEBUG
+        if RevenueCatProbe.isEnabled {
+            // The impression hook needs a configured SDK, so the probe brings
+            // one up first. After that this is the same entry point the real
+            // paywall screens call.
+            Task {
+                await PurchasesService.shared.bootstrap()
+                PurchasesService.shared.trackPaywallImpression(id: RevenueCatProbe.impressionID)
+            }
+        }
+        #endif
     }
 
     /// Nav-bar titles are rendered by UIKit, so SwiftUI's `.font(.bond(...))`
