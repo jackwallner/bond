@@ -25,6 +25,18 @@ packages:
     from: 5.67.0
 
 schemes:
+  BondUITests:
+    build:
+      targets:
+        Bond: all
+        BondUITests: [test]
+    test:
+      config: Debug
+      targets:
+        - BondUITests
+    run:
+      config: Debug
+
   Bond:
     build:
       targets:
@@ -121,3 +133,20 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: com.jackwallner.bond.widgets
         INFOPLIST_FILE: BondWidgets/Info.plist
         CODE_SIGN_ENTITLEMENTS: BondWidgets/BondWidgets.entitlements
+
+  # The paywall purchase probe. Its own target and scheme: the app's own test
+  # action activates StoreKit Testing, and this has to reach RevenueCat's Test
+  # Store instead.
+  BondUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - path: BondUITests
+    dependencies:
+      - target: Bond
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: com.jackwallner.bond.uitests
+        TEST_TARGET_NAME: Bond
+

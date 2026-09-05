@@ -37,6 +37,20 @@ struct BondApp: App {
             Task {
                 await PurchasesService.shared.bootstrap()
                 PurchasesService.shared.trackPaywallImpression(id: RevenueCatProbe.impressionID)
+                if RevenueCatProbe.wantsPurchase {
+                    await PurchasesService.shared.fetchProducts()
+                    // Logged rather than asserted: when the Test Store sheet
+                    // never appears, this separates "nothing came back" from
+                    // "purchase threw".
+                    NSLog("RCPROBE packages=%d", PurchasesService.shared.products.count)
+                    guard let package = PurchasesService.shared.products.first else { return }
+                    do {
+                        let state = try await PurchasesService.shared.purchase(package)
+                        NSLog("RCPROBE purchase outcome=%@", String(describing: state))
+                    } catch {
+                        NSLog("RCPROBE purchase error=%@", String(describing: error))
+                    }
+                }
             }
         }
         #endif

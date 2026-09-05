@@ -108,9 +108,17 @@ final class PurchasesService {
     }
 
     func fetchProducts() async {
-        #if targetEnvironment(simulator)
-        return
+        // The probe is the one simulator run that configures RevenueCat, and
+        // against the project's Test Store rather than production. Without this
+        // it returns here and the purchase it drives has nothing to buy.
+        #if DEBUG
+        let probing = RevenueCatProbe.isEnabled
         #else
+        let probing = false
+        #endif
+        #if targetEnvironment(simulator)
+        if !probing { return }
+        #endif
         isLoadingProducts = true
         defer { isLoadingProducts = false }
         do {
@@ -127,7 +135,6 @@ final class PurchasesService {
             lastError = "Couldn't load subscription options. Check your connection and try again."
             log.error("Product fetch failed: \(error.localizedDescription)")
         }
-        #endif
     }
 
     private func refreshIntroEligibility() async {
@@ -200,9 +207,14 @@ final class PurchasesService {
 
     @discardableResult
     func purchase(_ package: Package) async throws -> PurchaseState {
-        #if targetEnvironment(simulator)
-        return .cancelled
+        #if DEBUG
+        let probing = RevenueCatProbe.isEnabled
         #else
+        let probing = false
+        #endif
+        #if targetEnvironment(simulator)
+        if !probing { return .cancelled }
+        #endif
         purchaseInFlight = true
         defer { purchaseInFlight = false }
         lastError = nil
@@ -289,7 +301,6 @@ final class PurchasesService {
         }
         log.warning("Purchase completed but entitlement still inactive, source: \(source)")
         return .pending
-        #endif
     }
 
     /// Some RC errors mean "Apple took the payment, but the entitlement is
@@ -472,6 +483,12 @@ enum RevenueCatProbe {
 
     static var impressionID: String {
         ProcessInfo.processInfo.environment["RC_PROBE_SURFACE"] ?? "bond_post_onboarding"
+    }
+
+    /// Drives a Test Store purchase after the impression, so the `converted_*`
+    /// half of the funnel record is exercised and not just the impression half.
+    static var wantsPurchase: Bool {
+        ProcessInfo.processInfo.arguments.contains("-rcfunnelprobepurchase")
     }
 }
 #endif
