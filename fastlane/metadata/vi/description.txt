@@ -1,7 +1,9 @@
-Ý định tốt thì dễ. Nhớ đúng lúc mới khó. Bond biến những điều quan trọng với người ấy thành lời nhắc đơn giản mà bạn có thể hành động ngay.
+Một mối quan hệ tốt cần nhiều hơn ý định tốt. Hãy biến những cử chỉ nhỏ thành việc thật sự diễn ra, ngay cả khi cuộc sống bận rộn.
+
+Bắt đầu với ngôn ngữ tình yêu của người ấy và một hành động quan tâm. Đặt lời nhắc vào đúng lúc rồi thực hiện. Bạn có thể tự tạo lời nhắc miễn phí, người ấy không cần cài ứng dụng.
 
 BẮT ĐẦU VỚI NGƯỜI ẤY
-Cho Bond biết tên của người ấy, những ngôn ngữ tình yêu phù hợp nhất và điều bạn muốn ghi nhớ. Bond giúp bạn khởi đầu bằng những gợi ý nhắc nhở hữu ích thay vì một màn hình trống.
+Cho ứng dụng biết tên của người ấy, những ngôn ngữ tình yêu phù hợp nhất và điều bạn muốn ghi nhớ. ứng dụng giúp bạn khởi đầu bằng những gợi ý nhắc nhở hữu ích thay vì một màn hình trống.
 
 BẠN NHẬN ĐƯỢC GÌ
 • Lời nhắc theo ngôn ngữ tình yêu được cá nhân hóa: hành động giúp đỡ, lời khẳng định, thời gian chất lượng, quà tặng và cử chỉ thân mật
@@ -10,10 +12,12 @@ BẠN NHẬN ĐƯỢC GÌ
 • Kết nối với người ấy để check-in mỗi ngày và chia sẻ khoảnh khắc
 • Thêm lời nhắc bằng giọng nói từ Apple Watch
 
-VÌ SAO CHỌN BOND
-Bond không phải thêm một mạng xã hội nữa. Đây là cách riêng tư, thiết thực để nhớ những điều nhỏ bé và thực hiện đến cùng.
+VÌ SAO CHỌN ứng dụng
+ứng dụng không phải thêm một mạng xã hội nữa. Đây là cách riêng tư, thiết thực để nhớ những điều nhỏ bé và thực hiện đến cùng.
 
-Miễn phí khi bắt đầu. Người đăng ký mới đủ điều kiện có thể dùng thử Bond+ miễn phí 7 ngày.
+Phiên bản miễn phí có các lời nhắc do bạn tự tạo. Bản trả phí thêm các gói lời nhắc dựng sẵn, thông tin về mối quan hệ, lời nhắc theo vị trí hoặc bất ngờ và luồng trả lời cho các lần check-in chung hằng ngày. Hãy bắt đầu miễn phí rồi nâng cấp khi cần những tiện ích này.
+
+Công cụ thực tế để bạn hiện diện vì người ấy, không phải mạng xã hội công khai, dịch vụ hẹn hò hay trị liệu cặp đôi.
 
 Gói tháng có giá US$2.99 và gói năm có giá US$19.99. Cả hai đều tự động gia hạn và có 7 ngày dùng thử miễn phí nếu đủ điều kiện. Apple tính phí vào Tài khoản Apple của bạn khi xác nhận mua hoặc sau khi kết thúc đợt dùng thử đủ điều kiện. Nếu không đủ điều kiện, phí được tính ngay khi xác nhận. Phí gia hạn được tính trong vòng 24 giờ trước khi kỳ hiện tại kết thúc. Quản lý hoặc hủy trong Cài đặt › Tài khoản Apple › Gói đăng ký ít nhất 24 giờ trước khi kỳ kết thúc. Giá thay đổi theo khu vực và được hiển thị trước khi mua.
 Chính sách quyền riêng tư: https://jackwallner.github.io/bond/privacy/

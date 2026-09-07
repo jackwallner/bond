@@ -1,7 +1,9 @@
-Hyvät aikeet ovat helppoja. Vaikeampaa on muistaa ne oikealla hetkellä. Bond muuttaa kumppanillesi tärkeät asiat yksinkertaisiksi muistutuksiksi, joiden mukaan voit toimia.
+Hyvä parisuhde vaatii muutakin kuin hyviä aikomuksia. Tee pienistä teoista totta, vaikka arki olisi kiireistä.
+
+Aloita kumppanisi rakkauden kielistä ja yhdestä huomaavaisesta teosta. Aseta muistutus oikeaan hetkeen ja toimi sen mukaan. Luo omat muistutuksesi ilmaiseksi ilman, että kumppanisi tarvitsee asentaa sovellusta.
 
 ALOITA KUMPPANISTASI
-Kerro Bondille hänen nimensä, parhaiten toimivat rakkauden kielet ja se, mitä haluat muistaa. Bond auttaa sinut alkuun hyödyllisillä muistutusideoilla tyhjän ruudun sijaan.
+Kerro sovellukselle hänen nimensä, parhaiten toimivat rakkauden kielet ja se, mitä haluat muistaa. sovellus auttaa sinut alkuun hyödyllisillä muistutusideoilla tyhjän ruudun sijaan.
 
 MITÄ SAAT
 • Yksilölliset rakkauden kielten mukaiset muistutukset: palvelevat teot, kannustavat sanat, yhteinen aika, lahjat ja kosketus
@@ -10,10 +12,12 @@ MITÄ SAAT
 • Yhdistä kumppanisi kanssa päivittäisiä kuulumisia ja yhteisiä hetkiä varten
 • Lisää muistutuksia äänellä Apple Watchista
 
-MIKSI BOND
-Bond ei ole taas yksi sosiaalinen syöte. Se on yksityinen ja käytännöllinen tapa muistaa pienet asiat ja myös tehdä ne.
+MIKSI sovellus
+sovellus ei ole taas yksi sosiaalinen syöte. Se on yksityinen ja käytännöllinen tapa muistaa pienet asiat ja myös tehdä ne.
 
-Aloitus on ilmaista. Ehdot täyttävät uudet tilaajat voivat kokeilla Bond+:aa ilmaiseksi 7 päivän ajan.
+Ilmaisversiossa käytössäsi ovat omat muistutuksesi. Maksullinen versio lisää valmiit muistutuspaketit, parisuhdenäkymät, sijaintiin perustuvat ja yllätysmuistutukset sekä yhteisten päivittäisten kuulumisten vastausnäkymän. Aloita ilmaiseksi ja päivitä vasta, kun tarvitset näitä lisäominaisuuksia.
+
+Käytännöllinen apu kumppanin huomioimiseen, ei julkinen somevirta, deittipalvelu tai pariterapia.
 
 Kuukausitilaus maksaa US$2.99 ja vuositilaus US$19.99. Molemmat uusiutuvat automaattisesti, ja kumpaankin kuuluu 7 päivän ilmainen kokeilu, jos olet siihen oikeutettu. Apple veloittaa Apple-tiliäsi oston vahvistamisen yhteydessä tai oikeutetun kokeilun jälkeen. Jos et ole oikeutettu, veloitus tehdään vahvistettaessa. Uusimisveloitus tehdään 24 tunnin kuluessa ennen nykyisen kauden päättymistä. Hallitse tai peruuta vähintään 24 tuntia ennen kauden päättymistä kohdassa Asetukset › Apple-tili › Tilaukset. Hinnat vaihtelevat alueittain ja näkyvät ennen ostoa.
 Tietosuojakäytäntö: https://jackwallner.github.io/bond/privacy/
