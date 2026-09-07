@@ -1,1 +1,1 @@
-suhde,kumppani,puoliso,etäisyys,muistutus,viestit,treffit,kysymykset,avioliitto,lahja,countdown,date
+parisuhde,kumppani,rakkaudenkielet,lahjat,etäsuhde,häät,kalenteri,muistiinpanot,romantiikka

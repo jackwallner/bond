@@ -15,9 +15,6 @@ Bond bir sosyal akış uygulaması değildir. Küçük şeyleri hatırlamanın v
 
 Ücretsiz başlayın. Uygun yeni aboneler Bond+'ı 7 gün boyunca ücretsiz deneyebilir.
 
-BOND+ ABONELİĞİ
-Bond+ isteğe bağlı, otomatik yenilenen bir aboneliktir: ayda $2.99 veya yılda $19.99 (fiyatlar bölgeye göre değişebilir), yeni aboneler için 7 günlük ücretsiz deneme ile. Ödeme Apple Kimliği hesabınızdan tahsil edilir; mevcut dönem bitmeden en az 24 saat önce iptal edilmediği sürece aboneliğiniz otomatik olarak yenilenir. App Store hesap ayarlarınızdan dilediğiniz zaman yönetebilir veya iptal edebilirsiniz.
+Aylık plan US$2.99, yıllık plan US$19.99 tutarındadır. İkisi de otomatik yenilenir ve uygunsanız 7 günlük ücretsiz deneme sunar. Apple, satın almayı onayladığınızda veya uygun bir denemeden sonra Apple Hesabınızdan ücret alır. Uygun değilseniz ücret onay sırasında alınır. Yenileme ücreti mevcut dönemin bitiminden önceki 24 saat içinde alınır. Dönem bitmeden en az 24 saat önce Ayarlar › Apple Hesabı › Abonelikler bölümünden yönetin veya iptal edin. Fiyatlar bölgeye göre değişir ve satın almadan önce gösterilir.
 Gizlilik Politikası: https://jackwallner.github.io/bond/privacy/
-Kullanım Koşulları (EULA): https://jackwallner.github.io/bond/terms/
-
-Önce gizlilik: Apple ile Oturum Aç, reklam yok, veri satışı yok.
+Kullanım Koşulları (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/

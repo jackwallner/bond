@@ -15,9 +15,6 @@ Bond is niet weer een sociale tijdlijn. Het is een privé en praktische manier o
 
 Gratis te starten. Nieuwe abonnees die daarvoor in aanmerking komen, kunnen Bond+ 7 dagen gratis proberen.
 
-BOND+ ABONNEMENT
-Bond+ is een optioneel abonnement met automatische verlenging: $2.99 per maand of $19.99 per jaar (prijzen kunnen per regio verschillen), met 7 dagen gratis proefperiode voor nieuwe abonnees. De betaling wordt afgeschreven van je Apple ID-account; je abonnement wordt automatisch verlengd tenzij je het minstens 24 uur voor het einde van de huidige periode opzegt. Beheer of annuleer wanneer je wilt in de instellingen van je App Store-account.
+Het maandabonnement kost US$2.99 en het jaarabonnement US$19.99. Beide worden automatisch verlengd en bieden 7 dagen gratis proef als je daarvoor in aanmerking komt. Apple brengt je Apple Account in rekening bij bevestiging van de aankoop of na een in aanmerking komende proefperiode. Als je niet in aanmerking komt, wordt direct bij bevestiging afgerekend. De verlengingskosten worden binnen 24 uur vóór het einde van de huidige periode in rekening gebracht. Beheer of annuleer via Instellingen › Apple Account › Abonnementen, minimaal 24 uur vóór het einde. Prijzen verschillen per regio en worden vóór aankoop getoond.
 Privacybeleid: https://jackwallner.github.io/bond/privacy/
-Gebruiksvoorwaarden (EULA): https://jackwallner.github.io/bond/terms/
-
-Privacy voorop: Log in met Apple, geen advertenties, geen verkoop van gegevens.
+Gebruiksvoorwaarden (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/

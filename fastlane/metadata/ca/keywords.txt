@@ -1,1 +1,1 @@
-relació,cònjuge,distància,recordatori,missatges,notes,cita,preguntes,matrimoni,parelles,seguiment
+relació,regals,distància,matrimoni,calendari,notes,romanç,llenguatges,records,company,widget

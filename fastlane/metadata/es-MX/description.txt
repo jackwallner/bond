@@ -15,9 +15,6 @@ Bond no es otra red social. Es una forma privada y práctica de recordar los peq
 
 Empieza gratis. Los nuevos suscriptores elegibles pueden probar Bond+ gratis por 7 días.
 
-SUSCRIPCIÓN BOND+
-Bond+ es una suscripción opcional con renovación automática: $2.99/mes o $19.99/año (los precios pueden variar según la región), con 7 días de prueba gratis para nuevos suscriptores. El pago se carga a tu cuenta de Apple ID; tu suscripción se renueva automáticamente a menos que la canceles al menos 24 horas antes de que termine el periodo actual. Administra o cancela cuando quieras en los ajustes de tu cuenta de App Store.
-Política de Privacidad: https://jackwallner.github.io/bond/privacy/
-Términos de Uso (EULA): https://jackwallner.github.io/bond/terms/
-
-Privacidad primero: Iniciar sesión con Apple, sin anuncios, sin venta de datos.
+El plan mensual cuesta US$2.99 y el anual US$19.99. Ambos se renuevan automáticamente e incluyen una prueba gratis de 7 días si eres elegible. Apple cobra en tu Cuenta de Apple al confirmar la compra o después de una prueba elegible. Si no eres elegible, cobra al confirmar. El cargo de renovación se realiza dentro de las 24 horas anteriores al final del periodo. Gestiona o cancela en Ajustes › Cuenta de Apple › Suscripciones al menos 24 horas antes del final. Los precios varían según la región y se muestran antes de comprar.
+Política de privacidad: https://jackwallner.github.io/bond/privacy/
+Términos de uso (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/

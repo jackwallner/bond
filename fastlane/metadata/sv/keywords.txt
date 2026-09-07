@@ -1,1 +1,1 @@
-relation,maka,avstånd,nedräkning,meddelanden,dejt,frågor,äktenskap,anteckningar,present,countdown
+relation,partner,kärleksspråk,presenter,distans,bröllop,kalender,anteckningar,romantik,widget

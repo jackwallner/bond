@@ -1,1 +1,1 @@
-forhold,partner,ektefelle,avstand,nedtelling,meldinger,notater,date,spørsmål,ekteskap,gave,countdown
+forhold,partner,kjærlighetsspråk,gaver,avstand,bryllup,kalender,notater,romantikk,widget

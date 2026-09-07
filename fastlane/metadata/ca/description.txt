@@ -15,9 +15,6 @@ Bond no és una altra xarxa social. És una manera privada i pràctica de record
 
 Comença gratis. Els nous subscriptors que hi tinguin dret poden provar Bond+ gratis durant 7 dies.
 
-SUBSCRIPCIÓ BOND+
-Bond+ és una subscripció opcional de renovació automàtica: $2.99/mes o $19.99/any (els preus poden variar segons la regió), amb 7 dies de prova gratuïta per als nous subscriptors. El pagament es carrega al teu compte d'Apple ID; la subscripció es renova automàticament tret que la cancel·lis com a mínim 24 hores abans que acabi el període actual. Gestiona-la o cancel·la-la quan vulguis des dels ajustos del teu compte de l'App Store.
+El pla mensual costa US$2.99 i l'anual US$19.99. Tots dos es renoven automàticament i inclouen una prova gratuïta de 7 dies si compleixes els requisits. Apple cobra al teu Compte d'Apple quan confirmes la compra o després d'una prova elegible. Si no hi tens dret, cobra en confirmar. El càrrec de renovació es fa durant les 24 hores anteriors al final del període. Gestiona o cancel·la a Configuració › Compte d'Apple › Subscripcions, almenys 24 hores abans del final. Els preus varien segons la regió i es mostren abans de comprar.
 Política de privadesa: https://jackwallner.github.io/bond/privacy/
-Termes d'ús (EULA): https://jackwallner.github.io/bond/terms/
-
-La privadesa primer: Inicia sessió amb Apple, sense anuncis, sense venda de dades.
+Condicions d'ús (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/

@@ -15,9 +15,6 @@ Bond ei ole taas yksi sosiaalinen syöte. Se on yksityinen ja käytännöllinen 
 
 Aloitus on ilmaista. Ehdot täyttävät uudet tilaajat voivat kokeilla Bond+:aa ilmaiseksi 7 päivän ajan.
 
-BOND+ TILAUS
-Bond+ on valinnainen automaattisesti uusiutuva tilaus: $2.99/kk tai $19.99/vuosi (hinnat voivat vaihdella alueittain), ja siihen sisältyy 7 päivän ilmainen kokeilujakso uusille tilaajille. Maksu veloitetaan Apple ID -tililtäsi, ja tilaus uusiutuu automaattisesti, ellei sitä peruuteta vähintään 24 tuntia ennen kuluvan jakson päättymistä. Voit hallita tai peruuttaa tilauksen milloin tahansa App Store -tilisi asetuksissa.
+Kuukausitilaus maksaa US$2.99 ja vuositilaus US$19.99. Molemmat uusiutuvat automaattisesti, ja kumpaankin kuuluu 7 päivän ilmainen kokeilu, jos olet siihen oikeutettu. Apple veloittaa Apple-tiliäsi oston vahvistamisen yhteydessä tai oikeutetun kokeilun jälkeen. Jos et ole oikeutettu, veloitus tehdään vahvistettaessa. Uusimisveloitus tehdään 24 tunnin kuluessa ennen nykyisen kauden päättymistä. Hallitse tai peruuta vähintään 24 tuntia ennen kauden päättymistä kohdassa Asetukset › Apple-tili › Tilaukset. Hinnat vaihtelevat alueittain ja näkyvät ennen ostoa.
 Tietosuojakäytäntö: https://jackwallner.github.io/bond/privacy/
-Käyttöehdot (EULA): https://jackwallner.github.io/bond/terms/
-
-Yksityisyys edellä: Kirjaudu Apple-tunnuksella, ei mainoksia, ei tietojen myyntiä.
+Käyttöehdot (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/

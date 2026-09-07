@@ -15,9 +15,6 @@ Bond není další sociální síť. Je to soukromý a praktický způsob, jak s
 
 Začátek zdarma. Noví předplatitelé, kteří splní podmínky, mohou Bond+ vyzkoušet zdarma na 7 dní.
 
-PŘEDPLATNÉ BOND+
-Bond+ je volitelné automaticky obnovované předplatné: $2.99 měsíčně nebo $19.99 ročně (ceny se mohou lišit podle regionu), se 7denní bezplatnou zkušební verzí pro nové předplatitele. Platba se strhne z vašeho účtu Apple ID; předplatné se automaticky obnoví, pokud ho nezrušíte alespoň 24 hodin před koncem aktuálního období. Spravovat nebo zrušit ho můžete kdykoli v nastavení účtu App Store.
-Zásady ochrany osobních údajů: https://jackwallner.github.io/bond/privacy/
-Podmínky použití (EULA): https://jackwallner.github.io/bond/terms/
-
-Soukromí na prvním místě: Přihlášení přes Apple, žádné reklamy, žádný prodej dat.
+Měsíční plán stojí US$2.99 a roční US$19.99. Oba se automaticky obnovují a při nároku zahrnují 7denní zkušební verzi. Apple strhne platbu z účtu Apple při potvrzení nákupu nebo po oprávněné zkoušce. Bez nároku strhne platbu při potvrzení. Poplatek za obnovení se účtuje během 24 hodin před koncem období. Spravuj nebo zruš v Nastavení › Účet Apple › Předplatná, nejméně 24 hodin před koncem. Ceny se liší podle regionu a zobrazí se před nákupem.
+Zásady ochrany soukromí: https://jackwallner.github.io/bond/privacy/
+Podmínky použití (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/

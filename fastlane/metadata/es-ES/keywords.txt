@@ -1,1 +1,1 @@
-relación,seguimiento,distancia,mensajes,notas,cita,preguntas,matrimonio,cónyuge,regalo,novio,novia
+relación,regalos,distancia,matrimonio,calendario,notas,novio,novia,romance,lenguajes,widget

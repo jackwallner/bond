@@ -15,9 +15,6 @@ Bond ni še eno družbeno omrežje. Je zaseben in praktičen način, da se spomn
 
 Začetek je brezplačen. Novi naročniki, ki izpolnjujejo pogoje, lahko Bond+ brezplačno preizkusijo 7 dni.
 
-NAROČNINA BOND+
-Bond+ je izbirna naročnina s samodejnim podaljševanjem: $2.99 na mesec ali $19.99 na leto (cene se lahko razlikujejo glede na regijo), s 7-dnevnim brezplačnim preizkusom za nove naročnike. Plačilo se obračuna na tvojem računu Apple ID; naročnina se samodejno podaljša, razen če jo prekličeš vsaj 24 ur pred koncem trenutnega obdobja. Upravljaj ali prekliči jo kadar koli v nastavitvah računa App Store.
+Mesečni paket stane US$2.99, letni pa US$19.99. Oba se samodejno podaljšujeta in ob upravičenosti vključujeta 7-dnevni brezplačni preizkus. Apple ob potrditvi nakupa ali po upravičenem preizkusu bremeni tvoj račun Apple. Če nisi upravičen, se bremenitev izvede ob potrditvi. Strošek podaljšanja se zaračuna v 24 urah pred koncem trenutnega obdobja. Upravljaj ali prekliči v Nastavitve › Račun Apple › Naročnine vsaj 24 ur pred koncem. Cene se razlikujejo glede na regijo in so prikazane pred nakupom.
 Pravilnik o zasebnosti: https://jackwallner.github.io/bond/privacy/
-Pogoji uporabe (EULA): https://jackwallner.github.io/bond/terms/
-
-Zasebnost na prvem mestu: Prijava z Apple, brez oglasov, brez prodaje podatkov.
+Pogoji uporabe (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/

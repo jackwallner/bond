@@ -15,9 +15,6 @@ Bond bukan lini masa media sosial lainnya. Ini cara yang privat dan praktis untu
 
 Mulai gratis. Pelanggan baru yang memenuhi syarat dapat mencoba Bond+ gratis selama 7 hari.
 
-LANGGANAN BOND+
-Bond+ adalah langganan opsional yang diperpanjang otomatis: $2.99/bulan atau $19.99/tahun (harga dapat berbeda menurut wilayah), dengan uji coba gratis 7 hari untuk pelanggan baru. Pembayaran dibebankan ke akun Apple ID Anda; langganan diperpanjang otomatis kecuali dibatalkan setidaknya 24 jam sebelum periode berjalan berakhir. Kelola atau batalkan kapan saja di pengaturan akun App Store Anda.
+Paket bulanan seharga US$2.99 dan paket tahunan seharga US$19.99. Keduanya diperpanjang otomatis dan masing-masing menawarkan uji coba gratis 7 hari jika memenuhi syarat. Apple menagih Akun Apple Anda saat mengonfirmasi pembelian atau setelah uji coba yang memenuhi syarat. Jika tidak memenuhi syarat, penagihan dilakukan saat konfirmasi. Biaya perpanjangan ditagihkan dalam 24 jam sebelum periode berjalan berakhir. Kelola atau batalkan di Pengaturan › Akun Apple › Langganan setidaknya 24 jam sebelum periode berakhir. Harga berbeda menurut wilayah dan ditampilkan sebelum pembelian.
 Kebijakan Privasi: https://jackwallner.github.io/bond/privacy/
-Ketentuan Penggunaan (EULA): https://jackwallner.github.io/bond/terms/
-
-Mengutamakan privasi: Masuk dengan Apple, tanpa iklan, tanpa penjualan data.
+Ketentuan Penggunaan (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/

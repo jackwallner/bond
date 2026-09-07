@@ -15,9 +15,6 @@ Bond to nie kolejny społecznościowy feed. To prywatny i praktyczny sposób, by
 
 Zacznij za darmo. Uprawnieni nowi subskrybenci mogą wypróbować Bond+ bezpłatnie przez 7 dni.
 
-SUBSKRYPCJA BOND+
-Bond+ to opcjonalna subskrypcja odnawiana automatycznie: $2.99 miesięcznie lub $19.99 rocznie (ceny mogą się różnić w zależności od regionu), z 7-dniowym bezpłatnym okresem próbnym dla nowych subskrybentów. Płatność jest pobierana z konta Apple ID; subskrypcja odnawia się automatycznie, o ile nie zostanie anulowana co najmniej 24 godziny przed końcem bieżącego okresu. Zarządzaj nią lub anuluj w dowolnym momencie w ustawieniach konta App Store.
+Plan miesięczny kosztuje US$2.99, a roczny US$19.99. Oba odnawiają się automatycznie i oferują 7-dniowy bezpłatny okres próbny, jeśli się kwalifikujesz. Apple obciąży Twoje konto Apple przy potwierdzeniu zakupu lub po kwalifikującym okresie próbnym. Jeśli się nie kwalifikujesz, opłata zostanie pobrana przy potwierdzeniu. Opłata za odnowienie jest pobierana w ciągu 24 godzin przed końcem bieżącego okresu. Zarządzaj subskrypcją lub anuluj ją w Ustawienia › Konto Apple › Subskrypcje co najmniej 24 godziny przed końcem okresu. Ceny różnią się w zależności od regionu i są wyświetlane przed zakupem.
 Polityka prywatności: https://jackwallner.github.io/bond/privacy/
-Warunki korzystania (EULA): https://jackwallner.github.io/bond/terms/
-
-Prywatność przede wszystkim: Zaloguj się z Apple, bez reklam, bez sprzedaży danych.
+Warunki użytkowania (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/

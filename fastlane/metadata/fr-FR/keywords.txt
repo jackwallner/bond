@@ -1,1 +1,1 @@
-relation,suivi,distance,messages,notes,questions,partenaire,conjoint,mariage,cadeau,petite,widget
+relation,partenaire,mariage,cadeaux,distance,langages,souvenirs,calendrier,widget,romantique

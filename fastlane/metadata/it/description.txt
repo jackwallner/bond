@@ -15,9 +15,6 @@ Bond non è l'ennesimo feed social. È un modo riservato e concreto per ricordar
 
 Inizia gratis. I nuovi abbonati idonei possono provare Bond+ gratis per 7 giorni.
 
-ABBONAMENTO BOND+
-Bond+ è un abbonamento facoltativo con rinnovo automatico: $2.99/mese o $19.99/anno (i prezzi possono variare in base alla regione), con 7 giorni di prova gratuita per i nuovi abbonati. Il pagamento viene addebitato sul tuo account Apple ID; l'abbonamento si rinnova automaticamente se non viene annullato almeno 24 ore prima della fine del periodo in corso. Gestiscilo o annullalo quando vuoi nelle impostazioni del tuo account App Store.
+Il piano mensile costa US$2.99 e quello annuale US$19.99. Entrambi si rinnovano automaticamente e includono una prova gratuita di 7 giorni se idoneo. Apple addebita il tuo Account Apple alla conferma dell’acquisto o dopo una prova idonea. Se non sei idoneo, l’addebito avviene alla conferma. Il rinnovo viene addebitato entro le 24 ore precedenti la fine del periodo corrente. Gestisci o annulla in Impostazioni › Account Apple › Abbonamenti almeno 24 ore prima della fine. I prezzi variano in base alla regione e sono mostrati prima dell’acquisto.
 Informativa sulla privacy: https://jackwallner.github.io/bond/privacy/
-Termini di utilizzo (EULA): https://jackwallner.github.io/bond/terms/
-
-Privacy prima di tutto: Accedi con Apple, nessuna pubblicità, nessuna vendita di dati.
+Termini di utilizzo (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/

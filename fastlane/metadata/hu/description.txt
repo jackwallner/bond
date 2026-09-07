@@ -15,9 +15,6 @@ A Bond nem egy újabb közösségi hírfolyam. Ez egy privát és gyakorlatias m
 
 Ingyenesen kezdheted. A jogosult új előfizetők 7 napig ingyen kipróbálhatják a Bond+-t.
 
-BOND+ ELŐFIZETÉS
-A Bond+ opcionális, automatikusan megújuló előfizetés: $2.99/hó vagy $19.99/év (az árak régiónként eltérhetnek), új előfizetőknek 7 napos ingyenes próbaidőszakkal. A díjat az Apple ID-fiókod terheli; az előfizetés automatikusan megújul, hacsak legalább 24 órával az aktuális időszak vége előtt nem mondod le. Bármikor kezelheted vagy lemondhatod az App Store-fiókod beállításaiban.
-Adatvédelmi irányelvek: https://jackwallner.github.io/bond/privacy/
-Felhasználási feltételek (EULA): https://jackwallner.github.io/bond/terms/
-
-Adatvédelem mindenekelőtt: Bejelentkezés Apple-lel, hirdetések nélkül, adateladás nélkül.
+A havi csomag ára US$2.99, az évesé US$19.99. Mindkettő automatikusan megújul, és jogosultság esetén 7 napos ingyenes próba jár hozzá. Az Apple a vásárlás megerősítésekor vagy jogosult próba után terheli meg az Apple-fiókodat. Jogosultság nélkül a terhelés megerősítéskor történik. A megújítási díjat az időszak vége előtti 24 órán belül számítjuk fel. Kezeld vagy mondd le a Beállítások › Apple-fiók › Előfizetések menüben, legalább 24 órával a vége előtt. Az árak régiónként eltérnek, és vásárlás előtt láthatók.
+Adatvédelmi szabályzat: https://jackwallner.github.io/bond/privacy/
+Felhasználási feltételek (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/

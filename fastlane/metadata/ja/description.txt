@@ -8,7 +8,6 @@ Bondでカップルの「愛の言語」を習慣に。リマインダー、共�
 
 無料で始められます。Bond+で全機能。プライバシー重視：Sign in with Apple、広告なし、データの販売なし。
 
-BOND+ サブスクリプション
-Bond+は自動更新のオプションサブスクリプションです：月額$2.99または年額$19.99（価格は地域により異なる場合があります）。新規登録者には7日間の無料トライアル付き。料金はApple IDアカウントに請求され、期間終了の24時間前までにキャンセルしない限り自動更新されます。App Storeのアカウント設定でいつでも管理・解約できます。
-プライバシー：https://jackwallner.github.io/bond/privacy/
-利用規約 (EULA)：https://jackwallner.github.io/bond/terms/
+月額プランはUS$2.99、年額プランはUS$19.99です。どちらも自動更新され、対象者は7日間無料で試せます。Appleは購入確認時、または対象となる無料トライアル終了後にApple Accountへ請求します。対象外の場合は確認時に請求します。更新料金は現在の期間終了前24時間以内に請求されます。期間終了の24時間前までに、設定 › Apple Account › サブスクリプションで管理または解約してください。価格は地域により異なり、購入前に表示されます。
+プライバシーポリシー: https://jackwallner.github.io/bond/privacy/
+利用規約 (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
