@@ -1,7 +1,9 @@
-Mít dobré úmysly je snadné. Těžší je vzpomenout si ve správnou chvíli. Bond promění to, na čem vašemu protějšku záleží, v jednoduché připomínky, které opravdu zvládnete.
+Dobrý vztah potřebuje víc než dobré úmysly. Zařiďte, aby se drobná gesta opravdu děla, i když je život hektický.
+
+Začněte jazyky lásky svého protějšku a jedním pozorným gestem. Nastavte připomínku na správný okamžik a udělejte to. Vlastní připomínky si vytvoříte zdarma, aniž by si protějšek musel instalovat aplikaci.
 
 ZAČNĚTE U SVÉHO PROTĚJŠKU
-Řekněte Bondu jeho jméno, jazyky lásky, které fungují nejlépe, a to, co si chcete pamatovat. Bond vám pomůže začít s užitečnými nápady na připomínky místo prázdné obrazovky.
+Do aplikace zadejte jeho jméno, jazyky lásky, které fungují nejlépe, a to, co si chcete pamatovat. aplikace vám pomůže začít s užitečnými nápady na připomínky místo prázdné obrazovky.
 
 CO ZÍSKÁTE
 • Osobní připomínky podle jazyků lásky: skutky služby, slova ocenění, společný čas, dárky a doteky
@@ -10,10 +12,12 @@ CO ZÍSKÁTE
 • Propojte se s protějškem pro každodenní check-iny a sdílené okamžiky
 • Přidávejte připomínky hlasem z Apple Watch
 
-PROČ BOND
-Bond není další sociální síť. Je to soukromý a praktický způsob, jak si pamatovat maličkosti a skutečně je udělat.
+PROČ aplikace
+aplikace není další sociální síť. Je to soukromý a praktický způsob, jak si pamatovat maličkosti a skutečně je udělat.
 
-Začátek zdarma. Noví předplatitelé, kteří splní podmínky, mohou Bond+ vyzkoušet zdarma na 7 dní.
+Bezplatná verze zahrnuje vlastní připomínky. Placená verze přidává připravené sady připomínek, přehledy vztahu, připomínky podle polohy i překvapení a odpovědi v každodenních společných check-inech. Začněte zdarma a upgradujte, až se vám tyto doplňky hodí.
+
+Praktický nástroj, jak být oporou protějšku, ne veřejný sociální feed, seznamka ani párová terapie.
 
 Měsíční plán stojí US$2.99 a roční US$19.99. Oba se automaticky obnovují a při nároku zahrnují 7denní zkušební verzi. Apple strhne platbu z účtu Apple při potvrzení nákupu nebo po oprávněné zkoušce. Bez nároku strhne platbu při potvrzení. Poplatek za obnovení se účtuje během 24 hodin před koncem období. Spravuj nebo zruš v Nastavení › Účet Apple › Předplatná, nejméně 24 hodin před koncem. Ceny se liší podle regionu a zobrazí se před nákupem.
 Zásady ochrany soukromí: https://jackwallner.github.io/bond/privacy/

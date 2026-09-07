@@ -1,7 +1,9 @@
-Mať dobré úmysly je ľahké. Ťažšie je spomenúť si v správnej chvíli. Bond premení to, na čom vašej polovičke záleží, na jednoduché pripomienky, ktoré naozaj zvládnete.
+Dobrý vzťah potrebuje viac než dobré úmysly. Pomôžte malým gestám naozaj sa uskutočniť, aj keď je život rušný.
+
+Začnite jazykmi lásky svojej polovičky a jedným pozorným gestom. Nastavte pripomienku na správny okamih a uskutočnite ju. Vlastné pripomienky si vytvoríte zadarmo bez toho, aby si partner musel nainštalovať aplikáciu.
 
 ZAČNITE SVOJOU POLOVIČKOU
-Povedzte Bondu jej meno, jazyky lásky, ktoré fungujú najlepšie, a to, čo si chcete pamätať. Bond vám pomôže začať s užitočnými nápadmi na pripomienky namiesto prázdnej obrazovky.
+Do aplikácie zadajte jej meno, jazyky lásky, ktoré fungujú najlepšie, a to, čo si chcete pamätať. aplikácia vám pomôže začať s užitočnými nápadmi na pripomienky namiesto prázdnej obrazovky.
 
 ČO ZÍSKATE
 • Osobné pripomienky podľa jazykov lásky: skutky služby, slová uznania, spoločný čas, darčeky a dotyky
@@ -10,10 +12,12 @@ Povedzte Bondu jej meno, jazyky lásky, ktoré fungujú najlepšie, a to, čo si
 • Prepojte sa s partnerom pre každodenné check-iny a spoločné chvíle
 • Pridávajte pripomienky hlasom z Apple Watch
 
-PREČO BOND
-Bond nie je ďalšia sociálna sieť. Je to súkromný a praktický spôsob, ako si pamätať maličkosti a naozaj ich urobiť.
+PREČO aplikácia
+aplikácia nie je ďalšia sociálna sieť. Je to súkromný a praktický spôsob, ako si pamätať maličkosti a naozaj ich urobiť.
 
-Začiatok je zadarmo. Noví predplatitelia, ktorí spĺňajú podmienky, môžu Bond+ vyskúšať zadarmo na 7 dní.
+Bezplatná verzia zahŕňa vlastné pripomienky. Platená verzia pridáva hotové balíčky pripomienok, prehľad o vzťahu, pripomienky podľa polohy aj prekvapenia a odpovede v každodenných spoločných check-inoch. Začnite zadarmo a prejdite na platenú verziu, keď tieto doplnky využijete.
+
+Praktický nástroj, ako tu byť pre partnera, nie verejný sociálny kanál, zoznamka ani párová terapia.
 
 Mesačný plán stojí US$2.99 a ročný US$19.99. Obe predplatné sa automaticky obnovujú a pri nároku ponúkajú 7-dňovú bezplatnú skúšku. Apple zaúčtuje platbu na tvoj účet Apple pri potvrdení nákupu alebo po oprávnenej skúške. Ak nárok nemáš, platba sa zaúčtuje pri potvrdení. Poplatok za obnovenie sa účtuje do 24 hodín pred koncom aktuálneho obdobia. Spravuj alebo zruš v Nastavenia › Účet Apple › Predplatné aspoň 24 hodín pred koncom. Ceny sa líšia podľa regiónu a zobrazia sa pred nákupom.
 Zásady ochrany súkromia: https://jackwallner.github.io/bond/privacy/

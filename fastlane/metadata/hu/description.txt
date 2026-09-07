@@ -1,7 +1,9 @@
-A jó szándék a könnyebbik rész. Nehezebb a megfelelő pillanatban eszünkbe jutnia. A Bond egyszerű, azonnal teljesíthető emlékeztetőkké alakítja azt, ami a párodnak fontos.
+Egy jó kapcsolatnak több kell a jó szándéknál. Tedd meg a kis gesztusokat akkor is, amikor sűrűek a napok.
+
+Kezdd a párod szeretetnyelveivel és egy figyelmes gesztussal. Állíts emlékeztetőt a megfelelő pillanatra, majd tedd meg. Saját emlékeztetőidet ingyen létrehozhatod, a párodnak nem kell telepítenie az alkalmazást.
 
 KEZDD A PÁROD ADATAIVAL
-Add meg a Bondnak a neve, a nála legjobban működő szeretetnyelveket és azt, amire emlékezni szeretnél. A Bond hasznos emlékeztető-ötletekkel indít, nem üres képernyővel.
+Az alkalmazásban add meg a nevét, a nála legjobban működő szeretetnyelveket és azt, amire emlékezni szeretnél. A alkalmazás hasznos emlékeztető-ötletekkel indít, nem üres képernyővel.
 
 MIT KAPSZ
 • Személyre szabott emlékeztetők szeretetnyelvek szerint: segítő tettek, elismerő szavak, minőségi idő, ajándékok és érintés
@@ -10,10 +12,12 @@ MIT KAPSZ
 • Párosítsd a pároddal a napi bejelentkezésekhez és a közös pillanatokhoz
 • Adj hozzá emlékeztetőket hanggal az Apple Watchról
 
-MIÉRT A BOND
-A Bond nem egy újabb közösségi hírfolyam. Ez egy privát és gyakorlatias módja annak, hogy emlékezz az apróságokra, és véghez is vidd őket.
+MIÉRT A alkalmazás
+A alkalmazás nem egy újabb közösségi hírfolyam. Ez egy privát és gyakorlatias módja annak, hogy emlékezz az apróságokra, és véghez is vidd őket.
 
-Ingyenesen kezdheted. A jogosult új előfizetők 7 napig ingyen kipróbálhatják a Bond+-t.
+Az ingyenes verzió saját emlékeztetőket tartalmaz. A fizetős verzió kész emlékeztetőcsomagokat, kapcsolatnézeteket, helyalapú és meglepetés-emlékeztetőket, valamint a közös napi bejelentkezések válaszfolyamát adja. Kezdd ingyen, és csak akkor válts, ha ezekre az extrákra szükséged van.
+
+Gyakorlati eszköz, hogy figyelj a párodra, nem nyilvános közösségi hírfolyam, társkereső vagy párterápia.
 
 A havi csomag ára US$2.99, az évesé US$19.99. Mindkettő automatikusan megújul, és jogosultság esetén 7 napos ingyenes próba jár hozzá. Az Apple a vásárlás megerősítésekor vagy jogosult próba után terheli meg az Apple-fiókodat. Jogosultság nélkül a terhelés megerősítéskor történik. A megújítási díjat az időszak vége előtti 24 órán belül számítjuk fel. Kezeld vagy mondd le a Beállítások › Apple-fiók › Előfizetések menüben, legalább 24 órával a vége előtt. Az árak régiónként eltérnek, és vásárlás előtt láthatók.
 Adatvédelmi szabályzat: https://jackwallner.github.io/bond/privacy/
