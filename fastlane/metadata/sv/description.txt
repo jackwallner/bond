@@ -15,9 +15,6 @@ Bond är inte ännu ett socialt flöde. Det är ett privat och praktiskt sätt a
 
 Börja gratis. Nya prenumeranter som uppfyller villkoren kan prova Bond+ gratis i 7 dagar.
 
-BOND+ PRENUMERATION
-Bond+ är en valfri prenumeration som förnyas automatiskt: $2.99 per månad eller $19.99 per år (priserna kan variera mellan regioner), med 7 dagars gratis provperiod för nya prenumeranter. Betalningen dras från ditt Apple ID-konto och prenumerationen förnyas automatiskt om den inte sägs upp minst 24 timmar innan den aktuella perioden tar slut. Hantera eller säg upp när som helst i inställningarna för ditt App Store-konto.
+Månadsplanen kostar US$2.99 och årsplanen US$19.99. Båda förnyas automatiskt och erbjuder 7 dagars kostnadsfri provperiod om du är berättigad. Apple debiterar ditt Apple-konto när du bekräftar köpet eller efter en berättigad provperiod. Om du inte är berättigad debiteras du vid bekräftelsen. Förnyelseavgiften debiteras inom 24 timmar före den aktuella periodens slut. Hantera eller avsluta i Inställningar › Apple-konto › Abonnemang minst 24 timmar före periodens slut. Priserna varierar beroende på region och visas före köp.
 Integritetspolicy: https://jackwallner.github.io/bond/privacy/
-Användarvillkor (EULA): https://jackwallner.github.io/bond/terms/
-
-Integritet först: Logga in med Apple, inga annonser, ingen försäljning av data.
+Användarvillkor (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/

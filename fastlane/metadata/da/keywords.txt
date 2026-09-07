@@ -1,1 +1,1 @@
-forhold,partner,ægtefælle,afstand,beskeder,noter,date,spørgsmål,ægteskab,gave,widget,watch,timer
+forhold,partner,påmindelse,kærlighedssprog,gaver,afstand,bryllup,kalender,noter,romantik,widget

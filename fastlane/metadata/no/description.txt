@@ -15,9 +15,6 @@ Bond er ikke enda en sosial strøm. Det er en privat og praktisk måte å huske 
 
 Gratis å komme i gang. Nye abonnenter som oppfyller vilkårene, kan prøve Bond+ gratis i 7 dager.
 
-BOND+ ABONNEMENT
-Bond+ er et valgfritt abonnement med automatisk fornyelse: $2.99 per måned eller $19.99 per år (prisene kan variere fra region til region), med 7 dagers gratis prøveperiode for nye abonnenter. Betalingen belastes Apple-ID-kontoen din, og abonnementet fornyes automatisk med mindre det sies opp minst 24 timer før inneværende periode utløper. Administrer eller si opp når som helst i innstillingene for App Store-kontoen din.
+Månedsplanen koster US$2.99, og årsplanen US$19.99. Begge fornyes automatisk og tilbyr 7 dagers gratis prøve hvis du kvalifiserer. Apple belaster Apple-kontoen din når du bekrefter kjøpet eller etter en kvalifisert prøveperiode. Hvis du ikke kvalifiserer, belastes du ved bekreftelse. Fornyelsesbeløpet belastes innen 24 timer før gjeldende periode utløper. Administrer eller si opp i Innstillinger › Apple-konto › Abonnementer minst 24 timer før perioden utløper. Prisene varierer etter region og vises før kjøp.
 Personvernerklæring: https://jackwallner.github.io/bond/privacy/
-Bruksvilkår (EULA): https://jackwallner.github.io/bond/terms/
-
-Personvern først: Logg på med Apple, ingen annonser, ingen salg av data.
+Bruksvilkår (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/

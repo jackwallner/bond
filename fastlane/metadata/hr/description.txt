@@ -15,9 +15,6 @@ Bond nije još jedna društvena mreža. To je privatan i praktičan način da za
 
 Počnite besplatno. Novi pretplatnici koji ispunjavaju uvjete mogu isprobati Bond+ besplatno 7 dana.
 
-BOND+ PRETPLATA
-Bond+ je neobavezna pretplata s automatskom obnovom: $2.99 mjesečno ili $19.99 godišnje (cijene se mogu razlikovati ovisno o regiji), uz 7 dana besplatnog probnog razdoblja za nove pretplatnike. Plaćanje se naplaćuje s vašeg Apple ID računa; pretplata se automatski obnavlja osim ako je ne otkažete najmanje 24 sata prije isteka tekućeg razdoblja. Upravljajte njome ili je otkažite bilo kada u postavkama svog App Store računa.
+Mjesečni plan iznosi US$2.99, a godišnji US$19.99. Oba se automatski obnavljaju i uključuju 7-dnevnu besplatnu probu ako ispunjavaš uvjete. Apple tereti tvoj Apple račun pri potvrdi kupnje ili nakon prihvatljive probe. Ako nemaš pravo, naplata se vrši pri potvrdi. Naknada za obnovu naplaćuje se unutar 24 sata prije završetka razdoblja. Upravljaj pretplatom ili je otkaži u Postavke › Apple račun › Pretplate najmanje 24 sata prije završetka. Cijene ovise o regiji i prikazuju se prije kupnje.
 Pravila privatnosti: https://jackwallner.github.io/bond/privacy/
-Uvjeti korištenja (EULA): https://jackwallner.github.io/bond/terms/
-
-Privatnost na prvom mjestu: Prijava s Appleom, bez oglasa, bez prodaje podataka.
+Uvjeti korištenja (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/

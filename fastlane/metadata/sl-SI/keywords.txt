@@ -1,1 +1,1 @@
-razmerje,partner,zakonec,razdalja,opomnik,sporočila,beležke,zmenek,vprašanja,poroka,darilo,ljubezen
+odnos,partner,jeziki,darila,poroka,razdalja,koledar,zapiski,romantika,skupaj,gradnik

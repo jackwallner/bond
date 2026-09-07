@@ -15,9 +15,6 @@ Bond 不是又一個社群動態。它是一種私密而實用的方式，讓你
 
 免費開始使用。符合資格的新訂閱者可免費試用 Bond+ 7 天。
 
-BOND+ 訂閱
-Bond+ 為選購的自動續訂訂閱：每月 $2.99 或每年 $19.99（價格可能因地區而異），新訂閱者享 7 天免費試用。費用將由你的 Apple ID 帳戶扣款；除非在目前訂閱期結束前至少 24 小時取消，否則訂閱將自動續訂。你可以隨時在 App Store 帳戶設定中管理或取消。
-隱私權政策：https://jackwallner.github.io/bond/privacy/
-使用條款（EULA）：https://jackwallner.github.io/bond/terms/
-
-隱私優先：使用 Apple 登入、沒有廣告、絕不販售資料。
+月費方案價格為 US$2.99，年費方案價格為 US$19.99。兩種方案都會自動續訂，符合資格時各提供 7 天免費試用。Apple 會在你確認購買時或符合資格的試用結束後向你的 Apple 帳號收費。不符合資格時會在確認購買時收費。續訂費用會在目前週期結束前 24 小時內收取。請在週期結束至少 24 小時前，前往設定 › Apple 帳號 › 訂閱項目管理或取消。價格因地區而異，購買前會顯示。
+隱私權政策: https://jackwallner.github.io/bond/privacy/
+使用條款 (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/

@@ -1,1 +1,1 @@
-relatie,afstand,berichten,notities,aftellen,vragen,echtgenoot,huwelijk,cadeau,date,widget,calendar
+relatie,partner,liefdestaal,cadeaus,huwelijk,afstand,samen,kalender,notities,romantiek,widget

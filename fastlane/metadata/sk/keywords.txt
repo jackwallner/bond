@@ -1,1 +1,1 @@
-vzťah,partner,manžel,vzdialenosť,pripomienka,správy,poznámky,rande,otázky,manželstvo,darček,láska
+vzťah,partner,jazyky,darčeky,manželstvo,diaľka,kalendár,poznámky,romantika,spolu,widget

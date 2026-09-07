@@ -15,9 +15,6 @@ Bond is not another social feed. It is a private, practical way to remember the 
 
 Free to start. Eligible new subscribers can try Bond+ free for 7 days.
 
-BOND+ SUBSCRIPTION
-Bond+ is an optional auto-renewable subscription: $2.99/month or $19.99/year (prices may vary by region), with a 7-day free trial for new subscribers. Payment is charged to your Apple ID account; your subscription renews automatically unless cancelled at least 24 hours before the current period ends. Manage or cancel anytime in your App Store account settings.
+Monthly plan: US$2.99. Yearly plan: US$19.99. Both subscriptions renew automatically, and each offers a 7-day free trial when eligible. Apple charges your Apple Account when you confirm the purchase or after an eligible trial. If you are not eligible, Apple charges at confirmation. The renewal charge is made within 24 hours before the current period ends. Manage or cancel in Settings › Apple Account › Subscriptions at least 24 hours before the period ends. Prices vary by region and are shown before purchase.
 Privacy Policy: https://jackwallner.github.io/bond/privacy/
-Terms of Use (EULA): https://jackwallner.github.io/bond/terms/
-
-Privacy-first: Sign in with Apple, no ads, no data sold.
+Terms of Use (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/

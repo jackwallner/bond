@@ -15,9 +15,6 @@ Bond bukan satu lagi suapan sosial. Ia cara peribadi dan praktikal untuk menging
 
 Mula secara percuma. Pelanggan baharu yang layak boleh mencuba Bond+ percuma selama 7 hari.
 
-LANGGANAN BOND+
-Bond+ ialah langganan pilihan yang diperbaharui secara automatik: $2.99 sebulan atau $19.99 setahun (harga mungkin berbeza mengikut wilayah), dengan percubaan percuma 7 hari untuk pelanggan baharu. Bayaran dikenakan pada akaun Apple ID anda; langganan diperbaharui secara automatik melainkan dibatalkan sekurang-kurangnya 24 jam sebelum tempoh semasa berakhir. Urus atau batalkan pada bila-bila masa dalam tetapan akaun App Store anda.
+Pelan bulanan berharga US$2.99 dan pelan tahunan berharga US$19.99. Kedua-duanya diperbaharui secara automatik dan menawarkan percubaan percuma 7 hari jika layak. Apple mengenakan caj pada Akaun Apple anda apabila anda mengesahkan pembelian atau selepas percubaan yang layak. Jika tidak layak, caj dikenakan semasa pengesahan. Caj pembaharuan dikenakan dalam tempoh 24 jam sebelum tempoh semasa tamat. Urus atau batalkan di Tetapan › Akaun Apple › Langganan sekurang-kurangnya 24 jam sebelum tempoh tamat. Harga berbeza mengikut rantau dan dipaparkan sebelum pembelian.
 Dasar Privasi: https://jackwallner.github.io/bond/privacy/
-Terma Penggunaan (EULA): https://jackwallner.github.io/bond/terms/
-
-Privasi diutamakan: Log Masuk dengan Apple, tiada iklan, tiada penjualan data.
+Syarat Penggunaan (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
