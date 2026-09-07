@@ -1,1 +1,1 @@
-partner,relationship,marriage,romance,long,distance,gifts,widget,notes,husband,boyfriend,girlfriend
+relationship,partner,language,anniversary,countdown,marriage,romance,long,distance,gifts,widget
