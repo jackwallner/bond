@@ -17,6 +17,9 @@ final class ReminderEventRepository {
     }
 
     func refresh() async {
+        #if DEBUG
+        if BondScreenshotSeed.isEnabled { return }
+        #endif
         guard let coupleId = pairing.coupleId else { return }
         do {
             let rows: [ReminderEventDTO] = try await supabase.client

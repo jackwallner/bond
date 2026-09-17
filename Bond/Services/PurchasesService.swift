@@ -93,6 +93,14 @@ final class PurchasesService {
         #endif
     }
 
+    #if DEBUG
+    /// Local-only entitlement state for literal screenshot captures. It never
+    /// configures RevenueCat and is unavailable to Release builds.
+    func setLocalOverride(isPremium: Bool) {
+        self.isPremium = isPremium
+    }
+    #endif
+
     func refresh() async {
         #if targetEnvironment(simulator)
         return

@@ -1298,3 +1298,7 @@
 	};
 	rootObject = EEC45BA88290345E9A4B1004 /* Project object */;
 }
+		52B1922186197934423ED26D /* BondScreenshotSeed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C1EE893FD9FA5208116B05D /* BondScreenshotSeed.swift */; };
+		3C1EE893FD9FA5208116B05D /* BondScreenshotSeed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BondScreenshotSeed.swift; sourceTree = "<group>"; };
+				3C1EE893FD9FA5208116B05D /* BondScreenshotSeed.swift */,
+				52B1922186197934423ED26D /* BondScreenshotSeed.swift in Sources */,
