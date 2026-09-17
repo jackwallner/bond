@@ -2,6 +2,22 @@ import SwiftUI
 
 // Reusable views shared across the redesigned screens.
 
+enum BondBrand {
+    static var name: String {
+        #if DEBUG
+        if ProcessInfo.processInfo.arguments.contains("-BondScreenshotSeed") { return "Little Gestures" }
+        #endif
+        return "Bond"
+    }
+
+    static var plusName: String {
+        #if DEBUG
+        if ProcessInfo.processInfo.arguments.contains("-BondScreenshotSeed") { return "Little Gestures+" }
+        #endif
+        return "Bond+"
+    }
+}
+
 struct BondHero: View {
     var subtitle: String?
 
@@ -11,7 +27,7 @@ struct BondHero: View {
                 .font(.system(size: 64))
                 .foregroundStyle(Color.bondAccent.gradient)
                 .accessibilityHidden(true)
-            Text("Bond")
+            Text(BondBrand.name)
                 .font(.bond(.largeTitle, weight: .bold))
                 .tracking(-0.5)
             if let subtitle {
@@ -23,7 +39,7 @@ struct BondHero: View {
             }
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(subtitle.map { "Bond. \($0)" } ?? "Bond")
+        .accessibilityLabel(subtitle.map { "\(BondBrand.name). \($0)" } ?? BondBrand.name)
     }
 }
 
