@@ -47,6 +47,7 @@
 		4E84D3152AA02E4F975FD6F0 /* ReviewPromptTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 951DA5990DC91CBAFC87A939 /* ReviewPromptTracker.swift */; };
 		4EF4BBC8BE8D354A50EA4900 /* ReminderTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301EDB6E9D1A234A90519B12 /* ReminderTemplate.swift */; };
 		5094CCFB786B2EA0AB296343 /* ProfileDTOTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51A5DD4BA2316889F39CDD24 /* ProfileDTOTests.swift */; };
+		52B1922186197934423ED26D /* BondScreenshotSeed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C1EE893FD9FA5208116B05D /* BondScreenshotSeed.swift */; };
 		52F1860A269EF29ACE6EE0A3 /* AppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E49B51523219D78344AB9A8 /* AppGroup.swift */; };
 		545C5035DF7F0E1CC933E769 /* AppStoreReviewLinks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 957E650367A6CEF403C68524 /* AppStoreReviewLinks.swift */; };
 		56281E60F20B712539F957FF /* LoveLanguage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF58AA7D81DFDBBF4E3D941F /* LoveLanguage.swift */; };
@@ -205,6 +206,7 @@
 		34ECA85DC3BD65F3E274DEAA /* GateSampleContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GateSampleContent.swift; sourceTree = "<group>"; };
 		381B819C3EFFEEF1F7BCF87A /* Bond.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Bond.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3A9691537350F5E42C03E679 /* MilestoneDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MilestoneDTO.swift; sourceTree = "<group>"; };
+		3C1EE893FD9FA5208116B05D /* BondScreenshotSeed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BondScreenshotSeed.swift; sourceTree = "<group>"; };
 		3F2E4B1106B687E94A91D464 /* PremiumGate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PremiumGate.swift; sourceTree = "<group>"; };
 		3F3F10AF06A234B8B995372A /* EmptyRemindersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyRemindersView.swift; sourceTree = "<group>"; };
 		431E38A9565DAF005868FFB8 /* ReminderDTOTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderDTOTests.swift; sourceTree = "<group>"; };
@@ -605,6 +607,7 @@
 		F6E795187A031F538C2DCEB8 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				3C1EE893FD9FA5208116B05D /* BondScreenshotSeed.swift */,
 				1ED29CA1A6368C421BE6D1AD /* PaywallScreenshotMode.swift */,
 			);
 			path = Utilities;
@@ -843,6 +846,7 @@
 				2FF010987033EA158398F278 /* BondComponents.swift in Sources */,
 				FCFAA941E3436D74E1900EAD /* BondFont.swift in Sources */,
 				927B7F248A50F5C367293D00 /* BondPlusBenefits.swift in Sources */,
+				52B1922186197934423ED26D /* BondScreenshotSeed.swift in Sources */,
 				C24FB3A9399D5252A92423B6 /* BondStyle.swift in Sources */,
 				5BD89CAF2DF131F4EE8FDC91 /* BondTheme.swift in Sources */,
 				3B838DF1DB360C572EA4A91F /* CoupleDTO.swift in Sources */,
@@ -1298,7 +1302,3 @@
 	};
 	rootObject = EEC45BA88290345E9A4B1004 /* Project object */;
 }
-		52B1922186197934423ED26D /* BondScreenshotSeed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C1EE893FD9FA5208116B05D /* BondScreenshotSeed.swift */; };
-		3C1EE893FD9FA5208116B05D /* BondScreenshotSeed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BondScreenshotSeed.swift; sourceTree = "<group>"; };
-				3C1EE893FD9FA5208116B05D /* BondScreenshotSeed.swift */,
-				52B1922186197934423ED26D /* BondScreenshotSeed.swift in Sources */,
