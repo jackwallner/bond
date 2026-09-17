@@ -81,6 +81,7 @@ struct SettingsView: View {
             }
             .bondWarmRow()
 
+            if !BondBrand.isScreenshotMode {
             Section {
                 if purchases.isPremium {
                     if let since = purchases.premiumSince {
@@ -129,6 +130,7 @@ struct SettingsView: View {
             } message: {
                 Text(purchases.lastError
                      ?? "No active \(BondBrand.plusName) purchase found for this Apple ID.")
+            }
             }
 
             Section {
