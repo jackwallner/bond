@@ -3,6 +3,14 @@ import SwiftUI
 // Reusable views shared across the redesigned screens.
 
 enum BondBrand {
+    static var isScreenshotMode: Bool {
+        #if DEBUG
+        return ProcessInfo.processInfo.arguments.contains("-BondScreenshotSeed")
+        #else
+        return false
+        #endif
+    }
+
     static var name: String {
         #if DEBUG
         if ProcessInfo.processInfo.arguments.contains("-BondScreenshotSeed") { return "Little Gestures" }
