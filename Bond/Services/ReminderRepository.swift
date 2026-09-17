@@ -28,6 +28,9 @@ final class ReminderRepository {
     }
 
     func refresh() async {
+        #if DEBUG
+        if BondScreenshotSeed.isEnabled { return }
+        #endif
         guard let coupleId = pairing.coupleId else { return }
         isLoading = true
         defer { isLoading = false }
@@ -85,6 +88,9 @@ final class ReminderRepository {
     }
 
     func subscribeRealtime() async {
+        #if DEBUG
+        if BondScreenshotSeed.isEnabled { return }
+        #endif
         guard let coupleId = pairing.coupleId else {
             await unsubscribeRealtime()
             return

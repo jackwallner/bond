@@ -152,6 +152,10 @@ struct RootView: View {
     @Environment(SupabaseService.self) private var supabase
     @Environment(PurchasesService.self) private var store
     @Environment(PairingService.self) private var pairing
+    @Environment(ReminderRepository.self) private var reminderRepo
+    @Environment(MilestonesService.self) private var milestonesService
+    @Environment(ReminderEventRepository.self) private var eventsRepo
+    @Environment(DailyCheckInService.self) private var checkInService
     @State private var theme = BondTheme.shared
     @State private var onboardingPrefs = OnboardingPreferences.shared
     // Stays false until both auth bootstrap AND the initial couple load have
@@ -260,6 +264,21 @@ struct RootView: View {
             }
         }
         .task {
+            #if DEBUG
+            if BondScreenshotSeed.isEnabled {
+                BondScreenshotSeed.apply(
+                    supabase: supabase,
+                    store: store,
+                    pairing: pairing,
+                    reminders: reminderRepo,
+                    milestones: milestonesService,
+                    events: eventsRepo,
+                    checkIn: checkInService
+                )
+                isAppBootstrapped = true
+                return
+            }
+            #endif
             // Single, idempotent session bootstrap. Restores a cached session
             // or silently signs in anonymously on first launch. Must be the
             // only entry point - calling signInAnonymously() in parallel with
@@ -274,6 +293,9 @@ struct RootView: View {
         }
         .onChange(of: supabase.isAuthenticated) { _, authenticated in
             guard authenticated, isAppBootstrapped else { return }
+            #if DEBUG
+            if BondScreenshotSeed.isEnabled { return }
+            #endif
             isAppBootstrapped = false
             Task {
                 await pairing.loadCouple()
@@ -425,6 +447,11 @@ struct RootView: View {
         if !isAppBootstrapped || !supabase.isAuthenticated {
             return .loading
         }
+        #if DEBUG
+        if BondScreenshotSeed.isEnabled {
+            return .home
+        }
+        #endif
         // No couple at all = brand-new account. Someone arriving from a
         // partner's invite link gets invite-first onboarding; everyone else
         // starts solo via the intent screen, and pairing stays opt-in from

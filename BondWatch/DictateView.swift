@@ -3,10 +3,21 @@ import SwiftUI
 struct DictateView: View {
     private let sender = WatchConnectivitySender.shared
 
-    @State private var text = ""
+    @State private var text: String
     @State private var language: LoveLanguage = .words
     @State private var recipient: WatchPayload.Recipient = .partner
     @State private var statusMessage: String?
+
+    init() {
+        #if DEBUG
+        let seed = ProcessInfo.processInfo.arguments.contains("-BondWatchScreenshotSeed")
+            ? "Plan a surprise coffee date for Sam"
+            : ""
+        _text = State(initialValue: seed)
+        #else
+        _text = State(initialValue: "")
+        #endif
+    }
 
     var body: some View {
         ScrollView {

@@ -20,6 +20,9 @@ final class DailyCheckInService {
     }
 
     func loadTodaysQuestion() async {
+        #if DEBUG
+        if BondScreenshotSeed.isEnabled { return }
+        #endif
         guard let coupleId = pairing.coupleId else { return }
         isLoading = true
         defer { isLoading = false }
