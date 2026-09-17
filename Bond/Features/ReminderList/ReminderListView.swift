@@ -44,7 +44,7 @@ struct ReminderListView: View {
                     list
                 }
             }
-            .navigationTitle("Bond")
+            .navigationTitle(BondBrand.name)
             .safeAreaInset(edge: .bottom, alignment: .trailing) {
                 composeButton
             }
@@ -821,7 +821,7 @@ private struct TemplatesHomeRow: View {
                             HStack(spacing: 3) {
                                 Image(systemName: "lock.fill")
                                     .font(.system(size: 8, weight: .bold))
-                                Text("Bond+")
+                                Text(BondBrand.plusName)
                                     .font(.bond(.caption2, weight: .heavy))
                             }
                             .foregroundStyle(.white)

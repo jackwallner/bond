@@ -85,12 +85,12 @@ struct SettingsView: View {
                 if purchases.isPremium {
                     if let since = purchases.premiumSince {
                         LabeledContent("Status") {
-                            Text("Bond+ since \(since.formatted(date: .long, time: .omitted))")
+                            Text("\(BondBrand.plusName) since \(since.formatted(date: .long, time: .omitted))")
                                 .foregroundStyle(.secondary)
                                 .font(.bond(.callout))
                         }
                     } else {
-                        LabeledContent("Status", value: "Bond+")
+                        LabeledContent("Status", value: BondBrand.plusName)
                     }
                     Link("Manage subscription",
                          destination: URL(string: "https://apps.apple.com/account/subscriptions")!)
@@ -102,7 +102,7 @@ struct SettingsView: View {
                     Button {
                         isPaywallPresented = true
                     } label: {
-                        Label("Try Bond+ free", systemImage: "sparkles")
+                        Label("Try \(BondBrand.plusName) free", systemImage: "sparkles")
                             .font(.bond(.body, weight: .semibold))
                             .foregroundStyle(Color.bondAccent)
                     }
@@ -121,14 +121,14 @@ struct SettingsView: View {
                 }
                 .disabled(isRestoring)
             } header: {
-                BondSectionHeader(title: "Bond+")
+                BondSectionHeader(title: BondBrand.plusName)
             }
             .bondWarmRow()
             .alert("Restore Purchases", isPresented: $showRestoreResult) {
                 Button("OK", role: .cancel) {}
             } message: {
                 Text(purchases.lastError
-                     ?? "No active Bond+ purchase found for this Apple ID.")
+                     ?? "No active \(BondBrand.plusName) purchase found for this Apple ID.")
             }
 
             Section {
