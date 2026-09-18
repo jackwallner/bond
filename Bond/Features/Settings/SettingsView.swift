@@ -159,26 +159,28 @@ struct SettingsView: View {
             }
             .bondWarmRow()
 
-            Section {
-                Button {
-                    if let url = URL(string: UIApplication.openSettingsURLString) {
-                        UIApplication.shared.open(url)
+            if !BondBrand.isScreenshotMode {
+                Section {
+                    Button {
+                        if let url = URL(string: UIApplication.openSettingsURLString) {
+                            UIApplication.shared.open(url)
+                        }
+                    } label: {
+                        HStack {
+                            Image(systemName: notificationStatus == .denied ? "bell.slash" : "bell")
+                                .foregroundStyle(notificationStatus == .denied ? .orange : .secondary)
+                            Text(notificationStateLabel)
+                                .foregroundStyle(.primary)
+                            Spacer()
+                            Image(systemName: "arrow.up.forward.square")
+                                .foregroundStyle(.secondary)
+                        }
                     }
-                } label: {
-                    HStack {
-                        Image(systemName: notificationStatus == .denied ? "bell.slash" : "bell")
-                            .foregroundStyle(notificationStatus == .denied ? .orange : .secondary)
-                        Text(notificationStateLabel)
-                            .foregroundStyle(.primary)
-                        Spacer()
-                        Image(systemName: "arrow.up.forward.square")
-                            .foregroundStyle(.secondary)
-                    }
+                } header: {
+                    BondSectionHeader(title: "Notifications")
                 }
-            } header: {
-                BondSectionHeader(title: "Notifications")
+                .bondWarmRow()
             }
-            .bondWarmRow()
 
             Section {
                 Button {
