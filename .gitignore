@@ -34,3 +34,6 @@ fastlane/report.xml
 scripts/.asc-state.json
 scripts/.astro-app.json
 scripts/*.log
+
+# App Review contact phone stays local (never in a public repo)
+fastlane/metadata*/review_information/phone_number.txt
