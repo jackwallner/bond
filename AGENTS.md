@@ -1,4 +1,4 @@
-# Bond — Project Guide
+# Bond Project Guide
 
 Love-language reminders for couples: each partner records what the other
 actually appreciates, and Bond turns it into timed nudges, a daily check-in and
@@ -16,9 +16,9 @@ phased plan are in the `project_bond` memory and `aso-plan.md`.
   (`PurchasesService.entitlementId`) and the gate is `PurchasesService.isPremium`
 
 ## Targets / bundle IDs
-- `Bond` — `com.jackwallner.bond`
-- `BondWatch` — `.watch`, `BondWidgets` — the widget extension
-- `BondTests` — `.tests`, `BondUITests` — `.uitests`
+- `Bond`: `com.jackwallner.bond`
+- `BondWatch`: `.watch`, `BondWidgets` — the widget extension
+- `BondTests`: `.tests`, `BondUITests` — `.uitests`
 - App Group: `group.com.jackwallner.bond`
 
 ## Architecture
@@ -27,16 +27,16 @@ phased plan are in the `project_bond` memory and `aso-plan.md`.
   `ReminderTrigger`, `RecurrencePreset`, `ReminderTemplate`, `MilestoneDTO`,
   `DailyQuestionDTO`), `Utilities/` (`AppGroup`, `WidgetSnapshot`,
   `WatchPayload`, `BondColors`, `AppStoreReviewLinks`) and `ReviewPromptTracker`.
-- `Bond/Services/` — `SupabaseConfig` + `SupabaseService` (the backend),
+- `Bond/Services/`: `SupabaseConfig` + `SupabaseService` (the backend),
   `PairingService`, `ReminderRepository` / `ReminderEventRepository`,
   `NotificationScheduler` + `NotificationRouter`, `DailyCheckInService`,
   `MilestonesService`, `LoveLanguageAnalyzer`, `PurchasesService`,
   `WatchConnectivityBridge`, `WidgetSnapshotPump`, `AppleSignInHelper`,
   `LocationService`, `ConversionDiagnostics`.
-- `Bond/Features/` — one folder per surface: Onboarding, Pairing, ReminderList,
+- `Bond/Features/`: one folder per surface: Onboarding, Pairing, ReminderList,
   ReminderEditor, Templates, CheckIn, Milestones, Stats, Paywall, Review,
   Settings.
-- `Bond/DesignSystem/` — `BondTheme`, `BondFont`, `BondStyle`, `BondComponents`,
+- `Bond/DesignSystem/`: `BondTheme`, `BondFont`, `BondStyle`, `BondComponents`,
   plus `PremiumGate.swift` (`PremiumFeature`, `BondUnlockCard`,
   `BondRestoreButton`) and its `GateSampleContent`.
 - `supabase/migrations/` is the schema (`0001_init` through the solo-mode,
@@ -74,4 +74,4 @@ phased plan are in the `project_bond` memory and `aso-plan.md`.
 
 ---
 Shared iOS conventions (build, simulator, release/TestFlight, ASC key, signing,
-review funnel, gotchas): always-loaded global CLAUDE.md + the `ios-dev` skill.
+review funnel, gotchas): the global agent rules + the `ios-dev` skill.
