@@ -17,8 +17,8 @@ phased plan are in the `project_bond` memory and `aso-plan.md`.
 
 ## Targets / bundle IDs
 - `Bond`: `com.jackwallner.bond`
-- `BondWatch`: `.watch`, `BondWidgets` — the widget extension
-- `BondTests`: `.tests`, `BondUITests` — `.uitests`
+- `BondWatch`: `.watch`; `BondWidgets` is the widget extension
+- `BondTests`: `.tests`; `BondUITests`: `.uitests`
 - App Group: `group.com.jackwallner.bond`
 
 ## Architecture
