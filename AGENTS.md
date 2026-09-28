@@ -4,7 +4,7 @@ Love-language reminders for couples: each partner records what the other
 actually appreciates, and Bond turns it into timed nudges, a daily check-in and
 milestones. XcodeGen project/scheme: `Bond`, sim lease owner `bond`. App Store
 ID `6768514177` (`BondAppStoreID` in `Bond/Info.plist`). Positioning and the
-phased plan are in the `project_bond` memory and `aso-plan.md`.
+phased plan are in the `project_bond` memory and `project-docs/marketing/aso-plan.md`.
 
 ## Tech Stack
 - Swift 6 / SwiftUI (strict concurrency), Plus Jakarta Sans bundled in `Bond/Resources/Fonts`

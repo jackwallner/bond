@@ -635,7 +635,7 @@ Evidence:
 Recommendations:
 
 1. Use ASC data to rank locales by impressions, product-page views, downloads, trial starts, and revenue, then prioritize screenshots and copy for the highest opportunity locales. Do not allocate based on the historical 87% claim alone.
-2. Test the English subtitle and keyword strategy against a positioning variant focused on reminders and love-language nudges. aso-plan.md:9-13 proposes Daily Love Language Nudges, but the current subtitle remains Love Language Reminder App. Verify current ASC state before using that plan.
+2. Test the English subtitle and keyword strategy against a positioning variant focused on reminders and love-language nudges. ../marketing/aso-plan.md:9-13 proposes Daily Love Language Nudges, but the current subtitle remains Love Language Reminder App. Verify current ASC state before using that plan.
 3. Test promotional text variants around the first-value promise, daily check-in, partner delivery, and 7-day trial. Keep pricing dynamic or generated from the verified manifest.
 4. Add localized screenshot sets for high-opportunity locales. The current English screenshot text makes localized listing traffic land on an English visual.
 5. Keep keywords within the measured limit but fail on overlength instead of truncating. Avoid repeating name and subtitle tokens when the target locale does not need them.
@@ -899,7 +899,7 @@ The requested RevenueCat data-collection disclosure comparison is intentionally 
 | Keep with update | CLAUDE.md, AGENTS.md symlink, README.md, docs/review-prompt.md, ios27Bond.md | Remove stale claims, add current build/version, canonical URLs, release-watch commands, and links to this audit |
 | Keep as generated site source, consolidate | docs/index.html, legal pages, support pages, clean-route copies, robots.txt, sitemap.xml | Choose a single source and generate or verify copies |
 | Archive after status review | docs/MVP_TRIAGE.md, archive/PLAN.md, archive/VIDEO_DEBUG_NOTES.md, archive/c521.md, archive/g521.md, archive/uc528.md, archive/v516.md | Preserve dates and mark resolved versus open findings; do not let agents treat them as current |
-| Move to dated ASO archive or convert to an active plan | aso-plan.md, docs/localization-aso.md, docs/astro-aso-setup.md | Add status, last verified ASC version, and a link to the current metadata report. Move completed May and June plans under docs/archive/aso/ |
+| Move to dated ASO archive or convert to an active plan | ../marketing/aso-plan.md, docs/localization-aso.md, docs/astro-aso-setup.md | Add status, last verified ASC version, and a link to the current metadata report. Move completed May and June plans under docs/archive/aso/ |
 | Archive as design snapshots | claude-design, claude-design-handoff | Add snapshot date and source commit if retained. Do not expose code-references as current source |
 | Move or delete from agent-visible workspace | .DS_Store files and stale design snapshot source copies | Keep only if needed for a visual handoff. Otherwise remove from agent context in a separate cleanup change |
 | Create one canonical agent state document | Recommended docs/agent/current-state.md | Record targets, bundle IDs, current version, services, product IDs, feature gates, release commands, site source, known issues, and last verification date |
