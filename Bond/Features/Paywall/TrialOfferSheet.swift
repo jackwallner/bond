@@ -27,7 +27,7 @@ struct TrialOfferSheet: View {
         if trialPeriodPhrase != nil {
             return "Turn intentions into actions."
         }
-        return "Unlock your full Bond plan."
+        return "Unlock your full Little Gestures plan."
     }
 
     private var subheadline: String {
@@ -158,8 +158,8 @@ struct TrialOfferSheet: View {
 
     private var trialCTATitle: String {
         if trialPeriodPhrase != nil {
-            return "Try Bond+ Free"
+            return "Try Little Gestures+ Free"
         }
-        return "Unlock Bond+"
+        return "Unlock Little Gestures+"
     }
 }

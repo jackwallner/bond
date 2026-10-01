@@ -44,7 +44,7 @@ struct StatsView: View {
                 BondUnlockCard(
                     icon: "chart.bar.xaxis.ascending",
                     headline: "Unlock the full picture",
-                    subhead: "Bond+ opens up your love-language balance, weekly trends, and personalized insights.",
+                    subhead: "Little Gestures+ opens up your love-language balance, weekly trends, and personalized insights.",
                     isPaywallPresented: $isPaywallPresented,
                     outerPadding: true
                 )

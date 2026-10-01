@@ -70,7 +70,7 @@ struct DictateView: View {
             statusMessage = "Saved. You'll be reminded in about an hour."
             text = ""
         case .queued:
-            statusMessage = "Queued. Open Bond on your phone to confirm."
+            statusMessage = "Queued. Open Little Gestures on your phone to confirm."
             text = ""
         case .failed:
             statusMessage = sender.lastError ?? "Send failed."

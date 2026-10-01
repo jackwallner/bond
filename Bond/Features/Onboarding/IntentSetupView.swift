@@ -257,7 +257,7 @@ struct IntentSetupView: View {
 
             if isTrialStep {
                 Button { Task { await finish() } } label: {
-                    Text("Continue with free Bond")
+                    Text("Continue for free")
                         .font(.bond(.subheadline, weight: .semibold))
                         .foregroundStyle(.secondary)
                         .frame(maxWidth: .infinity, minHeight: 34)
@@ -310,7 +310,7 @@ struct IntentSetupView: View {
         switch step {
         case 0, 2: "Continue"
         case 1: "I commit to showing up for \(displayName)"
-        case 3: "Start using Bond"
+        case 3: "Start using Little Gestures"
         default: trialCTATitle
         }
     }
@@ -378,9 +378,9 @@ struct IntentSetupView: View {
     /// honor for a previously-subscribed Apple ID).
     private var trialCTATitle: String {
         if introEligible {
-            return "Try Bond+ Free"
+            return "Try Little Gestures+ Free"
         }
-        return "Get Bond+"
+        return "Get Little Gestures+"
     }
 
     private var trialDisclosure: String? {
@@ -421,7 +421,7 @@ struct IntentSetupView: View {
         VStack(alignment: .leading, spacing: BondSpacing.xl) {
             BondScreenHeader(
                 title: "Who do you want to show up for?",
-                subtitle: "Your partner. Bond is built to help you keep showing up for them."
+                subtitle: "Your partner. Little Gestures is built to help you keep showing up for them."
             )
             .padding(.horizontal, BondSpacing.base)
 
@@ -453,7 +453,7 @@ struct IntentSetupView: View {
         VStack(alignment: .leading, spacing: BondSpacing.xl) {
             BondScreenHeader(
                 title: "Make it real.",
-                subtitle: "Showing up for \(displayName) isn't a feature, it's a choice. Make it now, and Bond will help you keep it."
+                subtitle: "Showing up for \(displayName) isn't a feature, it's a choice. Make it now, and Little Gestures will help you keep it."
             )
             .padding(.horizontal, BondSpacing.base)
 

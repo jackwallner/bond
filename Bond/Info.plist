@@ -13,7 +13,7 @@
 	<key>CFBundleName</key>
 	<string>Bond</string>
 	<key>CFBundleDisplayName</key>
-	<string>Bond</string>
+	<string>Little Gestures</string>
 	<key>BondAppStoreID</key>
 	<string>6768514177</string>
 	<key>CFBundlePackageType</key>
@@ -38,7 +38,7 @@
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Bond uses your location to trigger reminders when you arrive at or leave specific places (e.g. remind you to hug your partner when you get home).</string>
+	<string>Little Gestures uses your location to trigger reminders when you arrive at or leave specific places (e.g. remind you to hug your partner when you get home).</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

@@ -78,7 +78,7 @@ struct UpcomingReminderView: View {
                     .foregroundStyle(.pink)
                 Text("No reminders")
                     .font(.callout)
-                Text("Add one in Bond")
+                Text("Add one in Little Gestures")
                     .font(.caption2)
                     .foregroundStyle(.secondary)
             }

@@ -143,7 +143,7 @@ struct PaywallView: View {
 
     private var header: some View {
         VStack(spacing: BondSpacing.xs) {
-            Text("Bond+")
+            Text("Little Gestures+")
                 .font(.bond(.title2, weight: .heavy))
                 .foregroundStyle(Color.bondAccent.gradient)
             Text(BondPlusBenefits.paywallSubheadline(isSolo: isSolo))
@@ -318,10 +318,10 @@ struct PaywallView: View {
         guard let package = selectedPackage else { return "Continue" }
         if package.bondPackageKind == .lifetime { return "Unlock Lifetime" }
         if purchases.isEligibleForIntroOffer(package), let days = package.bondTrialDays {
-            return "Try Bond+ Free"
+            return "Try Little Gestures+ Free"
         }
         if purchases.isEligibleForIntroOffer(package) { return "Start Free Trial" }
-        return "Get Bond+"
+        return "Get Little Gestures+"
     }
 
     private var ctaSubline: String? {
@@ -423,7 +423,7 @@ struct PaywallView: View {
                 needsManualRestore = false
             } else {
                 restoreMessage = purchases.lastError
-                    ?? "No active Bond+ purchase found for this Apple ID."
+                    ?? "No active Little Gestures+ purchase found for this Apple ID."
             }
         }
     }

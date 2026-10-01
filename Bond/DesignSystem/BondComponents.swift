@@ -11,19 +11,9 @@ enum BondBrand {
         #endif
     }
 
-    static var name: String {
-        #if DEBUG
-        if ProcessInfo.processInfo.arguments.contains("-BondScreenshotSeed") { return "Little Gestures" }
-        #endif
-        return "Bond"
-    }
+    static var name: String { "Little Gestures" }
 
-    static var plusName: String {
-        #if DEBUG
-        if ProcessInfo.processInfo.arguments.contains("-BondScreenshotSeed") { return "Little Gestures+" }
-        #endif
-        return "Bond+"
-    }
+    static var plusName: String { "Little Gestures+" }
 }
 
 struct BondHero: View {

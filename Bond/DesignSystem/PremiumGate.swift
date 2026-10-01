@@ -19,7 +19,7 @@ enum PremiumFeature {
         }
     }
 
-    var ctaTitle: String { "Try Bond+ free" }
+    var ctaTitle: String { "Try Little Gestures+ free" }
 }
 
 /// Restore button shared by every gate card. Restoring success flips
@@ -55,7 +55,7 @@ struct BondRestoreButton: View {
             Button("OK", role: .cancel) {}
         } message: {
             Text(purchases.lastError
-                 ?? "No active Bond+ purchase found for this Apple ID.")
+                 ?? "No active Little Gestures+ purchase found for this Apple ID.")
         }
     }
 }
@@ -67,7 +67,7 @@ struct BondUnlockCard: View {
     let icon: String
     let headline: String
     let subhead: String
-    var ctaTitle: String = "Try Bond+ free"
+    var ctaTitle: String = "Try Little Gestures+ free"
     @Binding var isPaywallPresented: Bool
     /// Adds outer padding when the card sits in a Form row whose insets have
     /// been zeroed (so it doesn't run edge-to-edge).

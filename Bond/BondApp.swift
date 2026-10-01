@@ -169,9 +169,7 @@ struct RootView: View {
     private let postOnboardingPaywallKey = "hasShownPostOnboardingPaywall"
     @StateObject private var reviewPromptCoordinator = ReviewPromptCoordinator.shared
     @State private var showReviewPrompt = false
-    @State private var reviewPromptInitialStep: ReviewPromptSheet.Step = .enjoyment
     @State private var reviewPromptShownThisSession = false
-    @State private var pendingNativeReviewAfterDismiss = false
     @Environment(\.requestReview) private var requestReview
 
     var body: some View {
@@ -305,8 +303,8 @@ struct RootView: View {
         .onReceive(NotificationCenter.default.publisher(for: .bondPositiveMomentForReview)) { _ in
             scheduleReviewPromptAfterPositiveMoment()
         }
-        .onChange(of: reviewPromptCoordinator.pendingPresentation) { _, presentation in
-            guard let presentation else { return }
+        .onChange(of: reviewPromptCoordinator.feedbackRequested) { _, requested in
+            guard requested else { return }
             defer { reviewPromptCoordinator.clear() }
             guard currentDestination == .home,
                   !pairing.justPaired,
@@ -315,21 +313,10 @@ struct RootView: View {
                   !showPostPairPaywall,
                   !showPostOnboardingPaywall
             else { return }
-            switch presentation {
-            case .enjoymentPrompt:
-                presentReviewPrompt(step: .enjoyment)
-            case .feedbackOnly:
-                presentReviewPrompt(step: .feedback)
-            }
+            showReviewPrompt = true
         }
-        .sheet(isPresented: $showReviewPrompt, onDismiss: {
-            ReviewPromptTracker.markShown()
-            if pendingNativeReviewAfterDismiss {
-                pendingNativeReviewAfterDismiss = false
-                requestReview()
-            }
-        }) {
-            ReviewPromptSheet(initialStep: reviewPromptInitialStep, onFinish: handleReviewPromptFinish)
+        .sheet(isPresented: $showReviewPrompt) {
+            ReviewPromptSheet { _ in showReviewPrompt = false }
         }
         // Proactive post-pairing paywall. Whether the user buys or closes it,
         // dismissal advances past the success screen to home.
@@ -378,7 +365,7 @@ struct RootView: View {
                 .foregroundStyle(.secondary)
             Text("Couldn't connect")
                 .font(.bond(.headline))
-            Text("Bond needs a connection the first time you open it. Check your network and try again.")
+            Text("Little Gestures needs a connection the first time you open it. Check your network and try again.")
                 .font(.bond(.subheadline))
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
@@ -423,22 +410,12 @@ struct RootView: View {
                   !showPostOnboardingPaywall,
                   ReviewPromptTracker.shouldShowAfterPositiveMoment(hasCompletedSetup: hasCompletedSetup)
             else { return }
-            ReviewPromptTracker.consumePendingPositiveMoment()
-            presentReviewPrompt(step: .enjoyment)
+            // Apple's own prompt, asked of everyone who qualifies. No
+            // "enjoying it?" question first: that is review gating (5.6.1).
+            reviewPromptShownThisSession = true
+            ReviewPromptTracker.markShown()
+            requestReview()
         }
-    }
-
-    private func handleReviewPromptFinish(_ outcome: ReviewPromptDismissOutcome) {
-        showReviewPrompt = false
-        if outcome == .enjoyedMaybeLater {
-            pendingNativeReviewAfterDismiss = true
-        }
-    }
-
-    private func presentReviewPrompt(step: ReviewPromptSheet.Step) {
-        reviewPromptInitialStep = step
-        reviewPromptShownThisSession = true
-        showReviewPrompt = true
     }
 
     private enum Destination { case loading, intentSetup, inviteWelcome, inviteeIntake, pairingSuccess, home }

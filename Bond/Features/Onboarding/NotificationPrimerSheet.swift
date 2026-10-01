@@ -25,7 +25,7 @@ struct NotificationPrimerSheet: View {
                 .accessibilityHidden(true)
 
             VStack(spacing: BondSpacing.m) {
-                Text("Bond is silent without your permission.")
+                Text("Little Gestures is silent without your permission.")
                     .font(.bond(.title2, weight: .bold))
                     .multilineTextAlignment(.center)
                 Text("Reminders fire as notifications. No notifications, no reminders. That's the whole app.")

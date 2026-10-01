@@ -1,7 +1,7 @@
 import Foundation
 
 extension Notification.Name {
-    /// Posted when the user completes a reminder — host may present the enjoyment funnel after a short delay.
+    /// Posted when the user completes a reminder — host may ask for an App Store rating after a short delay.
     static let bondPositiveMomentForReview = Notification.Name("com.jackwallner.bond.positiveMomentForReview")
 }
 
@@ -32,7 +32,7 @@ enum ReviewPromptTracker {
     }()
 
     static let minimumDaysSinceFirstOpen = 7
-    /// Minimum cumulative positive moments before the passive enjoyment funnel surfaces.
+    /// Minimum cumulative positive moments before the passive rating prompt surfaces.
     static let minimumPositiveMoments = 3
     static let cooldownDays = 120
 
@@ -114,7 +114,7 @@ enum ReviewPromptTracker {
         return now.timeIntervalSince(last) >= cooldown
     }
 
-    static func canPresentEnjoymentPrompt(
+    static func canPresentRatingPrompt(
         hasCompletedSetup: Bool,
         now: Date = .now
     ) -> Bool {
@@ -134,7 +134,7 @@ enum ReviewPromptTracker {
         now: Date = .now
     ) -> Bool {
         guard hasPendingPositiveMoment else { return false }
-        return canPresentEnjoymentPrompt(hasCompletedSetup: hasCompletedSetup, now: now)
+        return canPresentRatingPrompt(hasCompletedSetup: hasCompletedSetup, now: now)
     }
 
     static func markShown(now: Date = .now) {

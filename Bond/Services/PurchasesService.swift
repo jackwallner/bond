@@ -362,7 +362,7 @@ final class PurchasesService {
             case .productAlreadyPurchasedError:
                 return "You already own this. Tap Restore to unlock it on this device."
             case .paymentPendingError:
-                return "Your payment is pending approval. We'll unlock Bond+ as soon as it clears."
+                return "Your payment is pending approval. We'll unlock Little Gestures+ as soon as it clears."
             case .purchaseNotAllowedError:
                 return "In-app purchases are restricted on this device."
             case .networkError, .offlineConnectionError:
@@ -413,7 +413,7 @@ final class PurchasesService {
         do {
             let info = try await Purchases.shared.restorePurchases()
             apply(info: info)
-            lastError = isPremium ? nil : "No active Bond+ purchase found for this Apple ID."
+            lastError = isPremium ? nil : "No active Little Gestures+ purchase found for this Apple ID."
             log.info("Restored purchases - premium: \(self.isPremium)")
         } catch {
             lastError = "Couldn't restore purchases. Try again."

@@ -73,7 +73,7 @@ final class WatchConnectivityBridge: NSObject {
               let me = supabase.currentUserId,
               let coupleId = pairing.coupleId
         else {
-            return (false, "Open Bond on your phone and finish setup first.")
+            return (false, "Open Little Gestures on your phone and finish setup first.")
         }
 
         let fireAt = Date().addingTimeInterval(payload.scheduledOffsetSeconds)

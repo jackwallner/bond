@@ -19,7 +19,7 @@ struct OnboardingTrialView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: BondSpacing.xl) {
             BondScreenHeader(
-                title: "Your Bond plan for \(displayName).",
+                title: "Your Little Gestures plan for \(displayName).",
                 subtitle: "Start your free trial to unlock every idea and turn the little things into a habit."
             )
             .padding(.horizontal, BondSpacing.base)

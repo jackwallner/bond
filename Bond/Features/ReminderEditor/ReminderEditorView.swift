@@ -88,7 +88,7 @@ struct ReminderEditorView: View {
                     BondSectionHeader(title: "When")
                 } footer: {
                     if !store.isPremium {
-                        Text("Location & surprise-in-a-window need Bond+.")
+                        Text("Location & surprise-in-a-window need Little Gestures+.")
                             .font(.bond(.caption))
                             .foregroundStyle(.secondary)
                     }
@@ -292,7 +292,7 @@ struct ReminderEditorView: View {
                         .font(.bond(.footnote))
                         .foregroundStyle(.orange)
                 } else {
-                    Text("Bond will pick one random moment in this window.")
+                    Text("Little Gestures will pick one random moment in this window.")
                         .font(.bond(.footnote))
                         .foregroundStyle(.secondary)
                 }

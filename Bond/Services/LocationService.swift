@@ -26,7 +26,7 @@ final class LocationService: NSObject, CLLocationManagerDelegate {
 
     struct LocationDeniedError: LocalizedError {
         var errorDescription: String? {
-            "Location access is off for Bond. Enable it in Settings → Privacy & Security → Location Services."
+            "Location access is off for Little Gestures. Enable it in Settings → Privacy & Security → Location Services."
         }
     }
 

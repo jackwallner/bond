@@ -46,7 +46,7 @@ struct DailyCheckInView: View {
                 BondUnlockCard(
                     icon: "questionmark.bubble.fill",
                     headline: "Answer together",
-                    subhead: "Bond+ unlocks answering today's question and seeing each other's response once you've both replied.",
+                    subhead: "Little Gestures+ unlocks answering today's question and seeing each other's response once you've both replied.",
                     isPaywallPresented: $isPaywallPresented
                 )
             }

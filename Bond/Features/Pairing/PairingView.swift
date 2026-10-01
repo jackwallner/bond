@@ -92,8 +92,8 @@ struct PairingView: View {
             if let url = pairing.pendingInviteURL {
                 ShareLink(
                     item: url,
-                    subject: Text("I want to pair with you on Bond."),
-                    message: Text("I'm using Bond, a small app for sending each other little reminders. Tap the link to pair with me, or use the code: \(pairing.pendingInviteCode ?? "").")
+                    subject: Text("I want to pair with you on Little Gestures."),
+                    message: Text("I'm using Little Gestures, a small app for sending each other little reminders. Tap the link to pair with me, or use the code: \(pairing.pendingInviteCode ?? "").")
                 ) {
                     Label("Share invite link", systemImage: "square.and.arrow.up")
                         .font(.bond(.headline))

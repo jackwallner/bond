@@ -54,7 +54,7 @@ struct SettingsView: View {
                     } label: {
                         Label("Connect a partner", systemImage: "heart.circle")
                     }
-                    Text("Bond is just for you right now. Pair to share reminders. You keep everything you've already added.")
+                    Text("Little Gestures is just for you right now. Pair to share reminders. You keep everything you've already added.")
                         .font(.bond(.caption))
                         .foregroundStyle(.secondary)
                 } else {
@@ -183,10 +183,15 @@ struct SettingsView: View {
             }
 
             Section {
+                if let url = AppStoreReviewLinks.writeReviewURL {
+                    Link(destination: url) {
+                        Label("Rate on the App Store", systemImage: "star")
+                    }
+                }
                 Button {
-                    ReviewPromptCoordinator.shared.requestEnjoymentPrompt()
+                    ReviewPromptCoordinator.shared.requestFeedback()
                 } label: {
-                    Label("Rate or Send Feedback", systemImage: "star.bubble")
+                    Label("Send Feedback", systemImage: "envelope")
                 }
             } header: {
                 BondSectionHeader(title: "Help")
@@ -236,7 +241,7 @@ struct SettingsView: View {
             }
             Button("Cancel", role: .cancel) {}
         } message: {
-            Text("You'll need to sign in again to use Bond.")
+            Text("You'll need to sign in again to use Little Gestures.")
         }
         .confirmationDialog("Unpair?", isPresented: $confirmUnpair, titleVisibility: .visible) {
             Button("Unpair", role: .destructive) {

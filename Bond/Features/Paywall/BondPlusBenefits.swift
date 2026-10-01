@@ -52,7 +52,7 @@ enum BondPlusBenefits {
         if isSolo {
             return "Turn what matters to your partner into actions you remember."
         }
-        return "Stay close on purpose with the full Bond experience."
+        return "Stay close on purpose with the full Little Gestures experience."
     }
 
     static func trialSubheadline(isSolo: Bool) -> String {

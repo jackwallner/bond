@@ -28,7 +28,7 @@ struct InviteWelcomeView: View {
                 Text("Your partner invited you")
                     .font(.bond(.title, weight: .bold))
                     .multilineTextAlignment(.center)
-                Text("Bond is a small app for the two of you, little reminders, shared milestones, and a daily check-in.")
+                Text("Little Gestures is a small app for the two of you, little reminders, shared milestones, and a daily check-in.")
                     .font(.bond(.body))
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)

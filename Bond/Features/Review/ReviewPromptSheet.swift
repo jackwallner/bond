@@ -1,175 +1,60 @@
 import SwiftUI
 import UIKit
 
+/// Feedback is its own path, never a branch of a rating question. Guideline
+/// 5.6.1 rejects any flow that asks how someone feels and only sends the happy
+/// ones to the App Store, so ratings go straight to Apple's own prompt.
 @MainActor
 final class ReviewPromptCoordinator: ObservableObject {
     static let shared = ReviewPromptCoordinator()
 
-    enum Presentation {
-        case enjoymentPrompt
-        case feedbackOnly
-    }
-
-    @Published var pendingPresentation: Presentation?
+    @Published var feedbackRequested = false
 
     private init() {}
 
-    func requestEnjoymentPrompt() {
-        pendingPresentation = .enjoymentPrompt
-    }
-
     func requestFeedback() {
-        pendingPresentation = .feedbackOnly
+        feedbackRequested = true
     }
 
     func clear() {
-        pendingPresentation = nil
+        feedbackRequested = false
     }
 }
 
 enum ReviewPromptDismissOutcome: Sendable {
     case notNow
     case feedbackSubmitted
-    case openedWriteReview
-    case enjoyedMaybeLater
 }
 
 struct ReviewPromptSheet: View {
-    enum Step {
-        case enjoyment
-        case reviewPitch
-        case feedback
-    }
-
-    let initialStep: Step
     let onFinish: (ReviewPromptDismissOutcome) -> Void
 
     @Environment(\.dismiss) private var dismiss
-    @State private var step: Step
     @State private var feedbackText = ""
     @FocusState private var feedbackFocused: Bool
 
-    init(initialStep: Step = .enjoyment, onFinish: @escaping (ReviewPromptDismissOutcome) -> Void) {
-        self.initialStep = initialStep
-        self.onFinish = onFinish
-        _step = State(initialValue: initialStep)
-    }
-
     var body: some View {
         NavigationStack {
-            Group {
-                switch step {
-                case .enjoyment:
-                    enjoymentContent
-                case .reviewPitch:
-                    reviewPitchContent
-                case .feedback:
-                    feedbackContent
-                }
-            }
-            .navigationTitle(navigationTitle)
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Not now") {
-                        handleNotNow()
+            feedbackContent
+                .navigationTitle("Help us improve")
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button("Not now") {
+                            handleNotNow()
+                        }
+                        .foregroundStyle(.secondary)
                     }
-                    .foregroundStyle(.secondary)
                 }
-            }
         }
-        .presentationDetents(step == .feedback ? [.large] : [.medium, .large])
+        .presentationDetents([.large])
         .presentationDragIndicator(.visible)
         .background(Color.bondBackgroundGradient.ignoresSafeArea())
     }
 
-    private var navigationTitle: String {
-        switch step {
-        case .enjoyment: "Enjoying Bond?"
-        case .reviewPitch: "Support an indie app"
-        case .feedback: "Help us improve"
-        }
-    }
-
-    private var enjoymentContent: some View {
-        VStack(spacing: 20) {
-            ZStack {
-                Circle()
-                    .fill(Color.bondAccent.gradient)
-                    .frame(width: 64, height: 64)
-                Image(systemName: "heart.fill")
-                    .font(.system(size: 26, weight: .bold))
-                    .foregroundStyle(.white)
-            }
-            .padding(.top, 8)
-
-            Text("If Bond is helping you show up for your partner, a quick App Store rating helps more couples find gentle love-language reminders.")
-                .font(.bond(.subheadline))
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
-                .fixedSize(horizontal: false, vertical: true)
-                .padding(.horizontal, 8)
-
-            VStack(spacing: 10) {
-                Button { step = .reviewPitch } label: {
-                    primaryButtonLabel("Yes, I'm enjoying it")
-                }
-                .buttonStyle(.plain)
-
-                Button { step = .feedback } label: {
-                    secondaryButtonLabel("Not really")
-                }
-                .buttonStyle(.plain)
-            }
-        }
-        .padding(.horizontal, 24)
-        .padding(.bottom, 24)
-    }
-
-    private var reviewPitchContent: some View {
-        VStack(spacing: 18) {
-            Text("Bond is built by one indie developer. No ads, no accounts beyond sign-in, and your reminders stay between you and your partner.")
-                .font(.bond(.subheadline))
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
-                .fixedSize(horizontal: false, vertical: true)
-                .padding(.top, 8)
-
-            Text("An honest App Store review takes seconds and helps more couples discover a calm way to nurture their relationship.")
-                .font(.bond(.footnote))
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
-                .fixedSize(horizontal: false, vertical: true)
-
-            VStack(spacing: 10) {
-                Button {
-                    ReviewPromptTracker.markOpenedWriteReview()
-                    if let url = AppStoreReviewLinks.writeReviewURL {
-                        UIApplication.shared.open(url)
-                    }
-                    finish(.openedWriteReview)
-                } label: {
-                    primaryButtonLabel("Rate on the App Store")
-                }
-                .buttonStyle(.plain)
-                .disabled(AppStoreReviewLinks.writeReviewURL == nil)
-
-                Button {
-                    ReviewPromptTracker.markShown()
-                    finish(.enjoyedMaybeLater)
-                } label: {
-                    secondaryButtonLabel("Maybe later")
-                }
-                .buttonStyle(.plain)
-            }
-        }
-        .padding(.horizontal, 24)
-        .padding(.bottom, 24)
-    }
-
     private var feedbackContent: some View {
         VStack(alignment: .leading, spacing: 14) {
-            Text("What would make Bond work better for you?")
+            Text("What would make Little Gestures work better for you?")
                 .font(.bond(.subheadline))
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -206,14 +91,6 @@ struct ReviewPromptSheet: View {
             .background(Color.bondAccent.gradient, in: Capsule())
     }
 
-    private func secondaryButtonLabel(_ title: String) -> some View {
-        Text(title)
-            .font(.bond(.subheadline, weight: .semibold))
-            .foregroundStyle(.secondary)
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 10)
-    }
-
     private func handleNotNow() {
         ReviewPromptTracker.markShown()
         finish(.notNow)
@@ -237,7 +114,7 @@ struct ReviewPromptSheet: View {
         components.scheme = "mailto"
         components.path = "jackwallner+b@gmail.com"
         components.queryItems = [
-            URLQueryItem(name: "subject", value: "Bond feedback"),
+            URLQueryItem(name: "subject", value: "Little Gestures feedback"),
             URLQueryItem(name: "body", value: body),
         ]
         return components.url
