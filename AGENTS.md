@@ -72,6 +72,10 @@ phased plan are in the `project_bond` memory and `project-docs/marketing/aso-pla
   `jackwallner/bond` (main branch, `/docs`), with clean-URL index routes for
   privacy, terms and support.
 
+## Rule files
+- `.claude/rules/android.md` (`android/**`): the Kotlin/Compose Android port,
+  its build, tests, and what differs from iOS.
+
 ---
 Shared iOS conventions (build, simulator, release/TestFlight, ASC key, signing,
 review funnel, gotchas): the global agent rules + the `ios-dev` skill.

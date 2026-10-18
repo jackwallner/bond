@@ -1,0 +1,7 @@
+<resources>
+    <!-- bondSurface, so launch never flashes white. -->
+    <color name="launch_canvas">#F8E2C6</color>
+    <color name="accent">#BE5048</color>
+    <!-- The iOS icon's edge, behind the adaptive icon's disc. -->
+    <color name="ic_launcher_background">#E8BB98</color>
+</resources>
