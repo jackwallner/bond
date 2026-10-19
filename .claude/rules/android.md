@@ -160,3 +160,6 @@ SHA-256 matches the ignored build configuration. Instructions describe free
 onboarding, long-press Settings Version, no-purchase/no-expiry unlock and optional
 pairing with a second installation. Code unchanged, no secret captured. Current
 new runtime checks still gate upload.178countries and tester list are saved.
+
+Adult18+ target audience is saved after reviewer details. Data safety remains
+pending the cloud-account/content/location declarations and public policy page.
