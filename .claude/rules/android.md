@@ -190,3 +190,7 @@ backend identity. Paid boundary, locale surfaces, captures and QA remain.
 Current free paid-boundary/store-price case passes46.058s. The two seeded
 locale-surface cases (date editor and tab/Insights coverage) run next because
 those composables changed. All use Test Store/seed data, no backend identity.
+
+Current seeded date-editor case passes32.805s and all-tabs/Insights case44.705s,
+covering the changed locale reads. Four real free captures are being generated
+with screenshotSeed and seedFree, no backend identity or paid unlock. QA remains.
