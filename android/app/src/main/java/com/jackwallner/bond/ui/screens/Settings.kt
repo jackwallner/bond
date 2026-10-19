@@ -193,7 +193,7 @@ fun SettingsScreen() {
                     GroupRow(onClick = { sheets.presentPaywall() }, tag = "settings.tryPlus") {
                         Icon(Icons.Rounded.AutoAwesome, null, tint = colors.accent, modifier = Modifier.size(20.dp))
                         Spacer(Modifier.width(Spacing.m))
-                        BText("Try ${Membership.PLUS} free", BondType.body.semibold, colors.accent)
+                        BText("Explore ${Membership.PLUS}", BondType.body.semibold, colors.accent)
                     }
                 }
                 RowDivider()

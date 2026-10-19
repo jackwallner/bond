@@ -194,3 +194,10 @@ those composables changed. All use Test Store/seed data, no backend identity.
 Current seeded date-editor case passes32.805s and all-tabs/Insights case44.705s,
 covering the changed locale reads. Four real free captures are being generated
 with screenshotSeed and seedFree, no backend identity or paid unlock. QA remains.
+
+Capture inspection found unconditional "Try Little Gestures+ free" labels in
+Settings and feature gates, even when no trial is known to be available. These
+entry points now say "Explore Little Gestures+". The paywall still uses live
+eligibility for trial copy. Refresh Check-In/Insights captures after rebuilding;
+old captures are archived outside the repo. Reminders/Milestones captures remain
+valid. This copy fix is WIP and requires its new build and optimized QA gates.
