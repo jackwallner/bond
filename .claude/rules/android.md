@@ -180,3 +180,9 @@ runtime/capture gates pass, no AAB uploaded or main acceptance.
 Current signed vc1/1.0.7 target36 APK/AAB signatures, APK ZIP/AAB config and
 all4native ELF16KB alignments pass. Owned sol-bond5580 boots for the actual
 reviewer case. No current runtime or capture acceptance yet.
+
+Actual reviewer-access case passes60.135s on current debug build: masked field,
+wrong-code rejection, valid unlock, customer-info refresh and reconstruction.
+Initial process-start ANR was under99percent guest CPU pressure; precompiling
+app/test packages and retrying warm resolved it. No source workaround or new
+backend identity. Paid boundary, locale surfaces, captures and QA remain.
