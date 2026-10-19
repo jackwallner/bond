@@ -154,3 +154,9 @@ Existing internal tester list saved. New locale-fix build uses
 bond-locale-final-build.log; initial19m8s lint failure is preserved separately.
 Run release lint early when changing Compose UI, before expensive R8 packaging.
 No current artifact is accepted or uploaded until all new checks pass.
+
+Sign in details for the upcoming artifact are saved. The saved private-code
+SHA-256 matches the ignored build configuration. Instructions describe free
+onboarding, long-press Settings Version, no-purchase/no-expiry unlock and optional
+pairing with a second installation. Code unchanged, no secret captured. Current
+new runtime checks still gate upload.178countries and tester list are saved.
