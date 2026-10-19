@@ -89,3 +89,11 @@ Create the app and the three products with prices and the 1-week trials to
 match iOS, upload the AAB to internal testing, add the Play app signing
 SHA-256 to `assetlinks.json`, data safety form, and the RevenueCat service
 credentials for the Play app.
+
+RevenueCat integration check on2026-10-18: developer notifications plus two
+transaction webhooks, with the same previously verified destination domains as
+VO2 Max. Both disable paywall-event forwarding; no advertising integration is
+listed. No credentials, grants or integration settings were changed. Data safety
+must still disclose actual app-side collection, including purchase history and
+anonymous identifiers, plus custom purchase-screen attributes where used.
+RevenueCat's general guide is https://www.revenuecat.com/docs/platform-resources/google-platform-resources/google-plays-data-safety.
