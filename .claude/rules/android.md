@@ -12,8 +12,11 @@ Native Kotlin + Jetpack Compose port of the iOS app, screen for screen. Package
 notification scheduler.
 
 ## Build
-- JDK 17: `export JAVA_HOME=/Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home`
-- `./gradlew testDebugUnitTest assembleDebug assembleDebugAndroidTest assembleRelease bundleRelease assembleQa`
+- From `android/`: `fm-gradle testDebugUnitTest assembleDebug assembleDebugAndroidTest assembleQa`
+  (runs on jmbp, copies outputs, reports and test results back).
+- Signed release stays on the Air (upload keystore never leaves it), JDK 17:
+  `export JAVA_HOME=/Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home`,
+  then `./gradlew assembleRelease bundleRelease`
 - `android/local.properties` (gitignored) holds `REVENUECAT_PLAY_KEY` (goog_),
   `REVENUECAT_TEST_KEY` (Test Store), `PLAY_UPLOAD_*` and
   `PLAY_REVIEW_CODE_SHA256`. `validateReleaseConfiguration` fails a release
