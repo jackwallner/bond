@@ -176,3 +176,7 @@ zero failures/errors/skips. Current release APK/AAB and QA key/digest isolation
 checks pass, no private reviewer code embedded. Artifact signatures/alignment
 verification and owned-device runtime are next. Source remains WIP until those
 runtime/capture gates pass, no AAB uploaded or main acceptance.
+
+Current signed vc1/1.0.7 target36 APK/AAB signatures, APK ZIP/AAB config and
+all4native ELF16KB alignments pass. Owned sol-bond5580 boots for the actual
+reviewer case. No current runtime or capture acceptance yet.
