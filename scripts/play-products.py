@@ -19,6 +19,8 @@ SUBSCRIPTIONS = [
 LIFETIME = ("com.jackwallner.bond.plus.lifetime", ("39", 990_000_000), "Little Gestures+ Lifetime")
 DESCRIPTION = "Thoughtful reminders, daily check-ins, personalized ideas and love-language insights."
 
+BENEFITS = ['Personalized ideas', 'Daily check-ins', 'Love-language insights', 'Surprise reminders']
+
 
 # The fleet's PPP curve (~/ios/pricing/refratio.json, KOR excluded as an
 # equalization artifact), applied on top of Play's exchange-rate conversion so
@@ -71,8 +73,7 @@ def subscription_body(product_id, plan_id, period, price, title, api):
     body = {
         "packageName": PACKAGE,
         "productId": product_id,
-        "listings": [{"languageCode": "en-US", "title": title, "description": DESCRIPTION, "benefits": [
-            "Resting heart rate", "Cardio load", "Custom date ranges", "Fitness reports"]}],
+        "listings": [{"languageCode": "en-US", "title": title, "description": DESCRIPTION, "benefits": BENEFITS}],
         "basePlans": [{
             "basePlanId": plan_id,
             "autoRenewingBasePlanType": {"billingPeriodDuration": period, "resubscribeState": "RESUBSCRIBE_STATE_ACTIVE",
@@ -206,7 +207,7 @@ def ensure_lifetime(api, dry):
 def main():
     if "--apply" not in sys.argv:
         print(json.dumps({"package": PACKAGE, "subscriptions": SUBSCRIPTIONS,
-                          "lifetime": LIFETIME, "trial": "P1W, new subscribers only",
+                          "lifetime": LIFETIME, "benefits": BENEFITS, "trial": "P1W, new subscribers only",
                           "status": "Plan only. No Play requests made."}, indent=2))
         return
     global HttpError
