@@ -117,3 +117,10 @@ and collected data, optionality and user-directed transfers at
 https://support.google.com/googleplay/android-developer/answer/10787469.
 Confirm the current Console account-creation choices against the automatic
 anonymous profile before saving the form. No declaration has been saved yet.
+
+Play app created in E3 Apps on2026-10-18:4974262124670141532,
+package com.jackwallner.bond, title Little Gestures: Couples Care, App/Free,
+English US. Package availability verified. Default automatic protection stays
+on. No artifact uploaded, products or Console declarations saved yet. No new
+legal agreement, service account or grant. Current source remains WIP pending
+Pro build/runtime acceptance; privacy/deletion page publication is pending main.
