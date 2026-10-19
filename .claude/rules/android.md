@@ -201,3 +201,30 @@ entry points now say "Explore Little Gestures+". The paywall still uses live
 eligibility for trial copy. Refresh Check-In/Insights captures after rebuilding;
 old captures are archived outside the repo. Reminders/Milestones captures remain
 valid. This copy fix is WIP and requires its new build and optimized QA gates.
+
+## Queue stop, 2026-10-19 00:22 PDT
+
+STOP appeared and usage read57percent left (43percent used), beyond the40percent
+stop rule. Work stopped at the first observed stop condition. All completed
+changes are pushed on wip/android-port. Latest app-code change b234885 replaces
+unconditional free-trial claims with neutral Explore wording. It is not rebuilt
+or accepted. The previous locale-fix Android tree passed full build/lint15m51s,
+137JVM, signed vc1/1.0.7 target36/16KB/key isolation and four current device cases:
+reviewer60.135s, free paid boundary46.058s, editor32.805s and tabs44.705s.
+
+Two inspected free screenshots (Reminders/Milestones) are committed. Refresh
+Check-In/Insights after the CTA rebuild; previous versions are archived outside
+the repo. No AAB uploaded, no main acceptance. Optimized QA still pending.
+The prepared QA guest lifecycle helper has never created an account or session
+file. No Supabase identity was created in this pass. Owned emulator is stopped,
+adb empty; unbooted/stopped sol-bond AVD remains for authorized resume. Task Play
+tab closed, startup tab retained. No Gradle or owned device work is running.
+
+Resume only under an authorized budget with STOP cleared. Build the CTA change
+with release lint early, signed release/AAB and optimized QA. Update the local
+harnesses to wait on that new build log, not old successful locale-build output.
+Refresh/inspect the two changed captures, finish optimized QA with explicit own
+backend-fixture cleanup, then accept/rebuild main and complete Play staging.
+Privacy/IARC/Data safety, listing/art upload, products/RC, artifact/track setup,
+actual opt-in and signing assetlinks remain. Saved reviewer/adult/country/tester
+and other declarations are retained; managed publishing is off.
