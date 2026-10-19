@@ -166,3 +166,7 @@ pending the cloud-account/content/location declarations and public policy page.
 
 Locale-fix rebuild has a fresh137JVM pass, zero failures/errors/skips.
 Release packaging passed; current QA R8 and final lint/runtime gates remain.
+
+Final staging readback: managed publishing off, no submission. App content
+shows exactly3pending declarations: privacy policy, content ratings and Data
+safety. Reviewer details/adult audience are saved, current runtime not accepted.
