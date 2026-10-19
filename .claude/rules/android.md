@@ -129,3 +129,8 @@ Console initial declarations saved: no ads, no government affiliation and no
 advertising ID. Source has no AD_ID permission or identifier-collection call;
 recheck the merged release manifest in the pending build. Financial-features
 form saved with no financial features. No production review submitted.
+
+Full two-step no-health-features declaration is saved. Audience form requires
+Sign in details first. Reviewer details, adult audience and cloud-aware Data
+safety are pending current build/device verification. Android privacy URL must
+be published and verified after accepted main push. Do not claim setup complete.
