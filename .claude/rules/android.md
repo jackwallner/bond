@@ -186,3 +186,7 @@ wrong-code rejection, valid unlock, customer-info refresh and reconstruction.
 Initial process-start ANR was under99percent guest CPU pressure; precompiling
 app/test packages and retrying warm resolved it. No source workaround or new
 backend identity. Paid boundary, locale surfaces, captures and QA remain.
+
+Current free paid-boundary/store-price case passes46.058s. The two seeded
+locale-surface cases (date editor and tab/Insights coverage) run next because
+those composables changed. All use Test Store/seed data, no backend identity.
