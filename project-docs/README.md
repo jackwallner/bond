@@ -11,3 +11,8 @@ Developer notes and historical audits for this repository. The published site re
 ## Marketing
 
 - [aso-plan.md](marketing/aso-plan.md): aso-plan.md: Bond ASO Metadata Update + Rollout Plan
+
+## Android
+
+- [Policies](../docs/android/README.md): Android data practices and Google Play terms.
+- [Play assets](../play-assets/README.md): listing and product plan preparation.
