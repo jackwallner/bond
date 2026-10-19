@@ -163,3 +163,6 @@ new runtime checks still gate upload.178countries and tester list are saved.
 
 Adult18+ target audience is saved after reviewer details. Data safety remains
 pending the cloud-account/content/location declarations and public policy page.
+
+Locale-fix rebuild has a fresh137JVM pass, zero failures/errors/skips.
+Release packaging passed; current QA R8 and final lint/runtime gates remain.
