@@ -142,3 +142,9 @@ Play price conversion preserves the configured US money value explicitly.
 Google conversion can choose a different nearby US price point, so use its
 conversion for other regions and keep the requested US ladder unchanged.
 The offline product plan still passes; no Play product was changed here.
+
+Full Pro build packaged release/QA and passed137JVM cases, then failed release
+lint on three NonObservableLocale errors. Date/time chips and weekly labels now
+read LocalLocale.current.platformLocale as recommended by Compose lint, so they
+update with the configured locale. No lint suppression. Current fix remains WIP
+until the new build/lint/runtime checks pass.178Play countries are saved.

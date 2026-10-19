@@ -36,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLocale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import android.text.format.DateFormat
@@ -50,7 +51,6 @@ import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.time.temporal.ChronoUnit
-import java.util.Locale
 
 private val zone: ZoneId get() = ZoneId.systemDefault()
 
@@ -77,15 +77,16 @@ fun DateTimeRow(
 ) {
     var pickingDate by remember { mutableStateOf(false) }
     var pickingTime by remember { mutableStateOf(false) }
+    val locale = LocalLocale.current.platformLocale
     val local = value.atZone(zone)
     GroupRow {
         BText(label, BondType.body, modifier = Modifier.weight(1f))
         if (showDate) {
-            ValueChip(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(Locale.getDefault()).format(local), "$tag.date") { pickingDate = true }
+            ValueChip(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(locale).format(local), "$tag.date") { pickingDate = true }
         }
         if (showDate && showTime) Spacer(Modifier.width(6.dp))
         if (showTime) {
-            ValueChip(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).withLocale(Locale.getDefault()).format(local), "$tag.time") { pickingTime = true }
+            ValueChip(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT).withLocale(locale).format(local), "$tag.time") { pickingTime = true }
         }
     }
     if (pickingDate) {
