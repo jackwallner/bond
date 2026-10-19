@@ -170,3 +170,9 @@ Release packaging passed; current QA R8 and final lint/runtime gates remain.
 Final staging readback: managed publishing off, no submission. App content
 shows exactly3pending declarations: privacy policy, content ratings and Data
 safety. Reviewer details/adult audience are saved, current runtime not accepted.
+
+Corrected full Pro build and release lint pass15m51s,189tasks. Fresh137JVM pass,
+zero failures/errors/skips. Current release APK/AAB and QA key/digest isolation
+checks pass, no private reviewer code embedded. Artifact signatures/alignment
+verification and owned-device runtime are next. Source remains WIP until those
+runtime/capture gates pass, no AAB uploaded or main acceptance.
