@@ -97,3 +97,9 @@ listed. No credentials, grants or integration settings were changed. Data safety
 must still disclose actual app-side collection, including purchase history and
 anonymous identifiers, plus custom purchase-screen attributes where used.
 RevenueCat's general guide is https://www.revenuecat.com/docs/platform-resources/google-platform-resources/google-plays-data-safety.
+
+Pro queue validation: the masked reviewer field has a dedicated actual-dialog
+case. It runs in free screenshot-seed mode, creates no backend identity, rejects
+a wrong code and checks the private grant across refresh and reconstruction.
+Build/device execution is pending after Sheepshead. Unaccepted changes stay on
+wip/android-port. Existing BOND_PLAY_REVIEW_CODE is unchanged and private.
