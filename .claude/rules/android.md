@@ -12,7 +12,8 @@ Native Kotlin + Jetpack Compose port of the iOS app, screen for screen. Package
 notification scheduler.
 
 ## Build
-- JDK 17: `export JAVA_HOME=/Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home`
+- Run directly on jmbp with JDK21 at `~/.jdk/jdk-21.0.12.1+1/Contents/Home`.
+  Never run Android on the Air or dispatch from this fleet host.
 - `./gradlew testDebugUnitTest assembleDebug assembleDebugAndroidTest assembleRelease bundleRelease assembleQa`
 - `android/local.properties` (gitignored) holds `REVENUECAT_PLAY_KEY` (goog_),
   `REVENUECAT_TEST_KEY` (Test Store), `PLAY_UPLOAD_*` and
@@ -148,3 +149,8 @@ lint on three NonObservableLocale errors. Date/time chips and weekly labels now
 read LocalLocale.current.platformLocale as recommended by Compose lint, so they
 update with the configured locale. No lint suppression. Current fix remains WIP
 until the new build/lint/runtime checks pass.178Play countries are saved.
+
+Existing internal tester list saved. New locale-fix build uses
+bond-locale-final-build.log; initial19m8s lint failure is preserved separately.
+Run release lint early when changing Compose UI, before expensive R8 packaging.
+No current artifact is accepted or uploaded until all new checks pass.
