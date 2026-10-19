@@ -103,3 +103,17 @@ case. It runs in free screenshot-seed mode, creates no backend identity, rejects
 a wrong code and checks the private grant across refresh and reconstruction.
 Build/device execution is pending after Sheepshead. Unaccepted changes stay on
 wip/android-port. Existing BOND_PLAY_REVIEW_CODE is unchanged and private.
+
+Data safety preparation: do not copy an offline app's three-type form. Supabase
+collects the automatic anonymous account ID, display name, reminders, completion
+and reaction events, open-ended check-in answers and milestones. Existing iPhone
+arrival reminders can be edited on Android; Codec.reminderJson sends their saved
+geofence coordinates on upsert. Disclose that optional saved-place collection
+even though Android requests no device-location permission. The policy already
+explains this distinction. Keep account deletion and its public anchor available.
+Google defines accounts and deletion at
+https://support.google.com/googleplay/android-developer/answer/13327111
+and collected data, optionality and user-directed transfers at
+https://support.google.com/googleplay/android-developer/answer/10787469.
+Confirm the current Console account-creation choices against the automatic
+anonymous profile before saving the form. No declaration has been saved yet.
