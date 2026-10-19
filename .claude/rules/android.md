@@ -134,3 +134,6 @@ Full two-step no-health-features declaration is saved. Audience form requires
 Sign in details first. Reviewer details, adult audience and cloud-aware Data
 safety are pending current build/device verification. Android privacy URL must
 be published and verified after accepted main push. Do not claim setup complete.
+
+Play category is saved as App, Lifestyle. No matchmaking/dating or health
+category is used for this couple-reminder routine app.
