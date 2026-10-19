@@ -137,3 +137,8 @@ be published and verified after accepted main push. Do not claim setup complete.
 
 Play category is saved as App, Lifestyle. No matchmaking/dating or health
 category is used for this couple-reminder routine app.
+
+Play price conversion preserves the configured US money value explicitly.
+Google conversion can choose a different nearby US price point, so use its
+conversion for other regions and keep the requested US ladder unchanged.
+The offline product plan still passes; no Play product was changed here.

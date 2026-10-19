@@ -64,6 +64,8 @@ def converted(api, price):
     regions = result["convertedRegionPrices"]
     for code, value in regions.items():
         value["price"] = discounted(code, value["price"])
+    if "US" in regions:
+        regions["US"]["price"] = money(price)
     return regions, result.get("convertedOtherRegionsPrice", {})
 
 
