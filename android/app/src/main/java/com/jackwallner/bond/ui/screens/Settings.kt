@@ -59,6 +59,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.jackwallner.bond.BuildConfig
@@ -416,6 +418,8 @@ private fun ReviewerCodeDialog(onDismiss: () -> Unit) {
                 BText("Enter the reviewer code provided with this app's review notes.", BondType.subheadline, colors.inkSecondary)
                 OutlinedTextField(
                     code, { code = it; failed = false }, singleLine = true,
+                    visualTransformation = PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password, autoCorrectEnabled = false),
                     textStyle = BondType.body.copy(color = colors.ink),
                     colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = colors.accent, unfocusedBorderColor = colors.hairline, cursorColor = colors.accent),
                     modifier = Modifier.testTag("reviewer.code"),
