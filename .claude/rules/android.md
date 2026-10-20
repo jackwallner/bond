@@ -55,12 +55,20 @@ check-in) and never touches the network. Test tags double as resource ids.
 - Connected (`app/src/androidTest/AppFlowTest.kt`): seeded UI flows, a real
   first run that creates a solo couple and deletes the account, and a live
   two-install pairing test. Both live tests delete every identity they create.
-- Run on the MacBook Pro only, on a temporary AVD, one method per
-  `am instrument -e class com.jackwallner.bond.AppFlowTest#<method>` after
-  `pm clear`. Grant `POST_NOTIFICATIONS` except for the first-run test, which
-  covers the primer. The Pro is a dual-core Intel; with another emulator up,
-  give the AVD 4 cores and 4 GB and wait for Play Services to finish its
-  post-boot dexopt or every test dies at process start.
+- Connected tests on jmbp/jmbp2: lease an idle `agent-emu-1`/`agent-emu-2`, boot it
+  headless on its own port, then run `connectedDebugAndroidTest` with
+  `ANDROID_SERIAL` set. The orchestrator clears data per test and the seed
+  suppresses the primer, so no manual `pm clear` or permission grant is needed.
+  The reviewer case needs `reviewCode`: pass it through the environment
+  (`ORG_GRADLE_PROJECT_android.testInstrumentationRunnerArguments.reviewCode`)
+  from `~/.bond_credentials`, never on the command line.
+- The emulator forces 1 vCPU on hosts with fewer than 6 logical cores (both
+  Pros). Start it with `-memory 3584` (runtime flag, AVD config untouched) or
+  the 2 GB guest swaps, and run `cmd package compile -m speed -f
+  com.jackwallner.bond` after a debug install: an uncompiled debug build on a
+  starved guest raises Input-dispatch ANRs whose main-thread stack is runnable
+  Compose work, not a hang. If `/sdcard` reports "Transport endpoint is not
+  connected", use `/data/local/tmp` for dumps and recordings.
 - Any fresh install signs in anonymously, so manual runs against the live
   project leave an anonymous user behind: delete it with `delete_account`
   using the session in `shared_prefs/bond.xml`.
@@ -205,29 +213,34 @@ eligibility for trial copy. Refresh Check-In/Insights captures after rebuilding;
 old captures are archived outside the repo. Reminders/Milestones captures remain
 valid. This copy fix is WIP and requires its new build and optimized QA gates.
 
-## Queue stop, 2026-10-19 00:22 PDT
+## Current state, 2026-10-20 (fleet run shift-android-bond-2 on jmbp)
 
-STOP appeared and usage read57percent left (43percent used), beyond the40percent
-stop rule. Work stopped at the first observed stop condition. All completed
-changes are pushed on wip/android-port. Latest app-code change b234885 replaces
-unconditional free-trial claims with neutral Explore wording. It is not rebuilt
-or accepted. The previous locale-fix Android tree passed full build/lint15m51s,
-137JVM, signed vc1/1.0.7 target36/16KB/key isolation and four current device cases:
-reviewer60.135s, free paid boundary46.058s, editor32.805s and tabs44.705s.
+Source: `wip/android-port` f3c832c merged onto main 63d5ff3 (iOS alternate icons
+kept; they are App Store PPO icons, nothing to port). The CTA copy change
+(b234885, "Explore Little Gestures+") is now built and verified:
+- `./gradlew testDebugUnitTest lintDebug assembleDebug assembleDebugAndroidTest assembleQa`
+  passes; 137 JVM tests, 0 failures; lint 0 errors (warnings only).
+- `connectedDebugAndroidTest` on agent-emu-2 (API 36): 11/11 pass, including
+  the live first-run/delete-account and two-install pairing cases (both delete
+  their identities) and the masked reviewer-code case.
+- Inspected captures: free Check-In/Insights/Settings/paywall (Test Store
+  plans, no trial), Pro Check-In/Insights, dark Reminders. `play-assets/screenshots`
+  now has all four 1080x1920 free captures.
+- QA APK: no Test Store, goog_ or reviewer code in dex; debug extras ignored
+  (seed, forcePro, tab, appearance); offline first run shows "Couldn't
+  connect" with Try again and creates no backend identity.
+- Interaction video of a real task (mark Sam's request Handled, scroll, tab
+  through) recorded with screenrecord. Native cadence on the 1-vCPU
+  swiftshader emulator is not representative (median frame 450 ms in
+  gfxinfo); a real 60 fps cadence check needs the Air motion task
+  (`fleet-record60.py`) or a physical device.
 
-Two inspected free screenshots (Reminders/Milestones) are committed. Refresh
-Check-In/Insights after the CTA rebuild; previous versions are archived outside
-the repo. No AAB uploaded, no main acceptance. Optimized QA still pending.
-The prepared QA guest lifecycle helper has never created an account or session
-file. No Supabase identity was created in this pass. Owned emulator is stopped,
-adb empty; unbooted/stopped sol-bond AVD remains for authorized resume. Task Play
-tab closed, startup tab retained. No Gradle or owned device work is running.
-
-Resume only under an authorized budget with STOP cleared. Build the CTA change
-with release lint early, signed release/AAB and optimized QA. Update the local
-harnesses to wait on that new build log, not old successful locale-build output.
-Refresh/inspect the two changed captures, finish optimized QA with explicit own
-backend-fixture cleanup, then accept/rebuild main and complete Play staging.
-Privacy/IARC/Data safety, listing/art upload, products/RC, artifact/track setup,
-actual opt-in and signing assetlinks remain. Saved reviewer/adult/country/tester
-and other declarations are retained; managed publishing is off.
+Remaining, in order: signed release APK/AAB on the Air (bump nothing, vc1
+1.0.7 not yet uploaded), publish `docs/android/` privacy page via main, then in
+Play Console: privacy policy URL, IARC content rating, Data safety (cloud
+account, display name, reminders, events, check-in answers, milestones,
+optional saved place, purchase history), listing text/art/four captures,
+products via `scripts/play-products.py` (preserve US ladder), RevenueCat Play
+credentials and package mappings, register the Play app with rc-clean,
+internal track upload and opt-in, Play app signing SHA-256 in `assetlinks.json`,
+production draft. No production review is sent; it waits for its pacing slot.

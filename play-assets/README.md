@@ -10,5 +10,7 @@
 The RGB1024x500 feature graphic was rendered from its SVG source and inspected.
 
 No Play requests made. Android policies and deletion directions are under
-`docs/android/`, with app links updated. Four real free-screen captures,
-signed rebuild and Console staging remain pending.
+`docs/android/`, with app links updated. `screenshots/` holds four real free
+captures (Reminders, Check-In, Insights, Milestones) at 1080x1920 from the
+seeded debug build; Check-In and Insights were recaptured 2026-10-20 after the
+"Explore Little Gestures+" copy change. Signed rebuild and Console staging remain.
