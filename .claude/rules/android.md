@@ -12,8 +12,9 @@ Native Kotlin + Jetpack Compose port of the iOS app, screen for screen. Package
 notification scheduler.
 
 ## Build
-- From `android/`: `fm-gradle testDebugUnitTest assembleDebug assembleDebugAndroidTest assembleQa`
-  (runs on jmbp, copies outputs, reports and test results back).
+- On jmbp/jmbp2 (fleet runs), from `android/`:
+  `JAVA_HOME=~/jdks/temurin-17 ./gradlew testDebugUnitTest assembleDebug assembleDebugAndroidTest lintDebug assembleQa`.
+  From the Air, `fm-gradle <tasks>` runs the same on jmbp and copies outputs back.
 - Signed release stays on the Air (upload keystore never leaves it), JDK 17:
   `export JAVA_HOME=/Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home`,
   then `./gradlew assembleRelease bundleRelease`
@@ -92,3 +93,141 @@ Create the app and the three products with prices and the 1-week trials to
 match iOS, upload the AAB to internal testing, add the Play app signing
 SHA-256 to `assetlinks.json`, data safety form, and the RevenueCat service
 credentials for the Play app.
+
+RevenueCat integration check on2026-10-18: developer notifications plus two
+transaction webhooks, with the same previously verified destination domains as
+VO2 Max. Both disable paywall-event forwarding; no advertising integration is
+listed. No credentials, grants or integration settings were changed. Data safety
+must still disclose actual app-side collection, including purchase history and
+anonymous identifiers, plus custom purchase-screen attributes where used.
+RevenueCat's general guide is https://www.revenuecat.com/docs/platform-resources/google-platform-resources/google-plays-data-safety.
+
+Pro queue validation: the masked reviewer field has a dedicated actual-dialog
+case. It runs in free screenshot-seed mode, creates no backend identity, rejects
+a wrong code and checks the private grant across refresh and reconstruction.
+Build/device execution is pending after Sheepshead. Unaccepted changes stay on
+wip/android-port. Existing BOND_PLAY_REVIEW_CODE is unchanged and private.
+
+Data safety preparation: do not copy an offline app's three-type form. Supabase
+collects the automatic anonymous account ID, display name, reminders, completion
+and reaction events, open-ended check-in answers and milestones. Existing iPhone
+arrival reminders can be edited on Android; Codec.reminderJson sends their saved
+geofence coordinates on upsert. Disclose that optional saved-place collection
+even though Android requests no device-location permission. The policy already
+explains this distinction. Keep account deletion and its public anchor available.
+Google defines accounts and deletion at
+https://support.google.com/googleplay/android-developer/answer/13327111
+and collected data, optionality and user-directed transfers at
+https://support.google.com/googleplay/android-developer/answer/10787469.
+Confirm the current Console account-creation choices against the automatic
+anonymous profile before saving the form. No declaration has been saved yet.
+
+Play app created in E3 Apps on2026-10-18:4974262124670141532,
+package com.jackwallner.bond, title Little Gestures: Couples Care, App/Free,
+English US. Package availability verified. Default automatic protection stays
+on. No artifact uploaded, products or Console declarations saved yet. No new
+legal agreement, service account or grant. Current source remains WIP pending
+Pro build/runtime acceptance; privacy/deletion page publication is pending main.
+
+Console initial declarations saved: no ads, no government affiliation and no
+advertising ID. Source has no AD_ID permission or identifier-collection call;
+recheck the merged release manifest in the pending build. Financial-features
+form saved with no financial features. No production review submitted.
+
+Full two-step no-health-features declaration is saved. Audience form requires
+Sign in details first. Reviewer details, adult audience and cloud-aware Data
+safety are pending current build/device verification. Android privacy URL must
+be published and verified after accepted main push. Do not claim setup complete.
+
+Play category is saved as App, Lifestyle. No matchmaking/dating or health
+category is used for this couple-reminder routine app.
+
+Play price conversion preserves the configured US money value explicitly.
+Google conversion can choose a different nearby US price point, so use its
+conversion for other regions and keep the requested US ladder unchanged.
+The offline product plan still passes; no Play product was changed here.
+
+Full Pro build packaged release/QA and passed137JVM cases, then failed release
+lint on three NonObservableLocale errors. Date/time chips and weekly labels now
+read LocalLocale.current.platformLocale as recommended by Compose lint, so they
+update with the configured locale. No lint suppression. Current fix remains WIP
+until the new build/lint/runtime checks pass.178Play countries are saved.
+
+Existing internal tester list saved. New locale-fix build uses
+bond-locale-final-build.log; initial19m8s lint failure is preserved separately.
+Run release lint early when changing Compose UI, before expensive R8 packaging.
+No current artifact is accepted or uploaded until all new checks pass.
+
+Sign in details for the upcoming artifact are saved. The saved private-code
+SHA-256 matches the ignored build configuration. Instructions describe free
+onboarding, long-press Settings Version, no-purchase/no-expiry unlock and optional
+pairing with a second installation. Code unchanged, no secret captured. Current
+new runtime checks still gate upload.178countries and tester list are saved.
+
+Adult18+ target audience is saved after reviewer details. Data safety remains
+pending the cloud-account/content/location declarations and public policy page.
+
+Locale-fix rebuild has a fresh137JVM pass, zero failures/errors/skips.
+Release packaging passed; current QA R8 and final lint/runtime gates remain.
+
+Final staging readback: managed publishing off, no submission. App content
+shows exactly3pending declarations: privacy policy, content ratings and Data
+safety. Reviewer details/adult audience are saved, current runtime not accepted.
+
+Corrected full Pro build and release lint pass15m51s,189tasks. Fresh137JVM pass,
+zero failures/errors/skips. Current release APK/AAB and QA key/digest isolation
+checks pass, no private reviewer code embedded. Artifact signatures/alignment
+verification and owned-device runtime are next. Source remains WIP until those
+runtime/capture gates pass, no AAB uploaded or main acceptance.
+
+Current signed vc1/1.0.7 target36 APK/AAB signatures, APK ZIP/AAB config and
+all4native ELF16KB alignments pass. Owned sol-bond5580 boots for the actual
+reviewer case. No current runtime or capture acceptance yet.
+
+Actual reviewer-access case passes60.135s on current debug build: masked field,
+wrong-code rejection, valid unlock, customer-info refresh and reconstruction.
+Initial process-start ANR was under99percent guest CPU pressure; precompiling
+app/test packages and retrying warm resolved it. No source workaround or new
+backend identity. Paid boundary, locale surfaces, captures and QA remain.
+
+Current free paid-boundary/store-price case passes46.058s. The two seeded
+locale-surface cases (date editor and tab/Insights coverage) run next because
+those composables changed. All use Test Store/seed data, no backend identity.
+
+Current seeded date-editor case passes32.805s and all-tabs/Insights case44.705s,
+covering the changed locale reads. Four real free captures are being generated
+with screenshotSeed and seedFree, no backend identity or paid unlock. QA remains.
+
+Capture inspection found unconditional "Try Little Gestures+ free" labels in
+Settings and feature gates, even when no trial is known to be available. These
+entry points now say "Explore Little Gestures+". The paywall still uses live
+eligibility for trial copy. Refresh Check-In/Insights captures after rebuilding;
+old captures are archived outside the repo. Reminders/Milestones captures remain
+valid. This copy fix is WIP and requires its new build and optimized QA gates.
+
+## Queue stop, 2026-10-19 00:22 PDT
+
+STOP appeared and usage read57percent left (43percent used), beyond the40percent
+stop rule. Work stopped at the first observed stop condition. All completed
+changes are pushed on wip/android-port. Latest app-code change b234885 replaces
+unconditional free-trial claims with neutral Explore wording. It is not rebuilt
+or accepted. The previous locale-fix Android tree passed full build/lint15m51s,
+137JVM, signed vc1/1.0.7 target36/16KB/key isolation and four current device cases:
+reviewer60.135s, free paid boundary46.058s, editor32.805s and tabs44.705s.
+
+Two inspected free screenshots (Reminders/Milestones) are committed. Refresh
+Check-In/Insights after the CTA rebuild; previous versions are archived outside
+the repo. No AAB uploaded, no main acceptance. Optimized QA still pending.
+The prepared QA guest lifecycle helper has never created an account or session
+file. No Supabase identity was created in this pass. Owned emulator is stopped,
+adb empty; unbooted/stopped sol-bond AVD remains for authorized resume. Task Play
+tab closed, startup tab retained. No Gradle or owned device work is running.
+
+Resume only under an authorized budget with STOP cleared. Build the CTA change
+with release lint early, signed release/AAB and optimized QA. Update the local
+harnesses to wait on that new build log, not old successful locale-build output.
+Refresh/inspect the two changed captures, finish optimized QA with explicit own
+backend-fixture cleanup, then accept/rebuild main and complete Play staging.
+Privacy/IARC/Data safety, listing/art upload, products/RC, artifact/track setup,
+actual opt-in and signing assetlinks remain. Saved reviewer/adult/country/tester
+and other declarations are retained; managed publishing is off.

@@ -7,8 +7,8 @@ object StoreLinks {
     const val PLAY_LISTING_URL = "https://play.google.com/store/apps/details?id=$PACKAGE"
     const val PLAY_MARKET_URI = "market://details?id=$PACKAGE"
     const val FEEDBACK_EMAIL = "jackwallner+b@gmail.com"
-    const val PRIVACY_URL = "https://jackwallner.github.io/bond/privacy"
-    const val TERMS_URL = "https://jackwallner.github.io/bond/terms"
+    const val PRIVACY_URL = "https://jackwallner.github.io/bond/android/privacy-policy.html"
+    const val TERMS_URL = "https://jackwallner.github.io/bond/android/terms.html"
     const val REPORT_CONCERN_URI = "mailto:$FEEDBACK_EMAIL?subject=Report%20a%20concern%20about%20my%20Bond%20partner"
     const val SUPPORT_URI = "mailto:$FEEDBACK_EMAIL"
 
