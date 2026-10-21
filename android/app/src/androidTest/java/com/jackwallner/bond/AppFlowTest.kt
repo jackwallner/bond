@@ -1,13 +1,20 @@
 package com.jackwallner.bond
 
 import android.content.Intent
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.test.SemanticsMatcher
+import androidx.compose.ui.test.assert
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
+import androidx.compose.ui.test.longClick
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
+import androidx.compose.ui.test.performTextClearance
 import androidx.compose.ui.test.performTextInput
+import androidx.compose.ui.test.performTouchInput
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -77,6 +84,29 @@ class AppFlowTest {
         waitForTag(tag)
         compose.onNodeWithTag(tag).performTextInput(text)
         compose.waitForIdle()
+    }
+
+    @Test
+    fun reviewerAccessIsMaskedRejectsWrongCodeAndPersists() = runBlocking {
+        val code = checkNotNull(InstrumentationRegistry.getArguments().getString("reviewCode")) {
+            "Supply the private reviewer code through the local redacting harness."
+        }
+        launch(seed = true, free = true, tab = "SETTINGS")
+        waitForTag("settings.version")
+        compose.onNodeWithTag("settings.version").performScrollTo().performTouchInput { longClick() }
+        val field = compose.onNodeWithTag("reviewer.code")
+        field.assert(SemanticsMatcher.keyIsDefined(SemanticsProperties.Password))
+        field.performTextInput("wrong")
+        tap("reviewer.unlock")
+        compose.onNode(hasText("That code isn't valid.")).assertIsDisplayed()
+        assertFalse(graph.subscriptions.isPremium)
+        field.performTextClearance()
+        field.performTextInput(code)
+        tap("reviewer.unlock")
+        assertTrue(graph.subscriptions.isPremium)
+        graph.subscriptions.refresh(fetchCurrent = true)
+        assertTrue(graph.subscriptions.isPremium)
+        assertTrue(AppGraph(graph.appContext).subscriptions.isPremium)
     }
 
     @Test

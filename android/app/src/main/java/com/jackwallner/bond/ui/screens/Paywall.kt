@@ -469,7 +469,7 @@ fun UnlockCard(icon: ImageVector, headline: String, subhead: String, onUnlock: (
             BText(headline, BondType.headline, align = TextAlign.Center)
             BText(subhead, BondType.subheadline, colors.inkSecondary, align = TextAlign.Center)
         }
-        PrimaryButton("Try ${Membership.PLUS} free", tag = "unlock.cta", onClick = onUnlock)
+        PrimaryButton("Explore ${Membership.PLUS}", tag = "unlock.cta", onClick = onUnlock)
         RestoreButton()
     }
 }

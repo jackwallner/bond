@@ -35,6 +35,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.LocalLocale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.jackwallner.bond.model.LoveLanguage
@@ -53,7 +54,6 @@ import com.jackwallner.bond.ui.theme.BondType
 import com.jackwallner.bond.ui.theme.Spacing
 import com.jackwallner.bond.ui.theme.bold
 import java.time.format.TextStyle
-import java.util.Locale
 
 private val PINK = Color(0xFFFF2D55)
 private val ORANGE = Color(0xFFFF9500)
@@ -236,6 +236,7 @@ private fun HorizontalBars(counts: List<Pair<LoveLanguage, Int>>) {
 /** Weekly activity: grouped bars per week, one per love language (`.position(by:)`). */
 @Composable
 private fun WeeklyChart(trends: List<LoveLanguageAnalyzer.WeeklyTrend>) {
+    val locale = LocalLocale.current.platformLocale
     val colors = Bond.colors
     val max = maxOf(trends.maxOfOrNull { week -> week.counts.maxOfOrNull { it.second } ?: 0 } ?: 0, 1)
     Column(Modifier.fillMaxWidth()) {
@@ -261,7 +262,7 @@ private fun WeeklyChart(trends: List<LoveLanguageAnalyzer.WeeklyTrend>) {
         Row(Modifier.fillMaxWidth()) {
             trends.forEach { week ->
                 BText(
-                    week.weekStart.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.getDefault()) + " " + week.weekStart.dayOfMonth,
+                    week.weekStart.dayOfWeek.getDisplayName(TextStyle.SHORT, locale) + " " + week.weekStart.dayOfMonth,
                     BondType.caption2, colors.inkSecondary, modifier = Modifier.weight(1f),
                     align = androidx.compose.ui.text.style.TextAlign.Center, maxLines = 1,
                 )
