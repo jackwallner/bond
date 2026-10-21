@@ -244,3 +244,12 @@ products via `scripts/play-products.py` (preserve US ladder), RevenueCat Play
 credentials and package mappings, register the Play app with rc-clean,
 internal track upload and opt-in, Play app signing SHA-256 in `assetlinks.json`,
 production draft. No production review is sent; it waits for its pacing slot.
+
+## Play staging, 2026-10-20
+
+Staged one click from review, nothing sent. Listing, graphics, signed vc1 AAB
+(drafts on internal and production), three products active, RevenueCat
+credentials and every App content form except the IARC content rating are
+saved. The permission classifier refused the IARC terms tick; Jack completes
+the rating. Then Jack sends for review from
+Publishing overview with managed publishing off.
