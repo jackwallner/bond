@@ -253,3 +253,8 @@ credentials and every App content form except the IARC content rating are
 saved. The permission classifier refused the IARC terms tick; Jack completes
 the rating. Then Jack sends for review from
 Publishing overview with managed publishing off.
+
+## Play listing
+Listing text for 50 Play locales is in `android/play-assets/metadata/android/`
+(fastlane supply layout); notes in `android/play-assets/listing-en-US.md`. Run
+`scripts/validate-play-listing.py` after any copy change.
