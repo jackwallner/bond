@@ -26,7 +26,7 @@ phased plan are in the `project_bond` memory and `project-docs/marketing/aso-pla
   `ProfileDTO`, `ReminderDTO`, `ReminderEventDTO`), `Models/` (`LoveLanguage`,
   `ReminderTrigger`, `RecurrencePreset`, `ReminderTemplate`, `MilestoneDTO`,
   `DailyQuestionDTO`), `Utilities/` (`AppGroup`, `WidgetSnapshot`,
-  `WatchPayload`, `BondColors`, `AppStoreReviewLinks`) and `ReviewPromptTracker`.
+  `WatchPayload`, `BondColors`, `AppStoreReviewLinks`) and `Services/ReviewPromptTracker`.
 - `Bond/Services/`: `SupabaseConfig` + `SupabaseService` (the backend),
   `PairingService`, `ReminderRepository` / `ReminderEventRepository`,
   `NotificationScheduler` + `NotificationRouter`, `DailyCheckInService`,
