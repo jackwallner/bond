@@ -181,12 +181,15 @@ struct RootView: View {
             switch currentDestination {
             case .intentSetup:
                 IntentSetupView()
+                    .unfoldedLeadingPane { UnfoldedBrandPanel() }
                     .transition(.opacity.combined(with: .move(edge: .trailing)))
             case .inviteWelcome:
                 InviteWelcomeView()
+                    .unfoldedLeadingPane { UnfoldedBrandPanel() }
                     .transition(.opacity.combined(with: .move(edge: .trailing)))
             case .inviteeIntake:
                 IntentSetupView(mode: .invitee)
+                    .unfoldedLeadingPane { UnfoldedBrandPanel() }
                     .transition(.opacity.combined(with: .move(edge: .trailing)))
             case .pairingSuccess:
                 PairingSuccessView(partnerName: pairing.partnerProfile?.displayName) {
@@ -202,6 +205,7 @@ struct RootView: View {
                         pairing.justPaired = false
                     }
                 }
+                .unfoldedLeadingPane { UnfoldedBrandPanel() }
                 .transition(.opacity)
             case .home:
                 MainTabView()
@@ -454,33 +458,55 @@ struct RootView: View {
 /// single top-left "..." that read as overflow, and most users never found
 /// them. Each tab root owns its own NavigationStack (Settings doesn't, so it's
 /// wrapped here).
+///
+/// Unfolded on iPhone Duo, the tabs sit on the leading side of the fold and
+/// Insights gets its own pane on the trailing side, so what you plan reads
+/// beside how you're doing. The Insights tab leaves the bar while split.
 struct MainTabView: View {
     @State private var router = NotificationRouter.shared
     @State private var selection: Tab = .reminders
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    /// The container's width and fold, measured so the unfolded iPhone Duo can
+    /// put the tabs and Insights on opposite sides of the fold.
+    @State private var paneGeometry = PaneGeometry()
 
     private enum Tab: Hashable { case reminders, checkIn, milestones, insights, settings }
 
+    private var split: UnfoldedSplit? {
+        UnfoldedSplit.make(
+            width: paneGeometry.width,
+            isRegularWidth: horizontalSizeClass == .regular,
+            fold: paneGeometry.fold
+        )
+    }
+
+    /// Each unfolded pane is phone-width, so its screen lays out as on a phone.
+    /// Applied to the tab contents, not the `TabView`, whose bar placement is
+    /// left to the system.
+    private var paneSizeClass: UserInterfaceSizeClass? {
+        split == nil ? horizontalSizeClass : .compact
+    }
+
     var body: some View {
-        TabView(selection: $selection) {
-            ReminderListView()
-                .tag(Tab.reminders)
-                .tabItem { Label("Reminders", systemImage: "bell.fill") }
-
-            DailyCheckInView()
-                .tag(Tab.checkIn)
-                .tabItem { Label("Check-In", systemImage: "questionmark.bubble.fill") }
-
-            MilestonesView()
-                .tag(Tab.milestones)
-                .tabItem { Label("Milestones", systemImage: "calendar") }
-
-            StatsView()
-                .tag(Tab.insights)
-                .tabItem { Label("Insights", systemImage: "chart.bar.fill") }
-
-            NavigationStack { SettingsView() }
-                .tag(Tab.settings)
-                .tabItem { Label("Settings", systemImage: "gearshape.fill") }
+        // Opening or closing the Duo only moves these frames, so the tab view
+        // is never rebuilt and every tab keeps its pushed screens.
+        ZStack(alignment: .topLeading) {
+            tabs
+                .frame(maxWidth: split?.primaryWidth ?? .infinity, maxHeight: .infinity)
+            if let split {
+                StatsView()
+                    .environment(\.horizontalSizeClass, .compact)
+                    .frame(width: split.secondaryWidth)
+                    .frame(maxHeight: .infinity)
+                    .padding(.leading, split.secondaryX)
+            }
+        }
+        .unfoldedBars(isSplit: split != nil)
+        .onGeometryChange(for: PaneGeometry.self) { proxy in
+            PaneGeometry(width: proxy.size.width, fold: proxy.verticalFold())
+        } action: { paneGeometry = $0 }
+        .onChange(of: split != nil) { _, isSplit in
+            if isSplit, selection == .insights { selection = .reminders }
         }
         // A tapped reminder notification should land on the Reminders tab, where
         // ReminderListView presents the editor - otherwise the editor sheet would
@@ -491,5 +517,66 @@ struct MainTabView: View {
         .onAppear {
             if router.pendingReminderId != nil { selection = .reminders }
         }
+        #if DEBUG
+        .task { await runDuoTour() }
+        #endif
     }
+
+    private var tabs: some View {
+        TabView(selection: $selection) {
+            ReminderListView()
+                .environment(\.horizontalSizeClass, paneSizeClass)
+                .tag(Tab.reminders)
+                .tabItem { Label("Reminders", systemImage: "bell.fill") }
+
+            DailyCheckInView()
+                .environment(\.horizontalSizeClass, paneSizeClass)
+                .tag(Tab.checkIn)
+                .tabItem { Label("Check-In", systemImage: "questionmark.bubble.fill") }
+
+            MilestonesView()
+                .environment(\.horizontalSizeClass, paneSizeClass)
+                .tag(Tab.milestones)
+                .tabItem { Label("Milestones", systemImage: "calendar") }
+
+            if split == nil {
+                StatsView()
+                    .tag(Tab.insights)
+                    .tabItem { Label("Insights", systemImage: "chart.bar.fill") }
+            }
+
+            NavigationStack { SettingsView() }
+                .environment(\.horizontalSizeClass, paneSizeClass)
+                .tag(Tab.settings)
+                .tabItem { Label("Settings", systemImage: "gearshape.fill") }
+        }
+    }
+
+    #if DEBUG
+    /// `-BondDuoTour`: walks the main tabs for headless capture runs, which
+    /// can't tap. Moves one stop 8 s after launch, then every 14 s (gh-sim
+    /// relaunches after unfolding, so the tour restarts there): folded
+    /// Check-In, Milestones, Insights, Settings, Reminders; split, where
+    /// Insights already has its pane, the same without Insights.
+    /// `BONDDUOTOUR` lines in the app log map shots to stops.
+    private func runDuoTour() async {
+        guard ProcessInfo.processInfo.arguments.contains("-BondDuoTour") else { return }
+        let start = ContinuousClock.now
+        for step in 0..<5 {
+            try? await Task.sleep(until: start + .seconds(8 + 14 * step), clock: .continuous)
+            guard !Task.isCancelled else { return }
+            let stops: [Tab] = split == nil
+                ? [.checkIn, .milestones, .insights, .settings, .reminders]
+                : [.checkIn, .milestones, .settings, .reminders]
+            guard step < stops.count else { return }
+            NSLog(
+                "BONDDUOTOUR step=%ld split=%ld width=%.1f fold=%@ tab=%@",
+                step, split == nil ? 0 : 1, paneGeometry.width,
+                paneGeometry.fold.map { "\($0.lowerBound)...\($0.upperBound)" } ?? "none",
+                "\(stops[step])"
+            )
+            withAnimation(.easeInOut(duration: 0.3)) { selection = stops[step] }
+        }
+    }
+    #endif
 }

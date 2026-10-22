@@ -145,7 +145,9 @@ struct ReminderListView: View {
     /// would hit the bare iOS dialog with no context and tap "Don't Allow",
     /// then wonder why nothing ever fires.
     private func maybeShowNotificationPrimer() async {
-        guard !UserDefaults.standard.bool(forKey: primerShownKey) else {
+        // Screenshot runs launch on a fresh simulator, where the primer would
+        // cover the seeded list.
+        guard !BondBrand.isScreenshotMode, !UserDefaults.standard.bool(forKey: primerShownKey) else {
             NotificationCenter.default.post(name: .bondNotificationPrimerResolved, object: nil)
             return
         }

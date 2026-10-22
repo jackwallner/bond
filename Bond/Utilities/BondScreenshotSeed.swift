@@ -48,63 +48,52 @@ enum BondScreenshotSeed {
 
         store.setLocalOverride(isPremium: true)
 
-        let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: now) ?? now
-        let nextWeek = Calendar.current.date(byAdding: .day, value: 7, to: now) ?? now
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: now)
+        let tomorrow = calendar.date(byAdding: .day, value: 1, to: now) ?? now
+        let nextWeek = calendar.date(byAdding: .day, value: 7, to: now) ?? now
+        let dinner = calendar.date(byAdding: .day, value: 3, to: today)
+            .flatMap { calendar.date(bySettingHour: 18, minute: 30, second: 0, of: $0) } ?? nextWeek
+        // A month in, so a week of follow-through and the streaks have history.
+        let joined = calendar.date(byAdding: .day, value: -30, to: today) ?? now
+
+        func reminder(
+            _ n: Int, by author: UUID, for target: UUID, _ title: String, note: String? = nil,
+            _ language: LoveLanguage, rrule: String? = nil, fireAt: Date
+        ) -> ReminderDTO {
+            ReminderDTO(
+                id: UUID(uuidString: "55555555-5555-4555-8555-55555555555\(n)")!,
+                coupleId: couple,
+                authorId: author,
+                targetId: target,
+                title: title,
+                body: note,
+                loveLanguage: language,
+                triggerType: rrule == nil ? "one_time" : "recurring",
+                fireAt: fireAt,
+                rrule: rrule,
+                geofence: nil,
+                windowStart: nil,
+                windowEnd: nil,
+                status: "active",
+                surpriseHiddenFromPartner: false,
+                createdAt: joined
+            )
+        }
+
         let reminderRows = [
-            ReminderDTO(
-                id: UUID(uuidString: "55555555-5555-4555-8555-555555555551")!,
-                coupleId: couple,
-                authorId: me,
-                targetId: partner,
-                title: "Tell Sam one thing you appreciate",
-                body: "A small note goes a long way.",
-                loveLanguage: .words,
-                triggerType: "recurring",
-                fireAt: tomorrow,
-                rrule: "FREQ=DAILY",
-                geofence: nil,
-                windowStart: nil,
-                windowEnd: nil,
-                status: "active",
-                surpriseHiddenFromPartner: false,
-                createdAt: now
-            ),
-            ReminderDTO(
-                id: UUID(uuidString: "55555555-5555-4555-8555-555555555552")!,
-                coupleId: couple,
-                authorId: me,
-                targetId: partner,
-                title: "Plan a ten-minute walk together",
-                body: nil,
-                loveLanguage: .time,
-                triggerType: "recurring",
-                fireAt: tomorrow,
-                rrule: "FREQ=WEEKLY",
-                geofence: nil,
-                windowStart: nil,
-                windowEnd: nil,
-                status: "active",
-                surpriseHiddenFromPartner: false,
-                createdAt: now
-            ),
-            ReminderDTO(
-                id: UUID(uuidString: "55555555-5555-4555-8555-555555555553")!,
-                coupleId: couple,
-                authorId: partner,
-                targetId: me,
-                title: "Bring home their favorite snack",
-                body: "The little details count.",
-                loveLanguage: .gifts,
-                triggerType: "one_time",
-                fireAt: nextWeek,
-                rrule: nil,
-                geofence: nil,
-                windowStart: nil,
-                windowEnd: nil,
-                status: "active",
-                surpriseHiddenFromPartner: false,
-                createdAt: now
-            ),
+            reminder(1, by: me, for: partner, "Tell Sam one thing you appreciate",
+                     note: "A small note goes a long way.", .words, rrule: "FREQ=DAILY", fireAt: tomorrow),
+            reminder(2, by: me, for: partner, "Plan a ten-minute walk together",
+                     .time, rrule: "FREQ=WEEKLY", fireAt: tomorrow),
+            reminder(3, by: partner, for: me, "Bring home their favorite snack",
+                     note: "The little details count.", .gifts, fireAt: nextWeek),
+            reminder(4, by: me, for: partner, "Take the Sunday dishes off Sam's plate",
+                     .acts, rrule: "FREQ=WEEKLY", fireAt: nextWeek),
+            reminder(5, by: me, for: partner, "A long hug before work",
+                     .touch, rrule: "FREQ=DAILY", fireAt: tomorrow),
+            reminder(6, by: me, for: partner, "Book dinner at Lucia's",
+                     note: "Sam's been wanting to try it.", .time, fireAt: dinner),
         ]
         reminders.reminders = reminderRows
         reminders.onChange(reminderRows)
@@ -139,25 +128,33 @@ enum BondScreenshotSeed {
             ),
         ]
 
-        let completedReminder = reminderRows[0]
-        events.events = [
-            ReminderEventDTO(
-                id: UUID(uuidString: "77777777-7777-4777-8777-777777777771")!,
-                reminderId: completedReminder.id,
-                coupleId: couple,
-                firedAt: now,
-                actedAt: now,
-                reaction: "heart"
-            ),
-            ReminderEventDTO(
-                id: UUID(uuidString: "77777777-7777-4777-8777-777777777772")!,
-                reminderId: reminderRows[1].id,
-                coupleId: couple,
-                firedAt: Calendar.current.date(byAdding: .day, value: -1, to: now) ?? now,
-                actedAt: Calendar.current.date(byAdding: .day, value: -1, to: now) ?? now,
-                reaction: ""
-            ),
+        // Done days, counted back from today: notes every day but one this
+        // month (a 12 day streak, 15 at best), hugs most days, the weekly
+        // walk and dishes each week. Today's land a little before launch.
+        let doneDays: [(reminder: Int, days: [Int])] = [
+            (0, Array(0...11) + Array(13...27)),
+            (4, [0, 1, 3, 4, 6, 8, 9, 11, 14, 15, 17, 20, 22]),
+            (1, [2, 9, 16, 23]),
+            (3, [1, 8, 15, 22]),
         ]
+        let earlierToday = max(today.addingTimeInterval(60), now.addingTimeInterval(-2 * 60 * 60))
+        var eventRows: [ReminderEventDTO] = []
+        for (index, days) in doneDays {
+            for day in days {
+                let at = day == 0
+                    ? earlierToday
+                    : calendar.date(byAdding: .day, value: -day, to: today)?.addingTimeInterval(19.5 * 60 * 60) ?? now
+                eventRows.append(ReminderEventDTO(
+                    id: UUID(),
+                    reminderId: reminderRows[index].id,
+                    coupleId: couple,
+                    firedAt: at,
+                    actedAt: at,
+                    reaction: day % 3 == 0 ? "heart" : ""
+                ))
+            }
+        }
+        events.events = eventRows
 
         checkIn.todaysQuestion = DailyQuestionDTO(
             id: question,
