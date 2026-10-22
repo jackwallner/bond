@@ -46,7 +46,9 @@ enum BondScreenshotSeed {
         preferences.focusAreas = [.gestures, .dates]
         preferences.committedAt = now
 
-        store.setLocalOverride(isPremium: true)
+        // `-BondSeedFree` keeps the paired fixture but leaves Bond+ locked, so
+        // the gates (templates, check-in, insights) can be driven on a simulator.
+        store.setLocalOverride(isPremium: !ProcessInfo.processInfo.arguments.contains("-BondSeedFree"))
 
         let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: now) ?? now
         let nextWeek = Calendar.current.date(byAdding: .day, value: 7, to: now) ?? now
