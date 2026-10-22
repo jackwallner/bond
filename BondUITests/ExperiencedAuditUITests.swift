@@ -295,4 +295,35 @@ final class ExperiencedAuditUITests: XCTestCase {
         tab("Milestones")
         shot("93-ax-milestones")
     }
+
+    // MARK: - Confirmation: tapping an existing item must open it, not a blank form
+
+    func testExistingItemsOpenInEditor() {
+        launch()
+        for attempt in 1...3 {
+            let row = app.buttons.matching(NSPredicate(format: "label BEGINSWITH 'Tell Sam one thing you appreciate'")).firstMatch
+            XCTAssertTrue(row.waitForExistence(timeout: 10))
+            row.tap()
+            sleep(2)
+            let edit = app.navigationBars["Edit reminder"].exists || app.staticTexts["Edit reminder"].exists
+            let new = app.navigationBars["New reminder"].exists || app.staticTexts["New reminder"].exists
+            note("reminder attempt \(attempt)", "edit=\(edit) new=\(new) title=\(app.textFields["Title"].value ?? "nil")")
+            shot("95-reminder-tap-\(attempt)")
+            app.buttons["Cancel"].tap()
+            sleep(2)
+        }
+        tab("Milestones")
+        for attempt in 1...3 {
+            let m = app.buttons.matching(NSPredicate(format: "label CONTAINS 'Our anniversary'")).firstMatch
+            XCTAssertTrue(m.waitForExistence(timeout: 10))
+            m.tap()
+            sleep(2)
+            let edit = app.staticTexts["Edit milestone"].exists || app.navigationBars["Edit milestone"].exists
+            let new = app.staticTexts["New milestone"].exists || app.navigationBars["New milestone"].exists
+            note("milestone attempt \(attempt)", "edit=\(edit) new=\(new)")
+            shot("96-milestone-tap-\(attempt)")
+            app.buttons["Cancel"].tap()
+            sleep(2)
+        }
+    }
 }
