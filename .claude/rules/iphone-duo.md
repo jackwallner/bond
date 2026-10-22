@@ -23,17 +23,18 @@ paths:
 - Each tab's content and the Insights pane get `horizontalSizeClass = .compact`
   so they lay out as on a phone. Never set it on the `TabView` itself (other
   fleet apps saw the bar flip placement on a tab switch).
-- `unfoldedBars(isSplit:)`: while split, `toolbarVerticalBehavior(.disabled)`
-  (iOS 27.1 otherwise moves a stack's toolbar into a vertical bar against the
-  fold and narrows the leading pane by 84 pt) and a hard bottom scroll edge
-  under the floating tab bar. Folded keeps the system default.
-- Open issue: split, the app is laid out 867 pt wide, 42 pt in from each edge
-  of the 951 pt inner display, and both strips capture pure white. Neither
-  `ignoresSafeArea` on the panes nor `WindowWash` (the window painted with the
-  warm wash, on `RootView`) reached them, so they sit outside the app's window.
-  Other fleet apps with a system `TabView` and no
-  `toolbarVerticalBehavior(.disabled)` got 0-867 with an 84 pt status column
-  on the right instead. Next experiment: drop `.disabled` from `unfoldedBars`.
+- `unfoldedBars(isSplit:)`: while split, a hard bottom scroll edge under the
+  floating tab bar. Bar placement stays with the system. Never force it with
+  `toolbarVerticalBehavior(.disabled)`: that inset the whole app 42 pt from
+  both edges of the 951 pt inner display, and the strips captured pure white
+  (no window paint reached them). Bond, Quit Zyn and Electrician all hit it.
+- Measured unfolded (`BONDDUOTOUR`): root 867 pt with the status bar as an
+  84 pt column on the display's trailing edge, fold 455.5...495.5, so the
+  panes are 455.5 and 371.5 pt. iOS picks the tab bar per launch: a vertical
+  bar against the fold inside the leading pane (titles level across the fold)
+  or the floating bottom bar, where the leading pane's titles sit about 57 pt
+  lower than Insights'. That offset is not a safe-area inset (both measured
+  0), so padding Insights by the difference does nothing.
 - Onboarding, invite welcome and pairing success use `.unfoldedLeadingPane`,
   with `UnfoldedBrandPanel` in the trailing pane. Sheets (editor, templates,
   paywall, pairing) are still system form sheets centred on the inner display.
