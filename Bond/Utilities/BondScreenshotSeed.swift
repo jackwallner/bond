@@ -94,6 +94,8 @@ enum BondScreenshotSeed {
                      .touch, rrule: "FREQ=DAILY", fireAt: tomorrow),
             reminder(6, by: me, for: partner, "Book dinner at Lucia's",
                      note: "Sam's been wanting to try it.", .time, fireAt: dinner),
+            reminder(7, by: me, for: partner, "Leave a note in Sam's bag",
+                     .words, rrule: "FREQ=WEEKLY", fireAt: calendar.date(byAdding: .day, value: 4, to: now) ?? nextWeek),
         ]
         reminders.reminders = reminderRows
         reminders.onChange(reminderRows)
@@ -130,12 +132,13 @@ enum BondScreenshotSeed {
 
         // Done days, counted back from today: notes every day but one this
         // month (a 12 day streak, 15 at best), hugs most days, the weekly
-        // walk and dishes each week. Today's land a little before launch.
+        // walk, dishes and bag note each week. Today's land a little before launch.
         let doneDays: [(reminder: Int, days: [Int])] = [
             (0, Array(0...11) + Array(13...27)),
             (4, [0, 1, 3, 4, 6, 8, 9, 11, 14, 15, 17, 20, 22]),
             (1, [2, 9, 16, 23]),
             (3, [1, 8, 15, 22]),
+            (6, [5, 12, 19]),
         ]
         let earlierToday = max(today.addingTimeInterval(60), now.addingTimeInterval(-2 * 60 * 60))
         var eventRows: [ReminderEventDTO] = []

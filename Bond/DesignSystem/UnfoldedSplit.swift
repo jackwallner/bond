@@ -53,6 +53,14 @@ extension GeometryProxy {
 }
 
 extension View {
+    /// Split, the panes run to the display's edges. The inner display insets
+    /// the scene 42 pt each side, and a pane's stack painted that inset white
+    /// beside the warm wash. Folded keeps every inset (the outer display's
+    /// vertical bar lives in one). Measure the split inside this modifier.
+    func unfoldedFullBleed(isSplit: Bool) -> some View {
+        ignoresSafeArea(.container, edges: isSplit ? .horizontal : [])
+    }
+
     /// Split, each pane keeps its bars horizontal: iOS 27.1 otherwise moves a
     /// stack's toolbar into a vertical bar on its trailing edge, which in the
     /// leading pane sits against the fold and narrows the screen. The tab bar
@@ -96,10 +104,11 @@ private struct UnfoldedLeadingPane<Trailing: View>: ViewModifier {
                 .opacity(split == nil ? 0 : 1)
                 .accessibilityHidden(split == nil)
         }
-        .unfoldedBars(isSplit: split != nil)
         .onGeometryChange(for: PaneGeometry.self) { proxy in
             PaneGeometry(width: proxy.size.width, fold: proxy.verticalFold())
         } action: { geometry = $0 }
+        .unfoldedFullBleed(isSplit: split != nil)
+        .unfoldedBars(isSplit: split != nil)
     }
 }
 

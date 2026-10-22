@@ -501,10 +501,11 @@ struct MainTabView: View {
                     .padding(.leading, split.secondaryX)
             }
         }
-        .unfoldedBars(isSplit: split != nil)
         .onGeometryChange(for: PaneGeometry.self) { proxy in
             PaneGeometry(width: proxy.size.width, fold: proxy.verticalFold())
         } action: { paneGeometry = $0 }
+        .unfoldedFullBleed(isSplit: split != nil)
+        .unfoldedBars(isSplit: split != nil)
         .onChange(of: split != nil) { _, isSplit in
             if isSplit, selection == .insights { selection = .reminders }
         }

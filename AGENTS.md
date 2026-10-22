@@ -75,6 +75,8 @@ phased plan are in the `project_bond` memory and `project-docs/marketing/aso-pla
 ## Rule files
 - `.claude/rules/android.md` (`android/**`): the Kotlin/Compose Android port,
   its build, tests, and what differs from iOS.
+- `.claude/rules/iphone-duo.md` (`MainTabView`, `UnfoldedSplit`): the
+  unfolded iPhone Duo's Reminders | Insights split and its capture recipe.
 
 ---
 Shared iOS conventions (build, simulator, release/TestFlight, ASC key, signing,
