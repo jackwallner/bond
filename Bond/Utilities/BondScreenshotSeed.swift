@@ -167,7 +167,11 @@ enum BondScreenshotSeed {
             category: "connection",
             loveLanguage: .time
         )
-        checkIn.myResponse = QuestionResponseDTO(
+        let args = ProcessInfo.processInfo.arguments
+        // `-BondSeedUnanswered` leaves today's question unanswered so the
+        // answer field can be driven (interruption audit).
+        let unanswered = args.contains("-BondSeedUnanswered")
+        checkIn.myResponse = unanswered ? nil : QuestionResponseDTO(
             id: UUID(uuidString: "88888888-8888-4888-8888-888888888881")!,
             questionId: question,
             coupleId: couple,
@@ -183,6 +187,18 @@ enum BondScreenshotSeed {
             response: "A quiet coffee and a little time together.",
             createdAt: now
         )
+
+        // `-BondSeedNotificationTapAfter <seconds>` simulates tapping a reminder
+        // notification (opens "Plan a ten-minute walk together") after a delay,
+        // to reproduce a notification arriving while an editor is open.
+        if let i = args.firstIndex(of: "-BondSeedNotificationTapAfter"),
+           i + 1 < args.count, let delay = Double(args[i + 1]) {
+            Task { @MainActor in
+                try? await Task.sleep(for: .seconds(delay))
+                NotificationRouter.shared.pendingReminderId =
+                    UUID(uuidString: "55555555-5555-4555-8555-555555555552")
+            }
+        }
     }
 }
 #endif
