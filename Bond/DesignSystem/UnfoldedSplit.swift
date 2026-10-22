@@ -1,5 +1,4 @@
 import SwiftUI
-import UIKit
 
 /// Pane frames for the unfolded iPhone Duo: the tabs on the leading side of the
 /// fold, Insights on the trailing side, so nothing straddles the crease. `nil`
@@ -54,17 +53,14 @@ extension GeometryProxy {
 }
 
 extension View {
-    /// Split, each pane keeps its bars horizontal: iOS 27.1 otherwise moves a
-    /// stack's toolbar into a vertical bar on its trailing edge, which in the
-    /// leading pane sits against the fold and narrows the screen. The tab bar
-    /// then floats over the leading pane's bottom, so the hard edge backs it
-    /// instead of letting rows read through. Folded keeps the system default.
+    /// Split, the tab bar may float over the leading pane's bottom, so the hard
+    /// edge backs it instead of letting rows read through. Bar placement is
+    /// left to the system: forcing horizontal bars with
+    /// `toolbarVerticalBehavior(.disabled)` inset the whole app 42 pt from
+    /// both edges of the inner display and left white strips there.
     @ViewBuilder
     func unfoldedBars(isSplit: Bool) -> some View {
-        if #available(iOS 27.1, *) {
-            toolbarVerticalBehavior(isSplit ? .disabled : .automatic)
-                .scrollEdgeEffectStyle(isSplit ? .hard : nil, for: .bottom)
-        } else if #available(iOS 26.0, *) {
+        if #available(iOS 26.0, *) {
             scrollEdgeEffectStyle(isSplit ? .hard : nil, for: .bottom)
         } else {
             self
@@ -116,56 +112,5 @@ struct UnfoldedBrandPanel: View {
     var body: some View {
         BondHero(subtitle: "Small, timely reminders of what your partner actually appreciates.")
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-    }
-}
-
-/// Paints the window behind the app with the warm wash. The unfolded iPhone
-/// Duo lays the app out 42 pt in from each side of the inner display, and the
-/// window's default white showed in those strips beside the panes. A one
-/// point wide gradient tiles across the window, so the edges match the wash.
-struct WindowWash: UIViewRepresentable {
-    func makeUIView(context: Context) -> WashView { WashView() }
-    func updateUIView(_ view: WashView, context: Context) { view.paint() }
-
-    final class WashView: UIView {
-        private var painted: (height: CGFloat, style: UIUserInterfaceStyle)?
-
-        override init(frame: CGRect) {
-            super.init(frame: frame)
-            isUserInteractionEnabled = false
-            registerForTraitChanges([UITraitUserInterfaceStyle.self]) { (view: WashView, _) in
-                view.paint()
-            }
-        }
-
-        required init?(coder: NSCoder) { fatalError("init(coder:) is not used") }
-
-        override func didMoveToWindow() {
-            super.didMoveToWindow()
-            paint()
-        }
-
-        override func layoutSubviews() {
-            super.layoutSubviews()
-            paint()
-        }
-
-        func paint() {
-            guard let window, window.bounds.height > 0 else { return }
-            let traits = window.traitCollection
-            let height = window.bounds.height
-            guard painted?.height != height || painted?.style != traits.userInterfaceStyle else { return }
-            let colors = [Color.bondWashTop, Color.bondWashBottom].map {
-                UIColor($0).resolvedColor(with: traits).cgColor
-            }
-            guard let gradient = CGGradient(colorsSpace: nil, colors: colors as CFArray, locations: nil) else { return }
-            let image = UIGraphicsImageRenderer(size: CGSize(width: 1, height: height)).image { context in
-                context.cgContext.drawLinearGradient(
-                    gradient, start: .zero, end: CGPoint(x: 0, y: height), options: []
-                )
-            }
-            window.backgroundColor = UIColor(patternImage: image)
-            painted = (height, traits.userInterfaceStyle)
-        }
     }
 }

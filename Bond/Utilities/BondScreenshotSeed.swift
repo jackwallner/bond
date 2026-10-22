@@ -50,10 +50,14 @@ enum BondScreenshotSeed {
 
         let calendar = Calendar.current
         let today = calendar.startOfDay(for: now)
-        let tomorrow = calendar.date(byAdding: .day, value: 1, to: now) ?? now
-        let nextWeek = calendar.date(byAdding: .day, value: 7, to: now) ?? now
-        let dinner = calendar.date(byAdding: .day, value: 3, to: today)
-            .flatMap { calendar.date(bySettingHour: 18, minute: 30, second: 0, of: $0) } ?? nextWeek
+        // Fixed times of day, so the runner's clock never shows a 2:45 AM reminder.
+        func day(_ offset: Int, at hour: Int, _ minute: Int = 0) -> Date {
+            calendar.date(byAdding: .day, value: offset, to: today)
+                .flatMap { calendar.date(bySettingHour: hour, minute: minute, second: 0, of: $0) } ?? now
+        }
+        let tomorrow = day(1, at: 8)
+        let nextWeek = day(7, at: 17, 30)
+        let dinner = day(3, at: 18, 30)
         // A month in, so a week of follow-through and the streaks have history.
         let joined = calendar.date(byAdding: .day, value: -30, to: today) ?? now
 
@@ -95,7 +99,7 @@ enum BondScreenshotSeed {
             reminder(6, by: me, for: partner, "Book dinner at Lucia's",
                      note: "Sam's been wanting to try it.", .time, fireAt: dinner),
             reminder(7, by: me, for: partner, "Leave a note in Sam's bag",
-                     .words, rrule: "FREQ=WEEKLY", fireAt: calendar.date(byAdding: .day, value: 4, to: now) ?? nextWeek),
+                     .words, rrule: "FREQ=WEEKLY", fireAt: day(4, at: 7, 30)),
         ]
         reminders.reminders = reminderRows
         reminders.onChange(reminderRows)

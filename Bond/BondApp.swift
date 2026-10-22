@@ -233,7 +233,6 @@ struct RootView: View {
         // • warm cream→peach wash behind all content
         // • accent tint flows to every system control (links, switches, etc.)
         .background(Color.bondBackgroundGradient.ignoresSafeArea())
-        .background(WindowWash())
         .font(.bond(.body))
         .tint(.bondAccent)
         // Honor the Settings light/dark/system override; reading
