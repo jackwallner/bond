@@ -9,6 +9,43 @@ enum BondScreenshotSeed {
         ProcessInfo.processInfo.arguments.contains("-BondScreenshotSeed")
     }
 
+    /// Offline persona-audit modes: `-BondAuditFirstRun` lands on the real
+    /// first-run onboarding, `-BondAuditSoloHome` on a finished solo setup with
+    /// no reminders and no Bond+. Neither touches Supabase or RevenueCat.
+    static var auditFirstRun: Bool {
+        ProcessInfo.processInfo.arguments.contains("-BondAuditFirstRun")
+    }
+
+    static var auditSoloHome: Bool {
+        ProcessInfo.processInfo.arguments.contains("-BondAuditSoloHome")
+    }
+
+    static var isAudit: Bool { auditFirstRun || auditSoloHome }
+
+    static func applyAudit(supabase: SupabaseService, pairing: PairingService) {
+        supabase.currentUserId = me
+        supabase.isAnonymous = true
+        let preferences = OnboardingPreferences.shared
+        if auditSoloHome {
+            pairing.coupleId = couple
+            pairing.solo = true
+            preferences.partnerName = "Sam"
+            preferences.partnerLoveLanguages = [.words]
+            preferences.focusAreas = [.gestures]
+            preferences.committedAt = Date()
+        } else {
+            preferences.partnerName = ""
+            preferences.partnerLoveLanguages = []
+            preferences.focusAreas = []
+            preferences.committedAt = nil
+        }
+    }
+
+    static func createAuditSoloCouple(pairing: PairingService) {
+        pairing.coupleId = couple
+        pairing.solo = true
+    }
+
     private static let me = UUID(uuidString: "11111111-1111-4111-8111-111111111111")!
     private static let partner = UUID(uuidString: "22222222-2222-4222-8222-222222222222")!
     private static let couple = UUID(uuidString: "33333333-3333-4333-8333-333333333333")!

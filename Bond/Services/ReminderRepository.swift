@@ -29,7 +29,7 @@ final class ReminderRepository {
 
     func refresh() async {
         #if DEBUG
-        if BondScreenshotSeed.isEnabled { return }
+        if BondScreenshotSeed.isEnabled || BondScreenshotSeed.isAudit { return }
         #endif
         guard let coupleId = pairing.coupleId else { return }
         isLoading = true
@@ -52,6 +52,14 @@ final class ReminderRepository {
     }
 
     func upsert(_ reminder: ReminderDTO) async throws {
+        #if DEBUG
+        if BondScreenshotSeed.isAudit {
+            reminders.removeAll { $0.id == reminder.id }
+            reminders.append(reminder)
+            onChange(reminders)
+            return
+        }
+        #endif
         let _: ReminderDTO = try await supabase.client
             .from("reminders")
             .upsert(reminder)
@@ -89,7 +97,7 @@ final class ReminderRepository {
 
     func subscribeRealtime() async {
         #if DEBUG
-        if BondScreenshotSeed.isEnabled { return }
+        if BondScreenshotSeed.isEnabled || BondScreenshotSeed.isAudit { return }
         #endif
         guard let coupleId = pairing.coupleId else {
             await unsubscribeRealtime()

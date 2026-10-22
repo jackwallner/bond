@@ -18,7 +18,7 @@ final class ReminderEventRepository {
 
     func refresh() async {
         #if DEBUG
-        if BondScreenshotSeed.isEnabled { return }
+        if BondScreenshotSeed.isEnabled || BondScreenshotSeed.isAudit { return }
         #endif
         guard let coupleId = pairing.coupleId else { return }
         do {

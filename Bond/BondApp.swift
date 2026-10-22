@@ -277,6 +277,13 @@ struct RootView: View {
                 return
             }
             #endif
+            #if DEBUG
+            if BondScreenshotSeed.isAudit {
+                BondScreenshotSeed.applyAudit(supabase: supabase, pairing: pairing)
+                isAppBootstrapped = true
+                return
+            }
+            #endif
             // Single, idempotent session bootstrap. Restores a cached session
             // or silently signs in anonymously on first launch. Must be the
             // only entry point - calling signInAnonymously() in parallel with
@@ -292,7 +299,7 @@ struct RootView: View {
         .onChange(of: supabase.isAuthenticated) { _, authenticated in
             guard authenticated, isAppBootstrapped else { return }
             #if DEBUG
-            if BondScreenshotSeed.isEnabled { return }
+            if BondScreenshotSeed.isEnabled || BondScreenshotSeed.isAudit { return }
             #endif
             isAppBootstrapped = false
             Task {
