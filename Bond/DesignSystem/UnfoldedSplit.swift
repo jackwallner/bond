@@ -30,6 +30,14 @@ struct UnfoldedSplit: Equatable, Sendable {
         let half = (width / 2).rounded(.down)
         return UnfoldedSplit(primaryWidth: half, secondaryX: half, secondaryWidth: width - half)
     }
+
+    /// Extra top inset for the trailing pane so its title lines up with the
+    /// leading pane's. Unfolded, the tab view gives its screens a taller top
+    /// inset than the bare Insights pane gets, which left the two large
+    /// titles at different heights.
+    static func secondaryTopPadding(primaryTopInset: CGFloat, secondaryTopInset: CGFloat) -> CGFloat {
+        max(0, primaryTopInset - secondaryTopInset)
+    }
 }
 
 /// The container's width and fold, measured together so one geometry change

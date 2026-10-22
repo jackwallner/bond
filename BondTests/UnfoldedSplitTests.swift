@@ -56,4 +56,16 @@ struct UnfoldedSplitTests {
             }
         }
     }
+
+    // MARK: — Title alignment
+
+    @Test func trailing_pane_drops_to_the_leading_panes_top() {
+        #expect(UnfoldedSplit.secondaryTopPadding(primaryTopInset: 57, secondaryTopInset: 0) == 57)
+        #expect(UnfoldedSplit.secondaryTopPadding(primaryTopInset: 62, secondaryTopInset: 24) == 38)
+    }
+
+    @Test func trailing_pane_never_rises_above_its_own_inset() {
+        #expect(UnfoldedSplit.secondaryTopPadding(primaryTopInset: 0, secondaryTopInset: 24) == 0)
+        #expect(UnfoldedSplit.secondaryTopPadding(primaryTopInset: 24, secondaryTopInset: 24) == 0)
+    }
 }

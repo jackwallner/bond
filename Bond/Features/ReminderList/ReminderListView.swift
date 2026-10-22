@@ -243,9 +243,15 @@ struct ReminderListView: View {
         List {
             if let state = checkInCardState {
                 Section {
-                    NavigationLink {
-                        DailyCheckInView()
-                    } label: {
+                    // The card draws its own chevron; a visible link would
+                    // add List's disclosure indicator outside the card.
+                    ZStack {
+                        NavigationLink {
+                            DailyCheckInView()
+                        } label: {
+                            EmptyView()
+                        }
+                        .opacity(0)
                         CheckInPromptCard(state: state, partnerName: partnerName)
                     }
                     .listRowInsets(Self.heroCardInsets)
