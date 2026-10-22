@@ -27,10 +27,13 @@ paths:
   (iOS 27.1 otherwise moves a stack's toolbar into a vertical bar against the
   fold and narrows the leading pane by 84 pt) and a hard bottom scroll edge
   under the floating tab bar. Folded keeps the system default.
-- The inner display lays the app out 42 pt in from each edge, outside the
-  SwiftUI tree, so `ignoresSafeArea` can't reach those strips; they showed the
-  window's default white. `WindowWash` (on `RootView`) paints the window with
-  the warm wash instead.
+- Open issue: split, the app is laid out 867 pt wide, 42 pt in from each edge
+  of the 951 pt inner display, and both strips capture pure white. Neither
+  `ignoresSafeArea` on the panes nor `WindowWash` (the window painted with the
+  warm wash, on `RootView`) reached them, so they sit outside the app's window.
+  Other fleet apps with a system `TabView` and no
+  `toolbarVerticalBehavior(.disabled)` got 0-867 with an 84 pt status column
+  on the right instead. Next experiment: drop `.disabled` from `unfoldedBars`.
 - Onboarding, invite welcome and pairing success use `.unfoldedLeadingPane`,
   with `UnfoldedBrandPanel` in the trailing pane. Sheets (editor, templates,
   paywall, pairing) are still system form sheets centred on the inner display.
