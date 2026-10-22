@@ -39,6 +39,18 @@ final class NewcomerAuditUITests: XCTestCase {
         }
     }
 
+    /// A fresh simulator shows iOS's "slide to type" intro over the keyboard the
+    /// first time a field is focused; it swallows typing until dismissed. This is
+    /// system UI, not the app, but it is what a real first-install user meets too.
+    private func dismissKeyboardIntro() {
+        let intro = app.otherElements["UIContinuousPathIntroductionView"]
+        if intro.waitForExistence(timeout: 4) {
+            shot("00-system-slide-to-type-intro")
+            intro.buttons["Continue"].tap()
+            sleep(1)
+        }
+    }
+
     private func log(_ message: String) {
         let attachment = XCTAttachment(string: message)
         attachment.name = "note"
@@ -67,6 +79,7 @@ final class NewcomerAuditUITests: XCTestCase {
         let field = app.textFields["Their name"]
         if field.waitForExistence(timeout: 3) {
             field.tap()
+            dismissKeyboardIntro()
             field.typeText("Sam")
         }
         sleep(1)
@@ -106,6 +119,7 @@ final class NewcomerAuditUITests: XCTestCase {
         launch("-BondAuditFirstRun")
         XCTAssertTrue(element("Who do you want to show up for?").waitForExistence(timeout: 20))
         app.textFields["Their name"].tap()
+        dismissKeyboardIntro()
         app.textFields["Their name"].typeText("Sam")
         tap("Continue")
         tap("I commit to showing up for Sam")

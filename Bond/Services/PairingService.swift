@@ -37,6 +37,9 @@ final class PairingService {
     private let universalLinkHost = "jackwallner.com"
 
     func loadCouple() async {
+        #if DEBUG
+        if BondScreenshotSeed.isAudit { return }
+        #endif
         guard let me = supabase.currentUserId else { return }
         do {
             // No `.single()`: zero rows must be distinguishable from a failed
