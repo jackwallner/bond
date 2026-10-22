@@ -469,10 +469,6 @@ struct MainTabView: View {
     /// The container's width and fold, measured so the unfolded iPhone Duo can
     /// put the tabs and Insights on opposite sides of the fold.
     @State private var paneGeometry = PaneGeometry()
-    /// Top safe-area insets of a tab's screen and of the bare Insights pane,
-    /// measured so Insights can line its title up with the tabs'.
-    @State private var tabsTopInset: CGFloat = 0
-    @State private var insightsTopInset: CGFloat = 0
 
     private enum Tab: Hashable { case reminders, checkIn, milestones, insights, settings }
 
@@ -500,12 +496,6 @@ struct MainTabView: View {
             if let split {
                 StatsView()
                     .environment(\.horizontalSizeClass, .compact)
-                    .safeAreaPadding(.top, UnfoldedSplit.secondaryTopPadding(
-                        primaryTopInset: tabsTopInset, secondaryTopInset: insightsTopInset
-                    ))
-                    .onGeometryChange(for: CGFloat.self) { $0.safeAreaInsets.top } action: {
-                        insightsTopInset = $0
-                    }
                     .frame(width: split.secondaryWidth)
                     .frame(maxHeight: .infinity)
                     .padding(.leading, split.secondaryX)
@@ -535,17 +525,17 @@ struct MainTabView: View {
     private var tabs: some View {
         TabView(selection: $selection) {
             ReminderListView()
-                .modifier(TabPane(sizeClass: paneSizeClass, topInset: $tabsTopInset))
+                .environment(\.horizontalSizeClass, paneSizeClass)
                 .tag(Tab.reminders)
                 .tabItem { Label("Reminders", systemImage: "bell.fill") }
 
             DailyCheckInView()
-                .modifier(TabPane(sizeClass: paneSizeClass, topInset: $tabsTopInset))
+                .environment(\.horizontalSizeClass, paneSizeClass)
                 .tag(Tab.checkIn)
                 .tabItem { Label("Check-In", systemImage: "questionmark.bubble.fill") }
 
             MilestonesView()
-                .modifier(TabPane(sizeClass: paneSizeClass, topInset: $tabsTopInset))
+                .environment(\.horizontalSizeClass, paneSizeClass)
                 .tag(Tab.milestones)
                 .tabItem { Label("Milestones", systemImage: "calendar") }
 
@@ -556,22 +546,9 @@ struct MainTabView: View {
             }
 
             NavigationStack { SettingsView() }
-                .modifier(TabPane(sizeClass: paneSizeClass, topInset: $tabsTopInset))
+                .environment(\.horizontalSizeClass, paneSizeClass)
                 .tag(Tab.settings)
                 .tabItem { Label("Settings", systemImage: "gearshape.fill") }
-        }
-    }
-
-    /// Lays a tab's screen out as on a phone while split and reports its top
-    /// inset. Applied to the tab contents, not the `TabView`.
-    private struct TabPane: ViewModifier {
-        let sizeClass: UserInterfaceSizeClass?
-        @Binding var topInset: CGFloat
-
-        func body(content: Content) -> some View {
-            content
-                .environment(\.horizontalSizeClass, sizeClass)
-                .onGeometryChange(for: CGFloat.self) { $0.safeAreaInsets.top } action: { topInset = $0 }
         }
     }
 
@@ -593,10 +570,9 @@ struct MainTabView: View {
                 : [.checkIn, .milestones, .settings, .reminders]
             guard step < stops.count else { return }
             NSLog(
-                "BONDDUOTOUR step=%ld split=%ld width=%.1f fold=%@ tabsTop=%.1f insightsTop=%.1f tab=%@",
+                "BONDDUOTOUR step=%ld split=%ld width=%.1f fold=%@ tab=%@",
                 step, split == nil ? 0 : 1, paneGeometry.width,
                 paneGeometry.fold.map { "\($0.lowerBound)...\($0.upperBound)" } ?? "none",
-                tabsTopInset, insightsTopInset,
                 "\(stops[step])"
             )
             withAnimation(.easeInOut(duration: 0.3)) { selection = stops[step] }
