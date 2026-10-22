@@ -233,6 +233,7 @@ struct RootView: View {
         // • warm cream→peach wash behind all content
         // • accent tint flows to every system control (links, switches, etc.)
         .background(Color.bondBackgroundGradient.ignoresSafeArea())
+        .background(WindowWash())
         .font(.bond(.body))
         .tint(.bondAccent)
         // Honor the Settings light/dark/system override; reading
@@ -504,7 +505,6 @@ struct MainTabView: View {
         .onGeometryChange(for: PaneGeometry.self) { proxy in
             PaneGeometry(width: proxy.size.width, fold: proxy.verticalFold())
         } action: { paneGeometry = $0 }
-        .unfoldedFullBleed(isSplit: split != nil)
         .unfoldedBars(isSplit: split != nil)
         .onChange(of: split != nil) { _, isSplit in
             if isSplit, selection == .insights { selection = .reminders }

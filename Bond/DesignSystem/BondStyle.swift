@@ -99,17 +99,18 @@ extension Color {
     /// down there fights the warm-white list rows and washes out accent
     /// buttons that sit near the bottom of the screen.
     static var bondBackgroundGradient: LinearGradient {
-        LinearGradient(
-            colors: [
-                Color(light: Color(red: 0.973, green: 0.886, blue: 0.776),
-                      dark:  Color(red: 0.106, green: 0.082, blue: 0.075)),
-                Color(light: Color(red: 0.949, green: 0.812, blue: 0.682),
-                      dark:  Color(red: 0.157, green: 0.114, blue: 0.094))
-            ],
-            startPoint: .top,
-            endPoint: .bottom
-        )
+        LinearGradient(colors: [bondWashTop, bondWashBottom], startPoint: .top, endPoint: .bottom)
     }
+
+    static let bondWashTop = Color(
+        light: Color(red: 0.973, green: 0.886, blue: 0.776),
+        dark:  Color(red: 0.106, green: 0.082, blue: 0.075)
+    )
+
+    static let bondWashBottom = Color(
+        light: Color(red: 0.949, green: 0.812, blue: 0.682),
+        dark:  Color(red: 0.157, green: 0.114, blue: 0.094)
+    )
 }
 
 extension View {

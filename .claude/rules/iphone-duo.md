@@ -27,6 +27,10 @@ paths:
   (iOS 27.1 otherwise moves a stack's toolbar into a vertical bar against the
   fold and narrows the leading pane by 84 pt) and a hard bottom scroll edge
   under the floating tab bar. Folded keeps the system default.
+- The inner display lays the app out 42 pt in from each edge, outside the
+  SwiftUI tree, so `ignoresSafeArea` can't reach those strips; they showed the
+  window's default white. `WindowWash` (on `RootView`) paints the window with
+  the warm wash instead.
 - Onboarding, invite welcome and pairing success use `.unfoldedLeadingPane`,
   with `UnfoldedBrandPanel` in the trailing pane. Sheets (editor, templates,
   paywall, pairing) are still system form sheets centred on the inner display.

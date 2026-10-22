@@ -138,7 +138,7 @@ enum BondScreenshotSeed {
             (4, [0, 1, 3, 4, 6, 8, 9, 11, 14, 15, 17, 20, 22]),
             (1, [2, 9, 16, 23]),
             (3, [1, 8, 15, 22]),
-            (6, [5, 12, 19]),
+            (6, [5, 19, 26]),
         ]
         let earlierToday = max(today.addingTimeInterval(60), now.addingTimeInterval(-2 * 60 * 60))
         var eventRows: [ReminderEventDTO] = []
