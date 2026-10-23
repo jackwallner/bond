@@ -53,17 +53,13 @@ extension GeometryProxy {
 }
 
 extension View {
-    /// Split, the tab bar may float over the leading pane's bottom, so the hard
-    /// edge backs it instead of letting rows read through. Bar placement is
-    /// left to the system: forcing horizontal bars with
-    /// `toolbarVerticalBehavior(.disabled)` inset the whole app 42 pt from
-    /// both edges of the inner display and left white strips there.
-    @ViewBuilder
-    func unfoldedBars(isSplit: Bool) -> some View {
-        if #available(iOS 26.0, *) {
-            scrollEdgeEffectStyle(isSplit ? .hard : nil, for: .bottom)
-        } else {
-            self
+    /// Split, the floating tab bar sits over the leading pane's last rows, and
+    /// even a hard scroll edge let them read through it. Clipping a tab's
+    /// screen to its safe area ends the rows above the bar. Every other width
+    /// keeps the ordinary glass bar over scrolling content.
+    func clippedAboveTabBar(_ isSplit: Bool) -> some View {
+        mask {
+            Rectangle().ignoresSafeArea(edges: isSplit ? [.top, .horizontal] : .all)
         }
     }
 }
@@ -73,8 +69,8 @@ extension View {
     /// tab pane beside it. Split, the tab pane gets a horizontal bar with a
     /// row above each large title, while Insights took the vertical
     /// behaviour with no row, so its title sat 57 pt higher. Scoped to the
-    /// pane: disabling
-    /// vertical bars on the whole root inset the app from both display edges.
+    /// pane: disabling vertical bars on the whole root inset the app 42 pt
+    /// from both display edges.
     @ViewBuilder
     func horizontalNavigationBar() -> some View {
         if #available(iOS 27.1, *) {
@@ -113,7 +109,6 @@ private struct UnfoldedLeadingPane<Trailing: View>: ViewModifier {
         .onGeometryChange(for: PaneGeometry.self) { proxy in
             PaneGeometry(width: proxy.size.width, fold: proxy.verticalFold())
         } action: { geometry = $0 }
-        .unfoldedBars(isSplit: split != nil)
     }
 }
 
