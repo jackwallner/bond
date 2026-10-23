@@ -237,13 +237,13 @@ struct IntentSetupView: View {
         // Bond shouldn't have to finish solo setup just to reach Settings →
         // Connect a partner. Pairing here flips RootView straight to the
         // success screen, abandoning the rest of this flow.
-        .sheet(isPresented: $showInvitePairing) {
+        .unfoldedSheet(isPresented: $showInvitePairing) {
             PairingView(initialMode: .receive)
         }
         // Emergency fallback only: offerings never loaded, so we can't
         // direct-purchase. Hand off to the full paywall; whatever the user
         // does there, dismissal proceeds into the app.
-        .sheet(isPresented: $showFallbackPaywall, onDismiss: { Task { await finish() } }) {
+        .unfoldedSheet(isPresented: $showFallbackPaywall, onDismiss: { Task { await finish() } }) {
             PaywallFlowSheet(
                 impressionId: "onboarding_trial_fallback",
                 onClose: { showFallbackPaywall = false }

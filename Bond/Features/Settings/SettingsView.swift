@@ -220,7 +220,7 @@ struct SettingsView: View {
             notificationStatus = await UNUserNotificationCenter.current()
                 .notificationSettings().authorizationStatus
         }
-        .sheet(isPresented: $isPairingPresented) {
+        .unfoldedSheet(isPresented: $isPairingPresented) {
             PairingView()
         }
         .paywallSheet(isPresented: $isPaywallPresented)

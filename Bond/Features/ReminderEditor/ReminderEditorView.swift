@@ -120,7 +120,7 @@ struct ReminderEditorView: View {
                 }
             }
             .paywallSheet(isPresented: $isPaywallPresented)
-            .sheet(isPresented: $isTemplatesPresented) {
+            .unfoldedSheet(isPresented: $isTemplatesPresented) {
                 ReminderTemplatesView()
             }
             .onAppear(perform: hydrate)

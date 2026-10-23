@@ -5,7 +5,7 @@ struct PaywallModifier: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .sheet(isPresented: $isPresented) {
+            .unfoldedSheet(isPresented: $isPresented) {
                 PaywallFlowSheet(impressionId: "feature_gate", onClose: { isPresented = false })
             }
     }

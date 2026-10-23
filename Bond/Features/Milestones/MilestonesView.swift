@@ -29,7 +29,7 @@ struct MilestonesView: View {
                     }
                 }
             }
-            .sheet(isPresented: $isEditorPresented) {
+            .unfoldedSheet(isPresented: $isEditorPresented) {
                 MilestoneEditorView(existing: editing)
             }
             .task { await milestones.refresh() }

@@ -48,19 +48,19 @@ struct ReminderListView: View {
             .safeAreaInset(edge: .bottom, alignment: .trailing) {
                 composeButton
             }
-            .sheet(isPresented: $isEditorPresented, onDismiss: { starterPrefill = nil }) {
+            .unfoldedSheet(isPresented: $isEditorPresented, onDismiss: { starterPrefill = nil }) {
                 ReminderEditorView(
                     existing: editingReminder,
                     prefill: starterPrefill.map { ($0.title, $0.loveLanguage) }
                 )
             }
-            .sheet(isPresented: $isTemplatesPresented) {
+            .unfoldedSheet(isPresented: $isTemplatesPresented) {
                 ReminderTemplatesView()
             }
-            .sheet(isPresented: $isPairingPresented) {
+            .unfoldedSheet(isPresented: $isPairingPresented) {
                 PairingView()
             }
-            .sheet(isPresented: $showNotificationPrimer, onDismiss: {
+            .unfoldedSheet(isPresented: $showNotificationPrimer, onDismiss: {
                 // "Maybe later" path. The request path posts from its Task
                 // instead, after the system dialog has been answered.
                 if !primerRequestedAuth {
@@ -573,7 +573,7 @@ private struct HandledRemindersView: View {
         .bondWarmList()
         .navigationTitle("Handled")
         .navigationBarTitleDisplayMode(.inline)
-        .sheet(item: $editingReminder) { reminder in
+        .unfoldedSheet(item: $editingReminder) { reminder in
             ReminderEditorView(existing: reminder, prefill: nil)
         }
     }

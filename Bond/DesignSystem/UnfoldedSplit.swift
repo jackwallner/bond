@@ -114,3 +114,84 @@ struct UnfoldedBrandPanel: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
+
+extension EnvironmentValues {
+    /// True while the unfolded display is split into two panes. Set once at
+    /// the root by `unfoldedSplitEnvironment()`; pane contents report a
+    /// compact width, so they can't tell on their own.
+    @Entry var isUnfoldedSplit = false
+}
+
+/// Measures the root and publishes `isUnfoldedSplit` to everything below it,
+/// including the sheets the root and its panes present.
+private struct UnfoldedSplitEnvironment: ViewModifier {
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @State private var geometry = PaneGeometry()
+
+    func body(content: Content) -> some View {
+        content
+            .environment(\.isUnfoldedSplit, UnfoldedSplit.make(
+                width: geometry.width,
+                isRegularWidth: horizontalSizeClass == .regular,
+                fold: geometry.fold
+            ) != nil)
+            .onGeometryChange(for: PaneGeometry.self) { proxy in
+                PaneGeometry(width: proxy.size.width, fold: proxy.verticalFold())
+            } action: { geometry = $0 }
+    }
+}
+
+/// A sheet that never straddles the fold. A system sheet on the unfolded
+/// display is centred, which puts the fold through the middle of the form, so
+/// while split it covers the display instead, with its content in the leading
+/// pane and the brand beside it, as onboarding does. Everywhere else it is the
+/// ordinary sheet. A fold or unfold mid-presentation re-presents it in the
+/// other style.
+private struct UnfoldedSheet<SheetContent: View>: ViewModifier {
+    @Environment(\.isUnfoldedSplit) private var isSplit
+    @Binding var isPresented: Bool
+    let onDismiss: (() -> Void)?
+    @ViewBuilder let sheetContent: () -> SheetContent
+
+    func body(content: Content) -> some View {
+        content
+            .sheet(isPresented: isSplit ? .constant(false) : $isPresented, onDismiss: onDismiss) {
+                sheetContent()
+            }
+            .fullScreenCover(isPresented: isSplit ? $isPresented : .constant(false), onDismiss: onDismiss) {
+                sheetContent()
+                    .unfoldedLeadingPane { UnfoldedBrandPanel() }
+                    .background(Color.bondBackgroundGradient.ignoresSafeArea())
+            }
+    }
+}
+
+extension View {
+    func unfoldedSplitEnvironment() -> some View {
+        modifier(UnfoldedSplitEnvironment())
+    }
+
+    func unfoldedSheet<Content: View>(
+        isPresented: Binding<Bool>,
+        onDismiss: (() -> Void)? = nil,
+        @ViewBuilder content: @escaping () -> Content
+    ) -> some View {
+        modifier(UnfoldedSheet(isPresented: isPresented, onDismiss: onDismiss, sheetContent: content))
+    }
+
+    func unfoldedSheet<Item: Identifiable, Content: View>(
+        item: Binding<Item?>,
+        onDismiss: (() -> Void)? = nil,
+        @ViewBuilder content: @escaping (Item) -> Content
+    ) -> some View {
+        unfoldedSheet(
+            isPresented: Binding(
+                get: { item.wrappedValue != nil },
+                set: { if !$0 { item.wrappedValue = nil } }
+            ),
+            onDismiss: onDismiss
+        ) {
+            if let value = item.wrappedValue { content(value) }
+        }
+    }
+}

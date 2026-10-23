@@ -240,7 +240,7 @@ struct RootView: View {
         // mode re-evaluates the body and flips every Color(light:dark:).
         .preferredColorScheme(theme.appearance.colorScheme)
         .animation(.easeOut(duration: 0.35), value: currentDestination)
-        .sheet(isPresented: Binding(
+        .unfoldedSheet(isPresented: Binding(
             // Only for users who already finished setup (a couple exists).
             // Pre-setup, the same state routes to the full-screen
             // InviteWelcomeView instead - presenting both stacked a Settings
@@ -319,12 +319,12 @@ struct RootView: View {
             else { return }
             showReviewPrompt = true
         }
-        .sheet(isPresented: $showReviewPrompt) {
+        .unfoldedSheet(isPresented: $showReviewPrompt) {
             ReviewPromptSheet { _ in showReviewPrompt = false }
         }
         // Proactive post-pairing paywall. Whether the user buys or closes it,
         // dismissal advances past the success screen to home.
-        .sheet(isPresented: $showPostPairPaywall, onDismiss: { pairing.justPaired = false }) {
+        .unfoldedSheet(isPresented: $showPostPairPaywall, onDismiss: { pairing.justPaired = false }) {
             PaywallFlowSheet(impressionId: "post_pairing", onClose: { showPostPairPaywall = false })
         }
         // Proactive post-onboarding paywall for the solo path. Most users
@@ -353,9 +353,11 @@ struct RootView: View {
                 showPostOnboardingPaywall = true
             }
         }
-        .sheet(isPresented: $showPostOnboardingPaywall) {
+        .unfoldedSheet(isPresented: $showPostOnboardingPaywall) {
             PaywallFlowSheet(impressionId: "post_onboarding", onClose: { showPostOnboardingPaywall = false })
         }
+        // Outermost, so every sheet above and below reads it.
+        .unfoldedSplitEnvironment()
     }
 
     private var hasCompletedSetup: Bool {
@@ -493,8 +495,9 @@ struct MainTabView: View {
     }
 
     /// Each unfolded pane is phone-width, so its screen lays out as on a phone.
-    /// Applied to the tab contents, not the `TabView`, whose bar placement is
-    /// left to the system.
+    /// The tab view gets it too: at regular width it reserves a row above
+    /// every tab's title for an iPad-style top bar, which left the leading
+    /// titles 57 pt below Insights' while the bar itself sat at the bottom.
     private var paneSizeClass: UserInterfaceSizeClass? {
         split == nil ? horizontalSizeClass : .compact
     }
@@ -543,17 +546,14 @@ struct MainTabView: View {
     private var tabs: some View {
         TabView(selection: $selection) {
             ReminderListView()
-                .environment(\.horizontalSizeClass, paneSizeClass)
                 .tag(Tab.reminders)
                 .tabItem { Label("Reminders", systemImage: "bell.fill") }
 
             DailyCheckInView()
-                .environment(\.horizontalSizeClass, paneSizeClass)
                 .tag(Tab.checkIn)
                 .tabItem { Label("Check-In", systemImage: "questionmark.bubble.fill") }
 
             MilestonesView()
-                .environment(\.horizontalSizeClass, paneSizeClass)
                 .tag(Tab.milestones)
                 .tabItem { Label("Milestones", systemImage: "calendar") }
 
@@ -564,10 +564,10 @@ struct MainTabView: View {
             }
 
             NavigationStack { SettingsView() }
-                .environment(\.horizontalSizeClass, paneSizeClass)
                 .tag(Tab.settings)
                 .tabItem { Label("Settings", systemImage: "gearshape.fill") }
         }
+        .environment(\.horizontalSizeClass, paneSizeClass)
     }
 
     #if DEBUG
