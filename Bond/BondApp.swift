@@ -495,9 +495,8 @@ struct MainTabView: View {
     }
 
     /// Each unfolded pane is phone-width, so its screen lays out as on a phone.
-    /// The tab view gets it too: at regular width it reserves a row above
-    /// every tab's title for an iPad-style top bar, which left the leading
-    /// titles 57 pt below Insights' while the bar itself sat at the bottom.
+    /// Applied to the tab contents, not the `TabView`, whose bar placement is
+    /// left to the system.
     private var paneSizeClass: UserInterfaceSizeClass? {
         split == nil ? horizontalSizeClass : .compact
     }
@@ -516,6 +515,7 @@ struct MainTabView: View {
             if let split {
                 StatsView()
                     .environment(\.horizontalSizeClass, .compact)
+                    .horizontalNavigationBar()
                     .frame(width: split.secondaryWidth)
                     .frame(maxHeight: .infinity)
                     .padding(.leading, split.secondaryX)
@@ -546,14 +546,17 @@ struct MainTabView: View {
     private var tabs: some View {
         TabView(selection: $selection) {
             ReminderListView()
+                .environment(\.horizontalSizeClass, paneSizeClass)
                 .tag(Tab.reminders)
                 .tabItem { Label("Reminders", systemImage: "bell.fill") }
 
             DailyCheckInView()
+                .environment(\.horizontalSizeClass, paneSizeClass)
                 .tag(Tab.checkIn)
                 .tabItem { Label("Check-In", systemImage: "questionmark.bubble.fill") }
 
             MilestonesView()
+                .environment(\.horizontalSizeClass, paneSizeClass)
                 .tag(Tab.milestones)
                 .tabItem { Label("Milestones", systemImage: "calendar") }
 
@@ -564,10 +567,10 @@ struct MainTabView: View {
             }
 
             NavigationStack { SettingsView() }
+                .environment(\.horizontalSizeClass, paneSizeClass)
                 .tag(Tab.settings)
                 .tabItem { Label("Settings", systemImage: "gearshape.fill") }
         }
-        .environment(\.horizontalSizeClass, paneSizeClass)
     }
 
     #if DEBUG

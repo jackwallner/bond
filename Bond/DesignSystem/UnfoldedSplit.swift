@@ -68,6 +68,23 @@ extension View {
     }
 }
 
+extension View {
+    /// The Insights pane's navigation bar in the same horizontal form as the
+    /// tab pane beside it. Split, the tab pane gets a horizontal bar with a
+    /// row above each large title, while Insights took the vertical
+    /// behaviour with no row, so its title sat 57 pt higher. Scoped to the
+    /// pane: disabling
+    /// vertical bars on the whole root inset the app from both display edges.
+    @ViewBuilder
+    func horizontalNavigationBar() -> some View {
+        if #available(iOS 27.1, *) {
+            toolbarVerticalBehavior(.disabled)
+        } else {
+            self
+        }
+    }
+}
+
 /// Keeps a single-column screen (onboarding, pairing success) on the leading
 /// side of the fold and puts `trailing` in the other pane. Every other width
 /// shows the screen as it is. Only frames change, so a fold mid-step keeps the
