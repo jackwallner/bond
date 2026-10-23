@@ -13,6 +13,8 @@ enum BondScreenshotSeed {
     private static let partner = UUID(uuidString: "22222222-2222-4222-8222-222222222222")!
     private static let couple = UUID(uuidString: "33333333-3333-4333-8333-333333333333")!
     private static let question = UUID(uuidString: "44444444-4444-4444-8444-444444444444")!
+    /// "Book dinner at Lucia's", the reminder `-DuoScreen editor` opens.
+    static let editorReminderId = UUID(uuidString: "55555555-5555-4555-8555-555555555556")!
 
     static func apply(
         supabase: SupabaseService,
@@ -185,6 +187,17 @@ enum BondScreenshotSeed {
             response: "A quiet coffee and a little time together.",
             createdAt: now
         )
+    }
+}
+
+/// `-DuoScreen <surface>`: the surface a capture run opens at launch
+/// (reminders, checkin, milestones, insights, settings or editor), read once.
+enum DuoScreen {
+    static let launchValue = value(in: ProcessInfo.processInfo.arguments)
+
+    static func value(in arguments: [String]) -> String? {
+        guard let index = arguments.firstIndex(of: "-DuoScreen"), index + 1 < arguments.count else { return nil }
+        return arguments[index + 1]
     }
 }
 #endif

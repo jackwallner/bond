@@ -57,3 +57,17 @@ struct UnfoldedSplitTests {
         }
     }
 }
+
+#if DEBUG
+/// The `-DuoScreen <surface>` launch argument capture runs use to open a surface.
+struct DuoScreenTests {
+    @Test func reads_the_surface_after_the_flag() {
+        #expect(DuoScreen.value(in: ["Bond", "-BondScreenshotSeed", "-DuoScreen", "checkin"]) == "checkin")
+    }
+
+    @Test func missing_flag_or_value_opens_nothing() {
+        #expect(DuoScreen.value(in: ["Bond", "-BondScreenshotSeed"]) == nil)
+        #expect(DuoScreen.value(in: ["Bond", "-DuoScreen"]) == nil)
+    }
+}
+#endif

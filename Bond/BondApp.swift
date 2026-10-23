@@ -464,13 +464,25 @@ struct RootView: View {
 /// beside how you're doing. The Insights tab leaves the bar while split.
 struct MainTabView: View {
     @State private var router = NotificationRouter.shared
-    @State private var selection: Tab = .reminders
+    @State private var selection: Tab = .launchTab
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     /// The container's width and fold, measured so the unfolded iPhone Duo can
     /// put the tabs and Insights on opposite sides of the fold.
     @State private var paneGeometry = PaneGeometry()
 
-    private enum Tab: Hashable { case reminders, checkIn, milestones, insights, settings }
+    private enum Tab: String, Hashable {
+        case reminders, checkIn = "checkin", milestones, insights, settings
+
+        /// Reminders, unless a DEBUG capture run names another surface.
+        static var launchTab: Tab {
+            #if DEBUG
+            if let screen = DuoScreen.launchValue {
+                return Tab(rawValue: screen) ?? .reminders
+            }
+            #endif
+            return .reminders
+        }
+    }
 
     private var split: UnfoldedSplit? {
         UnfoldedSplit.make(
@@ -491,8 +503,13 @@ struct MainTabView: View {
         // Opening or closing the Duo only moves these frames, so the tab view
         // is never rebuilt and every tab keeps its pushed screens.
         ZStack(alignment: .topLeading) {
-            tabs
-                .frame(maxWidth: split?.primaryWidth ?? .infinity, maxHeight: .infinity)
+            // The tab view first lays out once the width and fold are known,
+            // so on the unfolded Duo it starts in its pane rather than across
+            // the whole display and then shrinking.
+            if paneGeometry.width > 0 {
+                tabs
+                    .frame(maxWidth: split?.primaryWidth ?? .infinity, maxHeight: .infinity)
+            }
             if let split {
                 StatsView()
                     .environment(\.horizontalSizeClass, .compact)
@@ -501,6 +518,7 @@ struct MainTabView: View {
                     .padding(.leading, split.secondaryX)
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .onGeometryChange(for: PaneGeometry.self) { proxy in
             PaneGeometry(width: proxy.size.width, fold: proxy.verticalFold())
         } action: { paneGeometry = $0 }
@@ -518,7 +536,7 @@ struct MainTabView: View {
             if router.pendingReminderId != nil { selection = .reminders }
         }
         #if DEBUG
-        .task { await runDuoTour() }
+        .task { await runDuoCapture() }
         #endif
     }
 
@@ -553,28 +571,31 @@ struct MainTabView: View {
     }
 
     #if DEBUG
-    /// `-BondDuoTour`: walks the main tabs for headless capture runs, which
-    /// can't tap. Moves one stop 8 s after launch, then every 14 s (gh-sim
-    /// relaunches after unfolding, so the tour restarts there): folded
-    /// Check-In, Milestones, Insights, Settings, Reminders; split, where
-    /// Insights already has its pane, the same without Insights.
-    /// `BONDDUOTOUR` lines in the app log map shots to stops.
-    private func runDuoTour() async {
-        guard ProcessInfo.processInfo.arguments.contains("-BondDuoTour") else { return }
+    /// Headless capture runs can't tap. `-DuoScreen editor` opens a seeded
+    /// reminder in the editor through the notification route; the tab names
+    /// are handled by `Tab.launchTab`. Without `-DuoScreen`, `-BondDuoTour`
+    /// walks the tabs once so a native recording shows real tab changes.
+    /// `BONDDUO` lines in the app log record the measured width and fold.
+    private func runDuoCapture() async {
+        if DuoScreen.launchValue == "editor" {
+            router.pendingReminderId = BondScreenshotSeed.editorReminderId
+        }
+        let tour = DuoScreen.launchValue == nil && ProcessInfo.processInfo.arguments.contains("-BondDuoTour")
         let start = ContinuousClock.now
-        for step in 0..<5 {
-            try? await Task.sleep(until: start + .seconds(8 + 14 * step), clock: .continuous)
+        for step in 0..<6 {
+            try? await Task.sleep(until: start + .seconds(3 + 3 * step), clock: .continuous)
             guard !Task.isCancelled else { return }
+            NSLog(
+                "BONDDUO step=%ld split=%ld width=%.1f fold=%@ tab=%@",
+                step, split == nil ? 0 : 1, paneGeometry.width,
+                paneGeometry.fold.map { "\($0.lowerBound)...\($0.upperBound)" } ?? "none",
+                selection.rawValue
+            )
+            guard tour else { continue }
             let stops: [Tab] = split == nil
                 ? [.checkIn, .milestones, .insights, .settings, .reminders]
                 : [.checkIn, .milestones, .settings, .reminders]
-            guard step < stops.count else { return }
-            NSLog(
-                "BONDDUOTOUR step=%ld split=%ld width=%.1f fold=%@ tab=%@",
-                step, split == nil ? 0 : 1, paneGeometry.width,
-                paneGeometry.fold.map { "\($0.lowerBound)...\($0.upperBound)" } ?? "none",
-                "\(stops[step])"
-            )
+            guard step < stops.count else { continue }
             withAnimation(.easeInOut(duration: 0.3)) { selection = stops[step] }
         }
     }

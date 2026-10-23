@@ -26,6 +26,10 @@ struct DailyCheckInView: View {
                     content
                 }
             }
+            // The tab view paints its screens white, so without the wash this
+            // was the one tab off the app's warm surface.
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(Color.bondBackgroundGradient.ignoresSafeArea())
             .navigationTitle("Check-In")
             .paywallSheet(isPresented: $isPaywallPresented)
             .task {
