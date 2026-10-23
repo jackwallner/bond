@@ -51,6 +51,17 @@ final class NewcomerAuditUITests: XCTestCase {
         }
     }
 
+    /// Closes whatever sheet is up through its own toolbar button, the way a
+    /// user would, instead of a gesture that may not dismiss it.
+    private func closeSheet(_ labels: [String] = ["Cancel", "Done", "Close"]) {
+        for label in labels where app.buttons[label].firstMatch.waitForExistence(timeout: 2) {
+            app.buttons[label].firstMatch.tap()
+            sleep(1)
+            return
+        }
+        XCTFail("No sheet close button among \(labels)")
+    }
+
     private func log(_ message: String) {
         let attachment = XCTAttachment(string: message)
         attachment.name = "note"
@@ -154,21 +165,36 @@ final class NewcomerAuditUITests: XCTestCase {
             chip.tap()
             sleep(2)
             shot("32-editor-from-chip")
+            let titleField = app.textFields["Title"]
+            XCTAssertTrue(titleField.waitForExistence(timeout: 3), "Editor has no Title field")
+            let titleValue = (titleField.value as? String) ?? "<nil>"
+            log("chip editor: Title value = '\(titleValue)', Save enabled = \(app.buttons["Save"].isEnabled)")
+            XCTAssertTrue(titleValue.contains("Tell them"), "Starter chip did not prefill Title, got '\(titleValue)'")
             app.swipeUp()
             sleep(1)
             shot("33-editor-scrolled")
             app.swipeUp()
             sleep(1)
             shot("34-editor-scrolled-more")
-            tap("Save")
+            if app.buttons["Save"].isEnabled {
+                tap("Save")
+            } else {
+                closeSheet(["Cancel"])
+            }
             sleep(2)
-            shot("35-home-after-save")
+            shot("35-home-after-editor")
         } else {
             XCTFail("No starter chip on empty home")
         }
+        // The editor must be gone before the tab bar is meaningful.
+        XCTAssertTrue(app.tabBars.buttons["Check-In"].waitForExistence(timeout: 5))
 
         // Tabs
         for tab in ["Check-In", "Milestones", "Insights", "Settings"] {
+            guard app.tabBars.buttons[tab].waitForExistence(timeout: 5) else {
+                XCTFail("Missing tab: \(tab)")
+                continue
+            }
             app.tabBars.buttons[tab].tap()
             sleep(2)
             shot("40-tab-\(tab)")
@@ -190,8 +216,7 @@ final class NewcomerAuditUITests: XCTestCase {
         tap("Browse templates")
         sleep(2)
         shot("50-templates")
-        app.swipeDown(velocity: .fast)
-        sleep(1)
+        closeSheet(["Done"])
 
         tap("Add reminder")
         sleep(2)
@@ -202,8 +227,7 @@ final class NewcomerAuditUITests: XCTestCase {
             sleep(1)
             shot("52-new-reminder-keyboard")
         }
-        app.buttons["Cancel"].firstMatch.tap()
-        sleep(1)
+        closeSheet(["Cancel"])
 
         app.tabBars.buttons["Milestones"].tap()
         sleep(1)
