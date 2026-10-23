@@ -65,6 +65,10 @@ phased plan are in the `project_bond` memory and `project-docs/marketing/aso-pla
 - **Never raise a paywall on a beat where the entitlement may still be
   resolving.** `BondApp` checks `!store.isPremium` alongside its own
   one-shot flags (for example the post-pairing paywall) for that reason.
+- **Present sheets with `unfoldedSheet`, never `.sheet`.** On the unfolded
+  iPhone Duo a system sheet sits across the fold; `unfoldedSheet`
+  (`UnfoldedSplit.swift`) keeps the form in one pane there and is an
+  ordinary sheet everywhere else.
 - **Review funnel:** the positive moment is marking a reminder done (swipe Done
   / Handled), never a cold launch, onboarding, pairing success or a paywall
   sheet. Details and the copy: `docs/review-prompt.md`.
@@ -76,7 +80,8 @@ phased plan are in the `project_bond` memory and `project-docs/marketing/aso-pla
 - `.claude/rules/android.md` (`android/**`): the Kotlin/Compose Android port,
   its build, tests, and what differs from iOS.
 - `.claude/rules/iphone-duo.md` (`MainTabView`, `UnfoldedSplit`): the
-  unfolded iPhone Duo's Reminders | Insights split and its capture recipe.
+  unfolded iPhone Duo's Reminders | Insights split, fold-safe sheets and
+  its capture recipe.
 
 ---
 Shared iOS conventions (build, simulator, release/TestFlight, ASC key, signing,

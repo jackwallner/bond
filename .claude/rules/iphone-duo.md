@@ -7,7 +7,7 @@ paths:
   - "BondTests/UnfoldedSplitTests.swift"
 ---
 
-# Bond: iPhone Duo (2026-10-21)
+# Bond: iPhone Duo (2026-10-21, revised 2026-10-23)
 
 - Unfolded (regular width, room for two panes of at least 360 pt),
   `MainTabView` puts the tab view (Reminders, Check-In, Milestones, Settings
@@ -23,21 +23,30 @@ paths:
 - Each tab's content and the Insights pane get `horizontalSizeClass = .compact`
   so they lay out as on a phone. Never set it on the `TabView` itself (other
   fleet apps saw the bar flip placement on a tab switch).
-- `unfoldedBars(isSplit:)`: while split, a hard bottom scroll edge under the
-  floating tab bar. Bar placement stays with the system. Never force it with
-  `toolbarVerticalBehavior(.disabled)`: that inset the whole app 42 pt from
-  both edges of the 951 pt inner display, and the strips captured pure white
-  (no window paint reached them). Bond, Quit Zyn and Electrician all hit it.
-- Measured unfolded (`BONDDUO` log lines): root 867 pt with the status bar as an
-  84 pt column on the display's trailing edge, fold 455.5...495.5, so the
-  panes are 455.5 and 371.5 pt. iOS picks the tab bar per launch: a vertical
-  bar against the fold inside the leading pane (titles level across the fold)
-  or the floating bottom bar, where the leading pane's titles sit about 57 pt
-  lower than Insights'. That offset is not a safe-area inset (both measured
-  0), so padding Insights by the difference does nothing.
+- Split, each tab's screen is clipped to its safe area
+  (`clippedAboveTabBar`), so the leading pane's rows end above the floating
+  tab bar. A hard bottom scroll edge still let them read through it.
+- The tab view first lays out once the width and fold are measured. Since
+  then every inner launch (21 of 21 across three runs, 2026-10-23) got the
+  floating bottom bar in the leading pane; before, iOS sometimes chose a
+  vertical bar against the fold.
+- That bottom-bar tab pane has a horizontal navigation bar, with a row above
+  each large title. Insights took the vertical behaviour with no row, so its
+  title sat 57 pt higher. `horizontalNavigationBar()` disables vertical bars
+  on the Insights pane only (iOS 27.1); the titles are now level, and the
+  status bar moves from an 84 pt trailing column to a top row over Insights.
+  Never disable vertical bars on the root: that inset the whole app 42 pt
+  from both edges of the inner display and left white strips (Bond, Quit Zyn
+  and Electrician all hit it). A compact size class on the `TabView` did not
+  remove the row.
+- Sheets go through `unfoldedSheet` (never `.sheet`). While split
+  (`isUnfoldedSplit`, measured once at the root by
+  `unfoldedSplitEnvironment()`, because panes report compact) it presents a
+  full-screen cover with the content in the leading pane and
+  `UnfoldedBrandPanel` beside it. A system sheet was centred on the display
+  with the fold through the form.
 - Onboarding, invite welcome and pairing success use `.unfoldedLeadingPane`,
-  with `UnfoldedBrandPanel` in the trailing pane. Sheets (editor, templates,
-  paywall, pairing) are still system form sheets centred on the inner display.
+  with `UnfoldedBrandPanel` in the trailing pane.
 - Captures: one `gh-sim all --scheme Bond --device 'iPhone Duo' --args
   "-BondScreenshotSeed -BondDuoTour" --record-seconds 20` with one
   `--screen "-DuoScreen <surface>"` per surface (reminders, checkin,
@@ -47,6 +56,8 @@ paths:
   at Lucia's" through the notification route. Never use `--url`: iOS 27.1
   puts an "Open in" alert over every custom-scheme link. `-BondDuoTour` only
   walks the tabs when no surface is named, so the recording shows real tab
-  changes. `BONDDUO` lines in app.log log the measured width and fold. The
+  changes. `BONDDUO` NSLog lines record the measured width and fold, but
+  gh-sim's app.log came back with empty message bodies on 2026-10-23, so
+  measure from the PNGs (3 px per pt). The
   seed skips the notification primer and never touches Supabase or
   RevenueCat.
