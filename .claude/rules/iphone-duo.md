@@ -2,6 +2,8 @@
 paths:
   - "Bond/BondApp.swift"
   - "Bond/DesignSystem/UnfoldedSplit.swift"
+  - "Bond/DesignSystem/BondStyle.swift"
+  - "Bond/Features/ReminderEditor/ReminderEditorView.swift"
   - "Bond/Features/Stats/StatsView.swift"
   - "Bond/Utilities/BondScreenshotSeed.swift"
   - "BondTests/UnfoldedSplitTests.swift"
@@ -23,9 +25,19 @@ paths:
 - Each tab's content and the Insights pane get `horizontalSizeClass = .compact`
   so they lay out as on a phone. Never set it on the `TabView` itself (other
   fleet apps saw the bar flip placement on a tab switch).
-- Split, each tab's screen is clipped to its safe area
-  (`clippedAboveTabBar`), so the leading pane's rows end above the floating
-  tab bar. A hard bottom scroll edge still let them read through it.
+- Split, each tab applies `clearsFloatingTabBar`: content ends 12 pt above
+  the floating tab bar, and a row that line would slice is hidden whole
+  (`PaneCut`, tested). Rows report their frames: every `bondWarmRow()`
+  (through its row background, so a cut between rows of one card rounds its
+  bottom corners), every `BondSectionHeader` (it goes with its first row)
+  and the Reminders hero cards (`.paneRow()`). A new card in a split tab
+  that is neither needs `.paneRow()`, or the line slices it. Clipping at the
+  bar (run5, 2026-10-23) was rejected: the bar cut the Up next row's chips
+  and Settings' Pink row mid-glyph. A hard scroll edge before that let rows
+  read through the bar. Folded the mask is fully open and nothing reports.
+- Split, Reminders' add button sits in the bar (as on Milestones), not
+  floating over the pane's last row, and Settings takes a large title like
+  the other tabs. Folded both are unchanged.
 - The tab view first lays out once the width and fold are measured. Since
   then every inner launch (38 of 38 across six runs, 2026-10-23) got the
   floating bottom bar in the leading pane; before, iOS sometimes chose a
@@ -44,7 +56,11 @@ paths:
   `unfoldedSplitEnvironment()`, because panes report compact) it presents a
   full-screen cover with the content in the leading pane and
   `UnfoldedBrandPanel` beside it. A system sheet was centred on the display
-  with the fold through the form.
+  with the fold through the form. The reminder editor passes
+  `splitsItself` and fills the other pane with a live preview (the
+  notification, its list row, its love language); the review rejected the
+  brand splash there as placeholder content. Its love-language chips wrap
+  (`FlowLayout`) while split instead of running off the card edge.
 - Onboarding, invite welcome and pairing success use `.unfoldedLeadingPane`,
   with `UnfoldedBrandPanel` in the trailing pane.
 - Captures: one `gh-sim all --scheme Bond --device 'iPhone Duo' --args
