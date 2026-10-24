@@ -138,7 +138,8 @@ final class PaneRows {
 }
 
 extension View {
-    /// See `TabBarClearance` and `PaneCut`. The mask stays in place folded
+    /// See `TabBarClearance` and `PaneCut`. The reminder editor's form uses
+    /// it too, so its rows end whole above the home indicator. The mask stays in place folded
     /// (fully open there), so folding never rebuilds the tab. The wash
     /// behind it fills the strip the tab view would otherwise paint white,
     /// so the bar floats on the page colour, not on a cut-off row.

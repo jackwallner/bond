@@ -126,6 +126,8 @@ struct ReminderEditorView: View {
             }
             .onAppear(perform: hydrate)
         }
+        // Unfolded, the form's last rows end whole above the home indicator.
+        .clearsFloatingTabBar(isUnfoldedSplit)
         // Unfolded, the form sits on the leading side of the fold and the
         // reminder as it will arrive and as it will list sits on the other.
         .unfoldedLeadingPane {
@@ -593,8 +595,11 @@ struct ReminderEditorView: View {
 
 
 /// The unfolded editor's trailing pane: the reminder as the notification
-/// that will arrive and as the row it will be in the list, updating as the
-/// form changes.
+/// that will arrive, the row it will be in the list and its love language,
+/// updating as the form changes. No navigation bar: one here, with its
+/// vertical bars disabled to level the titles, inset the whole cover 42 pt
+/// from both display edges. The title is placed by hand instead, its
+/// baseline level with the form's large title (117.7 pt down on the Duo).
 private struct ReminderPreviewPane: View {
     let reminder: ReminderDTO
     let currentUserId: UUID?
@@ -602,43 +607,51 @@ private struct ReminderPreviewPane: View {
     let audience: String?
     let languageNote: String
 
+    /// Top of the 34 pt title, so its baseline (ascender 1.038 em) sits at
+    /// the large title's.
+    private static let titleTop: CGFloat = 82
+
     var body: some View {
-        NavigationStack {
-            Form {
-                Section {
-                    notification
-                } header: {
-                    BondSectionHeader(title: "How it arrives")
-                }
-                .bondWarmRow()
-
-                Section {
-                    ReminderRow(reminder: reminder, currentUserId: currentUserId)
-                } header: {
-                    BondSectionHeader(title: "In your list")
-                } footer: {
-                    if let audience {
-                        Text(audience)
-                            .font(.bond(.footnote))
-                            .foregroundStyle(.secondary)
-                    }
-                }
-                .bondWarmRow()
-
-                Section {
-                    language
-                } header: {
-                    BondSectionHeader(title: "Love language")
-                }
-                .bondWarmRow()
+        VStack(alignment: .leading, spacing: 0) {
+            Text("Preview")
+                .font(.bond(.largeTitle, weight: .bold))
+                .accessibilityAddTraits(.isHeader)
+                .padding(.top, Self.titleTop)
+            section("How it arrives") { notification }
+            section("In your list", footer: audience) {
+                ReminderRow(reminder: reminder, currentUserId: currentUserId)
             }
-            .bondWarmList()
-            .navigationTitle("Preview")
+            section("Love language") { language }
         }
-        .horizontalNavigationBar()
+        .padding(.horizontal, BondSpacing.l)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        // The status bar sits in the pane's top trailing corner, beside the
+        // title and above the first card.
+        .ignoresSafeArea(edges: [.top, .trailing])
         .environment(\.horizontalSizeClass, .compact)
-        .accessibilityElement(children: .contain)
-        .accessibilityLabel("Preview")
+    }
+
+    private func section<Content: View>(
+        _ title: String,
+        footer: String? = nil,
+        @ViewBuilder content: () -> Content
+    ) -> some View {
+        VStack(alignment: .leading, spacing: BondSpacing.s) {
+            BondSectionHeader(title: title)
+                .padding(.horizontal, BondSpacing.l)
+            content()
+                .padding(.horizontal, BondSpacing.l)
+                .padding(.vertical, BondSpacing.m)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(Color.bondCardFill, in: RoundedRectangle(cornerRadius: 26, style: .continuous))
+            if let footer {
+                Text(footer)
+                    .font(.bond(.footnote))
+                    .foregroundStyle(.secondary)
+                    .padding(.horizontal, BondSpacing.l)
+            }
+        }
+        .padding(.top, BondSpacing.xl)
     }
 
     private var language: some View {
