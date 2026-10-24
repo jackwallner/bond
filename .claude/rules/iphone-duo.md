@@ -27,7 +27,7 @@ paths:
   (`clippedAboveTabBar`), so the leading pane's rows end above the floating
   tab bar. A hard bottom scroll edge still let them read through it.
 - The tab view first lays out once the width and fold are measured. Since
-  then every inner launch (21 of 21 across three runs, 2026-10-23) got the
+  then every inner launch (38 of 38 across six runs, 2026-10-23) got the
   floating bottom bar in the leading pane; before, iOS sometimes chose a
   vertical bar against the fold.
 - That bottom-bar tab pane has a horizontal navigation bar, with a row above
