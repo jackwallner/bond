@@ -8,6 +8,7 @@ struct ReminderListView: View {
     @Environment(PairingService.self) private var pairing
     @Environment(PurchasesService.self) private var store
     @Environment(DailyCheckInService.self) private var checkIn
+    @Environment(\.isUnfoldedSplit) private var isUnfoldedSplit
     @State private var router = NotificationRouter.shared
 
     @State private var isEditorPresented = false
@@ -45,10 +46,25 @@ struct ReminderListView: View {
                 }
             }
             .navigationTitle(BondBrand.name)
+            // Unfolded, add sits in the bar as on Milestones: a floating
+            // button would rest on the pane's last row above the tab bar.
             .safeAreaInset(edge: .bottom, alignment: .trailing) {
-                composeButton
+                if !isUnfoldedSplit { composeButton }
             }
-            .unfoldedSheet(isPresented: $isEditorPresented, onDismiss: { starterPrefill = nil }) {
+            .toolbar {
+                if isUnfoldedSplit {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button {
+                            editingReminder = nil
+                            isEditorPresented = true
+                        } label: {
+                            Image(systemName: "plus")
+                        }
+                        .accessibilityLabel("Add reminder")
+                    }
+                }
+            }
+            .unfoldedSheet(isPresented: $isEditorPresented, onDismiss: { starterPrefill = nil }, splitsItself: true) {
                 ReminderEditorView(
                     existing: editingReminder,
                     prefill: starterPrefill.map { ($0.title, $0.loveLanguage) }
@@ -254,6 +270,7 @@ struct ReminderListView: View {
                         .opacity(0)
                         CheckInPromptCard(state: state, partnerName: partnerName)
                     }
+                    .paneRow()
                     .listRowInsets(Self.heroCardInsets)
                     .listRowBackground(Color.clear)
                     .listRowSeparator(.hidden)
@@ -411,6 +428,7 @@ struct ReminderListView: View {
             },
             onDone: { markDone(reminder) }
         )
+        .paneRow()
         .listRowInsets(Self.heroCardInsets)
         .listRowSeparator(.hidden)
         .listRowBackground(Color.clear)
@@ -573,7 +591,7 @@ private struct HandledRemindersView: View {
         .bondWarmList()
         .navigationTitle("Handled")
         .navigationBarTitleDisplayMode(.inline)
-        .unfoldedSheet(item: $editingReminder) { reminder in
+        .unfoldedSheet(item: $editingReminder, splitsItself: true) { reminder in
             ReminderEditorView(existing: reminder, prefill: nil)
         }
     }

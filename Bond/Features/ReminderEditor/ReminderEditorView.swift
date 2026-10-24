@@ -8,6 +8,7 @@ struct ReminderEditorView: View {
     @Environment(ReminderEventRepository.self) private var eventsRepo
     @Environment(PurchasesService.self) private var store
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.isUnfoldedSplit) private var isUnfoldedSplit
 
     var existing: ReminderDTO?
     /// Optional seed for a brand-new reminder (e.g. tapped from a starter
@@ -125,43 +126,154 @@ struct ReminderEditorView: View {
             }
             .onAppear(perform: hydrate)
         }
+        // Unfolded, the form sits on the leading side of the fold and the
+        // reminder as it will arrive and as it will list sits on the other.
+        .unfoldedLeadingPane {
+            ReminderPreviewPane(
+                reminder: previewReminder,
+                currentUserId: supabase.currentUserId,
+                when: previewWhen,
+                audience: previewAudience,
+                languageNote: previewLanguageNote
+            )
+        }
     }
 
     /// Label on its own line, then one scrollable row of chips clearly below
     /// it - the menu-style picker squeezed the icon+title onto the trailing
-    /// edge where long titles wrapped awkwardly.
+    /// edge where long titles wrapped awkwardly. In the unfolded Duo's pane
+    /// all five wrap into view instead, so none is cut at the card edge.
     private var loveLanguagePicker: some View {
         VStack(alignment: .leading, spacing: BondSpacing.s) {
             Text("Love language")
                 .font(.bond(.body))
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: BondSpacing.s) {
-                    ForEach(LoveLanguage.allCases) { lang in
-                        let selected = lang == loveLanguage
-                        Button {
-                            loveLanguage = lang
-                        } label: {
-                            HStack(spacing: BondSpacing.xs) {
-                                Image(systemName: lang.symbolName)
-                                    .font(.bond(.footnote))
-                                Text(lang.title)
-                                    .font(.bond(.footnote, weight: selected ? .semibold : .regular))
-                            }
-                            .padding(.horizontal, BondSpacing.m)
-                            .padding(.vertical, BondSpacing.s)
-                            .foregroundStyle(selected ? .white : lang.tint)
-                            .background(
-                                selected ? AnyShapeStyle(lang.tint) : AnyShapeStyle(lang.tint.opacity(0.12)),
-                                in: Capsule()
-                            )
-                        }
-                        .buttonStyle(.plain)
-                        .accessibilityAddTraits(selected ? .isSelected : [])
-                    }
+            if isUnfoldedSplit {
+                FlowLayout { loveLanguageChips }
+            } else {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: BondSpacing.s) { loveLanguageChips }
                 }
             }
         }
         .padding(.vertical, BondSpacing.xs)
+    }
+
+    private var loveLanguageChips: some View {
+        ForEach(LoveLanguage.allCases) { lang in
+            let selected = lang == loveLanguage
+            Button {
+                loveLanguage = lang
+            } label: {
+                HStack(spacing: BondSpacing.xs) {
+                    Image(systemName: lang.symbolName)
+                        .font(.bond(.footnote))
+                    Text(lang.title)
+                        .font(.bond(.footnote, weight: selected ? .semibold : .regular))
+                }
+                .padding(.horizontal, BondSpacing.m)
+                .padding(.vertical, BondSpacing.s)
+                .foregroundStyle(selected ? .white : lang.tint)
+                .background(
+                    selected ? AnyShapeStyle(lang.tint) : AnyShapeStyle(lang.tint.opacity(0.12)),
+                    in: Capsule()
+                )
+            }
+            .buttonStyle(.plain)
+            .accessibilityAddTraits(selected ? .isSelected : [])
+        }
+    }
+
+    // MARK: - Unfolded preview
+
+    private var previewTargetId: UUID? {
+        target == .partner && !pairing.solo
+            ? pairing.partnerProfile?.id ?? supabase.currentUserId
+            : supabase.currentUserId
+    }
+
+    /// The form as a reminder, for the preview pane only; `save()` builds
+    /// the stored one.
+    private var previewReminder: ReminderDTO {
+        let me = supabase.currentUserId ?? UUID()
+        var draft = ReminderDTO(
+            id: existing?.id ?? me,
+            coupleId: existing?.coupleId ?? me,
+            authorId: existing?.authorId ?? me,
+            targetId: previewTargetId ?? me,
+            title: title.trimmingCharacters(in: .whitespaces).isEmpty ? "Your reminder" : title,
+            body: noteText.isEmpty ? nil : noteText,
+            loveLanguage: loveLanguage,
+            triggerType: "one_time",
+            fireAt: fireAt,
+            rrule: nil,
+            geofence: nil,
+            windowStart: nil,
+            windowEnd: nil,
+            status: "scheduled",
+            surpriseHiddenFromPartner: target == .partner && surpriseHidden,
+            createdAt: nil
+        )
+        switch triggerKind {
+        case .oneTime:
+            break
+        case .recurring:
+            draft.triggerType = "recurring"
+            draft.rrule = recurrence.rrule
+        case .location:
+            draft.triggerType = "location"
+            draft.fireAt = nil
+            if geofenceConfigured {
+                draft.geofence = Geofence(
+                    latitude: geofenceLatitude,
+                    longitude: geofenceLongitude,
+                    radiusMeters: 200,
+                    label: geofenceLabel
+                )
+            }
+        case .randomWindow:
+            draft.triggerType = "random_window"
+            draft.fireAt = nil
+            draft.windowStart = randomRepeatsDaily ? dailyWindowStart : windowStart
+            draft.windowEnd = randomRepeatsDaily ? dailyWindowEnd : windowEnd
+            draft.rrule = randomRepeatsDaily ? RecurrencePreset.daily.rrule : nil
+        }
+        return draft
+    }
+
+    /// When the nudge lands, in the notification's corner.
+    private var previewWhen: String {
+        switch triggerKind {
+        case .oneTime, .recurring:
+            fireAt.formatted(.dateTime.weekday(.abbreviated).hour().minute())
+        case .location:
+            "At \(geofenceLabel)"
+        case .randomWindow:
+            "Surprise"
+        }
+    }
+
+    /// How the chosen language sits among the couple's other reminders.
+    private var previewLanguageNote: String {
+        let others = repo.reminders.filter { $0.loveLanguage == loveLanguage && $0.id != existing?.id }.count
+        switch others {
+        case 0: return "Your first \(loveLanguage.title) reminder."
+        case 1: return "1 other reminder speaks \(loveLanguage.title)."
+        default: return "\(others) other reminders speak \(loveLanguage.title)."
+        }
+    }
+
+    /// Who sees it, under the list row. Solo has no one to tell.
+    private var previewAudience: String? {
+        guard !pairing.solo else { return nil }
+        let partner = pairing.partnerProfile?.displayName.flatMap { $0.isEmpty ? nil : $0 } ?? "Your partner"
+        switch target {
+        case .me:
+            return "Only you see this one."
+        case .partner:
+            return surpriseHidden
+                ? "A surprise: \(partner) won't see it in their list."
+                : "\(partner) sees it in their list too."
+        }
     }
 
     @ViewBuilder
@@ -479,3 +591,103 @@ struct ReminderEditorView: View {
     }
 }
 
+
+/// The unfolded editor's trailing pane: the reminder as the notification
+/// that will arrive and as the row it will be in the list, updating as the
+/// form changes.
+private struct ReminderPreviewPane: View {
+    let reminder: ReminderDTO
+    let currentUserId: UUID?
+    let when: String
+    let audience: String?
+    let languageNote: String
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                Section {
+                    notification
+                } header: {
+                    BondSectionHeader(title: "How it arrives")
+                }
+                .bondWarmRow()
+
+                Section {
+                    ReminderRow(reminder: reminder, currentUserId: currentUserId)
+                } header: {
+                    BondSectionHeader(title: "In your list")
+                } footer: {
+                    if let audience {
+                        Text(audience)
+                            .font(.bond(.footnote))
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                .bondWarmRow()
+
+                Section {
+                    language
+                } header: {
+                    BondSectionHeader(title: "Love language")
+                }
+                .bondWarmRow()
+            }
+            .bondWarmList()
+            .navigationTitle("Preview")
+        }
+        .horizontalNavigationBar()
+        .environment(\.horizontalSizeClass, .compact)
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Preview")
+    }
+
+    private var language: some View {
+        HStack(spacing: BondSpacing.m) {
+            Image(systemName: reminder.loveLanguage.symbolName)
+                .font(.bond(.body))
+                .foregroundStyle(reminder.loveLanguage.tint)
+                .frame(width: 38, height: 38)
+                .background(reminder.loveLanguage.tint.opacity(0.12), in: Circle())
+                .accessibilityHidden(true)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(reminder.loveLanguage.title)
+                    .font(.bond(.headline))
+                Text(languageNote)
+                    .font(.bond(.subheadline))
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .padding(.vertical, BondSpacing.xs)
+    }
+
+    private var notification: some View {
+        HStack(alignment: .top, spacing: BondSpacing.m) {
+            Image(systemName: "heart.text.square.fill")
+                .font(.system(size: 22))
+                .foregroundStyle(.white)
+                .frame(width: 38, height: 38)
+                .background(Color.bondAccent.gradient, in: RoundedRectangle(cornerRadius: 9, style: .continuous))
+                .accessibilityHidden(true)
+            VStack(alignment: .leading, spacing: 2) {
+                HStack {
+                    Text(BondBrand.name)
+                        .font(.bond(.caption, weight: .semibold))
+                        .foregroundStyle(.secondary)
+                    Spacer()
+                    Text(when)
+                        .font(.bond(.caption))
+                        .foregroundStyle(.secondary)
+                }
+                Text(reminder.title)
+                    .font(.bond(.subheadline, weight: .semibold))
+                    .lineLimit(2)
+                if let body = reminder.body, !body.isEmpty {
+                    Text(body)
+                        .font(.bond(.subheadline))
+                        .lineLimit(3)
+                }
+            }
+        }
+        .padding(.vertical, BondSpacing.xs)
+    }
+}

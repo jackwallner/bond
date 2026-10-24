@@ -140,8 +140,10 @@ extension View {
 
     /// Row background for grouped rows on the warm wash: the brightest warm
     /// white instead of the system's cold `secondarySystemGroupedBackground`.
+    /// In the unfolded Duo's leading pane it reports the row, so the tab bar
+    /// line hides it whole rather than slicing it (`PaneCut`).
     func bondWarmRow() -> some View {
-        listRowBackground(Color.bondCardFill)
+        paneListRowBackground(Color.bondCardFill)
     }
 }
 
@@ -156,5 +158,6 @@ struct BondSectionHeader: View {
             .font(.bond(.footnote, weight: .semibold))
             .foregroundStyle(tint)
             .textCase(nil)
+            .paneRow(keepsWithNext: true)
     }
 }

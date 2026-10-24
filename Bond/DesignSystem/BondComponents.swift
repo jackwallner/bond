@@ -236,3 +236,53 @@ struct BondSealedCard: View {
         .accessibilityLabel("\(title). \(hint).")
     }
 }
+
+/// Where `FlowLayout` puts each subview: left to right, wrapping to a new row
+/// when the next one would pass `width`.
+struct FlowRows: Equatable, Sendable {
+    var origins: [CGPoint]
+    var size: CGSize
+
+    static func make(sizes: [CGSize], width: CGFloat, spacing: CGFloat) -> FlowRows {
+        var origins: [CGPoint] = []
+        var x: CGFloat = 0
+        var y: CGFloat = 0
+        var rowHeight: CGFloat = 0
+        var maxX: CGFloat = 0
+        for size in sizes {
+            if x > 0, x + size.width > width {
+                x = 0
+                y += rowHeight + spacing
+                rowHeight = 0
+            }
+            origins.append(CGPoint(x: x, y: y))
+            maxX = max(maxX, x + size.width)
+            x += size.width + spacing
+            rowHeight = max(rowHeight, size.height)
+        }
+        return FlowRows(origins: origins, size: CGSize(width: maxX, height: y + rowHeight))
+    }
+}
+
+/// Chips that wrap onto more rows instead of running off the edge.
+struct FlowLayout: Layout {
+    var spacing: CGFloat = BondSpacing.s
+
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        rows(width: proposal.width ?? .infinity, subviews: subviews).size
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        let rows = rows(width: bounds.width, subviews: subviews)
+        for (subview, origin) in zip(subviews, rows.origins) {
+            subview.place(
+                at: CGPoint(x: bounds.minX + origin.x, y: bounds.minY + origin.y),
+                proposal: .unspecified
+            )
+        }
+    }
+
+    private func rows(width: CGFloat, subviews: Subviews) -> FlowRows {
+        FlowRows.make(sizes: subviews.map { $0.sizeThatFits(.unspecified) }, width: width, spacing: spacing)
+    }
+}

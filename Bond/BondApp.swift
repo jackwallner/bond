@@ -546,19 +546,19 @@ struct MainTabView: View {
         TabView(selection: $selection) {
             ReminderListView()
                 .environment(\.horizontalSizeClass, paneSizeClass)
-                .clippedAboveTabBar(split != nil)
+                .clearsFloatingTabBar(split != nil)
                 .tag(Tab.reminders)
                 .tabItem { Label("Reminders", systemImage: "bell.fill") }
 
             DailyCheckInView()
                 .environment(\.horizontalSizeClass, paneSizeClass)
-                .clippedAboveTabBar(split != nil)
+                .clearsFloatingTabBar(split != nil)
                 .tag(Tab.checkIn)
                 .tabItem { Label("Check-In", systemImage: "questionmark.bubble.fill") }
 
             MilestonesView()
                 .environment(\.horizontalSizeClass, paneSizeClass)
-                .clippedAboveTabBar(split != nil)
+                .clearsFloatingTabBar(split != nil)
                 .tag(Tab.milestones)
                 .tabItem { Label("Milestones", systemImage: "calendar") }
 
@@ -570,7 +570,7 @@ struct MainTabView: View {
 
             NavigationStack { SettingsView() }
                 .environment(\.horizontalSizeClass, paneSizeClass)
-                .clippedAboveTabBar(split != nil)
+                .clearsFloatingTabBar(split != nil)
                 .tag(Tab.settings)
                 .tabItem { Label("Settings", systemImage: "gearshape.fill") }
         }

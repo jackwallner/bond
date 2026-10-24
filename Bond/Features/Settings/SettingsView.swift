@@ -5,6 +5,7 @@ struct SettingsView: View {
     @Environment(SupabaseService.self) private var supabase
     @Environment(PurchasesService.self) private var purchases
     @Environment(PairingService.self) private var pairing
+    @Environment(\.isUnfoldedSplit) private var isUnfoldedSplit
     @State private var theme = BondTheme.shared
 
     @State private var confirmSignOut = false
@@ -215,7 +216,8 @@ struct SettingsView: View {
         }
         .bondWarmList()
         .navigationTitle("Settings")
-        .navigationBarTitleDisplayMode(.inline)
+        // Large beside the other tabs' titles in the unfolded Duo's pane.
+        .navigationBarTitleDisplayMode(isUnfoldedSplit ? .large : .inline)
         .task {
             notificationStatus = await UNUserNotificationCenter.current()
                 .notificationSettings().authorizationStatus
