@@ -59,8 +59,14 @@ paths:
   with the fold through the form. The reminder editor passes
   `splitsItself` and fills the other pane with a live preview (the
   notification, its list row, its love language); the review rejected the
-  brand splash there as placeholder content. Its love-language chips wrap
-  (`FlowLayout`) while split instead of running off the card edge.
+  brand splash there as placeholder content. The preview has no navigation
+  bar: a NavigationStack there with `horizontalNavigationBar()` inset the
+  whole cover 42 pt from both display edges (inside a cover the modifier
+  acts like it does on the root). Its title is placed by hand with its
+  baseline at the form's large title (117.7 pt). The form takes
+  `clearsFloatingTabBar` too, so its last rows end whole above the home
+  indicator. Its love-language chips wrap (`FlowLayout`) while split
+  instead of running off the card edge.
 - Onboarding, invite welcome and pairing success use `.unfoldedLeadingPane`,
   with `UnfoldedBrandPanel` in the trailing pane.
 - Captures: one `gh-sim all --scheme Bond --device 'iPhone Duo' --args
