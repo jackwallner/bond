@@ -103,7 +103,7 @@ struct SettingsView: View {
                     Button {
                         isPaywallPresented = true
                     } label: {
-                        Label("Try \(BondBrand.plusName) free", systemImage: "sparkles")
+                        Label("Explore \(BondBrand.plusName)", systemImage: "sparkles")
                             .font(.bond(.body, weight: .semibold))
                             .foregroundStyle(Color.bondAccent)
                     }

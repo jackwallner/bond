@@ -128,6 +128,25 @@ final class OnboardingPreferences {
     }
 }
 
+@MainActor
+enum OnboardingPurchaseRecovery {
+    static func resolve(
+        _ result: PurchaseState,
+        isPremium: () -> Bool,
+        restore: () async -> Void
+    ) async -> Bool {
+        switch result {
+        case .cancelled:
+            return false
+        case .purchased:
+            return isPremium()
+        case .pending:
+            await restore()
+            return isPremium()
+        }
+    }
+}
+
 struct IntentSetupView: View {
     /// `.solo` is the full first-run flow (name → commit → love language →
     /// focus areas) ending in solo-couple creation. `.invitee` is the
@@ -143,6 +162,9 @@ struct IntentSetupView: View {
     @State private var isFinishing = false
     @State private var showInvitePairing = false
     @State private var isPurchasing = false
+    @State private var isRestoring = false
+    @State private var isPendingPurchase = false
+    @State private var showRestoreResult = false
     @State private var purchaseError: String?
     @State private var showFallbackPaywall = false
     @FocusState private var nameFocused: Bool
@@ -176,7 +198,7 @@ struct IntentSetupView: View {
                 case 1: commitStep
                 case 2: loveLanguageStep
                 case 3: focusAreasStep
-                default: OnboardingTrialView(displayName: displayName)
+                default: OnboardingTrialView(displayName: displayName, offersTrial: introEligible)
                 }
             }
             .transition(.opacity)
@@ -200,6 +222,16 @@ struct IntentSetupView: View {
             if store.products.isEmpty {
                 Task { await store.fetchProducts() }
             }
+        }
+        .onChange(of: store.isPremium) { _, isPremium in
+            if isTrialStep, isPendingPurchase, isPremium, !isPurchasing, !isRestoring {
+                Task { await finish() }
+            }
+        }
+        .alert("Restore Purchases", isPresented: $showRestoreResult) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(store.lastError ?? "No active Little Gestures+ purchase found for this Apple ID.")
         }
         // "Have an invite code?" - a fresh install whose partner already uses
         // Bond shouldn't have to finish solo setup just to reach Settings →
@@ -241,7 +273,7 @@ struct IntentSetupView: View {
                 if let purchaseError {
                     Text(purchaseError)
                         .font(.bond(.caption2))
-                        .foregroundStyle(.red)
+                        .foregroundStyle(isPendingPurchase ? Color.secondary : Color.red)
                         .multilineTextAlignment(.center)
                         .fixedSize(horizontal: false, vertical: true)
                 }
@@ -253,7 +285,7 @@ struct IntentSetupView: View {
             ) {
                 advance()
             }
-            .disabled(!canContinue)
+            .disabled(!canContinue || isPurchasing || isRestoring || isFinishing || isPendingPurchase)
 
             if isTrialStep {
                 Button { Task { await finish() } } label: {
@@ -263,7 +295,7 @@ struct IntentSetupView: View {
                         .frame(maxWidth: .infinity, minHeight: 34)
                 }
                 .buttonStyle(.plain)
-                .disabled(isPurchasing || isFinishing)
+                .disabled(isPurchasing || isRestoring || isFinishing)
             }
 
             legalFooterSlot
@@ -280,16 +312,23 @@ struct IntentSetupView: View {
                 VStack(spacing: BondSpacing.xs) {
                     Button {
                         Task {
+                            isRestoring = true
+                            defer { isRestoring = false }
                             await store.restore()
                             if store.isPremium { await finish() }
+                            else { showRestoreResult = true }
                         }
                     } label: {
-                        Text("Restore Purchases")
-                            .font(.bond(.caption, weight: .medium))
-                            .foregroundStyle(.secondary)
+                        if isRestoring {
+                            ProgressView()
+                        } else {
+                            Text("Restore Purchases")
+                                .font(.bond(.caption, weight: .medium))
+                                .foregroundStyle(.secondary)
+                        }
                     }
                     .buttonStyle(.plain)
-                    .disabled(isPurchasing || isFinishing)
+                    .disabled(isPurchasing || isRestoring || isFinishing)
 
                     HStack(spacing: BondSpacing.xs) {
                         Link("Terms", destination: PaywallLinks.terms)
@@ -377,6 +416,7 @@ struct IntentSetupView: View {
     /// otherwise a plain upgrade label (never promise a trial StoreKit won't
     /// honor for a previously-subscribed Apple ID).
     private var trialCTATitle: String {
+        if isPendingPurchase { return "Purchase pending" }
         if introEligible {
             return "Try Little Gestures+ Free"
         }
@@ -405,11 +445,19 @@ struct IntentSetupView: View {
         Task { @MainActor in
             defer { isPurchasing = false }
             do {
-                switch try await store.purchase(package) {
-                case .purchased, .pending:
+                let result = try await store.purchase(package)
+                if case .pending = result {
+                    isPendingPurchase = true
+                    purchaseError = "Finalizing your purchase…"
+                }
+                if await OnboardingPurchaseRecovery.resolve(
+                    result,
+                    isPremium: { store.isPremium },
+                    restore: { await store.restore() }
+                ) {
                     await finish()
-                case .cancelled:
-                    break
+                } else if isPendingPurchase {
+                    purchaseError = "Your payment went through but we're still syncing it. Tap Restore Purchases to finish unlocking."
                 }
             } catch {
                 purchaseError = store.lastError ?? "Couldn't complete the purchase. Please try again."
@@ -557,6 +605,7 @@ struct IntentSetupView: View {
     }
 
     private func finish() async {
+        guard !isFinishing else { return }
         switch mode {
         case .solo:
             isFinishing = true

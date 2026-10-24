@@ -201,7 +201,7 @@ private fun TrialOfferSheet(
                 Icon(Icons.Rounded.AutoAwesome, null, tint = Color.White, modifier = Modifier.size(28.dp))
             }
             BText(PaywallCopy.trialHeadline(offerLabel), BondType.title3.bold, colors.accent, align = TextAlign.Center)
-            BText(PlusBenefits.trialSubheadline(isSolo), BondType.footnote, colors.inkSecondary, align = TextAlign.Center)
+            BText(if (offerLabel != null) PlusBenefits.trialSubheadline(isSolo) else PlusBenefits.paywallSubheadline(isSolo), BondType.footnote, colors.inkSecondary, align = TextAlign.Center)
             PlusBenefits.benefits(isSolo).take(2).forEach { benefit ->
                 BenefitRow(benefit, Modifier.clip(RoundedCornerShape(Radius.card)).background(colors.cardFill).padding(horizontal = Spacing.s, vertical = Spacing.xs))
             }

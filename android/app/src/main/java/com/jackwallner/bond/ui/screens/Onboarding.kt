@@ -77,6 +77,7 @@ import com.jackwallner.bond.data.PlanKind
 import com.jackwallner.bond.data.PurchaseException
 import com.jackwallner.bond.data.PurchaseOutcome
 import com.jackwallner.bond.data.StoreLinks
+import com.jackwallner.bond.data.resolveOnboardingPurchase
 import com.jackwallner.bond.model.FocusArea
 import com.jackwallner.bond.model.LoveLanguage
 import com.jackwallner.bond.ui.LocalGraph
@@ -135,6 +136,8 @@ fun IntentSetupScreen(mode: IntentMode) {
     var name by remember { mutableStateOf(prefs.partnerName) }
     var isFinishing by remember { mutableStateOf(false) }
     var isPurchasing by remember { mutableStateOf(false) }
+    var isRestoring by remember { mutableStateOf(false) }
+    var isPendingPurchase by remember { mutableStateOf(false) }
     var purchaseError by remember { mutableStateOf<String?>(null) }
 
     val trimmed = name.trim()
@@ -149,6 +152,7 @@ fun IntentSetupScreen(mode: IntentMode) {
     }
 
     suspend fun finish() {
+        if (isFinishing) return
         when (mode) {
             IntentMode.SOLO -> {
                 isFinishing = true
@@ -157,6 +161,10 @@ fun IntentSetupScreen(mode: IntentMode) {
             }
             IntentMode.INVITEE -> prefs.markCommitted(Instant.now())
         }
+    }
+
+    LaunchedEffect(store.isPremium, isPendingPurchase, isPurchasing, isRestoring) {
+        if (isTrialStep && isPendingPurchase && store.isPremium && !isPurchasing && !isRestoring) finish()
     }
 
     fun openFallbackPaywall() {
@@ -196,9 +204,15 @@ fun IntentSetupScreen(mode: IntentMode) {
                     isPurchasing = true
                     scope.launch {
                         try {
-                            when (store.purchase(activity, plan)) {
-                                PurchaseOutcome.PURCHASED, PurchaseOutcome.PENDING -> finish()
-                                PurchaseOutcome.CANCELLED -> Unit
+                            val result = store.purchase(activity, plan)
+                            if (result == PurchaseOutcome.PENDING) {
+                                isPendingPurchase = true
+                                purchaseError = "Finalizing your purchase…"
+                            }
+                            if (resolveOnboardingPurchase(result, { store.isPremium }, { store.restore() })) {
+                                finish()
+                            } else if (isPendingPurchase) {
+                                purchaseError = "Your payment went through but we're still syncing it. Tap Restore Purchases to finish unlocking."
                             }
                         } catch (e: PurchaseException) {
                             purchaseError = store.lastError ?: e.message ?: "Couldn't complete the purchase. Please try again."
@@ -220,7 +234,11 @@ fun IntentSetupScreen(mode: IntentMode) {
         0, 2 -> "Continue"
         1 -> "I commit to showing up for $displayName"
         3 -> "Start using Little Gestures"
-        else -> if (introEligible) "Try ${Membership.PLUS} Free" else "Get ${Membership.PLUS}"
+        else -> when {
+            isPendingPurchase -> "Purchase pending"
+            introEligible -> "Try ${Membership.PLUS} Free"
+            else -> "Get ${Membership.PLUS}"
+        }
     }
 
     Column(Modifier.fillMaxSize().statusBarsPadding().navigationBarsPadding().imePadding().testTag("intent.step$step")) {
@@ -257,25 +275,35 @@ fun IntentSetupScreen(mode: IntentMode) {
                     }
                 }
                 disclosure?.let { BText(it, BondType.caption2, Bond.colors.inkTertiary, align = TextAlign.Center, modifier = Modifier.testTag("intent.trial.disclosure")) }
-                purchaseError?.let { BText(it, BondType.caption2, Bond.colors.danger, align = TextAlign.Center) }
+                purchaseError?.let { BText(it, BondType.caption2, if (isPendingPurchase) Bond.colors.inkSecondary else Bond.colors.danger, align = TextAlign.Center) }
             }
             PrimaryButton(
-                continueTitle, enabled = canContinue, isLoading = isFinishing || isPurchasing, tag = "intent.continue",
+                continueTitle, enabled = canContinue && !isPurchasing && !isRestoring && !isFinishing && !isPendingPurchase, isLoading = isFinishing || isPurchasing, tag = "intent.continue",
                 onClick = ::advance,
             )
             if (isTrialStep) {
                 TextLink(
-                    "Continue for free", color = Bond.colors.inkSecondary, enabled = !isPurchasing && !isFinishing,
+                    "Continue for free", color = Bond.colors.inkSecondary, enabled = !isPurchasing && !isRestoring && !isFinishing,
                     modifier = Modifier.fillMaxWidth(), tag = "intent.continueFree",
                 ) { scope.launch { finish() } }
             }
             Box(Modifier.heightIn(min = 44.dp).fillMaxWidth(), contentAlignment = Alignment.Center) {
                 if (isTrialStep) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        TextLink("Restore Purchases", style = BondType.caption, color = Bond.colors.inkSecondary, enabled = !isPurchasing && !isFinishing) {
-                            scope.launch {
-                                store.restore()
-                                if (store.isPremium) finish()
+                        if (isRestoring) {
+                            CircularProgressIndicator(color = Bond.colors.accent, modifier = Modifier.size(20.dp))
+                        } else {
+                            TextLink("Restore Purchases", style = BondType.caption, color = Bond.colors.inkSecondary, enabled = !isPurchasing && !isFinishing) {
+                                isRestoring = true
+                                scope.launch {
+                                    try {
+                                        store.restore()
+                                        if (store.isPremium) finish()
+                                        else purchaseError = store.lastError ?: "No active ${Membership.PLUS} purchase found for this Google account."
+                                    } finally {
+                                        isRestoring = false
+                                    }
+                                }
                             }
                         }
                         Row(verticalAlignment = Alignment.CenterVertically) {

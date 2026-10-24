@@ -31,7 +31,7 @@ struct PaywallFlowSheet: View {
             } else {
                 TrialOfferSheet(
                     isSolo: isSolo,
-                    offerLabel: trialPackage?.bondIntroOfferLabel,
+                    offerLabel: trialPackage.flatMap { purchases.isEligibleForIntroOffer($0) ? $0.bondIntroOfferLabel : nil },
                     priceLabel: trialPackage?.bondPriceLabel,
                     isPurchasing: isPurchasing,
                     errorMessage: errorMessage,

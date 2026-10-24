@@ -11,6 +11,8 @@ import com.jackwallner.bond.data.PaywallCopy
 import com.jackwallner.bond.data.PeriodUnit
 import com.jackwallner.bond.data.PlanInfo
 import com.jackwallner.bond.data.PlanKind
+import com.jackwallner.bond.data.PurchaseOutcome
+import com.jackwallner.bond.data.resolveOnboardingPurchase
 import com.jackwallner.bond.data.ReviewAccess
 import com.jackwallner.bond.data.ReviewPromptTracker
 import com.jackwallner.bond.model.FocusArea
@@ -40,6 +42,7 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
+import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
 /** The daily question must resolve to the same row on both platforms, so these numbers come from Swift. */
@@ -360,6 +363,13 @@ class PaywallCopyTests {
         )
     }
 
+    @Test fun nonTrialDisclosureDoesNotImplyDeferredBilling() {
+        val disclosure = PaywallCopy.trialBillingDisclosure(null, yearly.priceLabel)!!
+        assertFalse(disclosure.contains("Then"))
+        assertFalse(disclosure.contains("No payment today"))
+        assertTrue(disclosure.contains("Payment is charged"))
+    }
+
     @Test fun yearlyBadgeShowsTheSavingAgainstMonthly() {
         assertEquals("SAVE 58%", PaywallCopy.badge(yearly, monthly))
         assertEquals("BEST VALUE", PaywallCopy.badge(yearly, null))
@@ -505,5 +515,30 @@ class SchedulerTests {
         val spec = NotificationSpec("x", "Title", null, at(2026, 10, 19, 9), UUID.randomUUID(), RecurrencePreset.MONTHLY, at(2026, 1, 19, 9))
         assertEquals(spec, AlarmNotificationScheduler.parse(AlarmNotificationScheduler.json(spec)))
         assertNotNull(AlarmNotificationScheduler.parse(AlarmNotificationScheduler.json(spec.copy(reminderId = null, repeat = null, anchor = null))))
+    }
+}
+
+class OnboardingPurchaseTests {
+    @Test fun pendingPurchaseStaysInOnboardingWithoutPremium() = runTest {
+        var restored = false
+        val completed = resolveOnboardingPurchase(PurchaseOutcome.PENDING, { false }, { restored = true })
+        assertTrue(restored)
+        assertFalse(completed)
+    }
+
+    @Test fun pendingPurchaseCompletesOnlyAfterRestoreUnlocksPremium() = runTest {
+        var premium = false
+        assertTrue(resolveOnboardingPurchase(PurchaseOutcome.PENDING, { premium }, { premium = true }))
+    }
+
+    @Test fun cancellationDoesNotFinishOrRestore() = runTest {
+        var restored = false
+        assertFalse(resolveOnboardingPurchase(PurchaseOutcome.CANCELLED, { true }, { restored = true }))
+        assertFalse(restored)
+    }
+
+    @Test fun purchasedStillRequiresPremium() = runTest {
+        assertFalse(resolveOnboardingPurchase(PurchaseOutcome.PURCHASED, { false }, {}))
+        assertTrue(resolveOnboardingPurchase(PurchaseOutcome.PURCHASED, { true }, {}))
     }
 }

@@ -30,23 +30,23 @@ struct TrialOfferSheet: View {
         return "Unlock your full Little Gestures plan."
     }
 
-    private var subheadline: String {
+    var subheadline: String {
         if trialPeriodPhrase != nil {
             return BondPlusBenefits.trialSubheadline(isSolo: isSolo)
         }
-        return BondPlusBenefits.trialSubheadline(isSolo: isSolo)
+        return BondPlusBenefits.paywallSubheadline(isSolo: isSolo)
     }
 
     private var trialBullets: [BondPlusBenefit] {
         Array(BondPlusBenefits.benefits(isSolo: isSolo).prefix(2))
     }
 
-    private var billingDisclosure: String? {
+    var billingDisclosure: String? {
         guard let priceLabel else { return nil }
         if let period = trialPeriodPhrase {
             return "No payment today. Free for \(period), then \(priceLabel). Cancel anytime in App Store settings."
         }
-        return "Then \(priceLabel). Auto-renews unless cancelled 24h before trial ends."
+        return "\(priceLabel). Payment charged to your Apple ID. Auto-renews unless cancelled."
     }
 
     var body: some View {

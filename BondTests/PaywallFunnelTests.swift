@@ -121,3 +121,69 @@ struct PaywallFunnelTests {
         }
     }
 }
+
+@MainActor
+struct PurchaseUXTests {
+    private func trialSheet(offerLabel: String?, isSolo: Bool) -> TrialOfferSheet {
+        TrialOfferSheet(
+            isSolo: isSolo, offerLabel: offerLabel, priceLabel: "$39.99 / year",
+            isPurchasing: false, errorMessage: nil,
+            onStartTrial: {}, onSeeAllPlans: {}, onDismiss: {}
+        )
+    }
+
+    @Test func onboardingTrialPromiseRequiresEligibility() {
+        #expect(!OnboardingTrialView(displayName: "Sam").subtitle.contains("free trial"))
+        #expect(!OnboardingTrialView(displayName: "Sam", offersTrial: false).subtitle.contains("free trial"))
+        #expect(OnboardingTrialView(displayName: "Sam", offersTrial: true).subtitle.contains("free trial"))
+    }
+
+    @Test func compactOfferDoesNotPromiseFreeAccessWithoutEligibility() {
+        for isSolo in [true, false] {
+            let sheet = trialSheet(offerLabel: nil, isSolo: isSolo)
+            #expect(!sheet.subheadline.contains("No payment today"))
+            #expect(sheet.billingDisclosure?.contains("trial") == false)
+            #expect(sheet.billingDisclosure?.contains("Payment charged") == true)
+            let eligible = trialSheet(offerLabel: "7-day free trial", isSolo: isSolo)
+            #expect(eligible.subheadline.contains("No payment today"))
+            #expect(eligible.billingDisclosure?.contains("Free for 7 days") == true)
+        }
+    }
+
+    @Test func pendingPurchaseWaitsForPremiumAfterRestore() async {
+        var restored = false
+        let completed = await OnboardingPurchaseRecovery.resolve(
+            .pending, isPremium: { false }, restore: { restored = true }
+        )
+        #expect(restored)
+        #expect(!completed)
+    }
+
+    @Test func pendingPurchaseCanFinishWhenRestoreUnlocksPremium() async {
+        var premium = false
+        let completed = await OnboardingPurchaseRecovery.resolve(
+            .pending, isPremium: { premium }, restore: { premium = true }
+        )
+        #expect(completed)
+    }
+
+    @Test func cancelledPurchaseNeverFinishesOrRestores() async {
+        var restored = false
+        let completed = await OnboardingPurchaseRecovery.resolve(
+            .cancelled, isPremium: { true }, restore: { restored = true }
+        )
+        #expect(!completed)
+        #expect(!restored)
+    }
+
+    @Test func purchasedStillRequiresPremium() async {
+        let unresolved = await OnboardingPurchaseRecovery.resolve(
+            .purchased, isPremium: { false }, restore: {}
+        )
+        #expect(!unresolved)
+        let completed = await OnboardingPurchaseRecovery.resolve(
+            .purchased, isPremium: { true }, restore: {}
+        )
+        #expect(completed)
+    }
+}

@@ -19,7 +19,7 @@ enum PremiumFeature {
         }
     }
 
-    var ctaTitle: String { "Try Little Gestures+ free" }
+    var ctaTitle: String { "Explore Little Gestures+" }
 }
 
 /// Restore button shared by every gate card. Restoring success flips
@@ -67,7 +67,7 @@ struct BondUnlockCard: View {
     let icon: String
     let headline: String
     let subhead: String
-    var ctaTitle: String = "Try Little Gestures+ free"
+    var ctaTitle: String = "Explore Little Gestures+"
     @Binding var isPaywallPresented: Bool
     /// Adds outer padding when the card sits in a Form row whose insets have
     /// been zeroed (so it doesn't run edge-to-edge).

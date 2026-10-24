@@ -214,7 +214,7 @@ object PaywallCopy {
         priceLabel ?: return null
         val period = trialPeriodPhrase(offerLabel)
         return if (period != null) "No payment today. Free for $period, then $priceLabel. Cancel anytime in Google Play."
-        else "Then $priceLabel. Renews automatically until you cancel in Google Play."
+        else "$priceLabel. Payment is charged to your Google Play account. Renews automatically until you cancel in Google Play."
     }
 
     /** The plan badge: "SAVE 58%" on yearly against monthly, else "BEST VALUE" on yearly. */
@@ -232,6 +232,19 @@ object PaywallCopy {
 }
 
 enum class PurchaseOutcome { PURCHASED, PENDING, CANCELLED }
+
+internal suspend fun resolveOnboardingPurchase(
+    result: PurchaseOutcome,
+    isPremium: () -> Boolean,
+    restore: suspend () -> Unit,
+): Boolean = when (result) {
+    PurchaseOutcome.CANCELLED -> false
+    PurchaseOutcome.PURCHASED -> isPremium()
+    PurchaseOutcome.PENDING -> {
+        restore()
+        isPremium()
+    }
+}
 
 class PurchaseException(message: String, val suggestsRestore: Boolean = false) : Exception(message)
 
