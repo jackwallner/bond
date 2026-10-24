@@ -55,12 +55,14 @@ extension GeometryProxy {
 extension View {
     /// Split, the floating tab bar sits over the leading pane's last rows, and
     /// even a hard scroll edge let them read through it. Clipping a tab's
-    /// screen to its safe area ends the rows above the bar. Every other width
-    /// keeps the ordinary glass bar over scrolling content.
+    /// screen to its safe area ends the rows above the bar, and the wash
+    /// behind it fills the strip the tab view would otherwise paint white.
+    /// Every other width keeps the ordinary glass bar over scrolling content.
     func clippedAboveTabBar(_ isSplit: Bool) -> some View {
         mask {
             Rectangle().ignoresSafeArea(edges: isSplit ? [.top, .horizontal] : .all)
         }
+        .background(Color.bondBackgroundGradient.ignoresSafeArea())
     }
 }
 
