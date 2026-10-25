@@ -19,6 +19,6 @@ Bezplatná verzia zahŕňa vlastné pripomienky. Platená verzia pridáva hotov�
 
 Praktický nástroj, ako tu byť pre partnera, nie verejný sociálny kanál, zoznamka ani párová terapia.
 
-Mesačný plán stojí US$2.99 a ročný US$19.99. Obe predplatné sa automaticky obnovujú a pri nároku ponúkajú 7-dňovú bezplatnú skúšku. Apple zaúčtuje platbu na tvoj účet Apple pri potvrdení nákupu alebo po oprávnenej skúške. Ak nárok nemáš, platba sa zaúčtuje pri potvrdení. Poplatok za obnovenie sa účtuje do 24 hodín pred koncom aktuálneho obdobia. Spravuj alebo zruš v Nastavenia › Účet Apple › Predplatné aspoň 24 hodín pred koncom. Ceny sa líšia podľa regiónu a zobrazia sa pred nákupom.
+Obe predplatné sa automaticky obnovujú a pri nároku ponúkajú 7-dňovú bezplatnú skúšku. Apple zaúčtuje platbu na tvoj účet Apple pri potvrdení nákupu alebo po oprávnenej skúške. Ak nárok nemáš, platba sa zaúčtuje pri potvrdení. Poplatok za obnovenie sa účtuje do 24 hodín pred koncom aktuálneho obdobia. Spravuj alebo zruš v Nastavenia › Účet Apple › Predplatné aspoň 24 hodín pred koncom. Ceny sa líšia podľa regiónu a zobrazia sa pred nákupom.
 Zásady ochrany súkromia: https://jackwallner.github.io/bond/privacy/
 Podmienky používania (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/

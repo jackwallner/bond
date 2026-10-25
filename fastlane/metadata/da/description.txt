@@ -19,6 +19,6 @@ Gratisversionen indeholder dine egne påmindelser. Den betalte version tilføjer
 
 Et praktisk værktøj til at være der for din partner, ikke et offentligt socialt feed, en datingtjeneste eller parterapi.
 
-Månedsplanen koster US$2.99, og årsplanen koster US$19.99. Begge fornyes automatisk og har en gratis prøveperiode på 7 dage, hvis du er berettiget. Apple opkræver din Apple-konto ved bekræftelse af købet eller efter en berettiget prøveperiode. Hvis du ikke er berettiget, opkræves du ved bekræftelse. Fornyelsesbeløbet opkræves inden for de sidste 24 timer før periodens udløb. Administrer eller opsig i Indstillinger › Apple-konto › Abonnementer mindst 24 timer før periodens udløb. Priser varierer efter område og vises før køb.
+Begge fornyes automatisk og har en gratis prøveperiode på 7 dage, hvis du er berettiget. Apple opkræver din Apple-konto ved bekræftelse af købet eller efter en berettiget prøveperiode. Hvis du ikke er berettiget, opkræves du ved bekræftelse. Fornyelsesbeløbet opkræves inden for de sidste 24 timer før periodens udløb. Administrer eller opsig i Indstillinger › Apple-konto › Abonnementer mindst 24 timer før periodens udløb. Priser varierer efter område og vises før køb.
 Privatlivspolitik: https://jackwallner.github.io/bond/privacy/
 Brugsbetingelser (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/

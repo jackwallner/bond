@@ -19,6 +19,6 @@ Bezplatná verze zahrnuje vlastní připomínky. Placená verze přidává přip
 
 Praktický nástroj, jak být oporou protějšku, ne veřejný sociální feed, seznamka ani párová terapie.
 
-Měsíční plán stojí US$2.99 a roční US$19.99. Oba se automaticky obnovují a při nároku zahrnují 7denní zkušební verzi. Apple strhne platbu z účtu Apple při potvrzení nákupu nebo po oprávněné zkoušce. Bez nároku strhne platbu při potvrzení. Poplatek za obnovení se účtuje během 24 hodin před koncem období. Spravuj nebo zruš v Nastavení › Účet Apple › Předplatná, nejméně 24 hodin před koncem. Ceny se liší podle regionu a zobrazí se před nákupem.
+Oba se automaticky obnovují a při nároku zahrnují 7denní zkušební verzi. Apple strhne platbu z účtu Apple při potvrzení nákupu nebo po oprávněné zkoušce. Bez nároku strhne platbu při potvrzení. Poplatek za obnovení se účtuje během 24 hodin před koncem období. Spravuj nebo zruš v Nastavení › Účet Apple › Předplatná, nejméně 24 hodin před koncem. Ceny se liší podle regionu a zobrazí se před nákupem.
 Zásady ochrany soukromí: https://jackwallner.github.io/bond/privacy/
 Podmínky použití (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/

@@ -19,6 +19,6 @@ Phiên bản miễn phí có các lời nhắc do bạn tự tạo. Bản trả 
 
 Công cụ thực tế để bạn hiện diện vì người ấy, không phải mạng xã hội công khai, dịch vụ hẹn hò hay trị liệu cặp đôi.
 
-Gói tháng có giá US$2.99 và gói năm có giá US$19.99. Cả hai đều tự động gia hạn và có 7 ngày dùng thử miễn phí nếu đủ điều kiện. Apple tính phí vào Tài khoản Apple của bạn khi xác nhận mua hoặc sau khi kết thúc đợt dùng thử đủ điều kiện. Nếu không đủ điều kiện, phí được tính ngay khi xác nhận. Phí gia hạn được tính trong vòng 24 giờ trước khi kỳ hiện tại kết thúc. Quản lý hoặc hủy trong Cài đặt › Tài khoản Apple › Gói đăng ký ít nhất 24 giờ trước khi kỳ kết thúc. Giá thay đổi theo khu vực và được hiển thị trước khi mua.
+Cả hai đều tự động gia hạn và có 7 ngày dùng thử miễn phí nếu đủ điều kiện. Apple tính phí vào Tài khoản Apple của bạn khi xác nhận mua hoặc sau khi kết thúc đợt dùng thử đủ điều kiện. Nếu không đủ điều kiện, phí được tính ngay khi xác nhận. Phí gia hạn được tính trong vòng 24 giờ trước khi kỳ hiện tại kết thúc. Quản lý hoặc hủy trong Cài đặt › Tài khoản Apple › Gói đăng ký ít nhất 24 giờ trước khi kỳ kết thúc. Giá thay đổi theo khu vực và được hiển thị trước khi mua.
 Chính sách quyền riêng tư: https://jackwallner.github.io/bond/privacy/
 Điều khoản sử dụng (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/

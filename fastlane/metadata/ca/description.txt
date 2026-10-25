@@ -19,6 +19,6 @@ La versió gratuïta inclou els teus recordatoris. La versió de pagament afegei
 
 Una eina pràctica per ser-hi per la teva parella, no una xarxa social pública, un servei de cites ni teràpia de parella.
 
-El pla mensual costa US$2.99 i l'anual US$19.99. Tots dos es renoven automàticament i inclouen una prova gratuïta de 7 dies si compleixes els requisits. Apple cobra al teu Compte d'Apple quan confirmes la compra o després d'una prova elegible. Si no hi tens dret, cobra en confirmar. El càrrec de renovació es fa durant les 24 hores anteriors al final del període. Gestiona o cancel·la a Configuració › Compte d'Apple › Subscripcions, almenys 24 hores abans del final. Els preus varien segons la regió i es mostren abans de comprar.
+Tots dos es renoven automàticament i inclouen una prova gratuïta de 7 dies si compleixes els requisits. Apple cobra al teu Compte d'Apple quan confirmes la compra o després d'una prova elegible. Si no hi tens dret, cobra en confirmar. El càrrec de renovació es fa durant les 24 hores anteriors al final del període. Gestiona o cancel·la a Configuració › Compte d'Apple › Subscripcions, almenys 24 hores abans del final. Els preus varien segons la regió i es mostren abans de comprar.
 Política de privadesa: https://jackwallner.github.io/bond/privacy/
 Condicions d'ús (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/

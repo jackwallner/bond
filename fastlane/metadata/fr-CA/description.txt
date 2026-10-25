@@ -12,6 +12,6 @@ La version gratuite couvre vos propres rappels. La version payante ajoute des pa
 
 Un outil pratique pour être présent pour votre partenaire, pas un fil social public, un service de rencontres ou une thérapie de couple.
 
-Le forfait mensuel coûte US$2.99 et l’annuel US$19.99. Tous deux se renouvellent automatiquement et proposent un essai gratuit de 7 jours si vous êtes admissible. Apple facture votre compte Apple lors de la confirmation de l’achat ou après un essai admissible. Si vous n’êtes pas admissible, le débit est effectué à la confirmation. Le renouvellement est facturé dans les 24 heures précédant la fin de la période en cours. Gérez ou annulez dans Réglages › Compte Apple › Abonnements, au moins 24 heures avant la fin. Les prix varient selon la région et sont affichés avant l’achat.
+Tous deux se renouvellent automatiquement et proposent un essai gratuit de 7 jours si vous êtes admissible. Apple facture votre compte Apple lors de la confirmation de l’achat ou après un essai admissible. Si vous n’êtes pas admissible, le débit est effectué à la confirmation. Le renouvellement est facturé dans les 24 heures précédant la fin de la période en cours. Gérez ou annulez dans Réglages › Compte Apple › Abonnements, au moins 24 heures avant la fin. Les prix varient selon la région et sont affichés avant l’achat.
 Politique de confidentialité: https://jackwallner.github.io/bond/privacy/
 Conditions d’utilisation (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
