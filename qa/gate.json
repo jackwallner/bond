@@ -1,0 +1,17 @@
+{
+  "project": "Bond.xcodeproj",
+  "scheme": "BondUITests",
+  "uitests_dir": "BondUITests",
+  "journeys": [
+    "BondUITests/ReleaseJourneysUITests"
+  ],
+  "personas": [
+    "newcomer",
+    "accessibility",
+    "reduce-motion",
+    "german"
+  ],
+  "persona_overrides": {},
+  "slot": null,
+  "bundle_id": "com.jackwallner.bond"
+}
