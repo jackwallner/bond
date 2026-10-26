@@ -26,8 +26,8 @@ final class ReleaseJourneysUITests: XCTestCase {
         QA.checkpoint(app, "partner-name")
 
         name.tap()
-        name.typeText("Sam")
-        tap(onScreenButton("Continue", in: app), in: app)
+        // Return submits the step; at large text the keyboard covers Continue.
+        name.typeText("Sam\n")
         let commit = app.buttons.containing(NSPredicate(format: "label BEGINSWITH %@", "I commit")).firstMatch
         XCTAssertTrue(commit.waitForExistence(timeout: 15))
         QA.checkpoint(app, "commit")

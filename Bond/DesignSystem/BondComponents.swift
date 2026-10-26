@@ -193,6 +193,7 @@ struct BondChoiceCard<Trailing: View>: View {
                 VStack(alignment: .leading, spacing: BondSpacing.xs) {
                     Text(title).font(.bond(.headline))
                     Text(description).font(.bond(.subheadline)).foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
                 Spacer(minLength: BondSpacing.s)
                 trailing()

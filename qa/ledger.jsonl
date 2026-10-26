@@ -1,0 +1,8 @@
+{"created": "2026-10-26T22:52:30+00:00", "id": "Q001", "match": "cta-jump|*|focus-areas|*", "reason": "a different onboarding step: the oracle reads the tallest choice card as the main button", "status": "accepted"}
+{"created": "2026-10-26T22:52:30+00:00", "id": "Q002", "match": "cta-jump|*|onboarding-trial|*", "reason": "a different screen: the trial page's purchase button replaces the focus step's cards", "status": "accepted"}
+{"created": "2026-10-26T22:52:31+00:00", "id": "Q003", "match": "cta-jump|*|first-home|*", "reason": "a different screen: home's notification primer replaces the trial page", "status": "accepted"}
+{"created": "2026-10-26T22:52:31+00:00", "id": "Q004", "match": "blank-launch|*|partner-name|*", "reason": "simulator launch: the launch screen fades into the name step, drawn on first render", "status": "accepted"}
+{"created": "2026-10-26T22:52:31+00:00", "id": "Q005", "match": "motion-jump|*|onboarding-trial|*", "reason": "the step change cross-fades the trial page in", "status": "accepted"}
+{"created": "2026-10-26T22:52:31+00:00", "id": "Q006", "match": "motion-jump|*|partner-name|*", "reason": "the first onboarding step fading in after launch", "status": "accepted"}
+{"created": "2026-10-26T22:52:31+00:00", "id": "Q007", "match": "motion-jump|*|reminders|*", "reason": "the seeded home fading in after launch", "status": "accepted"}
+{"created": "2026-10-26T22:52:31+00:00", "id": "Q008", "match": "motion-jump|*|first-home|*", "reason": "onboarding handing over to home", "status": "accepted"}
