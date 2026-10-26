@@ -8,3 +8,5 @@
 {"created": "2026-10-26T22:52:31+00:00", "id": "Q008", "match": "motion-jump|*|first-home|*", "reason": "onboarding handing over to home", "status": "accepted"}
 {"created": "2026-10-26T23:19:31+00:00", "id": "Q009", "match": "blank-launch|*|milestones-before-interruption|*", "reason": "reduce-motion relaunch on a loaded simulator host (load 19); the same journey shows no blank launch in the newcomer run", "status": "accepted"}
 {"created": "2026-10-26T23:19:31+00:00", "id": "Q010", "match": "motion-jump|*|insights|*", "reason": "the OS springboard launch zoom, captured before the app draws", "status": "accepted"}
+{"created": "2026-10-26T23:30:38+00:00", "id": "Q011", "match": "motion-jump|*|check-in|*", "reason": "tab bar switch from Home to Check-In, an instant tab swap", "status": "accepted"}
+{"created": "2026-10-26T23:30:38+00:00", "id": "Q012", "match": "motion-jump|*|milestones-before-interruption|*", "reason": "tab bar switch from Home to Milestones, an instant tab swap", "status": "accepted"}
