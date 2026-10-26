@@ -6,3 +6,5 @@
 {"created": "2026-10-26T22:52:31+00:00", "id": "Q006", "match": "motion-jump|*|partner-name|*", "reason": "the first onboarding step fading in after launch", "status": "accepted"}
 {"created": "2026-10-26T22:52:31+00:00", "id": "Q007", "match": "motion-jump|*|reminders|*", "reason": "the seeded home fading in after launch", "status": "accepted"}
 {"created": "2026-10-26T22:52:31+00:00", "id": "Q008", "match": "motion-jump|*|first-home|*", "reason": "onboarding handing over to home", "status": "accepted"}
+{"created": "2026-10-26T23:19:31+00:00", "id": "Q009", "match": "blank-launch|*|milestones-before-interruption|*", "reason": "reduce-motion relaunch on a loaded simulator host (load 19); the same journey shows no blank launch in the newcomer run", "status": "accepted"}
+{"created": "2026-10-26T23:19:31+00:00", "id": "Q010", "match": "motion-jump|*|insights|*", "reason": "the OS springboard launch zoom, captured before the app draws", "status": "accepted"}

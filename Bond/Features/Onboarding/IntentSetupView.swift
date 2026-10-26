@@ -190,24 +190,30 @@ struct IntentSetupView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: BondSpacing.xl) {
-            Spacer()
+            // The step scrolls and the button stays docked: at accessibility
+            // sizes a step outgrows the screen and pushed the button off it.
+            GeometryReader { proxy in
+                ScrollView {
+                    VStack(alignment: .leading, spacing: BondSpacing.xl) {
+                        Group {
+                            switch step {
+                            case 0: nameStep
+                            case 1: commitStep
+                            case 2: loveLanguageStep
+                            case 3: focusAreasStep
+                            default: OnboardingTrialView(displayName: displayName, offersTrial: introEligible)
+                            }
+                        }
+                        .transition(.opacity)
 
-            Group {
-                switch step {
-                case 0: nameStep
-                case 1: commitStep
-                case 2: loveLanguageStep
-                case 3: focusAreasStep
-                default: OnboardingTrialView(displayName: displayName, offersTrial: introEligible)
+                        if let error = pairing.lastError {
+                            BondInlineError(message: error)
+                        }
+                    }
+                    .frame(maxWidth: .infinity, minHeight: proxy.size.height, alignment: .leading)
                 }
+                .scrollBounceBehavior(.basedOnSize)
             }
-            .transition(.opacity)
-
-            if let error = pairing.lastError {
-                BondInlineError(message: error)
-            }
-
-            Spacer()
 
             ctaRegion
         }
