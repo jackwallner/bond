@@ -613,6 +613,11 @@ struct IntentSetupView: View {
             if pairing.coupleId == nil {
                 await pairing.createSoloCouple()
             }
+            // Setup that ends without a couple must say so, or the free path
+            // looks like a dead button.
+            if pairing.coupleId == nil, pairing.lastError == nil {
+                pairing.lastError = "We couldn't finish setup. Please try again in a moment."
+            }
         case .invitee:
             // Already paired - the couple exists. Stamping committedAt marks
             // the intake complete, which is what flips RootView to home.

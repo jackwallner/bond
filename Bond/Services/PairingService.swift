@@ -105,6 +105,12 @@ final class PairingService {
     }
 
     func createSoloCouple() async {
+        #if DEBUG
+        if BondScreenshotSeed.isOnboarding {
+            BondScreenshotSeed.finishOnboarding(pairing: self)
+            return
+        }
+        #endif
         guard let me = supabase.currentUserId else {
             lastError = "Sign in first."
             return

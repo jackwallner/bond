@@ -280,6 +280,11 @@ struct RootView: View {
                 isAppBootstrapped = true
                 return
             }
+            if BondScreenshotSeed.isOnboarding {
+                BondScreenshotSeed.applyOnboarding(supabase: supabase)
+                isAppBootstrapped = true
+                return
+            }
             #endif
             // Single, idempotent session bootstrap. Restores a cached session
             // or silently signs in anonymously on first launch. Must be the
@@ -296,7 +301,7 @@ struct RootView: View {
         .onChange(of: supabase.isAuthenticated) { _, authenticated in
             guard authenticated, isAppBootstrapped else { return }
             #if DEBUG
-            if BondScreenshotSeed.isEnabled { return }
+            if BondScreenshotSeed.isEnabled || BondScreenshotSeed.isOnboarding { return }
             #endif
             isAppBootstrapped = false
             Task {

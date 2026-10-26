@@ -9,6 +9,23 @@ enum BondScreenshotSeed {
         ProcessInfo.processInfo.arguments.contains("-BondScreenshotSeed")
     }
 
+    /// First run without the backend, for the release gate's onboarding
+    /// journey: a signed-in user with no couple, and a solo couple made on
+    /// device when setup finishes. Never writes to Supabase.
+    static var isOnboarding: Bool {
+        ProcessInfo.processInfo.arguments.contains("-BondOnboardingSeed")
+    }
+
+    static func applyOnboarding(supabase: SupabaseService) {
+        supabase.currentUserId = me
+        supabase.isAnonymous = true
+    }
+
+    static func finishOnboarding(pairing: PairingService) {
+        pairing.coupleId = couple
+        pairing.solo = true
+    }
+
     private static let me = UUID(uuidString: "11111111-1111-4111-8111-111111111111")!
     private static let partner = UUID(uuidString: "22222222-2222-4222-8222-222222222222")!
     private static let couple = UUID(uuidString: "33333333-3333-4333-8333-333333333333")!
