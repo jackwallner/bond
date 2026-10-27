@@ -79,6 +79,7 @@ final class PairingService {
             // Transport/auth failure - keep whatever state we had rather than
             // pretending the user has no couple.
             log.error("loadCouple failed (state kept): \(error.localizedDescription)")
+            lastError = "DBGTMP loadCouple \(error)"
         }
     }
 
@@ -113,6 +114,7 @@ final class PairingService {
         do {
             try await callCreateSoloCouple(me)
             await loadCouple()
+            if coupleId == nil && lastError == nil { lastError = "DBGTMP no couple after rpc, me=\(me)" }
         } catch {
             // A stale PostgREST schema cache (function exists in Postgres but
             // the gateway hasn't reloaded) presents as a transient PGRST202.
