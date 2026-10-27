@@ -12,6 +12,13 @@ final class ReleaseJourneysUITests: XCTestCase {
     /// under Handled, all of it still true after a relaunch.
     func testCoreLoopAddReminderMarkDoneSurvivesRelaunch() {
         let app = XCUIApplication(bundleIdentifier: "com.jackwallner.bond")
+        addUIInterruptionMonitor(withDescription: "system alert") { alert in
+            for label in ["Don\u{2019}t Allow", "Don't Allow", "Not Now", "Cancel"] where alert.buttons[label].exists {
+                alert.buttons[label].tap()
+                return true
+            }
+            return false
+        }
         QA.launch(app)
 
         let name = app.textFields["Their name"]
@@ -44,11 +51,17 @@ final class ReleaseJourneysUITests: XCTestCase {
         // The notification primer arrives once the first fetch settles.
         let later = app.buttons["Maybe later"]
         if later.waitForExistence(timeout: 20) { later.tap() }
-        let add = app.buttons["Add reminder"]
-        XCTAssertTrue(add.waitForExistence(timeout: 20), "home never showed the add button")
+        let addButton = app.buttons["Add reminder"]
+        if !addButton.waitForExistence(timeout: 20) {
+            let shot = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
+            shot.lifetime = .keepAlways
+            add(shot)
+            XCTFail("home never showed the add button\n\(app.debugDescription)")
+            return
+        }
         QA.checkpoint(app, "home-empty")
 
-        add.tap()
+        addButton.tap()
         let title = app.textFields["Title"]
         XCTAssertTrue(title.waitForExistence(timeout: 10))
         title.tap()
