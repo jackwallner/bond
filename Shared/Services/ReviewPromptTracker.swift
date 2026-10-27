@@ -88,7 +88,11 @@ enum ReviewPromptTracker {
     }
 
     private static var isUITest: Bool {
-        ProcessInfo.processInfo.environment["UITesting"] == "1"
+        #if DEBUG
+        return ProcessInfo.processInfo.environment["UITesting"] == "1"
+        #else
+        return false
+        #endif
     }
 
     static func recordAppLaunch(now: Date = .now) {
