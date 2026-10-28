@@ -6,7 +6,7 @@ Web page: https://jackwallner.com/ios/bond/5-love-languages-examples.html
 
 ## The 5 love languages with everyday examples
 
-By [Jack Wallner](https://jackwallner.com/) · Last updated October 20, 2026
+By [Jack Wallner](https://jackwallner.com/) · Last updated October 28, 2026
 
 The five love languages are words of affirmation, quality time, receiving gifts, acts of service and physical touch, a model from counselor Gary Chapman. Each is a way of showing care, and most gestures take under a minute: a specific compliment, ten phone-free minutes, a small gift, a chore done unasked, a long hug. Research suggests people appreciate all five, so a mix works better than guessing a single one.
 

@@ -6,7 +6,7 @@ Web page: https://jackwallner.com/ios/bond/best-love-language-app.html
 
 ## Best love language app for couples (October 2026)
 
-By [Jack Wallner](https://jackwallner.com/). Last updated October 20, 2026.
+By [Jack Wallner](https://jackwallner.com/). Last updated October 28, 2026.
 
 There is no single best love language app, because the five here do different jobs. Best for love-language reminders you can use without your partner or an account: Little Gestures. Best for a love language quiz and partner nudges: Love Nudge. Best for daily questions you both answer: Paired. Best for expert-led lessons: Evergreen. Best for tending family and friends as well as a partner: Kindest.
 

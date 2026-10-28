@@ -33,7 +33,7 @@
   "@graph": [
     {
       "@type": "MobileApplication",
-      "dateModified": "2026-10-27",
+      "dateModified": "2026-10-28",
       "@id": "https://jackwallner.com/ios/bond/#app",
       "name": "Little Gestures: Couples Care",
       "alternateName": "Little Gestures",
@@ -445,7 +445,7 @@
             color: #6e6e73;
         }
 
-        footer a { color: #6e6e73; text-decoration: none; margin: 0 10px; }
+        footer a { display: inline-block; padding: 6px 0; color: #6e6e73; text-decoration: none; margin: 0 10px; }
         footer a:hover { color: #1d1d1f; }
         footer .divider { margin-bottom: 4px; }
 
@@ -483,8 +483,8 @@
 
     <nav>
         <div class="container">
-            <a class="nav-brand" href="./">
-                <img src="icon_256.webp" alt="Little Gestures" loading="lazy" decoding="async">
+            <a class="nav-brand" href="./" aria-label="Little Gestures">
+                <img src="icon_64.webp" alt="" width="32" height="32">
                 <span>Little Gestures</span>
             </a>
             <a class="nav-link" href="https://apps.apple.com/us/app/little-gestures-couples-care/id6768514177?pt=128748779&amp;ct=jw-bond-home&amp;mt=8">Download</a>
@@ -502,19 +502,19 @@
     <section class="showcase">
         <div class="showcase-scroll">
             <div class="showcase-card">
-                <img src="appstore-screenshot-01.webp" alt="Love language reminders: show up for your partner, right on time" loading="lazy" decoding="async" width="720" height="1564">
+                <img src="appstore-screenshot-01.webp" srcset="appstore-screenshot-01-360.webp 360w, appstore-screenshot-01-540.webp 540w, appstore-screenshot-01.webp 720w" sizes="(max-width: 480px) 166px, (max-width: 768px) 184px, 249px" alt="Love language reminders: show up for your partner, right on time" loading="lazy" decoding="async" width="720" height="1564">
             </div>
             <div class="showcase-card">
-                <img src="appstore-screenshot-02.webp" alt="Daily check-in: answer one question together" loading="lazy" decoding="async" width="720" height="1564">
+                <img src="appstore-screenshot-02.webp" srcset="appstore-screenshot-02-360.webp 360w, appstore-screenshot-02-540.webp 540w, appstore-screenshot-02.webp 720w" sizes="(max-width: 480px) 166px, (max-width: 768px) 184px, 249px" alt="Daily check-in: answer one question together" loading="lazy" decoding="async" width="720" height="1564">
             </div>
             <div class="showcase-card">
-                <img src="appstore-screenshot-03.webp" alt="Milestones: anniversaries and firsts on one shared timeline" loading="lazy" decoding="async" width="720" height="1564">
+                <img src="appstore-screenshot-03.webp" srcset="appstore-screenshot-03-360.webp 360w, appstore-screenshot-03-540.webp 540w, appstore-screenshot-03.webp 720w" sizes="(max-width: 480px) 166px, (max-width: 768px) 184px, 249px" alt="Milestones: anniversaries and firsts on one shared timeline" loading="lazy" decoding="async" width="720" height="1564">
             </div>
             <div class="showcase-card">
-                <img src="appstore-screenshot-04.webp" alt="Widgets: next reminder and milestone countdown on your home screen" loading="lazy" decoding="async" width="720" height="1564">
+                <img src="appstore-screenshot-04.webp" srcset="appstore-screenshot-04-360.webp 360w, appstore-screenshot-04-540.webp 540w, appstore-screenshot-04.webp 720w" sizes="(max-width: 480px) 166px, (max-width: 768px) 184px, 249px" alt="Widgets: next reminder and milestone countdown on your home screen" loading="lazy" decoding="async" width="720" height="1564">
             </div>
             <div class="showcase-card">
-                <img src="appstore-screenshot-05.webp" alt="Templates: curated reminders for date nights, long distance, and more" loading="lazy" decoding="async" width="720" height="1564">
+                <img src="appstore-screenshot-05.webp" srcset="appstore-screenshot-05-360.webp 360w, appstore-screenshot-05-540.webp 540w, appstore-screenshot-05.webp 720w" sizes="(max-width: 480px) 166px, (max-width: 768px) 184px, 249px" alt="Templates: curated reminders for date nights, long distance, and more" loading="lazy" decoding="async" width="720" height="1564">
             </div>
         </div>
     </section>
@@ -680,7 +680,7 @@
     </section>
 
     <footer>
-        <div class="divider">&copy; 2026 Jack Wallner · Last updated <time datetime="2026-10-27" data-updated>October 27, 2026</time></div>
+        <div class="divider">&copy; 2026 Jack Wallner · Last updated <time datetime="2026-10-28" data-updated>October 28, 2026</time></div>
         <div>
             <a href="5-love-languages-examples.html">Love languages guide</a>
             <a href="best-love-language-app.html">Best love language app</a>
