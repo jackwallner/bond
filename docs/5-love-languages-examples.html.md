@@ -1,6 +1,6 @@
 # The 5 Love Languages With Everyday Examples
 
-> The five love languages from Gary Chapman's model, each with small everyday gestures you can do in under a minute, plus what research says about using them.
+> The five love languages from Gary Chapman's model, each with small everyday gestures you can do in under a minute, plus what research says about them.
 
 Web page: https://jackwallner.com/ios/bond/5-love-languages-examples.html
 
