@@ -14,5 +14,5 @@ The paid upgrade adds ready-made reminder packs, relationship insights, location
 This is a practical tool for showing up for your partner, not a public social feed, a dating service or relationship therapy.
 
 Both subscriptions renew automatically, and each offers a 7-day free trial when eligible. Apple charges your Apple Account when you confirm the purchase or after an eligible trial. If you are not eligible, Apple charges at confirmation. The renewal charge is made within 24 hours before the current period ends. Manage or cancel in Settings › Apple Account › Subscriptions at least 24 hours before the period ends. Prices vary by region and are shown before purchase.
-Privacy Policy: https://jackwallner.github.io/bond/privacy/
+Privacy Policy: https://jackwallner.com/ios/bond/privacy-policy.html
 Terms of Use (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/

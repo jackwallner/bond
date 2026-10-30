@@ -20,5 +20,5 @@ Gratisversionen innehåller dina egna påminnelser. Den betalda versionen lägge
 Ett praktiskt verktyg för att finnas där för din partner, inte ett offentligt socialt flöde, en dejtingtjänst eller parterapi.
 
 Båda förnyas automatiskt och erbjuder 7 dagars kostnadsfri provperiod om du är berättigad. Apple debiterar ditt Apple-konto när du bekräftar köpet eller efter en berättigad provperiod. Om du inte är berättigad debiteras du vid bekräftelsen. Förnyelseavgiften debiteras inom 24 timmar före den aktuella periodens slut. Hantera eller avsluta i Inställningar › Apple-konto › Abonnemang minst 24 timmar före periodens slut. Priserna varierar beroende på region och visas före köp.
-Integritetspolicy: https://jackwallner.github.io/bond/privacy/
+Integritetspolicy: https://jackwallner.com/ios/bond/privacy-policy.html
 Användarvillkor (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/

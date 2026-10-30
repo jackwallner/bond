@@ -20,5 +20,5 @@ Ilmaisversiossa käytössäsi ovat omat muistutuksesi. Maksullinen versio lisä�
 Käytännöllinen apu kumppanin huomioimiseen, ei julkinen somevirta, deittipalvelu tai pariterapia.
 
 Molemmat uusiutuvat automaattisesti, ja kumpaankin kuuluu 7 päivän ilmainen kokeilu, jos olet siihen oikeutettu. Apple veloittaa Apple-tiliäsi oston vahvistamisen yhteydessä tai oikeutetun kokeilun jälkeen. Jos et ole oikeutettu, veloitus tehdään vahvistettaessa. Uusimisveloitus tehdään 24 tunnin kuluessa ennen nykyisen kauden päättymistä. Hallitse tai peruuta vähintään 24 tuntia ennen kauden päättymistä kohdassa Asetukset › Apple-tili › Tilaukset. Hinnat vaihtelevat alueittain ja näkyvät ennen ostoa.
-Tietosuojakäytäntö: https://jackwallner.github.io/bond/privacy/
+Tietosuojakäytäntö: https://jackwallner.com/ios/bond/privacy-policy.html
 Käyttöehdot (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/

@@ -20,5 +20,5 @@ Darmowa wersja obejmuje własne przypomnienia. Wersja płatna dodaje gotowe paki
 Praktyczne narzędzie, by być przy partnerze, nie publiczny kanał społecznościowy, serwis randkowy ani terapia par.
 
 Oba odnawiają się automatycznie i oferują 7-dniowy bezpłatny okres próbny, jeśli się kwalifikujesz. Apple obciąży Twoje konto Apple przy potwierdzeniu zakupu lub po kwalifikującym okresie próbnym. Jeśli się nie kwalifikujesz, opłata zostanie pobrana przy potwierdzeniu. Opłata za odnowienie jest pobierana w ciągu 24 godzin przed końcem bieżącego okresu. Zarządzaj subskrypcją lub anuluj ją w Ustawienia › Konto Apple › Subskrypcje co najmniej 24 godziny przed końcem okresu. Ceny różnią się w zależności od regionu i są wyświetlane przed zakupem.
-Polityka prywatności: https://jackwallner.github.io/bond/privacy/
+Polityka prywatności: https://jackwallner.com/ios/bond/privacy-policy.html
 Warunki użytkowania (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/

@@ -20,5 +20,5 @@ App 不是又一個社群動態。它是一種私密而實用的方式，讓你�
 這是幫助你陪伴伴侶的實用工具，不是公開社群動態、約會服務或伴侶治療。
 
 兩種方案都會自動續訂，符合資格時各提供 7 天免費試用。Apple 會在你確認購買時或符合資格的試用結束後向你的 Apple 帳號收費。不符合資格時會在確認購買時收費。續訂費用會在目前週期結束前 24 小時內收取。請在週期結束至少 24 小時前，前往設定 › Apple 帳號 › 訂閱項目管理或取消。價格因地區而異，購買前會顯示。
-隱私權政策: https://jackwallner.github.io/bond/privacy/
+隱私權政策: https://jackwallner.com/ios/bond/privacy-policy.html
 使用條款 (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/

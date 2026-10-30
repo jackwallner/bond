@@ -13,5 +13,5 @@ La versión gratuita incluye tus propios recordatorios. La versión de pago aña
 Una herramienta práctica para estar presente para tu pareja, no una red social pública, un servicio de citas ni terapia de pareja.
 
 Ambos se renuevan automáticamente e incluyen una prueba gratis de 7 días si eres elegible. Apple cobra en tu Cuenta de Apple al confirmar la compra o después de una prueba elegible. Si no eres elegible, cobra al confirmar. El cargo de renovación se realiza dentro de las 24 horas anteriores al final del periodo. Gestiona o cancela en Ajustes › Cuenta de Apple › Suscripciones al menos 24 horas antes del final. Los precios varían según la región y se muestran antes de comprar.
-Política de privacidad: https://jackwallner.github.io/bond/privacy/
+Política de privacidad: https://jackwallner.com/ios/bond/privacy-policy.html
 Términos de uso (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/

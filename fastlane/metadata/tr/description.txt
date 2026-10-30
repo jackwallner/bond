@@ -20,5 +20,5 @@ uygulama bir sosyal akış uygulaması değildir. Küçük şeyleri hatırlaman�
 Partnerinizin yanında olmak için pratik bir araçtır; herkese açık sosyal akış, flört hizmeti veya çift terapisi değildir.
 
 İkisi de otomatik yenilenir ve uygunsanız 7 günlük ücretsiz deneme sunar. Apple, satın almayı onayladığınızda veya uygun bir denemeden sonra Apple Hesabınızdan ücret alır. Uygun değilseniz ücret onay sırasında alınır. Yenileme ücreti mevcut dönemin bitiminden önceki 24 saat içinde alınır. Dönem bitmeden en az 24 saat önce Ayarlar › Apple Hesabı › Abonelikler bölümünden yönetin veya iptal edin. Fiyatlar bölgeye göre değişir ve satın almadan önce gösterilir.
-Gizlilik Politikası: https://jackwallner.github.io/bond/privacy/
+Gizlilik Politikası: https://jackwallner.com/ios/bond/privacy-policy.html
 Kullanım Koşulları (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
