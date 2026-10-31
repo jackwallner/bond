@@ -23,7 +23,9 @@ paths:
   this phone as local notifications armed from the fetched list, and the realtime
   feed is not replayed after the app was suspended. So the list is re-read, and
   the schedule rebuilt (`ReminderRepository.catchUp`, no permission prompt), when
-  the app returns to the foreground (`BondApp.catchUpOnForeground`), and
+  the app returns to the foreground (`BondApp.catchUpOnForeground`, which looks
+  the couple up again first because an unpair moves a partner's rows to a new
+  couple), and
   `importReminders` rebuilds right after a template pack is inserted. Anything new
   that writes reminders must end in `rescheduleNotifications`.
 - **A failed couple lookup is not "no couple".** `PairingService.lastLoadFailed`
