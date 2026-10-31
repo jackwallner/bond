@@ -55,7 +55,7 @@ struct MilestonesView: View {
                                 .foregroundStyle(.bondTextSecondary)
                         }
                         Spacer()
-                        let days = max(0, Calendar.current.dateComponents([.day], from: .now, to: m.nextOccurrence()).day ?? 0)
+                        let days = m.daysUntilNextOccurrence()
                         Text("\(days)d")
                             .font(.bond(.callout).monospacedDigit())
                             .foregroundStyle(.bondTextSecondary)

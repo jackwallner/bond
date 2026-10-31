@@ -99,4 +99,10 @@ public struct MilestoneDTO: Codable, Sendable, Identifiable, Hashable {
         }
         return result
     }
+
+    /// Days from `reference` to the next occurrence, as the list and widget show it.
+    public func daysUntilNextOccurrence(reference: Date = .now, calendar: Calendar = .current) -> Int {
+        let next = nextOccurrence(reference: reference, calendar: calendar)
+        return max(0, calendar.dateComponents([.day], from: reference, to: next).day ?? 0)
+    }
 }

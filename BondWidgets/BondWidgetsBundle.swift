@@ -139,7 +139,7 @@ struct AnniversaryCountdownView: View {
 
     var body: some View {
         if let m = entry.snapshot?.nextMilestone {
-            let days = max(0, Calendar.current.dateComponents([.day], from: .now, to: m.occursOn).day ?? 0)
+            let days = m.daysAway()
             VStack(alignment: .leading, spacing: 6) {
                 Image(systemName: m.kind == "birthday" ? "gift.fill" : "heart.fill")
                     .foregroundStyle(.pink)

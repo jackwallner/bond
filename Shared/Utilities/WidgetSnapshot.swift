@@ -42,6 +42,11 @@ public struct WidgetSnapshot: Codable, Sendable {
             self.kind = kind
             self.occursOn = occursOn
         }
+
+        /// Days from `reference` to `occursOn`, floored at zero.
+        public func daysAway(from reference: Date = .now, calendar: Calendar = .current) -> Int {
+            max(0, calendar.dateComponents([.day], from: reference, to: occursOn).day ?? 0)
+        }
     }
 
     public static func read() -> WidgetSnapshot? {
