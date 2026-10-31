@@ -122,7 +122,8 @@ struct BondApp: App {
                     reminderRepo.onChange = { reminders in
                         WidgetSnapshotPump.push(
                             reminders: reminders,
-                            milestones: milestonesService.milestones
+                            milestones: milestonesService.milestones,
+                            userId: supabase.currentUserId
                         )
                     }
                     milestonesService.onChange = { milestones in
@@ -131,7 +132,11 @@ struct BondApp: App {
                         // these milestones if it lands later, and a failed
                         // load leaves the last good snapshot alone.
                         guard reminderRepo.hasLoaded else { return }
-                        WidgetSnapshotPump.push(reminders: reminderRepo.reminders, milestones: milestones)
+                        WidgetSnapshotPump.push(
+                            reminders: reminderRepo.reminders,
+                            milestones: milestones,
+                            userId: supabase.currentUserId
+                        )
                     }
                     reminderRepo.armingContext = {
                         guard let me = supabase.currentUserId else { return nil }

@@ -61,3 +61,49 @@ public struct WidgetSnapshot: Codable, Sendable {
         AppGroup.defaults.set(data, forKey: Self.key)
     }
 }
+
+public extension WidgetSnapshot {
+    /// What the widgets show, built from the couple's lists. `userId` is who is signed
+    /// in on this phone.
+    static func make(
+        reminders: [ReminderDTO],
+        milestones: [MilestoneDTO],
+        userId: UUID?,
+        now: Date = .now
+    ) -> WidgetSnapshot {
+        let nextReminder = reminders
+            .compactMap { r -> (ReminderDTO, Date)? in
+                guard let fire = r.trigger?.upcomingFireDate(after: now), fire > now else { return nil }
+                return (r, fire)
+            }
+            .min { $0.1 < $1.1 }
+            .map { tuple in
+                NextReminder(
+                    title: tuple.0.title,
+                    fireAt: tuple.1,
+                    loveLanguage: tuple.0.loveLanguage
+                )
+            }
+
+        let nextMilestone = milestones
+            .map { ($0, $0.nextOccurrence(reference: now)) }
+            .min { $0.1 < $1.1 }
+            .map { tuple in
+                NextMilestone(
+                    label: tuple.0.label ?? defaultLabel(for: tuple.0),
+                    kind: tuple.0.kind,
+                    occursOn: tuple.1
+                )
+            }
+
+        return WidgetSnapshot(nextReminder: nextReminder, nextMilestone: nextMilestone, updatedAt: now)
+    }
+
+    private static func defaultLabel(for m: MilestoneDTO) -> String {
+        switch m.kind {
+        case "anniversary": "Anniversary"
+        case "birthday":    "Birthday"
+        default:            "Milestone"
+        }
+    }
+}
