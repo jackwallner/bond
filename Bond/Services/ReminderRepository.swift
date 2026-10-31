@@ -66,11 +66,16 @@ final class ReminderRepository {
     }
 
     /// Rebuilds the on-device notification schedule from the loaded list.
+    /// A rebuild replaces every pending notification with what `reminders`
+    /// says, so it waits for a successful fetch: before one the list is the
+    /// empty starting value, and a launch whose fetch failed would cancel
+    /// every scheduled reminder.
     func rescheduleNotifications(
         forSelfUserId me: UUID,
         events: [ReminderEventDTO],
         requestAuthIfNeeded: Bool = true
     ) async {
+        guard hasLoaded else { return }
         await NotificationScheduler.shared.reschedule(
             forSelfUserId: me,
             reminders: reminders,
