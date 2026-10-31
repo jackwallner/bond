@@ -193,3 +193,80 @@ struct MilestoneDTOTests {
         #expect(next.daysAway(from: pacificDate(2026, 11, 7, hour: 14), calendar: pacific) == 0)
     }
 }
+
+
+/// The milestone list reaches two places that the Milestones tab does not draw:
+/// the widget snapshot and the local notifications. Both have to follow the list
+/// from the first launch, not only after the tab has been opened.
+@MainActor
+@Suite(.serialized)
+struct MilestonesServiceTests {
+    private let coupleId = UUID()
+
+    private func milestone(_ label: String) -> MilestoneDTO {
+        MilestoneDTO(
+            id: UUID(), coupleId: coupleId, kind: "anniversary", label: label,
+            date: DateComponents(calendar: .current, year: 2020, month: 6, day: 1).date!, recur: true
+        )
+    }
+
+    private func service() -> MilestonesService {
+        let pairing = PairingService()
+        pairing.coupleId = coupleId
+        let service = MilestonesService(pairing: pairing)
+        service.scheduleNotifications = { _, _ in }
+        return service
+    }
+
+    @Test func refresh_publishesTheLoadedMilestones() async {
+        let ours = milestone("Our anniversary")
+        let service = service()
+        service.loadRows = { _ in [ours] }
+        var published: [MilestoneDTO]?
+        service.onChange = { published = $0 }
+
+        await service.refresh(requestAuthIfNeeded: false)
+
+        #expect(service.milestones == [ours])
+        #expect(published == [ours])
+    }
+
+    @Test func refresh_thatFails_publishesNothing() async {
+        let service = service()
+        service.loadRows = { _ in throw URLError(.notConnectedToInternet) }
+        var published: [MilestoneDTO]?
+        service.onChange = { published = $0 }
+
+        await service.refresh(requestAuthIfNeeded: false)
+
+        #expect(published == nil)
+        #expect(service.lastError != nil)
+    }
+
+    @Test func delete_publishesTheRemainingMilestones() async throws {
+        let keep = milestone("Keep")
+        let drop = milestone("Drop")
+        let service = service()
+        service.loadRows = { _ in [keep, drop] }
+        service.deleteRow = { _ in }
+        await service.refresh(requestAuthIfNeeded: false)
+        var published: [MilestoneDTO]?
+        service.onChange = { published = $0 }
+
+        try await service.delete(drop)
+
+        #expect(published == [keep])
+    }
+
+    @Test func refresh_forwardsWhetherSchedulingMayAskForPermission() async {
+        let service = service()
+        service.loadRows = { _ in [] }
+        var asked: [Bool] = []
+        service.scheduleNotifications = { _, mayAsk in asked.append(mayAsk) }
+
+        await service.refresh(requestAuthIfNeeded: false)
+        await service.refresh()
+
+        #expect(asked == [false, true])
+    }
+}
