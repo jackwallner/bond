@@ -43,9 +43,11 @@ public struct WidgetSnapshot: Codable, Sendable {
             self.occursOn = occursOn
         }
 
-        /// Days from `reference` to `occursOn`, floored at zero.
+        /// Calendar days from `reference` to `occursOn`, floored at zero.
         public func daysAway(from reference: Date = .now, calendar: Calendar = .current) -> Int {
-            max(0, calendar.dateComponents([.day], from: reference, to: occursOn).day ?? 0)
+            let from = calendar.startOfDay(for: reference)
+            let to = calendar.startOfDay(for: occursOn)
+            return max(0, calendar.dateComponents([.day], from: from, to: to).day ?? 0)
         }
     }
 

@@ -93,16 +93,23 @@ public struct MilestoneDTO: Codable, Sendable, Identifiable, Hashable {
         }
 
         guard var result = next else { return date }
-        if result < reference {
+        // `date` is local midnight, so against the current instant the
+        // milestone's own day would count as past from 00:01 on and the next
+        // occurrence would jump a year ahead on the day itself.
+        if result < calendar.startOfDay(for: reference) {
             comps.year! += 1
             result = calendar.date(from: comps) ?? result
         }
         return result
     }
 
-    /// Days from `reference` to the next occurrence, as the list and widget show it.
+    /// Calendar days from `reference` to the next occurrence: 0 on the day
+    /// itself, 1 the day before. Whole days between midnights, so the time of
+    /// day and DST changes don't shift the count.
     public func daysUntilNextOccurrence(reference: Date = .now, calendar: Calendar = .current) -> Int {
         let next = nextOccurrence(reference: reference, calendar: calendar)
-        return max(0, calendar.dateComponents([.day], from: reference, to: next).day ?? 0)
+        let from = calendar.startOfDay(for: reference)
+        let to = calendar.startOfDay(for: next)
+        return max(0, calendar.dateComponents([.day], from: from, to: to).day ?? 0)
     }
 }
