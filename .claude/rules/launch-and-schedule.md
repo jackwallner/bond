@@ -7,6 +7,10 @@ paths:
   - "Bond/Services/NotificationScheduler.swift"
   - "Bond/Services/WidgetSnapshotPump.swift"
   - "Shared/Models/MilestoneDTO.swift"
+  - "Shared/DTOs/ReminderDTO.swift"
+  - "Shared/Utilities/WidgetSnapshot.swift"
+  - "Bond/Services/SupabaseService.swift"
+  - "Bond/Services/WatchConnectivityBridge.swift"
   - "BondTests/ReminderDTOTests.swift"
   - "BondTests/CoupleDTOTests.swift"
   - "BondTests/MilestoneDTOTests.swift"
@@ -55,6 +59,21 @@ paths:
   against the start of the reference day (the stored date is local midnight) and
   `daysUntilNextOccurrence` / `NextMilestone.daysAway` count midnights, not
   elapsed seconds.
+- **An upsert only changes the columns it is sent.** `ReminderDTO.encode` and
+  `MilestoneDTO.encode` write a cleared optional (the note, a repeat rule, the
+  label) as an explicit null, as Android's `Codec` does; a nil left out of the
+  body meant the old value stayed on the server and the edit vanished on the
+  next refresh. `created_at` stays out when unknown so the database default
+  applies.
+- **The widget shows what the app shows this user.** `WidgetSnapshot.make` keeps
+  the reminders the user wrote or that are addressed to them (the couple's rows
+  are all readable, and the partner's own reminders are not for this phone) and
+  skips a milestone whose day is over.
+- **Linking Apple to the anonymous user falls back to a plain sign-in only for a
+  failure the server answered** (`SupabaseService.shouldFallBackToSignIn`). A
+  request that never completed says nothing about the identity belonging to
+  someone else, and signing in then creates a new empty account while the
+  anonymous user's couple and reminders are orphaned.
 - The services expose their fetches (`loadRows`, `fetchCouples`,
   `scheduleNotifications`, `deleteRow`) as closures so tests can fail them
   without a network. New test suites went into the existing test files because
