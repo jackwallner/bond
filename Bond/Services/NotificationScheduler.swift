@@ -61,8 +61,10 @@ final class NotificationScheduler {
     /// up to three pings: 7 days before, 1 day before, and on the day at 9am
     /// local. Identifiers are namespaced "milestone.<id>.<offset>" so the
     /// reminder scheduler can leave them alone.
-    func rescheduleMilestones(_ milestones: [MilestoneDTO]) async {
-        await requestAuthorizationIfNeeded()
+    func rescheduleMilestones(_ milestones: [MilestoneDTO], requestAuthIfNeeded: Bool = true) async {
+        if requestAuthIfNeeded {
+            await requestAuthorizationIfNeeded()
+        }
 
         let center = UNUserNotificationCenter.current()
         let pending = await center.pendingNotificationRequests()
