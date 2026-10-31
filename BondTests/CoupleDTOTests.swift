@@ -305,6 +305,8 @@ struct AppleSignInTests {
     private struct IdentityBelongsToSomeoneElse: Error {}
 
     /// Runs `signInWithApple` against the shared holder and puts it back as found.
+    /// The holder starts signed out: the app that hosts the tests has usually
+    /// signed in anonymously by now, and a link that failed leaves that user in place.
     private func signIn(
         asAnonymous anonymous: Bool,
         link: () async throws -> SupabaseService.RestoredIdentity,
@@ -312,6 +314,7 @@ struct AppleSignInTests {
     ) async -> (user: UUID?, thrown: Error?) {
         let service = SupabaseService.shared
         let before = (service.currentUserId, service.isAnonymous)
+        service.currentUserId = nil
         service.isAnonymous = anonymous
         var thrown: Error?
         do { try await service.signInWithApple(link: link, signIn: signIn) } catch { thrown = error }
