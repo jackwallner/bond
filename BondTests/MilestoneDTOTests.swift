@@ -113,4 +113,83 @@ struct MilestoneDTOTests {
         let next = m.nextOccurrence(reference: ref)
         #expect(next == ref)
     }
+
+    // MARK: - The day itself, with the clock past midnight
+    //
+    // Every case above hands in a midnight reference, which hides that the app
+    // asks at 2 pm: the milestone day (local midnight) is already "before"
+    // `.now`, so the next occurrence jumped a year ahead on the day itself.
+
+    private var pacific: Calendar {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(identifier: "America/Los_Angeles")!
+        return calendar
+    }
+
+    private func pacificDate(_ year: Int, _ month: Int, _ day: Int, hour: Int = 0, minute: Int = 0) -> Date {
+        pacific.date(from: DateComponents(year: year, month: month, day: day, hour: hour, minute: minute))!
+    }
+
+    private func yearlyMilestone(month: Int, day: Int) -> MilestoneDTO {
+        MilestoneDTO(
+            id: UUID(), coupleId: coupleId, kind: "anniversary", label: "Us",
+            date: pacificDate(2020, month, day), recur: true
+        )
+    }
+
+    @Test func recurring_onTheDay_atAfternoon_isToday() {
+        let m = yearlyMilestone(month: 11, day: 5)
+        let now = pacificDate(2026, 11, 5, hour: 14, minute: 30)
+        #expect(m.nextOccurrence(reference: now, calendar: pacific) == pacificDate(2026, 11, 5))
+    }
+
+    @Test func recurring_onTheDay_justAfterMidnight_isToday() {
+        let m = yearlyMilestone(month: 11, day: 5)
+        let now = pacificDate(2026, 11, 5, hour: 0, minute: 1)
+        #expect(m.nextOccurrence(reference: now, calendar: pacific) == pacificDate(2026, 11, 5))
+    }
+
+    @Test func recurring_theDayAfter_advancesToNextYear() {
+        let m = yearlyMilestone(month: 11, day: 5)
+        let now = pacificDate(2026, 11, 6, hour: 0, minute: 1)
+        #expect(m.nextOccurrence(reference: now, calendar: pacific) == pacificDate(2027, 11, 5))
+    }
+
+    @Test func daysUntil_dayBefore_atAfternoon_isOne() {
+        let m = yearlyMilestone(month: 11, day: 5)
+        let now = pacificDate(2026, 11, 4, hour: 14)
+        #expect(m.daysUntilNextOccurrence(reference: now, calendar: pacific) == 1)
+    }
+
+    @Test func daysUntil_onTheDay_isZero() {
+        let m = yearlyMilestone(month: 11, day: 5)
+        let now = pacificDate(2026, 11, 5, hour: 14)
+        #expect(m.daysUntilNextOccurrence(reference: now, calendar: pacific) == 0)
+    }
+
+    @Test func daysUntil_countsCalendarDaysAcrossTheFallDSTChange() {
+        // US clocks go back on 2026-11-01, so Oct 31 22:00 to Nov 2 00:00 is
+        // 49 hours but two calendar days.
+        let m = yearlyMilestone(month: 11, day: 2)
+        let now = pacificDate(2026, 10, 31, hour: 22)
+        #expect(m.daysUntilNextOccurrence(reference: now, calendar: pacific) == 2)
+    }
+
+    @Test func daysUntil_oneTimeMilestoneInThePast_isZero() {
+        let m = MilestoneDTO(
+            id: UUID(), coupleId: coupleId, kind: "custom", label: nil,
+            date: pacificDate(2026, 1, 10), recur: false
+        )
+        let now = pacificDate(2026, 6, 1, hour: 9)
+        #expect(m.daysUntilNextOccurrence(reference: now, calendar: pacific) == 0)
+    }
+
+    @Test func widgetCountdown_usesCalendarDays() {
+        let next = WidgetSnapshot.NextMilestone(
+            label: "Us", kind: "anniversary", occursOn: pacificDate(2026, 11, 5)
+        )
+        #expect(next.daysAway(from: pacificDate(2026, 11, 4, hour: 14), calendar: pacific) == 1)
+        #expect(next.daysAway(from: pacificDate(2026, 11, 5, hour: 14), calendar: pacific) == 0)
+        #expect(next.daysAway(from: pacificDate(2026, 11, 7, hour: 14), calendar: pacific) == 0)
+    }
 }
