@@ -64,7 +64,12 @@ public struct WidgetSnapshot: Codable, Sendable {
 
 public extension WidgetSnapshot {
     /// What the widgets show, built from the couple's lists. `userId` is who is signed
-    /// in on this phone.
+    /// in on this phone. The couple's reminders are all readable by both partners, but
+    /// the app only lists a user's own and the ones addressed to them, so the widget
+    /// does the same: it sits on a home screen, and a reminder the partner made for
+    /// themselves is not for this phone. A milestone that is over (a one-time one
+    /// whose day has passed) is not "next": it sorted before everything and kept the
+    /// countdown on a day that had gone.
     static func make(
         reminders: [ReminderDTO],
         milestones: [MilestoneDTO],
@@ -72,6 +77,7 @@ public extension WidgetSnapshot {
         now: Date = .now
     ) -> WidgetSnapshot {
         let nextReminder = reminders
+            .filter { userId != nil && ($0.authorId == userId || $0.targetId == userId) }
             .compactMap { r -> (ReminderDTO, Date)? in
                 guard let fire = r.trigger?.upcomingFireDate(after: now), fire > now else { return nil }
                 return (r, fire)
@@ -85,8 +91,10 @@ public extension WidgetSnapshot {
                 )
             }
 
+        let today = Calendar.current.startOfDay(for: now)
         let nextMilestone = milestones
             .map { ($0, $0.nextOccurrence(reference: now)) }
+            .filter { $0.1 >= today }
             .min { $0.1 < $1.1 }
             .map { tuple in
                 NextMilestone(
