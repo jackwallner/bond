@@ -293,3 +293,81 @@ struct SessionRestoreTests {
         }
     }
 }
+
+/// Upgrading an anonymous account to Apple links the identity to that user, so the
+/// couple and reminders come along. Only an identity that already belongs to someone
+/// else is signed in as that someone; a link that failed because a request never
+/// completed says nothing about it, and signing in then mints a new, empty account
+/// while the real one is orphaned.
+@MainActor
+@Suite(.serialized)
+struct AppleSignInTests {
+    private struct IdentityBelongsToSomeoneElse: Error {}
+
+    /// Runs `signInWithApple` against the shared holder and puts it back as found.
+    private func signIn(
+        asAnonymous anonymous: Bool,
+        link: () async throws -> SupabaseService.RestoredIdentity,
+        signIn: () async throws -> SupabaseService.RestoredIdentity
+    ) async -> (user: UUID?, thrown: Error?) {
+        let service = SupabaseService.shared
+        let before = (service.currentUserId, service.isAnonymous)
+        service.isAnonymous = anonymous
+        var thrown: Error?
+        do { try await service.signInWithApple(link: link, signIn: signIn) } catch { thrown = error }
+        let user = service.currentUserId
+        service.currentUserId = before.0
+        service.isAnonymous = before.1
+        return (user, thrown)
+    }
+
+    @Test func aLinkThatWorks_keepsTheUsersOwnId_andSignsNobodyIn() async {
+        let mine = UUID()
+        var signIns = 0
+        let result = await signIn(
+            asAnonymous: true,
+            link: { SupabaseService.RestoredIdentity(userId: mine, isAnonymous: false) },
+            signIn: { signIns += 1; return SupabaseService.RestoredIdentity(userId: UUID(), isAnonymous: false) }
+        )
+        #expect(result.user == mine)
+        #expect(signIns == 0)
+    }
+
+    @Test func anIdentityThatBelongsToSomeoneElse_signsInAsThem() async {
+        let recovered = UUID()
+        let result = await signIn(
+            asAnonymous: true,
+            link: { throw IdentityBelongsToSomeoneElse() },
+            signIn: { SupabaseService.RestoredIdentity(userId: recovered, isAnonymous: false) }
+        )
+        #expect(result.user == recovered)
+        #expect(result.thrown == nil)
+    }
+
+    @Test func aLinkThatLostItsConnection_isNotRetriedAsASignIn() async {
+        let failures: [URLError.Code] = [.networkConnectionLost, .timedOut, .notConnectedToInternet, .cannotConnectToHost]
+        for code in failures {
+            var signIns = 0
+            let result = await signIn(
+                asAnonymous: true,
+                link: { throw URLError(code) },
+                signIn: { signIns += 1; return SupabaseService.RestoredIdentity(userId: UUID(), isAnonymous: false) }
+            )
+            #expect(signIns == 0, "a \(code) must not mint a new account")
+            #expect(result.user == nil)
+            #expect(result.thrown is URLError)
+        }
+    }
+
+    @Test func aUserWhoIsNotAnonymous_signsInDirectly() async {
+        let someone = UUID()
+        var links = 0
+        let result = await signIn(
+            asAnonymous: false,
+            link: { links += 1; return SupabaseService.RestoredIdentity(userId: UUID(), isAnonymous: false) },
+            signIn: { SupabaseService.RestoredIdentity(userId: someone, isAnonymous: false) }
+        )
+        #expect(result.user == someone)
+        #expect(links == 0)
+    }
+}
