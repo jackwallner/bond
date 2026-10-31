@@ -98,10 +98,7 @@ struct ReminderListView: View {
                     }
                 }
             }
-            .refreshable {
-                await repo.refresh()
-                await eventsRepo.refresh()
-            }
+            .refreshable { await refreshAndRearm() }
             .task {
                 await repo.refresh()
                 await eventsRepo.refresh()
@@ -524,6 +521,19 @@ struct ReminderListView: View {
     private func rescheduleNotifications() async {
         guard let me = supabase.currentUserId else { return }
         await repo.rescheduleNotifications(forSelfUserId: me, events: eventsRepo.events)
+    }
+
+    /// Pull to refresh: pulling to see what the partner added should also arm it.
+    private func refreshAndRearm() async {
+        guard let me = supabase.currentUserId else {
+            await repo.refresh()
+            await eventsRepo.refresh()
+            return
+        }
+        await repo.catchUp(forSelfUserId: me) {
+            await eventsRepo.refresh()
+            return eventsRepo.events
+        }
     }
 
     private func delete(_ source: [ReminderDTO], at offsets: IndexSet) {
