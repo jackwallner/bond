@@ -70,7 +70,8 @@ public struct MilestoneDTO: Codable, Sendable, Identifiable, Hashable {
         try c.encode(id, forKey: .id)
         try c.encode(coupleId, forKey: .coupleId)
         try c.encode(kind, forKey: .kind)
-        try c.encodeIfPresent(label, forKey: .label)
+        // Explicit null when cleared: an upsert keeps the columns it is not sent.
+        try c.encode(label, forKey: .label)
         try c.encode(recur, forKey: .recur)
         try c.encodeIfPresent(createdAt, forKey: .createdAt)
 

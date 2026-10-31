@@ -37,6 +37,31 @@ public struct ReminderDTO: Codable, Sendable, Identifiable, Hashable {
         case createdAt     = "created_at"
     }
 
+    // The synthesized encoder leaves a nil field out of the body, and an upsert
+    // only changes the columns that are in its body: clearing the note, turning
+    // off a repeat rule or switching the trigger kind would silently keep the old
+    // value on the server. Cleared fields go out as explicit nulls instead.
+    // `created_at` stays out when unknown, so the database default applies.
+    public func encode(to encoder: Encoder) throws {
+        var c = encoder.container(keyedBy: CodingKeys.self)
+        try c.encode(id, forKey: .id)
+        try c.encode(coupleId, forKey: .coupleId)
+        try c.encode(authorId, forKey: .authorId)
+        try c.encode(targetId, forKey: .targetId)
+        try c.encode(title, forKey: .title)
+        try c.encode(body, forKey: .body)
+        try c.encode(loveLanguage, forKey: .loveLanguage)
+        try c.encode(triggerType, forKey: .triggerType)
+        try c.encode(fireAt, forKey: .fireAt)
+        try c.encode(rrule, forKey: .rrule)
+        try c.encode(geofence, forKey: .geofence)
+        try c.encode(windowStart, forKey: .windowStart)
+        try c.encode(windowEnd, forKey: .windowEnd)
+        try c.encode(status, forKey: .status)
+        try c.encode(surpriseHiddenFromPartner, forKey: .surpriseHiddenFromPartner)
+        try c.encodeIfPresent(createdAt, forKey: .createdAt)
+    }
+
     public var trigger: ReminderTrigger? {
         switch triggerType {
         case "one_time":
