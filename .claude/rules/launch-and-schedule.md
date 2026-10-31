@@ -28,6 +28,14 @@ paths:
   couple), and
   `importReminders` rebuilds right after a template pack is inserted. Anything new
   that writes reminders must end in `rescheduleNotifications`.
+- **Changes that arrive outside a screen re-arm through the repository.** The
+  realtime handler (`handleRemoteChange`) and the watch bridge call `rearm()`,
+  which reads the signed-in user and the completions from `armingContext` (set
+  in `BondApp`) and never asks for permission. `PairingService.loadCouple` calls
+  `onRelationshipChange` when the couple changed or turned solo or paired (not on
+  the first lookup after launch or sign-out); the app re-reads milestones and
+  catches up, so unpairing silences the partner's reminders at once. The inviter
+  keeps the couple id when unpairing, so watching the id alone misses it.
 - **A failed couple lookup is not "no couple".** `PairingService.lastLoadFailed`
   keeps `RootDestination.resolve` on `.loading` (the Couldn't connect state with
   Try again), because first-run onboarding ends in `create_solo_couple`
