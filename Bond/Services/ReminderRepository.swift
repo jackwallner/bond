@@ -110,6 +110,15 @@ final class ReminderRepository {
         await scheduleNotifications(me, reminders, events, requestAuthIfNeeded)
     }
 
+    /// Catches up after the app returns to the foreground.
+    func catchUp(
+        forSelfUserId me: UUID,
+        refreshEvents: () async -> [ReminderEventDTO]
+    ) async {
+        await refresh()
+        _ = await refreshEvents()
+    }
+
     func upsert(_ reminder: ReminderDTO) async throws {
         #if DEBUG
         if BondScreenshotSeed.isEnabled {
