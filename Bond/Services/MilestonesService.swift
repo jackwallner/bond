@@ -51,6 +51,7 @@ final class MilestonesService {
         do {
             let rows = try await loadRows(coupleId)
             milestones = rows
+            onChange(rows)
             log.info("Refreshed \(rows.count) milestones")
             await scheduleNotifications(rows, requestAuthIfNeeded)
         } catch {
@@ -91,6 +92,7 @@ final class MilestonesService {
     func delete(_ milestone: MilestoneDTO) async throws {
         try await deleteRow(milestone.id)
         milestones.removeAll { $0.id == milestone.id }
+        onChange(milestones)
         log.info("Deleted milestone \(milestone.id)")
         await scheduleNotifications(milestones, true)
     }

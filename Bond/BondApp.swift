@@ -125,6 +125,14 @@ struct BondApp: App {
                             milestones: milestonesService.milestones
                         )
                     }
+                    milestonesService.onChange = { milestones in
+                        // The snapshot is rebuilt whole, so wait until the
+                        // reminders are in too: their own load pushes with
+                        // these milestones if it lands later, and a failed
+                        // load leaves the last good snapshot alone.
+                        guard reminderRepo.hasLoaded else { return }
+                        WidgetSnapshotPump.push(reminders: reminderRepo.reminders, milestones: milestones)
+                    }
                     Task { await store.bootstrap() }
                 }
                 .onOpenURL { url in
@@ -506,6 +514,7 @@ enum RootDestination: Equatable {
 /// Insights gets its own pane on the trailing side, so what you plan reads
 /// beside how you're doing. The Insights tab leaves the bar while split.
 struct MainTabView: View {
+    @Environment(MilestonesService.self) private var milestones
     @State private var router = NotificationRouter.shared
     @State private var selection: Tab = .launchTab
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -578,6 +587,10 @@ struct MainTabView: View {
         .onAppear {
             if router.pendingReminderId != nil { selection = .reminders }
         }
+        // The widget and the milestone pings read this list, so it loads with
+        // the app, not only when the Milestones tab is opened. No permission
+        // prompt here: the notification primer explains it first.
+        .task { await milestones.refresh(requestAuthIfNeeded: false) }
         #if DEBUG
         .task { await runDuoCapture() }
         #endif
