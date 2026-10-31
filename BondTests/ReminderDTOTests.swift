@@ -1,5 +1,6 @@
 import Foundation
 import Testing
+import UserNotifications
 
 @testable import Bond
 
@@ -79,5 +80,100 @@ struct ReminderDTOTests {
             surpriseHiddenFromPartner: false,
             createdAt: nil
         )
+    }
+}
+
+
+/// Launch behaviour of the on-device schedule. Every launch rebuilds the
+/// pending notifications from the repository's list, so the list has to be
+/// the server's, not the empty starting value of a launch whose fetch failed.
+@MainActor
+@Suite(.serialized)
+struct LaunchRescheduleTests {
+    private let center = UNUserNotificationCenter.current()
+    private let me = UUID()
+    private let coupleId = UUID()
+
+    private func pendingIdentifiers() async -> Set<String> {
+        Set(await center.pendingNotificationRequests().map(\.identifier))
+    }
+
+    private func seedPending(_ identifier: String) async throws {
+        let content = UNMutableNotificationContent()
+        content.title = "Scheduled by an earlier session"
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 3_600, repeats: false)
+        try await center.add(UNNotificationRequest(identifier: identifier, content: content, trigger: trigger))
+    }
+
+    private func repository() -> ReminderRepository {
+        let pairing = PairingService()
+        pairing.coupleId = coupleId
+        return ReminderRepository(pairing: pairing)
+    }
+
+    private func reminderForMe(in hours: Double) -> ReminderDTO {
+        ReminderDTO(
+            id: UUID(),
+            coupleId: coupleId,
+            authorId: me,
+            targetId: me,
+            title: "Call her at lunch",
+            body: nil,
+            loveLanguage: .words,
+            triggerType: "one_time",
+            fireAt: Date.now.addingTimeInterval(hours * 3_600),
+            rrule: nil,
+            geofence: nil,
+            windowStart: nil,
+            windowEnd: nil,
+            status: "scheduled",
+            surpriseHiddenFromPartner: false,
+            createdAt: nil
+        )
+    }
+
+    @Test func failedLaunchFetch_keepsThePendingSchedule() async throws {
+        center.removeAllPendingNotificationRequests()
+        try await seedPending("scheduled-last-session")
+        let repo = repository()
+        repo.loadRows = { _ in throw URLError(.notConnectedToInternet) }
+
+        await repo.refresh()
+        await repo.rescheduleNotifications(forSelfUserId: me, events: [], requestAuthIfNeeded: false)
+
+        #expect(repo.hasLoaded == false)
+        #expect(await pendingIdentifiers().contains("scheduled-last-session"))
+        center.removeAllPendingNotificationRequests()
+    }
+
+    @Test func successfulFetch_rebuildsTheSchedule() async throws {
+        center.removeAllPendingNotificationRequests()
+        try await seedPending("stale-from-last-session")
+        let reminder = reminderForMe(in: 2)
+        let repo = repository()
+        repo.loadRows = { _ in [reminder] }
+
+        await repo.refresh()
+        await repo.rescheduleNotifications(forSelfUserId: me, events: [], requestAuthIfNeeded: false)
+
+        let pending = await pendingIdentifiers()
+        #expect(repo.hasLoaded)
+        #expect(pending.contains(reminder.id.uuidString))
+        #expect(!pending.contains("stale-from-last-session"))
+        center.removeAllPendingNotificationRequests()
+    }
+
+    @Test func loadedEmptyList_clearsTheSchedule() async throws {
+        center.removeAllPendingNotificationRequests()
+        try await seedPending("deleted-on-the-partners-phone")
+        let repo = repository()
+        repo.loadRows = { _ in [] }
+
+        await repo.refresh()
+        await repo.rescheduleNotifications(forSelfUserId: me, events: [], requestAuthIfNeeded: false)
+
+        #expect(repo.hasLoaded)
+        #expect(await pendingIdentifiers().isEmpty)
+        center.removeAllPendingNotificationRequests()
     }
 }
