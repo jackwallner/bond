@@ -96,6 +96,25 @@ struct MilestoneDTOTests {
         #expect(obj["date"] as? String == "2026-03-05")
     }
 
+    @Test func encode_sendsAClearedLabelAsNull() throws {
+        // Clearing the label has to reach the server: an upsert leaves the
+        // columns that are not in its body as they were.
+        let date = DateComponents(calendar: .current, year: 2026, month: 3, day: 5).date!
+        let m = MilestoneDTO(id: UUID(), coupleId: coupleId, kind: "anniversary", label: nil, date: date, recur: true)
+        let data = try JSONEncoder().encode(m)
+        let obj = try #require(try JSONSerialization.jsonObject(with: data) as? [String: Any])
+        #expect(obj["label"] is NSNull)
+        #expect(obj["created_at"] == nil)
+    }
+
+    @Test func encode_keepsALabelItIsGiven() throws {
+        let date = DateComponents(calendar: .current, year: 2026, month: 3, day: 5).date!
+        let m = MilestoneDTO(id: UUID(), coupleId: coupleId, kind: "anniversary", label: "Us", date: date, recur: true)
+        let data = try JSONEncoder().encode(m)
+        let obj = try #require(try JSONSerialization.jsonObject(with: data) as? [String: Any])
+        #expect(obj["label"] as? String == "Us")
+    }
+
     @Test func codable_roundTrip_preservesCalendarDay() throws {
         let date = DateComponents(calendar: .current, year: 2024, month: 2, day: 29).date!
         let m = MilestoneDTO(id: UUID(), coupleId: coupleId, kind: "birthday", label: "Leap", date: date, recur: true)

@@ -51,6 +51,49 @@ struct ReminderDTOTests {
         #expect(decoded.trigger?.kindRaw == "recurring")
     }
 
+    // MARK: - Encoding
+
+    // An upsert only changes the columns that are in its body. A field the user
+    // cleared (the note, a repeat rule) has to go out as an explicit null, or the
+    // server keeps the old value and the edit is silently lost on the next refresh.
+
+    @Test func encode_sendsClearedFieldsAsExplicitNulls() throws {
+        let r = makeReminder(triggerType: "one_time")
+        let json = try encodedObject(r)
+        for key in ["body", "fire_at", "rrule", "geofence", "window_start", "window_end"] {
+            #expect(json[key] is NSNull, "\(key) must go out as null")
+        }
+    }
+
+    @Test func encode_keepsTheValuesItIsGiven() throws {
+        var r = makeReminder(triggerType: "recurring", fireAt: .now, rrule: "FREQ=WEEKLY")
+        r.body = "Her favourite place"
+        let json = try encodedObject(r)
+        #expect(json["rrule"] as? String == "FREQ=WEEKLY")
+        #expect(json["body"] as? String == "Her favourite place")
+        #expect(json["fire_at"] != nil)
+        #expect(!(json["fire_at"] is NSNull))
+    }
+
+    @Test func encode_leavesCreatedAtToTheDatabaseWhenItIsUnknown() throws {
+        let r = makeReminder(triggerType: "one_time", fireAt: .now)
+        let json = try encodedObject(r)
+        #expect(json["created_at"] == nil)
+    }
+
+    @Test func clearedNote_roundTripsAsAClearedNote() throws {
+        var r = makeReminder(triggerType: "one_time", fireAt: .now)
+        r.body = nil
+        let decoded = try JSONDecoder().decode(ReminderDTO.self, from: JSONEncoder().encode(r))
+        #expect(decoded.body == nil)
+        #expect(decoded == r)
+    }
+
+    private func encodedObject(_ reminder: ReminderDTO) throws -> [String: Any] {
+        let data = try JSONEncoder().encode(reminder)
+        return try #require(try JSONSerialization.jsonObject(with: data) as? [String: Any])
+    }
+
     // MARK: - Helpers
 
     private func makeReminder(
