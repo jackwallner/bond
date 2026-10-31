@@ -152,6 +152,100 @@ struct CoupleLookupTests {
             #expect(pairing.lastLoadFailed)
         }
     }
+
+    // The app re-reads what moves with a couple (the reminders it arms, the
+    // milestones) when a lookup finds the relationship changed. Unpairing is the
+    // case that matters: the partner's reminders must stop firing at once.
+
+    @Test func unpairing_asTheInviter_keepsTheCoupleId_butStillTellsTheApp() async {
+        let couple = UUID()
+        let mine = me
+        await signedIn {
+            let pairing = PairingService()
+            pairing.coupleId = couple
+            pairing.solo = false
+            var told = 0
+            pairing.onRelationshipChange = { told += 1 }
+            // The inviter's row is repurposed in place as their solo couple.
+            pairing.fetchCouples = { _ in
+                [CoupleDTO(id: couple, partnerA: mine, partnerB: mine, pairedAt: nil, solo: true)]
+            }
+
+            await pairing.loadCouple()
+
+            #expect(pairing.solo)
+            #expect(told == 1)
+        }
+    }
+
+    @Test func unpairing_asTheOtherPartner_movesToANewCouple_andTellsTheApp() async {
+        let mine = me
+        await signedIn {
+            let pairing = PairingService()
+            pairing.coupleId = UUID()
+            pairing.solo = false
+            var told = 0
+            pairing.onRelationshipChange = { told += 1 }
+            pairing.fetchCouples = { _ in
+                [CoupleDTO(id: UUID(), partnerA: mine, partnerB: mine, pairedAt: nil, solo: true)]
+            }
+
+            await pairing.loadCouple()
+
+            #expect(told == 1)
+        }
+    }
+
+    @Test func firstLookup_isNotARelationshipChange() async {
+        let mine = me
+        await signedIn {
+            let pairing = PairingService()
+            var told = 0
+            pairing.onRelationshipChange = { told += 1 }
+            pairing.fetchCouples = { _ in
+                [CoupleDTO(id: UUID(), partnerA: mine, partnerB: mine, pairedAt: nil, solo: true)]
+            }
+
+            await pairing.loadCouple()
+
+            #expect(told == 0)
+        }
+    }
+
+    @Test func lookupThatFindsTheSameRelationship_staysQuiet() async {
+        let couple = UUID()
+        let mine = me
+        await signedIn {
+            let pairing = PairingService()
+            pairing.coupleId = couple
+            pairing.solo = true
+            var told = 0
+            pairing.onRelationshipChange = { told += 1 }
+            pairing.fetchCouples = { _ in
+                [CoupleDTO(id: couple, partnerA: mine, partnerB: mine, pairedAt: nil, solo: true)]
+            }
+
+            await pairing.loadCouple()
+            await pairing.loadCouple()
+
+            #expect(told == 0)
+        }
+    }
+
+    @Test func lookupThatFails_isNotARelationshipChange() async {
+        await signedIn {
+            let pairing = PairingService()
+            pairing.coupleId = UUID()
+            pairing.solo = false
+            var told = 0
+            pairing.onRelationshipChange = { told += 1 }
+            pairing.fetchCouples = { _ in throw URLError(.notConnectedToInternet) }
+
+            await pairing.loadCouple()
+
+            #expect(told == 0)
+        }
+    }
 }
 
 /// The stored session is the only handle on an anonymous account. A launch whose

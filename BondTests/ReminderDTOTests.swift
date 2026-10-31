@@ -249,6 +249,72 @@ struct LaunchRescheduleTests {
         #expect(rebuilds.isEmpty)
     }
 
+    @Test func liveChangeFromThePartner_isArmedWithoutWaitingForTheNextForeground() async {
+        let before = reminderForMe(in: 5)
+        let added = reminderForMe(in: 3)
+        let (repo, _) = repositoryAndPairing()
+        var served = [before]
+        var rebuilds: [[ReminderDTO]] = []
+        let userId = me
+        repo.loadRows = { _ in served }
+        repo.scheduleNotifications = { _, reminders, _, _ in rebuilds.append(reminders) }
+        repo.armingContext = { (userId, []) }
+        await repo.refresh()
+
+        // The partner adds a reminder while this app is open: the realtime feed
+        // delivers it, and the phone locking afterwards is not a return to the
+        // foreground, so nothing else would arm it before it is due.
+        served = [before, added]
+        await repo.handleRemoteChange()
+
+        #expect(repo.reminders == [before, added])
+        #expect(rebuilds == [[before, added]])
+    }
+
+    @Test func liveChange_beforeAnyListLoaded_andOffline_doesNotTouchTheSchedule() async {
+        let (repo, _) = repositoryAndPairing()
+        var rebuilds: [[ReminderDTO]] = []
+        let userId = me
+        repo.loadRows = { _ in throw URLError(.notConnectedToInternet) }
+        repo.scheduleNotifications = { _, reminders, _, _ in rebuilds.append(reminders) }
+        repo.armingContext = { (userId, []) }
+
+        await repo.handleRemoteChange()
+
+        #expect(rebuilds.isEmpty)
+    }
+
+    @Test func rearm_hasNobodyToArmFor_withoutAContext() async {
+        let (repo, _) = repositoryAndPairing()
+        var rebuilds = 0
+        repo.loadRows = { _ in [] }
+        repo.scheduleNotifications = { _, _, _, _ in rebuilds += 1 }
+        await repo.refresh()
+
+        await repo.rearm()
+
+        #expect(rebuilds == 0)
+    }
+
+    @Test func rearm_usesTheContextsUserAndEvents_andNeverAsksForPermission() async {
+        let done = ReminderEventDTO(
+            id: UUID(), reminderId: UUID(), coupleId: coupleId, firedAt: .now, actedAt: .now, reaction: nil
+        )
+        let (repo, _) = repositoryAndPairing()
+        var seen: [(UUID, Int, Bool)] = []
+        let userId = me
+        repo.loadRows = { _ in [] }
+        repo.scheduleNotifications = { user, _, events, mayAsk in seen.append((user, events.count, mayAsk)) }
+        repo.armingContext = { (userId, [done]) }
+        await repo.refresh()
+
+        await repo.rearm()
+
+        #expect(seen.map(\.0) == [me])
+        #expect(seen.map(\.1) == [1])
+        #expect(seen.map(\.2) == [false])
+    }
+
     @Test func rebuild_forwardsTheUserTheEventsAndTheTrigger() async {
         let reminder = reminderForMe(in: 3)
         let event = ReminderEventDTO(
