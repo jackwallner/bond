@@ -12,9 +12,16 @@ final class ReminderRepository {
     var reminders: [ReminderDTO] = []
     var isLoading = false
     var lastError: String?
-    /// True once a refresh has succeeded in this process. Until then an empty
-    /// `reminders` means "not fetched yet", not "the couple has none".
-    private(set) var hasLoaded = false
+    /// The couple the current `reminders` were fetched for.
+    private var loadedCoupleId: UUID?
+
+    /// True once a refresh has succeeded for the couple the app is on now.
+    /// Until then an empty `reminders` means "not fetched yet", not "the couple
+    /// has none", and after sign-out or a pairing change the old list is not
+    /// the new couple's.
+    var hasLoaded: Bool {
+        loadedCoupleId != nil && loadedCoupleId == pairing.coupleId
+    }
 
     /// Where `refresh()` gets the couple's rows. Tests swap it for a stub.
     @ObservationIgnored
@@ -46,7 +53,7 @@ final class ReminderRepository {
         do {
             let rows = try await loadRows(coupleId)
             reminders = rows
-            hasLoaded = true
+            loadedCoupleId = coupleId
             onChange(rows)
             log.info("Refreshed \(rows.count) reminders")
         } catch {
