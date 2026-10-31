@@ -204,6 +204,51 @@ struct LaunchRescheduleTests {
         #expect(rebuilds.isEmpty)
     }
 
+    @Test func returningToTheForeground_picksUpWhatThePartnerAddedAndArmsIt() async {
+        let before = reminderForMe(in: 5)
+        let added = reminderForMe(in: 3)
+        let (repo, _) = repositoryAndPairing()
+        var served = [before]
+        var rebuilds: [[ReminderDTO]] = []
+        repo.loadRows = { _ in served }
+        repo.scheduleNotifications = { _, reminders, _, _ in rebuilds.append(reminders) }
+        await repo.refresh()
+
+        // The realtime feed is not replayed after the app was suspended, so the
+        // partner's new reminder is only on the server.
+        served = [before, added]
+        await repo.catchUp(forSelfUserId: me, refreshEvents: { [] })
+
+        #expect(repo.reminders == [before, added])
+        #expect(rebuilds == [[before, added]])
+    }
+
+    @Test func catchUp_usesTheEventsItJustFetched_andNeverAsksForPermission() async {
+        let done = ReminderEventDTO(
+            id: UUID(), reminderId: UUID(), coupleId: coupleId, firedAt: .now, actedAt: .now, reaction: nil
+        )
+        let (repo, _) = repositoryAndPairing()
+        var seen: [(Int, Bool)] = []
+        repo.loadRows = { _ in [] }
+        repo.scheduleNotifications = { _, _, events, mayAsk in seen.append((events.count, mayAsk)) }
+
+        await repo.catchUp(forSelfUserId: me, refreshEvents: { [done] })
+
+        #expect(seen.map(\.0) == [1])
+        #expect(seen.map(\.1) == [false])
+    }
+
+    @Test func catchUpBeforeAnythingLoaded_andOffline_doesNotTouchTheSchedule() async {
+        let (repo, _) = repositoryAndPairing()
+        var rebuilds: [[ReminderDTO]] = []
+        repo.loadRows = { _ in throw URLError(.notConnectedToInternet) }
+        repo.scheduleNotifications = { _, reminders, _, _ in rebuilds.append(reminders) }
+
+        await repo.catchUp(forSelfUserId: me, refreshEvents: { [] })
+
+        #expect(rebuilds.isEmpty)
+    }
+
     @Test func rebuild_forwardsTheUserTheEventsAndTheTrigger() async {
         let reminder = reminderForMe(in: 3)
         let event = ReminderEventDTO(
