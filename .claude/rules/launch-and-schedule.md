@@ -14,8 +14,9 @@ paths:
 
 # Launch, schedule and widget invariants (2026-10-31 bug hunt)
 
-- **A failed fetch is not an empty list.** `ReminderRepository.hasLoaded` flips
-  on the first successful refresh; `rescheduleNotifications` does nothing until
+- **A failed fetch is not an empty list.** `ReminderRepository.hasLoaded` is true
+  once a refresh has succeeded for the couple the app is on now (it goes false
+  again when the couple changes); `rescheduleNotifications` does nothing until
   then, because a rebuild removes every pending notification first. Route every
   reschedule through the repository, not `NotificationScheduler.reschedule`.
 - **A failed couple lookup is not "no couple".** `PairingService.lastLoadFailed`
