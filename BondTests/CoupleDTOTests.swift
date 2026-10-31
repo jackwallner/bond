@@ -153,3 +153,49 @@ struct CoupleLookupTests {
         }
     }
 }
+
+/// The stored session is the only handle on an anonymous account. A launch whose
+/// restore failed because a request never completed must not swap it for a brand
+/// new anonymous user: the new session replaces the stored one, and everything
+/// the first user made (couple, reminders, milestones) is unreachable from then on.
+@MainActor
+@Suite(.serialized)
+struct SessionRestoreTests {
+    private struct NoStoredSession: Error {}
+
+    /// Runs `restoreSession` against the shared holder and puts it back as found.
+    private func restore(
+        loading load: () async throws -> SupabaseService.RestoredIdentity
+    ) async -> (freshSessions: Int, userId: UUID?) {
+        let service = SupabaseService.shared
+        let before = (service.currentUserId, service.isAnonymous)
+        service.currentUserId = nil
+        var freshSessions = 0
+        await service.restoreSession(loadSession: load, startFreshSession: { freshSessions += 1 })
+        let userId = service.currentUserId
+        service.currentUserId = before.0
+        service.isAnonymous = before.1
+        return (freshSessions, userId)
+    }
+
+    @Test func storedSession_isKept_andNobodyNewIsStarted() async {
+        let stored = UUID()
+        let result = await restore { SupabaseService.RestoredIdentity(userId: stored, isAnonymous: true) }
+        #expect(result.userId == stored)
+        #expect(result.freshSessions == 0)
+    }
+
+    @Test func noStoredSession_startsAnAnonymousUser() async {
+        let result = await restore { throw NoStoredSession() }
+        #expect(result.freshSessions == 1)
+    }
+
+    @Test func requestThatNeverCompletes_doesNotStartANewUser() async {
+        let failures: [URLError.Code] = [.timedOut, .networkConnectionLost, .notConnectedToInternet, .cannotConnectToHost]
+        for code in failures {
+            let result = await restore { throw URLError(code) }
+            #expect(result.freshSessions == 0, "a \(code) must not mint a new user")
+            #expect(result.userId == nil)
+        }
+    }
+}
