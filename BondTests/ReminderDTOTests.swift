@@ -106,9 +106,13 @@ struct LaunchRescheduleTests {
     }
 
     private func repository() -> ReminderRepository {
+        repositoryAndPairing().repo
+    }
+
+    private func repositoryAndPairing() -> (repo: ReminderRepository, pairing: PairingService) {
         let pairing = PairingService()
         pairing.coupleId = coupleId
-        return ReminderRepository(pairing: pairing)
+        return (ReminderRepository(pairing: pairing), pairing)
     }
 
     private func reminderForMe(in hours: Double) -> ReminderDTO {
@@ -160,6 +164,23 @@ struct LaunchRescheduleTests {
         #expect(repo.hasLoaded)
         #expect(pending.contains(reminder.id.uuidString))
         #expect(!pending.contains("stale-from-last-session"))
+        center.removeAllPendingNotificationRequests()
+    }
+
+    @Test func loadedList_doesNotCarryOverToAnotherCouple() async throws {
+        center.removeAllPendingNotificationRequests()
+        try await seedPending("scheduled-for-the-previous-account")
+        let (repo, pairing) = repositoryAndPairing()
+        repo.loadRows = { _ in [] }
+        await repo.refresh()
+        #expect(repo.hasLoaded)
+
+        // Sign out, then sign in as someone else: the old list says nothing about the new couple.
+        pairing.coupleId = UUID()
+        await repo.rescheduleNotifications(forSelfUserId: me, events: [], requestAuthIfNeeded: false)
+
+        #expect(repo.hasLoaded == false)
+        #expect(await pendingIdentifiers().contains("scheduled-for-the-previous-account"))
         center.removeAllPendingNotificationRequests()
     }
 
