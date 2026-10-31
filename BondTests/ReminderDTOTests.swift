@@ -1,6 +1,5 @@
 import Foundation
 import Testing
-import UserNotifications
 
 @testable import Bond
 
@@ -87,27 +86,12 @@ struct ReminderDTOTests {
 /// Launch behaviour of the on-device schedule. Every launch rebuilds the
 /// pending notifications from the repository's list, so the list has to be
 /// the server's, not the empty starting value of a launch whose fetch failed.
+/// The scheduler is replaced by a recorder: a test host has no notification
+/// permission, so real requests cannot be added or read back there.
 @MainActor
-@Suite(.serialized)
 struct LaunchRescheduleTests {
-    private let center = UNUserNotificationCenter.current()
     private let me = UUID()
     private let coupleId = UUID()
-
-    private func pendingIdentifiers() async -> Set<String> {
-        Set(await center.pendingNotificationRequests().map(\.identifier))
-    }
-
-    private func seedPending(_ identifier: String) async throws {
-        let content = UNMutableNotificationContent()
-        content.title = "Scheduled by an earlier session"
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 3_600, repeats: false)
-        try await center.add(UNNotificationRequest(identifier: identifier, content: content, trigger: trigger))
-    }
-
-    private func repository() -> ReminderRepository {
-        repositoryAndPairing().repo
-    }
 
     private func repositoryAndPairing() -> (repo: ReminderRepository, pairing: PairingService) {
         let pairing = PairingService()
@@ -136,41 +120,37 @@ struct LaunchRescheduleTests {
         )
     }
 
-    @Test func failedLaunchFetch_keepsThePendingSchedule() async throws {
-        center.removeAllPendingNotificationRequests()
-        try await seedPending("scheduled-last-session")
-        let repo = repository()
+    @Test func failedLaunchFetch_doesNotRebuildTheSchedule() async {
+        let (repo, _) = repositoryAndPairing()
+        var rebuilds: [[ReminderDTO]] = []
+        repo.scheduleNotifications = { _, reminders, _, _ in rebuilds.append(reminders) }
         repo.loadRows = { _ in throw URLError(.notConnectedToInternet) }
 
         await repo.refresh()
         await repo.rescheduleNotifications(forSelfUserId: me, events: [], requestAuthIfNeeded: false)
 
         #expect(repo.hasLoaded == false)
-        #expect(await pendingIdentifiers().contains("scheduled-last-session"))
-        center.removeAllPendingNotificationRequests()
+        #expect(rebuilds.isEmpty)
     }
 
-    @Test func successfulFetch_rebuildsTheSchedule() async throws {
-        center.removeAllPendingNotificationRequests()
-        try await seedPending("stale-from-last-session")
+    @Test func successfulFetch_rebuildsTheScheduleFromTheFetchedList() async {
         let reminder = reminderForMe(in: 2)
-        let repo = repository()
+        let (repo, _) = repositoryAndPairing()
+        var rebuilds: [[ReminderDTO]] = []
+        repo.scheduleNotifications = { _, reminders, _, _ in rebuilds.append(reminders) }
         repo.loadRows = { _ in [reminder] }
 
         await repo.refresh()
         await repo.rescheduleNotifications(forSelfUserId: me, events: [], requestAuthIfNeeded: false)
 
-        let pending = await pendingIdentifiers()
         #expect(repo.hasLoaded)
-        #expect(pending.contains(reminder.id.uuidString))
-        #expect(!pending.contains("stale-from-last-session"))
-        center.removeAllPendingNotificationRequests()
+        #expect(rebuilds == [[reminder]])
     }
 
-    @Test func loadedList_doesNotCarryOverToAnotherCouple() async throws {
-        center.removeAllPendingNotificationRequests()
-        try await seedPending("scheduled-for-the-previous-account")
+    @Test func loadedList_doesNotCarryOverToAnotherCouple() async {
         let (repo, pairing) = repositoryAndPairing()
+        var rebuilds: [[ReminderDTO]] = []
+        repo.scheduleNotifications = { _, reminders, _, _ in rebuilds.append(reminders) }
         repo.loadRows = { _ in [] }
         await repo.refresh()
         #expect(repo.hasLoaded)
@@ -180,21 +160,39 @@ struct LaunchRescheduleTests {
         await repo.rescheduleNotifications(forSelfUserId: me, events: [], requestAuthIfNeeded: false)
 
         #expect(repo.hasLoaded == false)
-        #expect(await pendingIdentifiers().contains("scheduled-for-the-previous-account"))
-        center.removeAllPendingNotificationRequests()
+        #expect(rebuilds.isEmpty)
     }
 
-    @Test func loadedEmptyList_clearsTheSchedule() async throws {
-        center.removeAllPendingNotificationRequests()
-        try await seedPending("deleted-on-the-partners-phone")
-        let repo = repository()
+    @Test func loadedEmptyList_stillRebuilds_soDeletedRemindersStopFiring() async {
+        let (repo, _) = repositoryAndPairing()
+        var rebuilds: [[ReminderDTO]] = []
+        repo.scheduleNotifications = { _, reminders, _, _ in rebuilds.append(reminders) }
         repo.loadRows = { _ in [] }
 
         await repo.refresh()
         await repo.rescheduleNotifications(forSelfUserId: me, events: [], requestAuthIfNeeded: false)
 
         #expect(repo.hasLoaded)
-        #expect(await pendingIdentifiers().isEmpty)
-        center.removeAllPendingNotificationRequests()
+        #expect(rebuilds == [[]])
+    }
+
+    @Test func rebuild_forwardsTheUserTheEventsAndTheTrigger() async {
+        let reminder = reminderForMe(in: 3)
+        let event = ReminderEventDTO(
+            id: UUID(), reminderId: reminder.id, coupleId: coupleId,
+            firedAt: .now, actedAt: .now, reaction: nil
+        )
+        let (repo, _) = repositoryAndPairing()
+        var seen: [(UUID, Int, Bool)] = []
+        repo.scheduleNotifications = { user, _, events, mayAsk in seen.append((user, events.count, mayAsk)) }
+        repo.loadRows = { _ in [reminder] }
+        await repo.refresh()
+
+        await repo.rescheduleNotifications(forSelfUserId: me, events: [event], requestAuthIfNeeded: false)
+        await repo.rescheduleNotifications(forSelfUserId: me, events: [])
+
+        #expect(seen.map(\.0) == [me, me])
+        #expect(seen.map(\.1) == [1, 0])
+        #expect(seen.map(\.2) == [false, true])
     }
 }
