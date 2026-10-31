@@ -110,13 +110,19 @@ final class ReminderRepository {
         await scheduleNotifications(me, reminders, events, requestAuthIfNeeded)
     }
 
-    /// Catches up after the app returns to the foreground.
+    /// Catches up after the app returns to the foreground. The realtime feed is
+    /// not replayed after the app was suspended, so what the partner added in the
+    /// meantime is only on the server: re-read the list and the completions, then
+    /// re-arm the notifications from them. A failed fetch leaves the schedule
+    /// alone (see `rescheduleNotifications`), and the permission prompt is left
+    /// to the notification primer.
     func catchUp(
         forSelfUserId me: UUID,
         refreshEvents: () async -> [ReminderEventDTO]
     ) async {
         await refresh()
-        _ = await refreshEvents()
+        let events = await refreshEvents()
+        await rescheduleNotifications(forSelfUserId: me, events: events, requestAuthIfNeeded: false)
     }
 
     func upsert(_ reminder: ReminderDTO) async throws {

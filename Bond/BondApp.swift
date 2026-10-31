@@ -151,8 +151,24 @@ struct BondApp: App {
                         if pairingService.solo || (pairingService.coupleId == nil && pairingService.lastLoadFailed) {
                             Task { await pairingService.loadCouple() }
                         }
+                        Task { await catchUpOnForeground() }
                     }
                 }
+    }
+
+    /// Changes the partner made while the app was suspended never reach the
+    /// realtime feed, so a returning app re-reads the list and the completions
+    /// and re-arms the notifications from them. Nothing to do before a couple is
+    /// known: the Reminders tab loads it on the way in.
+    private func catchUpOnForeground() async {
+        #if DEBUG
+        if BondScreenshotSeed.isEnabled || BondScreenshotSeed.isOnboarding { return }
+        #endif
+        guard let me = supabase.currentUserId, pairingService.coupleId != nil else { return }
+        await reminderRepo.catchUp(forSelfUserId: me) {
+            await eventsRepo.refresh()
+            return eventsRepo.events
+        }
     }
 }
 
