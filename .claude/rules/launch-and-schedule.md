@@ -19,6 +19,13 @@ paths:
   again when the couple changes); `rescheduleNotifications` does nothing until
   then, because a rebuild removes every pending notification first. Route every
   reschedule through the repository, not `NotificationScheduler.reschedule`.
+- **Notifications are only as fresh as the last list.** Partner reminders reach
+  this phone as local notifications armed from the fetched list, and the realtime
+  feed is not replayed after the app was suspended. So the list is re-read, and
+  the schedule rebuilt (`ReminderRepository.catchUp`, no permission prompt), when
+  the app returns to the foreground (`BondApp.catchUpOnForeground`), and
+  `importReminders` rebuilds right after a template pack is inserted. Anything new
+  that writes reminders must end in `rescheduleNotifications`.
 - **A failed couple lookup is not "no couple".** `PairingService.lastLoadFailed`
   keeps `RootDestination.resolve` on `.loading` (the Couldn't connect state with
   Try again), because first-run onboarding ends in `create_solo_couple`
