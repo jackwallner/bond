@@ -29,6 +29,12 @@ final class PairingService {
         try await PairingService.queryCouples(for: me)
     }
 
+    /// Called when a lookup finds the app's couple changed under it: another
+    /// couple, or the same one turned solo or paired. The app sets it at launch
+    /// to re-read what moved with it. Empty is fine for previews and tests.
+    @ObservationIgnored
+    var onRelationshipChange: @MainActor () async -> Void = {}
+
     /// An invite code captured from a universal link before the user had a
     /// recoverable identity. Held until Apple Sign-In completes, then
     /// consumed in [[AppleSignInPairingGate]]. Without this, anonymous users

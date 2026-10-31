@@ -57,6 +57,13 @@ final class ReminderRepository {
     /// after every change. Optional - empty closure is fine for previews/tests.
     var onChange: ([ReminderDTO]) -> Void = { _ in }
 
+    /// Who the schedule is for and which completions it should honour, for the
+    /// changes that arrive outside any screen (the realtime feed, the watch).
+    /// The app sets it at launch; without one (previews, tests) `rearm()` does
+    /// nothing.
+    @ObservationIgnored
+    var armingContext: @MainActor () -> (user: UUID, events: [ReminderEventDTO])? = { nil }
+
     private var realtimeChannel: RealtimeChannelV2?
     /// The couple the active realtime channel is filtered on. Lets us detect
     /// pair/unpair and re-subscribe rather than keeping a channel bound to a
@@ -108,6 +115,22 @@ final class ReminderRepository {
     ) async {
         guard hasLoaded else { return }
         await scheduleNotifications(me, reminders, events, requestAuthIfNeeded)
+    }
+
+    /// Rebuilds the schedule from the list as it stands, for the callers that
+    /// have no screen to read the signed-in user and the completions from. Never
+    /// raises the permission prompt: the notification primer owns that.
+    func rearm() async {
+        guard let context = armingContext() else { return }
+        await rescheduleNotifications(
+            forSelfUserId: context.user, events: context.events, requestAuthIfNeeded: false
+        )
+    }
+
+    /// A change another device made, delivered by the realtime feed while the
+    /// app is open.
+    func handleRemoteChange() async {
+        await refresh()
     }
 
     /// Catches up after the app returns to the foreground. The realtime feed is
@@ -224,7 +247,7 @@ final class ReminderRepository {
 
         Task {
             for await _ in changes {
-                await refresh()
+                await handleRemoteChange()
             }
         }
     }
