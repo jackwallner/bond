@@ -140,7 +140,7 @@ struct BondApp: App {
                         // A solo user may have been paired while backgrounded
                         // (their partner consumed the invite). Refresh so the
                         // app notices without a relaunch.
-                        if pairingService.solo {
+                        if pairingService.solo || (pairingService.coupleId == nil && pairingService.lastLoadFailed) {
                             Task { await pairingService.loadCouple() }
                         }
                     }
@@ -214,10 +214,11 @@ struct RootView: View {
             case .loading:
                 ZStack {
                     Color.bondSurface.ignoresSafeArea()
-                    if isAppBootstrapped && !supabase.isAuthenticated {
+                    if isAppBootstrapped && (!supabase.isAuthenticated || coupleLookupNeedsRetry) {
                         // Bootstrap finished but no session exists - almost
                         // always a first-launch network failure (anonymous
-                        // sign-in needs the network). Offer a way forward
+                        // sign-in needs the network) - or the session is fine
+                        // and the couple lookup failed. Offer a way forward
                         // instead of an indefinite spinner.
                         loadingFailedState
                     } else {
@@ -370,6 +371,11 @@ struct RootView: View {
         isAppBootstrapped && pairing.coupleId != nil
     }
 
+    /// Signed in, but the couples request failed and no couple is known yet.
+    private var coupleLookupNeedsRetry: Bool {
+        pairing.coupleId == nil && pairing.lastLoadFailed
+    }
+
     private var loadingFailedState: some View {
         VStack(spacing: BondSpacing.m) {
             Image(systemName: "wifi.exclamationmark")
@@ -471,6 +477,10 @@ enum RootDestination: Equatable {
         // starts solo via the intent screen, and pairing stays opt-in from
         // Settings.
         if !hasCouple {
+            // A lookup that threw says nothing about whether a couple exists.
+            // Showing first-run onboarding to someone who already has one ends
+            // in "already in a couple", so wait for a retry instead.
+            if coupleLookupFailed { return .loading }
             return hasDeferredInvite ? .inviteWelcome : .intentSetup
         }
         if justPaired {
