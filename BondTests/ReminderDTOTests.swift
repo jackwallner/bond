@@ -176,6 +176,34 @@ struct LaunchRescheduleTests {
         #expect(rebuilds == [[]])
     }
 
+    @Test func importedPack_isArmedWithoutWaitingForTheNextLaunch() async throws {
+        let pack = [reminderForMe(in: 24), reminderForMe(in: 48)]
+        let (repo, _) = repositoryAndPairing()
+        var rebuilds: [[ReminderDTO]] = []
+        repo.insertRows = { _ in }
+        repo.loadRows = { _ in pack }
+        repo.scheduleNotifications = { _, reminders, _, _ in rebuilds.append(reminders) }
+
+        try await repo.importReminders(pack, forSelfUserId: me, events: [])
+
+        #expect(repo.reminders == pack)
+        #expect(rebuilds == [pack])
+    }
+
+    @Test func importThatFailsToSave_leavesTheScheduleAlone() async {
+        let pack = [reminderForMe(in: 24)]
+        let (repo, _) = repositoryAndPairing()
+        var rebuilds: [[ReminderDTO]] = []
+        repo.insertRows = { _ in throw URLError(.notConnectedToInternet) }
+        repo.scheduleNotifications = { _, reminders, _, _ in rebuilds.append(reminders) }
+
+        await #expect(throws: URLError.self) {
+            try await repo.importReminders(pack, forSelfUserId: me, events: [])
+        }
+
+        #expect(rebuilds.isEmpty)
+    }
+
     @Test func rebuild_forwardsTheUserTheEventsAndTheTrigger() async {
         let reminder = reminderForMe(in: 3)
         let event = ReminderEventDTO(
