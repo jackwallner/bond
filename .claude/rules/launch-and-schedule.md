@@ -23,6 +23,13 @@ paths:
   keeps `RootDestination.resolve` on `.loading` (the Couldn't connect state with
   Try again), because first-run onboarding ends in `create_solo_couple`
   raising "already in a couple". Android has the same guard (`initialLoadFailed`).
+- **A failed restore is not a missing session.** `SupabaseService.restoreSession`
+  signs in as a new anonymous user only when the stored-session load fails for a
+  reason other than a request that never completed (`shouldStartFreshSession`).
+  The new session replaces the stored one, so a timeout while the expired access
+  token is refreshed would strand the account (couple, reminders, milestones) of
+  an anonymous user. Offline or flaky launches stay on Couldn't connect; Try
+  again restores the real session. Android makes the same distinction.
 - **Milestones load when home appears**, with `requestAuthIfNeeded: false` so the
   notification primer still explains first. `MilestonesService.onChange` pushes
   the widget snapshot; the snapshot is rebuilt whole, so it waits for
