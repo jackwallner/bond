@@ -82,9 +82,23 @@ final class SupabaseService {
             isAnonymous = identity.isAnonymous
             log.info("Session restored for user \(identity.userId) (anon: \(identity.isAnonymous))")
         } catch {
+            guard Self.shouldStartFreshSession(after: error) else {
+                log.notice("Session restore interrupted, keeping the stored session: \(error.localizedDescription)")
+                return
+            }
             log.notice("No cached session - signing in anonymously")
             await startFreshSession()
         }
+    }
+
+    /// A load that failed because a request never completed (offline, timeout,
+    /// connection lost) says nothing about the stored session: it may be intact
+    /// and only need its token refreshed. Signing in as a new anonymous user then
+    /// replaces it and strands the account it belongs to, so the launch waits
+    /// for "Try again" instead.
+    nonisolated static func shouldStartFreshSession(after error: Error) -> Bool {
+        if error is CancellationError { return false }
+        return !(error is URLError || (error as NSError).domain == NSURLErrorDomain)
     }
 
     func signInAnonymously() async {
