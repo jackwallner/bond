@@ -98,6 +98,7 @@ struct TemplateGroupDetailView: View {
     let group: ReminderTemplateGroup
     @Environment(\.dismiss) private var dismiss
     @Environment(ReminderRepository.self) private var repo
+    @Environment(ReminderEventRepository.self) private var eventsRepo
     @Environment(PairingService.self) private var pairing
     @Environment(SupabaseService.self) private var supabase
     @State private var isCreating = false
@@ -234,7 +235,7 @@ struct TemplateGroupDetailView: View {
         }
 
         do {
-            try await repo.bulkInsert(drafts)
+            try await repo.importReminders(drafts, forSelfUserId: me, events: eventsRepo.events)
             createdCount = drafts.count
             showConfirmation = true
         } catch {

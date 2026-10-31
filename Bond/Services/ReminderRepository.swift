@@ -29,6 +29,15 @@ final class ReminderRepository {
         try await ReminderRepository.fetchRows(coupleId: coupleId)
     }
 
+    /// Writes a batch of new reminders in one request. Tests swap it for a stub.
+    @ObservationIgnored
+    var insertRows: @MainActor ([ReminderDTO]) async throws -> Void = { reminders in
+        try await SupabaseService.shared.client
+            .from("reminders")
+            .insert(reminders)
+            .execute()
+    }
+
     /// Lays down the on-device notifications for the signed-in user from the
     /// given list and events; the flag says whether it may raise the system
     /// permission prompt. Tests swap it for a stub, because a test host has no
@@ -132,12 +141,18 @@ final class ReminderRepository {
     /// template imports into 14 sequential HTTP calls for 7 reminders.
     func bulkInsert(_ reminders: [ReminderDTO]) async throws {
         guard !reminders.isEmpty else { return }
-        try await supabase.client
-            .from("reminders")
-            .insert(reminders)
-            .execute()
+        try await insertRows(reminders)
         log.info("Bulk-inserted \(reminders.count) reminders")
         await refresh()
+    }
+
+    /// Adds a batch (a template pack) for the signed-in user.
+    func importReminders(
+        _ reminders: [ReminderDTO],
+        forSelfUserId me: UUID,
+        events: [ReminderEventDTO]
+    ) async throws {
+        try await bulkInsert(reminders)
     }
 
     func delete(_ reminder: ReminderDTO) async throws {
