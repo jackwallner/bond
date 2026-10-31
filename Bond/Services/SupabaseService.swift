@@ -55,14 +55,35 @@ final class SupabaseService {
     /// Apple Sign-In is reserved for opt-in upgrades (pairing, account
     /// recovery), not for first launch.
     func restoreSession() async {
+        await restoreSession(
+            loadSession: { [client] in
+                let session = try await client.auth.session
+                return RestoredIdentity(userId: session.user.id, isAnonymous: session.user.isAnonymous)
+            },
+            startFreshSession: { await self.signInAnonymously() }
+        )
+    }
+
+    /// Who the stored session says is signed in.
+    struct RestoredIdentity: Equatable {
+        let userId: UUID
+        let isAnonymous: Bool
+    }
+
+    /// `restoreSession()` with its two outside steps handed in, so tests can
+    /// fail the load without a network.
+    func restoreSession(
+        loadSession: () async throws -> RestoredIdentity,
+        startFreshSession: () async -> Void
+    ) async {
         do {
-            let session = try await client.auth.session
-            currentUserId = session.user.id
-            isAnonymous = session.user.isAnonymous
-            log.info("Session restored for user \(session.user.id) (anon: \(self.isAnonymous))")
+            let identity = try await loadSession()
+            currentUserId = identity.userId
+            isAnonymous = identity.isAnonymous
+            log.info("Session restored for user \(identity.userId) (anon: \(identity.isAnonymous))")
         } catch {
             log.notice("No cached session - signing in anonymously")
-            await signInAnonymously()
+            await startFreshSession()
         }
     }
 
