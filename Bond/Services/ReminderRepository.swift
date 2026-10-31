@@ -128,9 +128,12 @@ final class ReminderRepository {
     }
 
     /// A change another device made, delivered by the realtime feed while the
-    /// app is open.
+    /// app is open. The list is only half of it: the phone locking afterwards is
+    /// not a return to the foreground, so a reminder the partner just added (or
+    /// moved, or deleted) is armed (or disarmed) here, not at the next catch-up.
     func handleRemoteChange() async {
         await refresh()
+        await rearm()
     }
 
     /// Catches up after the app returns to the foreground. The realtime feed is

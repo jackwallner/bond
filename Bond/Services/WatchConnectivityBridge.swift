@@ -109,9 +109,11 @@ final class WatchConnectivityBridge: NSObject {
         } catch {
             return (false, "Couldn't save the reminder. Try again.")
         }
-        await NotificationScheduler.shared.reschedule(
-            forSelfUserId: me, reminders: repository.reminders
-        )
+        // Through the repository, like every other reschedule: it waits for a
+        // successful fetch (a rebuild from the empty starting list would cancel
+        // every pending reminder) and honours the completions, which a rebuild
+        // with none would arm again.
+        await repository.rearm()
         return (true, nil)
     }
 }

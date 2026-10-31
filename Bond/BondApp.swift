@@ -133,6 +133,18 @@ struct BondApp: App {
                         guard reminderRepo.hasLoaded else { return }
                         WidgetSnapshotPump.push(reminders: reminderRepo.reminders, milestones: milestones)
                     }
+                    reminderRepo.armingContext = {
+                        guard let me = supabase.currentUserId else { return nil }
+                        return (me, eventsRepo.events)
+                    }
+                    pairingService.onRelationshipChange = {
+                        // Pairing or unpairing moves reminders and milestones
+                        // between couples. Re-arm right away: unpairing has to
+                        // silence the partner's reminders on this phone now,
+                        // not at the next return to the foreground.
+                        await milestonesService.refresh(requestAuthIfNeeded: false)
+                        await catchUpReminders()
+                    }
                     Task { await store.bootstrap() }
                 }
                 .onOpenURL { url in
@@ -163,6 +175,12 @@ struct BondApp: App {
         if pairingService.coupleId != nil || pairingService.lastLoadFailed {
             await pairingService.loadCouple()
         }
+        await catchUpReminders()
+    }
+
+    /// Re-reads the reminders and the completions and re-arms the notifications
+    /// from them.
+    private func catchUpReminders() async {
         guard let me = supabase.currentUserId, pairingService.coupleId != nil else { return }
         await reminderRepo.catchUp(forSelfUserId: me) {
             await eventsRepo.refresh()

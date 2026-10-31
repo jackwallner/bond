@@ -53,6 +53,18 @@ final class PairingService {
     private let universalLinkHost = "jackwallner.com"
 
     func loadCouple() async {
+        let before = (coupleId, solo)
+        await lookUpCouple()
+        // The first lookup of a launch (or after sign-out) has nothing to compare
+        // with. After that, a different couple, or the same one turning solo, means
+        // the partner's reminders and the shared milestones moved: the inviter keeps
+        // the couple id when unpairing, so the id alone does not show it.
+        if before.0 != nil, (coupleId, solo) != before {
+            await onRelationshipChange()
+        }
+    }
+
+    private func lookUpCouple() async {
         guard let me = supabase.currentUserId else { return }
         do {
             // No `.single()`: zero rows must be distinguishable from a failed
