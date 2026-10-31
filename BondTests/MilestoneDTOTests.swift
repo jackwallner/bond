@@ -289,3 +289,81 @@ struct MilestonesServiceTests {
         #expect(asked == [false, true])
     }
 }
+
+/// What the widgets show on this phone. The couple's reminders are all readable by
+/// both partners, but the app only shows a user their own and the ones addressed to
+/// them, and the widget must follow the same rule: it sits on a home screen.
+struct WidgetSnapshotTests {
+    private let me = UUID()
+    private let partner = UUID()
+    private let coupleId = UUID()
+    private let now = Date(timeIntervalSince1970: 1_800_000_000)
+
+    private func reminder(author: UUID, target: UUID, title: String, hours: Double) -> ReminderDTO {
+        ReminderDTO(
+            id: UUID(), coupleId: coupleId, authorId: author, targetId: target,
+            title: title, body: nil, loveLanguage: .words, triggerType: "one_time",
+            fireAt: now.addingTimeInterval(hours * 3_600), rrule: nil, geofence: nil,
+            windowStart: nil, windowEnd: nil, status: "scheduled",
+            surpriseHiddenFromPartner: false, createdAt: nil
+        )
+    }
+
+    @Test func partnersOwnReminder_isNotMyNextReminder() {
+        let theirs = reminder(author: partner, target: partner, title: "Their private errand", hours: 1)
+        let mine = reminder(author: me, target: me, title: "Mine", hours: 3)
+        let snapshot = WidgetSnapshot.make(reminders: [theirs, mine], milestones: [], userId: me, now: now)
+        #expect(snapshot.nextReminder?.title == "Mine")
+    }
+
+    @Test func whenOnlyThePartnersOwnRemindersExist_theWidgetShowsNone() {
+        let theirs = reminder(author: partner, target: partner, title: "Their private errand", hours: 1)
+        let snapshot = WidgetSnapshot.make(reminders: [theirs], milestones: [], userId: me, now: now)
+        #expect(snapshot.nextReminder == nil)
+    }
+
+    @Test func aReminderMyPartnerAddressedToMe_counts() {
+        let forMe = reminder(author: partner, target: me, title: "From them", hours: 1)
+        let mine = reminder(author: me, target: me, title: "Mine", hours: 3)
+        let snapshot = WidgetSnapshot.make(reminders: [mine, forMe], milestones: [], userId: me, now: now)
+        #expect(snapshot.nextReminder?.title == "From them")
+    }
+
+    @Test func aReminderIMadeForMyPartner_staysInMyList_soItCounts() {
+        let forThem = reminder(author: me, target: partner, title: "For them", hours: 1)
+        let snapshot = WidgetSnapshot.make(reminders: [forThem], milestones: [], userId: me, now: now)
+        #expect(snapshot.nextReminder?.title == "For them")
+    }
+
+    @Test func nobodySignedIn_showsNoReminder() {
+        let mine = reminder(author: me, target: me, title: "Mine", hours: 1)
+        let snapshot = WidgetSnapshot.make(reminders: [mine], milestones: [], userId: nil, now: now)
+        #expect(snapshot.nextReminder == nil)
+    }
+
+    @Test func aMilestoneThatIsOver_doesNotHideTheNextOne() {
+        // A one-time milestone in the past sorts before everything, so the widget kept
+        // counting down to a day that had gone.
+        let past = DateComponents(calendar: .current, year: 2025, month: 5, day: 1).date!
+        let upcoming = DateComponents(calendar: .current, year: 2030, month: 6, day: 15).date!
+        let over = MilestoneDTO(id: UUID(), coupleId: coupleId, kind: "custom", label: "Move-in", date: past, recur: false)
+        let next = MilestoneDTO(id: UUID(), coupleId: coupleId, kind: "custom", label: "Trip", date: upcoming, recur: false)
+        let snapshot = WidgetSnapshot.make(reminders: [], milestones: [over, next], userId: me, now: now)
+        #expect(snapshot.nextMilestone?.label == "Trip")
+    }
+
+    @Test func whenEveryMilestoneIsOver_theWidgetShowsNone() {
+        let past = DateComponents(calendar: .current, year: 2025, month: 5, day: 1).date!
+        let over = MilestoneDTO(id: UUID(), coupleId: coupleId, kind: "custom", label: "Move-in", date: past, recur: false)
+        let snapshot = WidgetSnapshot.make(reminders: [], milestones: [over], userId: me, now: now)
+        #expect(snapshot.nextMilestone == nil)
+    }
+
+    @Test func aMilestoneOnTheDayItself_stillShows() {
+        let today = Calendar.current.startOfDay(for: now)
+        let m = MilestoneDTO(id: UUID(), coupleId: coupleId, kind: "anniversary", label: "Us", date: today, recur: false)
+        let snapshot = WidgetSnapshot.make(reminders: [], milestones: [m], userId: me, now: now)
+        #expect(snapshot.nextMilestone?.label == "Us")
+        #expect(snapshot.nextMilestone?.daysAway(from: now) == 0)
+    }
+}
