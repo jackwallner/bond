@@ -12,6 +12,15 @@ final class ReminderRepository {
     var reminders: [ReminderDTO] = []
     var isLoading = false
     var lastError: String?
+    /// True once a refresh has succeeded in this process. Until then an empty
+    /// `reminders` means "not fetched yet", not "the couple has none".
+    private(set) var hasLoaded = false
+
+    /// Where `refresh()` gets the couple's rows. Tests swap it for a stub.
+    @ObservationIgnored
+    var loadRows: @MainActor (UUID) async throws -> [ReminderDTO] = { coupleId in
+        try await ReminderRepository.fetchRows(coupleId: coupleId)
+    }
 
     /// Set by the app at launch so the repo can refresh the widget snapshot
     /// after every change. Optional - empty closure is fine for previews/tests.
@@ -35,20 +44,39 @@ final class ReminderRepository {
         isLoading = true
         defer { isLoading = false }
         do {
-            let rows: [ReminderDTO] = try await supabase.client
-                .from("reminders")
-                .select()
-                .eq("couple_id", value: coupleId.uuidString)
-                .order("fire_at", ascending: true, nullsFirst: false)
-                .execute()
-                .value
+            let rows = try await loadRows(coupleId)
             reminders = rows
+            hasLoaded = true
             onChange(rows)
             log.info("Refreshed \(rows.count) reminders")
         } catch {
             lastError = error.localizedDescription
             log.error("Refresh failed: \(error.localizedDescription)")
         }
+    }
+
+    private static func fetchRows(coupleId: UUID) async throws -> [ReminderDTO] {
+        try await SupabaseService.shared.client
+            .from("reminders")
+            .select()
+            .eq("couple_id", value: coupleId.uuidString)
+            .order("fire_at", ascending: true, nullsFirst: false)
+            .execute()
+            .value
+    }
+
+    /// Rebuilds the on-device notification schedule from the loaded list.
+    func rescheduleNotifications(
+        forSelfUserId me: UUID,
+        events: [ReminderEventDTO],
+        requestAuthIfNeeded: Bool = true
+    ) async {
+        await NotificationScheduler.shared.reschedule(
+            forSelfUserId: me,
+            reminders: reminders,
+            events: events,
+            requestAuthIfNeeded: requestAuthIfNeeded
+        )
     }
 
     func upsert(_ reminder: ReminderDTO) async throws {

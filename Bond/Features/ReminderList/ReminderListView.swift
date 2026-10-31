@@ -89,9 +89,8 @@ struct ReminderListView: View {
                         await NotificationScheduler.shared.requestAuthorizationIfNeeded()
                         // Now that permission is (hopefully) granted, schedule
                         // anything that already exists.
-                        await NotificationScheduler.shared.reschedule(
+                        await repo.rescheduleNotifications(
                             forSelfUserId: supabase.currentUserId ?? UUID(),
-                            reminders: repo.reminders,
                             events: eventsRepo.events,
                             requestAuthIfNeeded: false
                         )
@@ -112,9 +111,8 @@ struct ReminderListView: View {
                 // Don't let rescheduling fire the bare system prompt here - the
                 // primer below explains *why* first, then requests. Without this
                 // the primer's `.notDetermined` guard never passes.
-                await NotificationScheduler.shared.reschedule(
+                await repo.rescheduleNotifications(
                     forSelfUserId: supabase.currentUserId ?? UUID(),
-                    reminders: repo.reminders,
                     events: eventsRepo.events,
                     requestAuthIfNeeded: false
                 )
@@ -525,9 +523,7 @@ struct ReminderListView: View {
 
     private func rescheduleNotifications() async {
         guard let me = supabase.currentUserId else { return }
-        await NotificationScheduler.shared.reschedule(
-            forSelfUserId: me, reminders: repo.reminders, events: eventsRepo.events
-        )
+        await repo.rescheduleNotifications(forSelfUserId: me, events: eventsRepo.events)
     }
 
     private func delete(_ source: [ReminderDTO], at offsets: IndexSet) {
@@ -579,11 +575,7 @@ private struct HandledRemindersView: View {
                         try? await repo.delete(source[index])
                     }
                     if let me = supabase.currentUserId {
-                        await NotificationScheduler.shared.reschedule(
-                            forSelfUserId: me,
-                            reminders: repo.reminders,
-                            events: eventsRepo.events
-                        )
+                        await repo.rescheduleNotifications(forSelfUserId: me, events: eventsRepo.events)
                     }
                 }
             }
