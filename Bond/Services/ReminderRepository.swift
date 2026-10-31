@@ -29,6 +29,21 @@ final class ReminderRepository {
         try await ReminderRepository.fetchRows(coupleId: coupleId)
     }
 
+    /// Lays down the on-device notifications for the signed-in user from the
+    /// given list and events; the flag says whether it may raise the system
+    /// permission prompt. Tests swap it for a stub, because a test host has no
+    /// notification permission and cannot add real requests.
+    @ObservationIgnored
+    var scheduleNotifications: @MainActor (UUID, [ReminderDTO], [ReminderEventDTO], Bool) async -> Void = {
+        me, reminders, events, askForPermission in
+        await NotificationScheduler.shared.reschedule(
+            forSelfUserId: me,
+            reminders: reminders,
+            events: events,
+            requestAuthIfNeeded: askForPermission
+        )
+    }
+
     /// Set by the app at launch so the repo can refresh the widget snapshot
     /// after every change. Optional - empty closure is fine for previews/tests.
     var onChange: ([ReminderDTO]) -> Void = { _ in }
@@ -83,12 +98,7 @@ final class ReminderRepository {
         requestAuthIfNeeded: Bool = true
     ) async {
         guard hasLoaded else { return }
-        await NotificationScheduler.shared.reschedule(
-            forSelfUserId: me,
-            reminders: reminders,
-            events: events,
-            requestAuthIfNeeded: requestAuthIfNeeded
-        )
+        await scheduleNotifications(me, reminders, events, requestAuthIfNeeded)
     }
 
     func upsert(_ reminder: ReminderDTO) async throws {
