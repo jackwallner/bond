@@ -76,7 +76,13 @@ check-in) and never touches the network. Test tags double as resource ids.
 ## Deliberate differences from iOS
 - Identity: anonymous only. No Sign in with Apple, and no Google sign-in.
 - No realtime: couple, reminders and events refresh on resume and pull to
-  refresh.
+  refresh. `data/CatchUp.kt` is that refresh (couple, reminders, events,
+  milestones, then the alarms), run on every resume, once at launch and,
+  through `PairingService.onRelationshipChange`, when a lookup finds the couple
+  changed or turned solo. The alarms are only rebuilt from a list that was
+  fetched for the couple the app is on (`ReminderRepository.hasLoaded`), because
+  a rebuild cancels every armed reminder first; same rule as iOS
+  (`.claude/rules/launch-and-schedule.md`).
 - Place (arrival) reminders are not offered for new reminders; an existing one
   made on iPhone stays editable and shows "Arrival alerts fire on iPhone."
   Editor footer and milestone copy drop the Location and widget mentions.
