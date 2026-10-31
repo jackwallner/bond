@@ -97,8 +97,20 @@ final class SupabaseService {
     /// replaces it and strands the account it belongs to, so the launch waits
     /// for "Try again" instead.
     nonisolated static func shouldStartFreshSession(after error: Error) -> Bool {
-        if error is CancellationError { return false }
-        return !(error is URLError || (error as NSError).domain == NSURLErrorDomain)
+        !requestNeverCompleted(error)
+    }
+
+    /// A link that failed because a request never completed says nothing about
+    /// whether the Apple identity belongs to someone else. Signing in then would,
+    /// for an identity nobody has used, create a brand new empty account and orphan
+    /// the anonymous user's couple and reminders, so only a failure the server
+    /// answered may fall back to a plain sign-in.
+    nonisolated static func shouldFallBackToSignIn(after error: Error) -> Bool {
+        !requestNeverCompleted(error)
+    }
+
+    nonisolated private static func requestNeverCompleted(_ error: Error) -> Bool {
+        error is CancellationError || error is URLError || (error as NSError).domain == NSURLErrorDomain
     }
 
     func signInAnonymously() async {
@@ -148,7 +160,7 @@ final class SupabaseService {
             do {
                 identity = try await link()
                 log.info("Linked Apple identity to anonymous user \(identity.userId)")
-            } catch {
+            } catch where Self.shouldFallBackToSignIn(after: error) {
                 // If linking fails because the Apple identity is *already*
                 // attached to a different Supabase user (e.g. user previously
                 // signed in with Apple on another device), fall back to a
