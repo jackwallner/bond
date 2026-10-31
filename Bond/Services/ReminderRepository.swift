@@ -146,13 +146,17 @@ final class ReminderRepository {
         await refresh()
     }
 
-    /// Adds a batch (a template pack) for the signed-in user.
+    /// Adds a batch (a template pack) for the signed-in user and arms it. The
+    /// schedule is only rebuilt on launch and when the Reminders tab appears, and
+    /// neither happens when a sheet over the tab closes, so without this the pack
+    /// would start firing after the next relaunch or tab revisit.
     func importReminders(
         _ reminders: [ReminderDTO],
         forSelfUserId me: UUID,
         events: [ReminderEventDTO]
     ) async throws {
         try await bulkInsert(reminders)
+        await rescheduleNotifications(forSelfUserId: me, events: events)
     }
 
     func delete(_ reminder: ReminderDTO) async throws {
