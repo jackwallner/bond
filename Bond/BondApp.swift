@@ -430,31 +430,56 @@ struct RootView: View {
         }
     }
 
-    private enum Destination { case loading, intentSetup, inviteWelcome, inviteeIntake, pairingSuccess, home }
-
-    private var currentDestination: Destination {
-        if !isAppBootstrapped || !supabase.isAuthenticated {
-            return .loading
-        }
+    private var currentDestination: RootDestination {
         #if DEBUG
-        if BondScreenshotSeed.isEnabled {
+        if BondScreenshotSeed.isEnabled && isAppBootstrapped && supabase.isAuthenticated {
             return .home
         }
         #endif
+        return RootDestination.resolve(
+            isBootstrapped: isAppBootstrapped,
+            isAuthenticated: supabase.isAuthenticated,
+            hasCouple: pairing.coupleId != nil,
+            coupleLookupFailed: pairing.lastLoadFailed,
+            hasDeferredInvite: pairing.deferredInviteCode != nil,
+            justPaired: pairing.justPaired,
+            isSolo: pairing.solo,
+            hasCapturedIntake: onboardingPrefs.committedAt != nil || !onboardingPrefs.focusAreas.isEmpty
+        )
+    }
+}
+
+/// Which top-level screen the app shows. Pure, so the launch routing can be tested.
+enum RootDestination: Equatable {
+    case loading, intentSetup, inviteWelcome, inviteeIntake, pairingSuccess, home
+
+    static func resolve(
+        isBootstrapped: Bool,
+        isAuthenticated: Bool,
+        hasCouple: Bool,
+        coupleLookupFailed: Bool,
+        hasDeferredInvite: Bool,
+        justPaired: Bool,
+        isSolo: Bool,
+        hasCapturedIntake: Bool
+    ) -> RootDestination {
+        if !isBootstrapped || !isAuthenticated {
+            return .loading
+        }
         // No couple at all = brand-new account. Someone arriving from a
         // partner's invite link gets invite-first onboarding; everyone else
         // starts solo via the intent screen, and pairing stays opt-in from
         // Settings.
-        if pairing.coupleId == nil {
-            return pairing.deferredInviteCode != nil ? .inviteWelcome : .intentSetup
+        if !hasCouple {
+            return hasDeferredInvite ? .inviteWelcome : .intentSetup
         }
-        if pairing.justPaired {
+        if justPaired {
             return .pairingSuccess
         }
         // Paired, but this device never captured onboarding preferences -
         // the invitee path skips intent setup entirely. Run the trimmed
         // intake (love language + focus areas) once before home.
-        if !pairing.solo, onboardingPrefs.committedAt == nil, onboardingPrefs.focusAreas.isEmpty {
+        if !isSolo, !hasCapturedIntake {
             return .inviteeIntake
         }
         return .home

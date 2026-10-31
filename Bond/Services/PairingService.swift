@@ -19,6 +19,16 @@ final class PairingService {
     /// router can show the one-time success interstitial.
     var justPaired = false
     var lastError: String?
+    /// True when the latest couple lookup threw. While no couple is known yet
+    /// that means "couldn't find out", which is not the same as "has none".
+    private(set) var lastLoadFailed = false
+
+    /// Where `loadCouple()` gets the user's couple rows. Tests swap it for a stub.
+    @ObservationIgnored
+    var fetchCouples: @MainActor (UUID) async throws -> [CoupleDTO] = { me in
+        try await PairingService.queryCouples(for: me)
+    }
+
     /// An invite code captured from a universal link before the user had a
     /// recoverable identity. Held until Apple Sign-In completes, then
     /// consumed in [[AppleSignInPairingGate]]. Without this, anonymous users
@@ -44,13 +54,8 @@ final class PairingService {
             // coupleId - so one flaky request on launch dumped an existing
             // (even paired) user back into intent setup, where the solo-couple
             // RPC then failed with "already in a couple".
-            let rows: [CoupleDTO] = try await supabase.client
-                .from("couples")
-                .select()
-                .or("partner_a.eq.\(me.uuidString),partner_b.eq.\(me.uuidString)")
-                .limit(1)
-                .execute()
-                .value
+            let rows = try await fetchCouples(me)
+            lastLoadFailed = false
             let row = rows.first
             coupleId = row?.id
             solo = row?.solo ?? false
@@ -78,8 +83,19 @@ final class PairingService {
         } catch {
             // Transport/auth failure - keep whatever state we had rather than
             // pretending the user has no couple.
+            lastLoadFailed = true
             log.error("loadCouple failed (state kept): \(error.localizedDescription)")
         }
+    }
+
+    private static func queryCouples(for me: UUID) async throws -> [CoupleDTO] {
+        try await SupabaseService.shared.client
+            .from("couples")
+            .select()
+            .or("partner_a.eq.\(me.uuidString),partner_b.eq.\(me.uuidString)")
+            .limit(1)
+            .execute()
+            .value
     }
 
     /// Polls while the inviter sits on the "share this code" screen. Nothing
@@ -271,6 +287,7 @@ final class PairingService {
         justPaired = false
         isPairing = false
         lastError = nil
+        lastLoadFailed = false
         deferredInviteCode = nil
         requiresSignInToPair = false
     }
