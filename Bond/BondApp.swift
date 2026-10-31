@@ -145,25 +145,24 @@ struct BondApp: App {
                     // stale isPremium=false until they reopen the app.
                     if phase == .active {
                         Task { await store.refresh() }
-                        // A solo user may have been paired while backgrounded
-                        // (their partner consumed the invite). Refresh so the
-                        // app notices without a relaunch.
-                        if pairingService.solo || (pairingService.coupleId == nil && pairingService.lastLoadFailed) {
-                            Task { await pairingService.loadCouple() }
-                        }
                         Task { await catchUpOnForeground() }
                     }
                 }
     }
 
-    /// Changes the partner made while the app was suspended never reach the
-    /// realtime feed, so a returning app re-reads the list and the completions
-    /// and re-arms the notifications from them. Nothing to do before a couple is
-    /// known: the Reminders tab loads it on the way in.
+    /// Everything that can change while the app is suspended. The couple: a solo
+    /// user may have been paired (their partner consumed the invite), a paired one
+    /// unpaired, and a launch whose couple lookup failed still has none. Then the
+    /// reminders: the realtime feed is not replayed after a suspension, so the
+    /// list and the completions are re-read and the notifications re-armed from
+    /// them. Before any couple is known the Reminders tab loads it on the way in.
     private func catchUpOnForeground() async {
         #if DEBUG
         if BondScreenshotSeed.isEnabled || BondScreenshotSeed.isOnboarding { return }
         #endif
+        if pairingService.coupleId != nil || pairingService.lastLoadFailed {
+            await pairingService.loadCouple()
+        }
         guard let me = supabase.currentUserId, pairingService.coupleId != nil else { return }
         await reminderRepo.catchUp(forSelfUserId: me) {
             await eventsRepo.refresh()
