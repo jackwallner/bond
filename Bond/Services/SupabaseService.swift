@@ -117,19 +117,37 @@ final class SupabaseService {
     }
 
     func signInWithApple(idToken: String, nonce: String) async throws {
+        let credentials = OpenIDConnectCredentials(
+            provider: .apple, idToken: idToken, nonce: nonce
+        )
+        try await signInWithApple(
+            link: { [client] in
+                let session = try await client.auth.linkIdentityWithIdToken(credentials: credentials)
+                return RestoredIdentity(userId: session.user.id, isAnonymous: session.user.isAnonymous)
+            },
+            signIn: { [client] in
+                let session = try await client.auth.signInWithIdToken(credentials: credentials)
+                return RestoredIdentity(userId: session.user.id, isAnonymous: session.user.isAnonymous)
+            }
+        )
+    }
+
+    /// `signInWithApple(idToken:nonce:)` with its two outside steps handed in, so
+    /// tests can fail the link without a network.
+    func signInWithApple(
+        link: () async throws -> RestoredIdentity,
+        signIn: () async throws -> RestoredIdentity
+    ) async throws {
         // When the user is already in an anonymous session, link the Apple
         // identity to *that* user rather than minting a new one. Without
         // this branch, every "upgrade your account" flow silently swapped
         // auth.uid() and orphaned the user's reminders, milestones, and
         // couple row to the abandoned anon identity.
-        let credentials = OpenIDConnectCredentials(
-            provider: .apple, idToken: idToken, nonce: nonce
-        )
-        let session: Session
+        let identity: RestoredIdentity
         if isAnonymous {
             do {
-                session = try await client.auth.linkIdentityWithIdToken(credentials: credentials)
-                log.info("Linked Apple identity to anonymous user \(session.user.id)")
+                identity = try await link()
+                log.info("Linked Apple identity to anonymous user \(identity.userId)")
             } catch {
                 // If linking fails because the Apple identity is *already*
                 // attached to a different Supabase user (e.g. user previously
@@ -138,14 +156,14 @@ final class SupabaseService {
                 // anonymous-session data is lost in that case, which is the
                 // correct tradeoff - the recoverable account wins.
                 log.notice("linkIdentityWithIdToken failed (\(error.localizedDescription)); falling back to signInWithIdToken")
-                session = try await client.auth.signInWithIdToken(credentials: credentials)
+                identity = try await signIn()
             }
         } else {
-            session = try await client.auth.signInWithIdToken(credentials: credentials)
+            identity = try await signIn()
         }
-        currentUserId = session.user.id
-        isAnonymous = session.user.isAnonymous
-        log.info("Signed in with Apple - user \(session.user.id)")
+        currentUserId = identity.userId
+        isAnonymous = identity.isAnonymous
+        log.info("Signed in with Apple - user \(identity.userId)")
     }
 
     func signOut() async {
