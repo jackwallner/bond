@@ -13,9 +13,24 @@ extension Notification.Name {
 /// Presented as a medium sheet - never a takeover, always escapable.
 struct NotificationPrimerSheet: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.dynamicTypeSize) private var typeSize
     let onRequest: () -> Void
 
     var body: some View {
+        // Scrolls when the text outgrows the sheet (large type), so no line or
+        // button label is cut; the spacers still pin the button low otherwise.
+        GeometryReader { proxy in
+            ScrollView {
+                content.frame(minHeight: proxy.size.height)
+            }
+            .scrollBounceBehavior(.basedOnSize)
+        }
+        .padding(.top, BondSpacing.l)
+        .presentationDetents(typeSize.isAccessibilitySize ? [.large] : [.medium])
+        .presentationDragIndicator(.visible)
+    }
+
+    private var content: some View {
         VStack(spacing: BondSpacing.xl) {
             Spacer().frame(height: BondSpacing.xl)
 
@@ -49,8 +64,5 @@ struct NotificationPrimerSheet: View {
             }
             .padding(.horizontal, BondSpacing.base)
         }
-        .padding(.top, BondSpacing.l)
-        .presentationDetents([.medium])
-        .presentationDragIndicator(.visible)
     }
 }

@@ -118,6 +118,10 @@ final class ReleaseJourneysUITests: XCTestCase {
         let save = app.buttons["Save"]
         XCTAssertTrue(save.waitForExistence(timeout: 10))
         save.tap()
+        // The first reminder asks for notification permission; answer it as a
+        // person would so it does not sit over every later step.
+        let alert = XCUIApplication(bundleIdentifier: "com.apple.springboard").alerts.firstMatch
+        if alert.waitForExistence(timeout: 8) { alert.buttons["Allow"].tap() }
         XCTAssertTrue(listed(title, in: app).waitForExistence(timeout: 20) || scrollTo(listed(title, in: app), in: app),
                       "saved reminder is not listed")
         // The editor's dismissal animation would otherwise be captured mid-slide.

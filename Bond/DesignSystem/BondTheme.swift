@@ -72,11 +72,11 @@ final class BondTheme {
             let stops: [Color]
             switch self {
             case .terracotta:
+                // Both stops hold 4.5:1 against the white label on top of them
+                // (the old #E0845A start was 2.8:1, 2.2:1 in dark mode).
                 stops = [
-                    Color(light: Color(red: 0.878, green: 0.518, blue: 0.353),   // #E0845A terracotta
-                          dark:  Color(red: 0.933, green: 0.612, blue: 0.447)),
-                    Color(light: Color(red: 0.753, green: 0.314, blue: 0.420),   // #C0506B rose
-                          dark:  Color(red: 0.816, green: 0.416, blue: 0.518))
+                    Color(red: 0.737, green: 0.337, blue: 0.176),   // #BC562D terracotta
+                    Color(red: 0.620, green: 0.210, blue: 0.320)    // #9E3552 rose
                 ]
             case .pink:
                 stops = [Color.pink.opacity(0.85), Color.pink]
