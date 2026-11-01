@@ -65,6 +65,7 @@ struct BondScreenHeader: View {
 }
 
 struct BondPrimaryButton: View {
+    @Environment(\.dynamicTypeSize) private var typeSize
     let title: String
     var systemImage: String?
     var role: ButtonRole?
@@ -80,10 +81,12 @@ struct BondPrimaryButton: View {
                     if let systemImage { Image(systemName: systemImage) }
                     Text(title)
                         .font(.bond(.headline))
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.75)
+                        .lineLimit(typeSize.isAccessibilitySize ? nil : 1)
+                        .minimumScaleFactor(typeSize.isAccessibilitySize ? 1 : 0.75)
+                        .multilineTextAlignment(.center)
                 }
             }
+            .padding(.vertical, typeSize.isAccessibilitySize ? BondSpacing.s : 0)
             .frame(maxWidth: .infinity, minHeight: 52)
         }
         .buttonStyle(BondSoftButtonStyle(role: role))
@@ -107,6 +110,7 @@ struct BondSoftButtonStyle: ButtonStyle {
         let configuration: Configuration
         let role: ButtonRole?
         @Environment(\.isEnabled) private var isEnabled
+        @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
         var body: some View {
             let pressed = configuration.isPressed
@@ -135,10 +139,10 @@ struct BondSoftButtonStyle: ButtonStyle {
                 .shadow(color: .bondShadow,
                         radius: isEnabled ? (pressed ? 4 : 12) : 0,
                         x: 0, y: isEnabled ? (pressed ? 2 : 7) : 0)
-                .scaleEffect(pressed ? 0.98 : 1)
+                .scaleEffect(pressed && !reduceMotion ? 0.98 : 1)
                 .opacity(isEnabled ? (pressed ? 0.92 : 1) : 0.45)
-                .animation(.easeOut(duration: 0.15), value: pressed)
-                .animation(.easeOut(duration: 0.15), value: isEnabled)
+                .bondAnimation(.easeOut(duration: 0.15), value: pressed)
+                .bondAnimation(.easeOut(duration: 0.15), value: isEnabled)
         }
     }
 }

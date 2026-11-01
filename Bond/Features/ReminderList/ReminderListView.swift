@@ -636,6 +636,7 @@ private struct CardIconChip: View {
 }
 
 private struct PartnerRequestCard: View {
+    @Environment(\.dynamicTypeSize) private var typeSize
     let reminder: ReminderDTO
     let currentUserId: UUID?
     let partnerName: String
@@ -671,7 +672,10 @@ private struct PartnerRequestCard: View {
                 }
                 Spacer()
             }
-            HStack(spacing: BondSpacing.s) {
+            let actions = typeSize.isAccessibilitySize
+                ? AnyLayout(VStackLayout(alignment: .leading, spacing: BondSpacing.s))
+                : AnyLayout(HStackLayout(spacing: BondSpacing.s))
+            actions {
                 Button(primaryActionTitle, action: onEdit)
                     .buttonStyle(.borderedProminent)
                     .tint(.bondAccent)

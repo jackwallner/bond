@@ -156,6 +156,7 @@ struct RootView: View {
     @Environment(MilestonesService.self) private var milestonesService
     @Environment(ReminderEventRepository.self) private var eventsRepo
     @Environment(DailyCheckInService.self) private var checkInService
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var theme = BondTheme.shared
     @State private var onboardingPrefs = OnboardingPreferences.shared
     // Stays false until both auth bootstrap AND the initial couple load have
@@ -182,15 +183,15 @@ struct RootView: View {
             case .intentSetup:
                 IntentSetupView()
                     .unfoldedLeadingPane { UnfoldedBrandPanel() }
-                    .transition(.opacity.combined(with: .move(edge: .trailing)))
+                    .transition(reduceMotion ? .opacity : .opacity.combined(with: .move(edge: .trailing)))
             case .inviteWelcome:
                 InviteWelcomeView()
                     .unfoldedLeadingPane { UnfoldedBrandPanel() }
-                    .transition(.opacity.combined(with: .move(edge: .trailing)))
+                    .transition(reduceMotion ? .opacity : .opacity.combined(with: .move(edge: .trailing)))
             case .inviteeIntake:
                 IntentSetupView(mode: .invitee)
                     .unfoldedLeadingPane { UnfoldedBrandPanel() }
-                    .transition(.opacity.combined(with: .move(edge: .trailing)))
+                    .transition(reduceMotion ? .opacity : .opacity.combined(with: .move(edge: .trailing)))
             case .pairingSuccess:
                 PairingSuccessView(partnerName: pairing.partnerProfile?.displayName) {
                     // Pairing is a high-intent moment and the headline Bond+
@@ -239,7 +240,7 @@ struct RootView: View {
         // theme.appearance here registers the dependency so picking a new
         // mode re-evaluates the body and flips every Color(light:dark:).
         .preferredColorScheme(theme.appearance.colorScheme)
-        .animation(.easeOut(duration: 0.35), value: currentDestination)
+        .bondAnimation(.easeOut(duration: 0.35), value: currentDestination)
         .unfoldedSheet(isPresented: Binding(
             // Only for users who already finished setup (a couple exists).
             // Pre-setup, the same state routes to the full-screen

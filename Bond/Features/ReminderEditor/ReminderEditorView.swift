@@ -612,18 +612,26 @@ private struct ReminderPreviewPane: View {
     private static let titleTop: CGFloat = 82
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            Text("Preview")
-                .font(.bond(.largeTitle, weight: .bold))
-                .accessibilityAddTraits(.isHeader)
-                .padding(.top, Self.titleTop)
-            section("How it arrives") { notification }
-            section("In your list", footer: audience) {
-                ReminderRow(reminder: reminder, currentUserId: currentUserId)
+        // A scroll view, so the pane's minimum height is zero. As a plain stack
+        // it was taller than the space left above the keyboard, which made the
+        // whole cover taller than the display and slid the form's navigation
+        // bar (Cancel, Save) off the top while the keyboard was up.
+        ScrollView {
+            VStack(alignment: .leading, spacing: 0) {
+                Text("Preview")
+                    .font(.bond(.largeTitle, weight: .bold))
+                    .accessibilityAddTraits(.isHeader)
+                    .padding(.top, Self.titleTop)
+                section("How it arrives") { notification }
+                section("In your list", footer: audience) {
+                    ReminderRow(reminder: reminder, currentUserId: currentUserId)
+                }
+                section("Love language") { language }
             }
-            section("Love language") { language }
+            .padding(.horizontal, BondSpacing.l)
+            .frame(maxWidth: .infinity, alignment: .topLeading)
         }
-        .padding(.horizontal, BondSpacing.l)
+        .scrollBounceBehavior(.basedOnSize)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         // The status bar sits in the pane's top trailing corner, beside the
         // title and above the first card.

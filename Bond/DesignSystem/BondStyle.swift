@@ -161,3 +161,22 @@ struct BondSectionHeader: View {
             .paneRow(keepsWithNext: true)
     }
 }
+
+
+/// `.animation(_:value:)` that stays still with Reduce Motion on.
+private struct BondAnimation<Value: Equatable>: ViewModifier {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    let animation: Animation?
+    let value: Value
+
+    func body(content: Content) -> some View {
+        content.animation(reduceMotion ? nil : animation, value: value)
+    }
+}
+
+extension View {
+    /// Use instead of `.animation(_:value:)` so Reduce Motion is honoured everywhere.
+    func bondAnimation<Value: Equatable>(_ animation: Animation?, value: Value) -> some View {
+        modifier(BondAnimation(animation: animation, value: value))
+    }
+}

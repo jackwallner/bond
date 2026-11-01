@@ -106,11 +106,17 @@ final class ReleaseJourneysUITests: XCTestCase {
         XCTAssertTrue(field.waitForExistence(timeout: 15), "editor never opened")
         field.tap()
         field.typeText(title)
+        // The keyboard covers the schedule rows, and the oracles would measure
+        // them through its blur; judge the form with the keyboard away.
+        field.typeText("\n")
+        let keyboardGone = Date().addingTimeInterval(10)
+        while app.keyboards.count > 0 && Date() < keyboardGone {
+            RunLoop.current.run(until: Date().addingTimeInterval(0.25))
+        }
         QA.checkpoint(app, "core-editor")
 
         let save = app.buttons["Save"]
         XCTAssertTrue(save.waitForExistence(timeout: 10))
-        if !save.isHittable { field.typeText("\n") }
         save.tap()
         XCTAssertTrue(listed(title, in: app).waitForExistence(timeout: 20) || scrollTo(listed(title, in: app), in: app),
                       "saved reminder is not listed")

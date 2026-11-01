@@ -7,6 +7,8 @@ struct ReminderRow: View {
         return f
     }()
 
+    @Environment(\.dynamicTypeSize) private var typeSize
+
     let reminder: ReminderDTO
     let currentUserId: UUID?
     let isActedOn: Bool
@@ -42,26 +44,36 @@ struct ReminderRow: View {
         }
     }
 
+    /// At accessibility sizes the row reflows: the check circle sits above the
+    /// text, nothing is cut to two lines, and the chips wrap onto their own lines.
+    private var isLarge: Bool { typeSize.isAccessibilitySize }
+
     var body: some View {
         HStack(spacing: 12) {
             // Inner block keeps icon top-aligned against multi-line content.
             // The outer HStack uses default (center) alignment so the chevron
             // sits vertically centered against the whole row - matching iOS
             // Reminders/Mail.
-            HStack(alignment: .top, spacing: 12) {
+            let inner = isLarge
+                ? AnyLayout(VStackLayout(alignment: .leading, spacing: 8))
+                : AnyLayout(HStackLayout(alignment: .top, spacing: 12))
+            inner {
                 checkCircle
 
                 VStack(alignment: .leading, spacing: 4) {
                     Text(reminder.title)
                         .font(.bond(.headline))
-                        .lineLimit(2)
+                        .lineLimit(isLarge ? nil : 2)
                     if let body = reminder.body, !body.isEmpty {
                         Text(body)
                             .font(.bond(.subheadline))
                             .foregroundStyle(.secondary)
-                            .lineLimit(2)
+                            .lineLimit(isLarge ? nil : 2)
                     }
-                    HStack(spacing: 8) {
+                    let chips = isLarge
+                        ? AnyLayout(FlowLayout(spacing: 8))
+                        : AnyLayout(HStackLayout(spacing: 8))
+                    chips {
                         if isActedOn {
                             Text(doneLabel)
                                 .font(.bond(.caption, weight: .semibold))

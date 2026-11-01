@@ -218,7 +218,7 @@ struct IntentSetupView: View {
             ctaRegion
         }
         .padding(.vertical, BondSpacing.xxxl)
-        .animation(.easeOut(duration: 0.25), value: step)
+        .bondAnimation(.easeOut(duration: 0.25), value: step)
         // Don't carry a stale error in from a previous failed attempt.
         .onAppear {
             pairing.lastError = nil

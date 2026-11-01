@@ -5,6 +5,7 @@ struct StatsView: View {
     @Environment(ReminderRepository.self) private var repo
     @Environment(ReminderEventRepository.self) private var eventsRepo
     @Environment(PurchasesService.self) private var store
+    @Environment(\.dynamicTypeSize) private var typeSize
     @State private var isPaywallPresented = false
 
     private var analyzer: LoveLanguageAnalyzer {
@@ -212,7 +213,12 @@ struct StatsView: View {
     private func streakSection(a: LoveLanguageAnalyzer) -> some View {
         let current = a.currentStreak()
         let longest = a.longestStreak()
-        return HStack {
+        // Three stats side by side stop fitting at accessibility sizes, so they stack.
+        let large = typeSize.isAccessibilitySize
+        let layout = large
+            ? AnyLayout(VStackLayout(spacing: BondSpacing.m))
+            : AnyLayout(HStackLayout())
+        return layout {
             VStack(alignment: .center, spacing: 4) {
                 Text("\(current)")
                     .font(.bond(.title, weight: .bold))
@@ -223,7 +229,7 @@ struct StatsView: View {
             }
             .frame(maxWidth: .infinity)
 
-            Divider().frame(height: 40)
+            if !large { Divider().frame(height: 40) }
 
             VStack(alignment: .center, spacing: 4) {
                 Text("\(longest)")
@@ -235,7 +241,7 @@ struct StatsView: View {
             }
             .frame(maxWidth: .infinity)
 
-            Divider().frame(height: 40)
+            if !large { Divider().frame(height: 40) }
 
             VStack(alignment: .center, spacing: 4) {
                 Text(a.completionRate().map { "\(Int($0))%" } ?? "–")
