@@ -368,6 +368,7 @@ struct ReminderListView: View {
         .listStyle(.insetGrouped)
         .listSectionSpacing(BondSpacing.base)
         .bondWarmList()
+        .bottomHardEdge()
     }
 
     private var partnerName: String {
@@ -872,5 +873,19 @@ private struct TemplatesHomeRow: View {
         .buttonStyle(.plain)
         .accessibilityElement(children: .combine)
         .accessibilityLabel(isPremium ? "Browse reminder templates" : "Preview reminder templates")
+    }
+}
+
+private extension View {
+    /// A solid scroll edge above the floating tab bar, so a row passing under
+    /// it is cut off cleanly instead of showing through the glass as a
+    /// second, overlapping button.
+    @ViewBuilder
+    func bottomHardEdge() -> some View {
+        if #available(iOS 26.0, *) {
+            scrollEdgeEffectStyle(.hard, for: .bottom)
+        } else {
+            self
+        }
     }
 }

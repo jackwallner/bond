@@ -174,19 +174,21 @@ struct StatsView: View {
                         Image(systemName: item.reminder.loveLanguage.symbolName)
                             .foregroundStyle(item.reminder.loveLanguage.tint)
                             .frame(width: 24)
-                        Text(item.reminder.title)
-                            .font(.bond(.subheadline))
-                            .lineLimit(1)
-                        Spacer()
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text(item.reminder.title)
+                                .font(.bond(.subheadline))
+                                .lineLimit(3)
+                                .fixedSize(horizontal: false, vertical: true)
+                            ProgressView(
+                                value: Double(item.completed),
+                                total: Double(max(item.expected, 1))
+                            )
+                            .tint(item.reminder.loveLanguage.tint)
+                        }
                         Text("\(item.completed) of \(item.expected)")
                             .font(.bond(.subheadline).monospacedDigit())
                             .foregroundStyle(.secondary)
-                        ProgressView(
-                            value: Double(item.completed),
-                            total: Double(max(item.expected, 1))
-                        )
-                        .tint(item.reminder.loveLanguage.tint)
-                        .frame(width: 56)
+                            .fixedSize()
                     }
                 }
                 ForEach(byLanguage, id: \.0) { lang, expected, completed in
