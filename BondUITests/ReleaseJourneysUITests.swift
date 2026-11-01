@@ -60,29 +60,29 @@ final class ReleaseJourneysUITests: XCTestCase {
         continueAfterFailure = false
         let app = launchSeeded()
         QA.checkpoint(app, "reminders")
-        for tab in ["Check-In", "Milestones", "Insights", "Settings"] {
+        for name in ["Check-In", "Milestones", "Insights", "Settings"] {
             // The unfolded iPhone Duo shows Insights in its own pane, not as a tab.
-            let button = app.tabBars.buttons[tab]
-            if tab == "Insights", !button.exists {
+            let button = tab(name, in: app)
+            if name == "Insights", !button.exists {
                 QA.checkpoint(app, "insights")
                 continue
             }
             button.tap()
-            QA.checkpoint(app, tab.lowercased())
+            QA.checkpoint(app, name.lowercased())
         }
     }
 
     func test03ReturnVisitWithInterruption() {
         continueAfterFailure = false
         let app = launchSeeded()
-        app.tabBars.buttons["Milestones"].tap()
+        tab("Milestones", in: app).tap()
         QA.checkpoint(app, "milestones-before-interruption")
 
         QA.interrupt(app)
         QA.checkpoint(app, "milestones-after-interruption")
 
         QA.relaunch(app)
-        XCTAssertTrue(app.tabBars.buttons["Reminders"].waitForExistence(timeout: 25))
+        XCTAssertTrue(tab("Reminders", in: app).waitForExistence(timeout: 25))
         QA.checkpoint(app, "reminders-after-relaunch")
     }
 
@@ -94,7 +94,7 @@ final class ReleaseJourneysUITests: XCTestCase {
         let title = "Write Sam a note \(Int.random(in: 1000...9999))"
         let app = XCUIApplication(bundleIdentifier: Self.bundle)
         QA.launch(app, arguments: Self.seeded + ["-BondSeedSession", UUID().uuidString])
-        XCTAssertTrue(app.tabBars.buttons["Reminders"].waitForExistence(timeout: 25), "seeded home never rendered")
+        XCTAssertTrue(tab("Reminders", in: app).waitForExistence(timeout: 25), "seeded home never rendered")
         XCTAssertFalse(listed(title, in: app).exists)
         let handled = app.descendants(matching: .any)
             .matching(NSPredicate(format: "label MATCHES %@", "^Handled\\W*1$")).firstMatch
@@ -139,7 +139,7 @@ final class ReleaseJourneysUITests: XCTestCase {
         QA.checkpoint(app, "core-done")
 
         QA.relaunch(app)
-        XCTAssertTrue(app.tabBars.buttons["Reminders"].waitForExistence(timeout: 25))
+        XCTAssertTrue(tab("Reminders", in: app).waitForExistence(timeout: 25))
         scrollTo(handled, in: app)
         XCTAssertTrue(handled.exists, "Handled lost after relaunch")
         XCTAssertFalse(listed(title, in: app).exists, "done reminder reopened after relaunch")
@@ -163,10 +163,17 @@ final class ReleaseJourneysUITests: XCTestCase {
         return element.exists
     }
 
+    /// A tab bar button. The unfolded Duo's floating bar is not always a
+    /// `tabBars` element, so fall back to the button by label.
+    private func tab(_ name: String, in app: XCUIApplication) -> XCUIElement {
+        let bar = app.tabBars.buttons[name]
+        return bar.exists ? bar : app.buttons.matching(NSPredicate(format: "label == %@", name)).firstMatch
+    }
+
     private func launchSeeded() -> XCUIApplication {
         let app = XCUIApplication(bundleIdentifier: Self.bundle)
         QA.launch(app, arguments: Self.seeded)
-        XCTAssertTrue(app.tabBars.buttons["Reminders"].waitForExistence(timeout: 25), "seeded home never rendered")
+        XCTAssertTrue(tab("Reminders", in: app).waitForExistence(timeout: 25), "seeded home never rendered")
         return app
     }
 
