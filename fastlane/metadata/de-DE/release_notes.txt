@@ -1,1 +1,1 @@
-App-Store-Informationen und Abo-Diagnose aktualisiert.
+Verbesserungen und Fehlerbehebungen im Hintergrund, damit Little Gestures reibungslos läuft. Danke, dass du dabei bist.

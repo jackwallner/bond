@@ -1,1 +1,1 @@
-Frissített App Store-információk és előfizetési diagnosztika.
+Háttérbeli fejlesztések és hibajavítások, hogy a Little Gestures gördülékenyen működjön. Köszönjük, hogy itt vagy.

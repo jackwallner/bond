@@ -1,1 +1,1 @@
-App Storen tiedot ja tilausten diagnostiikka päivitetty.
+Taustaparannuksia ja virhekorjauksia, jotta Little Gestures toimii sujuvasti. Kiitos, että olet mukana.

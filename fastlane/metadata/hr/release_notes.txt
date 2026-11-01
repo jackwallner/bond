@@ -1,1 +1,1 @@
-Ažurirane informacije u App Storeu i dijagnostika pretplata.
+Poboljšanja u pozadini i ispravci grešaka kako bi Little Gestures radio glatko. Hvala što ste tu.
