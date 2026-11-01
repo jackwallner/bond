@@ -287,7 +287,8 @@ struct IntentSetupView: View {
 
             BondPrimaryButton(
                 title: continueTitle,
-                isLoading: isFinishing || isPurchasing
+                isLoading: isFinishing || isPurchasing,
+                reserving: "I commit to showing up for \(displayName)"
             ) {
                 advance()
             }

@@ -176,7 +176,7 @@ struct ReminderEditorView: View {
                 .padding(.vertical, BondSpacing.s)
                 .foregroundStyle(selected ? .white : lang.tint)
                 .background(
-                    selected ? AnyShapeStyle(lang.tint) : AnyShapeStyle(lang.tint.opacity(0.12)),
+                    selected ? AnyShapeStyle(lang.chipFill) : AnyShapeStyle(lang.tint.opacity(0.12)),
                     in: Capsule()
                 )
             }

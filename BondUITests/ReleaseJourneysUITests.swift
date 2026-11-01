@@ -130,6 +130,9 @@ final class ReleaseJourneysUITests: XCTestCase {
         while !(add.exists && add.isHittable) && Date() < closed {
             RunLoop.current.run(until: Date().addingTimeInterval(0.25))
         }
+        // Saving lands on the top of the list; finding the lazily rendered row
+        // above scrolled it, so return to what the person is looking at.
+        scrollToTop(app)
         QA.checkpoint(app, "core-added")
 
         QA.relaunch(app)
@@ -171,6 +174,10 @@ final class ReleaseJourneysUITests: XCTestCase {
             QA.swipe(app.collectionViews.firstMatch, up ? .up : .down)
         }
         return element.exists
+    }
+
+    private func scrollToTop(_ app: XCUIApplication) {
+        for _ in 0..<8 { QA.swipe(app.collectionViews.firstMatch, .down) }
     }
 
     /// A tab bar button. The unfolded Duo's floating bar is not always a

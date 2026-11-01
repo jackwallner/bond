@@ -70,7 +70,19 @@ struct BondPrimaryButton: View {
     var systemImage: String?
     var role: ButtonRole?
     var isLoading: Bool = false
+    /// The longest title this button takes in a flow. At accessibility sizes
+    /// titles wrap, so the button reserves that title's height and keeps one
+    /// frame from step to step.
+    var reserving: String?
     let action: () -> Void
+
+    private func label(_ text: String) -> some View {
+        Text(text)
+            .font(.bond(.headline))
+            .lineLimit(typeSize.isAccessibilitySize ? nil : 1)
+            .minimumScaleFactor(typeSize.isAccessibilitySize ? 1 : 0.75)
+            .multilineTextAlignment(.center)
+    }
 
     var body: some View {
         Button(role: role, action: action) {
@@ -79,11 +91,12 @@ struct BondPrimaryButton: View {
                     ProgressView().tint(.white)
                 } else {
                     if let systemImage { Image(systemName: systemImage) }
-                    Text(title)
-                        .font(.bond(.headline))
-                        .lineLimit(typeSize.isAccessibilitySize ? nil : 1)
-                        .minimumScaleFactor(typeSize.isAccessibilitySize ? 1 : 0.75)
-                        .multilineTextAlignment(.center)
+                    ZStack {
+                        if typeSize.isAccessibilitySize, let reserving {
+                            label(reserving).hidden().accessibilityHidden(true)
+                        }
+                        label(title)
+                    }
                 }
             }
             .padding(.vertical, typeSize.isAccessibilitySize ? BondSpacing.s : 0)
