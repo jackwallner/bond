@@ -61,7 +61,13 @@ final class ReleaseJourneysUITests: XCTestCase {
         let app = launchSeeded()
         QA.checkpoint(app, "reminders")
         for tab in ["Check-In", "Milestones", "Insights", "Settings"] {
-            app.tabBars.buttons[tab].tap()
+            // The unfolded iPhone Duo shows Insights in its own pane, not as a tab.
+            let button = app.tabBars.buttons[tab]
+            if tab == "Insights", !button.exists {
+                QA.checkpoint(app, "insights")
+                continue
+            }
+            button.tap()
             QA.checkpoint(app, tab.lowercased())
         }
     }
@@ -89,7 +95,7 @@ final class ReleaseJourneysUITests: XCTestCase {
         let app = XCUIApplication(bundleIdentifier: Self.bundle)
         QA.launch(app, arguments: Self.seeded + ["-BondSeedSession", UUID().uuidString])
         XCTAssertTrue(app.tabBars.buttons["Reminders"].waitForExistence(timeout: 25), "seeded home never rendered")
-        XCTAssertFalse(app.staticTexts[title].exists)
+        XCTAssertFalse(listed(title, in: app).exists)
         let handled = app.descendants(matching: .any)
             .matching(NSPredicate(format: "label MATCHES %@", "^Handled\\W*1$")).firstMatch
         XCTAssertFalse(handled.exists, "seed should start with nothing handled")
@@ -106,36 +112,51 @@ final class ReleaseJourneysUITests: XCTestCase {
         XCTAssertTrue(save.waitForExistence(timeout: 10))
         if !save.isHittable { field.typeText("\n") }
         save.tap()
-        let row = app.staticTexts[title]
-        XCTAssertTrue(row.waitForExistence(timeout: 20), "saved reminder is not listed")
+        XCTAssertTrue(listed(title, in: app).waitForExistence(timeout: 20) || scrollTo(listed(title, in: app), in: app),
+                      "saved reminder is not listed")
+        // The editor's dismissal animation would otherwise be captured mid-slide.
+        XCTAssertTrue(field.waitForNonExistence(timeout: 10), "editor never closed after saving")
         QA.checkpoint(app, "core-added")
 
         QA.relaunch(app)
-        XCTAssertTrue(app.staticTexts[title].waitForExistence(timeout: 25), "reminder gone after relaunch")
+        XCTAssertTrue(listed(title, in: app).waitForExistence(timeout: 25) || scrollTo(listed(title, in: app), in: app),
+                      "reminder gone after relaunch")
         QA.checkpoint(app, "core-added-after-relaunch")
 
-        let cell = app.cells.containing(.staticText, identifier: title).firstMatch
+        // Large text and the Duo's narrow pane scroll the new row out of the
+        // lazy list; bring it back before reaching for its check circle.
+        _ = scrollTo(listed(title, in: app), in: app, up: false)
+        let cell = app.cells.containing(NSPredicate(format: "label CONTAINS %@", title)).firstMatch
         let done = cell.buttons["Mark as done"]
         tap(done, in: app)
         scrollTo(handled, in: app)
         XCTAssertTrue(handled.exists, "done reminder never reached Handled")
-        XCTAssertFalse(app.staticTexts[title].exists, "done reminder still listed as open")
+        XCTAssertFalse(listed(title, in: app).exists, "done reminder still listed as open")
         QA.checkpoint(app, "core-done")
 
         QA.relaunch(app)
         XCTAssertTrue(app.tabBars.buttons["Reminders"].waitForExistence(timeout: 25))
         scrollTo(handled, in: app)
         XCTAssertTrue(handled.exists, "Handled lost after relaunch")
-        XCTAssertFalse(app.staticTexts[title].exists, "done reminder reopened after relaunch")
+        XCTAssertFalse(listed(title, in: app).exists, "done reminder reopened after relaunch")
         QA.checkpoint(app, "core-done-after-relaunch")
     }
 
-    /// Lists render lazily, so a row near the bottom is not in the tree until
-    /// scrolled to.
-    private func scrollTo(_ element: XCUIElement, in app: XCUIApplication) {
+    /// Whatever shows this title: a plain text, or the row's combined label
+    /// when large text or the Duo's pane merges it into the row.
+    private func listed(_ title: String, in app: XCUIApplication) -> XCUIElement {
+        app.descendants(matching: .any)
+            .matching(NSPredicate(format: "label CONTAINS %@", title)).firstMatch
+    }
+
+    /// Lists render lazily, so a row off screen is not in the tree until
+    /// scrolled to. Returns whether the element exists afterwards.
+    @discardableResult
+    private func scrollTo(_ element: XCUIElement, in app: XCUIApplication, up: Bool = true) -> Bool {
         for _ in 0..<8 where !element.exists {
-            QA.swipe(app.collectionViews.firstMatch, .up)
+            QA.swipe(app.collectionViews.firstMatch, up ? .up : .down)
         }
+        return element.exists
     }
 
     private func launchSeeded() -> XCUIApplication {
