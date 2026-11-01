@@ -26,6 +26,60 @@ enum BondScreenshotSeed {
         pairing.solo = true
     }
 
+    /// What the user changed on top of the seed. With `-BondSeedSession <id>`
+    /// it is kept in a file named for the id, so a relaunch re-applies it;
+    /// without the argument writes stay in memory only. Never reaches Supabase.
+    struct Overlay: Codable {
+        var reminders: [ReminderDTO] = []
+        var events: [ReminderEventDTO] = []
+        var removedReminders: [UUID] = []
+        var removedEvents: [UUID] = []
+    }
+
+    private(set) static var overlay = Overlay()
+
+    private static var overlayURL: URL? {
+        let arguments = ProcessInfo.processInfo.arguments
+        guard let index = arguments.firstIndex(of: "-BondSeedSession"), index + 1 < arguments.count else { return nil }
+        return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?
+            .appendingPathComponent("bond-seed-\(arguments[index + 1]).json")
+    }
+
+    private static func loadOverlay() {
+        guard let url = overlayURL, let data = try? Data(contentsOf: url),
+              let saved = try? JSONDecoder().decode(Overlay.self, from: data) else { return }
+        overlay = saved
+    }
+
+    private static func saveOverlay() {
+        guard let url = overlayURL, let data = try? JSONEncoder().encode(overlay) else { return }
+        try? data.write(to: url, options: .atomic)
+    }
+
+    static func recordReminder(_ reminder: ReminderDTO) {
+        overlay.reminders.removeAll { $0.id == reminder.id }
+        overlay.reminders.append(reminder)
+        overlay.removedReminders.removeAll { $0 == reminder.id }
+        saveOverlay()
+    }
+
+    static func recordReminderRemoved(_ id: UUID) {
+        overlay.reminders.removeAll { $0.id == id }
+        overlay.removedReminders.append(id)
+        saveOverlay()
+    }
+
+    static func recordEvent(_ event: ReminderEventDTO) {
+        overlay.events.append(event)
+        saveOverlay()
+    }
+
+    static func recordEventRemoved(_ id: UUID) {
+        overlay.events.removeAll { $0.id == id }
+        overlay.removedEvents.append(id)
+        saveOverlay()
+    }
+
     private static let me = UUID(uuidString: "11111111-1111-4111-8111-111111111111")!
     private static let partner = UUID(uuidString: "22222222-2222-4222-8222-222222222222")!
     private static let couple = UUID(uuidString: "33333333-3333-4333-8333-333333333333")!
@@ -120,8 +174,13 @@ enum BondScreenshotSeed {
             reminder(7, by: me, for: partner, "Leave a note in Sam's bag",
                      .words, rrule: "FREQ=WEEKLY", fireAt: day(4, at: 7, 30)),
         ]
-        reminders.reminders = reminderRows
-        reminders.onChange(reminderRows)
+        loadOverlay()
+        var merged = reminderRows.filter { row in
+            !overlay.removedReminders.contains(row.id) && !overlay.reminders.contains { $0.id == row.id }
+        }
+        merged += overlay.reminders
+        reminders.reminders = merged
+        reminders.onChange(merged)
 
         milestones.milestones = [
             MilestoneDTO(
@@ -180,7 +239,7 @@ enum BondScreenshotSeed {
                 ))
             }
         }
-        events.events = eventRows
+        events.events = eventRows.filter { !overlay.removedEvents.contains($0.id) } + overlay.events
 
         checkIn.todaysQuestion = DailyQuestionDTO(
             id: question,

@@ -80,6 +80,54 @@ final class ReleaseJourneysUITests: XCTestCase {
         QA.checkpoint(app, "reminders-after-relaunch")
     }
 
+    /// The core loop: write a gesture, see it listed, mark it done so it moves
+    /// to Handled, and find both outcomes again after a relaunch. The seed's
+    /// session id keeps the changes on disk across `QA.relaunch`; no network.
+    func testCoreLoopAddThenMarkGestureDone() {
+        continueAfterFailure = false
+        let title = "Write Sam a note \(Int.random(in: 1000...9999))"
+        let app = XCUIApplication(bundleIdentifier: Self.bundle)
+        QA.launch(app, arguments: Self.seeded + ["-BondSeedSession", UUID().uuidString])
+        XCTAssertTrue(app.tabBars.buttons["Reminders"].waitForExistence(timeout: 25), "seeded home never rendered")
+        XCTAssertFalse(app.staticTexts[title].exists)
+        let handled = app.descendants(matching: .any)
+            .matching(NSPredicate(format: "label MATCHES %@", "^Handled\\W*1$")).firstMatch
+        XCTAssertFalse(handled.exists, "seed should start with nothing handled")
+        QA.checkpoint(app, "core-home")
+
+        app.buttons["Add reminder"].tap()
+        let field = app.textFields["Title"]
+        XCTAssertTrue(field.waitForExistence(timeout: 15), "editor never opened")
+        field.tap()
+        field.typeText(title)
+        QA.checkpoint(app, "core-editor")
+
+        let save = app.buttons["Save"]
+        XCTAssertTrue(save.waitForExistence(timeout: 10))
+        if !save.isHittable { field.typeText("\n") }
+        save.tap()
+        let row = app.staticTexts[title]
+        XCTAssertTrue(row.waitForExistence(timeout: 20), "saved reminder is not listed")
+        QA.checkpoint(app, "core-added")
+
+        QA.relaunch(app)
+        XCTAssertTrue(app.staticTexts[title].waitForExistence(timeout: 25), "reminder gone after relaunch")
+        QA.checkpoint(app, "core-added-after-relaunch")
+
+        let cell = app.cells.containing(.staticText, identifier: title).firstMatch
+        let done = cell.buttons["Mark as done"]
+        tap(done, in: app)
+        XCTAssertTrue(handled.waitForExistence(timeout: 15), "done reminder never reached Handled")
+        XCTAssertFalse(app.staticTexts[title].exists, "done reminder still listed as open")
+        QA.checkpoint(app, "core-done")
+
+        QA.relaunch(app)
+        XCTAssertTrue(app.tabBars.buttons["Reminders"].waitForExistence(timeout: 25))
+        XCTAssertTrue(handled.waitForExistence(timeout: 25), "Handled lost after relaunch")
+        XCTAssertFalse(app.staticTexts[title].exists, "done reminder reopened after relaunch")
+        QA.checkpoint(app, "core-done-after-relaunch")
+    }
+
     private func launchSeeded() -> XCUIApplication {
         let app = XCUIApplication(bundleIdentifier: Self.bundle)
         QA.launch(app, arguments: Self.seeded)
