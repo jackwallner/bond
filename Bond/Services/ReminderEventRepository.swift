@@ -42,6 +42,18 @@ final class ReminderEventRepository {
     /// is just a firing log entry, so it must be set here or marking done is
     /// invisible everywhere.
     func createEvent(reminderId: UUID, coupleId: UUID) async throws {
+        #if DEBUG
+        if BondScreenshotSeed.isEnabled {
+            let now = Date()
+            let event = ReminderEventDTO(
+                id: UUID(), reminderId: reminderId, coupleId: coupleId,
+                firedAt: now, actedAt: now, reaction: nil
+            )
+            events.insert(event, at: 0)
+            BondScreenshotSeed.recordEvent(event)
+            return
+        }
+        #endif
         let now = ISO8601DateFormatter().string(from: Date())
         let payload: [String: AnyJSON] = [
             "reminder_id": .string(reminderId.uuidString),
@@ -59,6 +71,13 @@ final class ReminderEventRepository {
 
     /// Removes a completion (e.g. undo "done today" after a mis-tap).
     func deleteEvent(_ event: ReminderEventDTO) async throws {
+        #if DEBUG
+        if BondScreenshotSeed.isEnabled {
+            events.removeAll { $0.id == event.id }
+            BondScreenshotSeed.recordEventRemoved(event.id)
+            return
+        }
+        #endif
         try await supabase.client
             .from("reminder_events")
             .delete()

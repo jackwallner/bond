@@ -52,6 +52,20 @@ final class ReminderRepository {
     }
 
     func upsert(_ reminder: ReminderDTO) async throws {
+        #if DEBUG
+        if BondScreenshotSeed.isEnabled {
+            var saved = reminder
+            if saved.createdAt == nil { saved.createdAt = Date() }
+            if let index = reminders.firstIndex(where: { $0.id == saved.id }) {
+                reminders[index] = saved
+            } else {
+                reminders.append(saved)
+            }
+            BondScreenshotSeed.recordReminder(saved)
+            onChange(reminders)
+            return
+        }
+        #endif
         let _: ReminderDTO = try await supabase.client
             .from("reminders")
             .upsert(reminder)
@@ -77,6 +91,14 @@ final class ReminderRepository {
     }
 
     func delete(_ reminder: ReminderDTO) async throws {
+        #if DEBUG
+        if BondScreenshotSeed.isEnabled {
+            reminders.removeAll { $0.id == reminder.id }
+            BondScreenshotSeed.recordReminderRemoved(reminder.id)
+            onChange(reminders)
+            return
+        }
+        #endif
         try await supabase.client
             .from("reminders")
             .delete()
