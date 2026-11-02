@@ -146,7 +146,9 @@ final class ReleaseJourneysUITests: XCTestCase {
         let cell = app.cells.containing(NSPredicate(format: "label CONTAINS %@", title)).firstMatch
         let done = cell.buttons["Mark as done"]
         tap(done, in: app)
+        QA.checkpoint(app, "dbg-after-done")
         scrollTo(handled, in: app)
+        QA.checkpoint(app, "dbg-before-assert")
         XCTAssertTrue(handled.exists, "done reminder never reached Handled")
         XCTAssertFalse(listed(title, in: app).exists, "done reminder still listed as open")
         QA.checkpoint(app, "core-done")
