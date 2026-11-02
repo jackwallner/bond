@@ -146,11 +146,12 @@ final class ReleaseJourneysUITests: XCTestCase {
         let cell = app.cells.containing(NSPredicate(format: "label CONTAINS %@", title)).firstMatch
         let done = cell.buttons["Mark as done"]
         tap(done, in: app)
-        QA.checkpoint(app, "dbg-after-done")
         scrollTo(handled, in: app)
-        QA.checkpoint(app, "dbg-before-assert")
         XCTAssertTrue(handled.exists, "done reminder never reached Handled")
         XCTAssertFalse(listed(title, in: app).exists, "done reminder still listed as open")
+        // Rest at the end of the list, where the last rows clear the tab bar,
+        // not mid-scroll with one of them under it.
+        for _ in 0..<3 { QA.swipe(visibleList(app), .up) }
         QA.checkpoint(app, "core-done")
 
         QA.relaunch(app)
