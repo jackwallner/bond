@@ -138,6 +138,7 @@ final class ReleaseJourneysUITests: XCTestCase {
         QA.relaunch(app)
         XCTAssertTrue(listed(title, in: app).waitForExistence(timeout: 25) || scrollTo(listed(title, in: app), in: app),
                       "reminder gone after relaunch")
+        scrollToTop(app)
         QA.checkpoint(app, "core-added-after-relaunch")
 
         // Large text and the Duo's narrow pane scroll the new row out of the
