@@ -149,9 +149,7 @@ final class ReleaseJourneysUITests: XCTestCase {
         scrollTo(handled, in: app)
         XCTAssertTrue(handled.exists, "done reminder never reached Handled")
         XCTAssertFalse(listed(title, in: app).exists, "done reminder still listed as open")
-        // Rest at the end of the list, where the last rows clear the tab bar,
-        // not mid-scroll with one of them under it.
-        for _ in 0..<3 { QA.swipe(visibleList(app), .up) }
+        restAtListEnd(app)
         QA.checkpoint(app, "core-done")
 
         QA.relaunch(app)
@@ -159,6 +157,7 @@ final class ReleaseJourneysUITests: XCTestCase {
         scrollTo(handled, in: app)
         XCTAssertTrue(handled.exists, "Handled lost after relaunch")
         XCTAssertFalse(listed(title, in: app).exists, "done reminder reopened after relaunch")
+        restAtListEnd(app)
         QA.checkpoint(app, "core-done-after-relaunch")
     }
 
@@ -191,6 +190,13 @@ final class ReleaseJourneysUITests: XCTestCase {
         if reminders.exists { return reminders }
         return app.collectionViews.allElementsBoundByIndex.first { $0.exists && $0.isHittable }
             ?? (app.collectionViews.firstMatch.exists ? app.collectionViews.firstMatch : app.scrollViews.firstMatch)
+    }
+
+    /// Rest at the end of the list, where the last rows clear the tab bar and
+    /// the scroll indicator has faded, not mid-scroll with a row under the bar.
+    private func restAtListEnd(_ app: XCUIApplication) {
+        for _ in 0..<3 { QA.swipe(visibleList(app), .up) }
+        sleep(3)
     }
 
     private func scrollToTop(_ app: XCUIApplication) {
