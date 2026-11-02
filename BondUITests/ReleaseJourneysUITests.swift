@@ -171,13 +171,21 @@ final class ReleaseJourneysUITests: XCTestCase {
     @discardableResult
     private func scrollTo(_ element: XCUIElement, in app: XCUIApplication, up: Bool = true) -> Bool {
         for _ in 0..<8 where !element.exists {
-            QA.swipe(app.collectionViews.firstMatch, up ? .up : .down)
+            QA.swipe(visibleList(app), up ? .up : .down)
         }
         return element.exists
     }
 
+    /// The list on screen. A TabView keeps every tab's list in the tree, so
+    /// the first collection view is not always the one the person sees (on
+    /// the unfolded Duo it is another tab's); screens without a list scroll
+    /// as a plain scroll view.
+    private func visibleList(_ app: XCUIApplication) -> XCUIElement {
+        app.collectionViews.allElementsBoundByIndex.first { $0.exists && $0.isHittable } ?? app.scrollViews.firstMatch
+    }
+
     private func scrollToTop(_ app: XCUIApplication) {
-        for _ in 0..<8 { QA.swipe(app.collectionViews.firstMatch, .down) }
+        for _ in 0..<8 { QA.swipe(visibleList(app), .down) }
     }
 
     /// A tab bar button. The unfolded Duo's floating bar is not always a
@@ -210,8 +218,7 @@ final class ReleaseJourneysUITests: XCTestCase {
         XCTAssertTrue(element.waitForExistence(timeout: 15))
         // Scroll the list itself: a swipe on the whole app lands on the fold
         // of the unfolded Duo, between its two panes, and moves neither.
-        let lists = app.collectionViews.firstMatch
-        let scroller = lists.exists ? lists : app.scrollViews.firstMatch
+        let scroller = visibleList(app)
         for _ in 0..<6 where !element.isHittable { QA.swipe(scroller, .up) }
         for _ in 0..<12 where !element.isHittable { QA.swipe(scroller, .down) }
         element.tap()
