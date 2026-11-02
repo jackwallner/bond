@@ -57,7 +57,7 @@ struct SettingsView: View {
                     }
                     Text("Little Gestures is just for you right now. Pair to share reminders. You keep everything you've already added.")
                         .font(.bond(.caption))
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.bondTextSecondary)
                 } else {
                     HStack(spacing: BondSpacing.m) {
                         InitialsAvatar(name: pairing.partnerProfile?.displayName)
@@ -66,7 +66,7 @@ struct SettingsView: View {
                                 .font(.bond(.headline))
                             Text("Paired")
                                 .font(.bond(.caption))
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(.bondTextSecondary)
                         }
                     }
                     Button("Unpair", role: .destructive) { confirmUnpair = true }
@@ -75,7 +75,7 @@ struct SettingsView: View {
                     }
                     Text("Unpairing immediately stops your partner from sending you anything. Reporting lets us know about abusive content.")
                         .font(.bond(.caption))
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.bondTextSecondary)
                 }
             } header: {
                 BondSectionHeader(title: "Pairing")
@@ -88,7 +88,7 @@ struct SettingsView: View {
                     if let since = purchases.premiumSince {
                         LabeledContent("Status") {
                             Text("\(BondBrand.plusName) since \(since.formatted(date: .long, time: .omitted))")
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(.bondTextSecondary)
                                 .font(.bond(.callout))
                         }
                     } else {
@@ -174,7 +174,7 @@ struct SettingsView: View {
                                 .foregroundStyle(.primary)
                             Spacer()
                             Image(systemName: "arrow.up.forward.square")
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(.bondTextSecondary)
                         }
                     }
                 } header: {

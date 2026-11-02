@@ -76,7 +76,7 @@ struct StatsView: View {
             } footer: {
                 Text("How evenly your reminders cover the five love languages. 100 means a perfectly even spread; a low score means most of your reminders lean on one or two languages.")
                     .font(.bond(.footnote))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.bondTextSecondary)
             }
             .bondWarmRow()
 
@@ -89,7 +89,7 @@ struct StatsView: View {
                     )
                     .foregroundStyle(item.0.tint)
                     .annotation(position: .trailing) {
-                        Text("\(item.1)").font(.bond(.caption2)).foregroundStyle(.secondary)
+                        Text("\(item.1)").font(.bond(.caption2)).foregroundStyle(.bondTextSecondary)
                     }
                 }
                 .frame(height: 220)
@@ -168,7 +168,7 @@ struct StatsView: View {
             if items.isEmpty && byLanguage.isEmpty {
                 Text("Mark reminders done (tap the circle on a reminder) and your follow-through shows up here.")
                     .font(.bond(.footnote))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.bondTextSecondary)
             } else {
                 ForEach(items) { item in
                     HStack(spacing: BondSpacing.m) {
@@ -188,7 +188,7 @@ struct StatsView: View {
                         }
                         Text("\(item.completed) of \(item.expected)")
                             .font(.bond(.subheadline).monospacedDigit())
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(.bondTextSecondary)
                             .fixedSize()
                     }
                 }
@@ -196,11 +196,11 @@ struct StatsView: View {
                     HStack(spacing: BondSpacing.m) {
                         Text(lang.title)
                             .font(.bond(.caption))
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(.bondTextSecondary)
                         Spacer()
                         Text("\(completed) of \(expected) done")
                             .font(.bond(.caption).monospacedDigit())
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(.bondTextSecondary)
                     }
                 }
             }
@@ -225,7 +225,7 @@ struct StatsView: View {
                     .foregroundStyle(.pink)
                 Text("day streak")
                     .font(.bond(.caption))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.bondTextSecondary)
             }
             .frame(maxWidth: .infinity)
 
@@ -237,7 +237,7 @@ struct StatsView: View {
                     .foregroundStyle(.orange)
                 Text("best streak")
                     .font(.bond(.caption))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.bondTextSecondary)
             }
             .frame(maxWidth: .infinity)
 
@@ -249,7 +249,7 @@ struct StatsView: View {
                     .foregroundStyle(.green)
                 Text("done this week")
                     .font(.bond(.caption))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.bondTextSecondary)
             }
             .frame(maxWidth: .infinity)
         }
@@ -277,7 +277,7 @@ struct StatsView: View {
                 HStack {
                     Text("Most: ")
                         .font(.bond(.caption))
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.bondTextSecondary)
                     Text(most.0.title)
                         .font(.bond(.caption, weight: .bold))
                     Image(systemName: most.0.symbolName)
@@ -290,7 +290,7 @@ struct StatsView: View {
                 HStack {
                     Text("Needs attention: ")
                         .font(.bond(.caption))
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.bondTextSecondary)
                     Text(neglected.0.title)
                         .font(.bond(.caption, weight: .bold))
                     Image(systemName: neglected.0.symbolName)

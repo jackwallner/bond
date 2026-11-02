@@ -63,11 +63,12 @@ struct ReminderRow: View {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(reminder.title)
                         .font(.bond(.headline))
+                        .foregroundStyle(isActedOn ? AnyShapeStyle(.bondTextSecondary) : AnyShapeStyle(.primary))
                         .lineLimit(isLarge ? nil : 2)
                     if let body = reminder.body, !body.isEmpty {
                         Text(body)
                             .font(.bond(.subheadline))
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(.bondTextSecondary)
                             .lineLimit(isLarge ? nil : 2)
                     }
                     let chips = isLarge
@@ -77,7 +78,7 @@ struct ReminderRow: View {
                         if isActedOn {
                             Text(doneLabel)
                                 .font(.bond(.caption, weight: .semibold))
-                                .foregroundStyle(.green)
+                                .foregroundStyle(Color.bondDone)
                         } else if let next = reminder.trigger?.upcomingFireDate() {
                             // Static relative string, formatted once at render. Using
                             // `Text(_, style: .relative)` here re-renders every second,
@@ -85,7 +86,7 @@ struct ReminderRow: View {
                             // a settled "in 3 hours" is calmer and matches the tone.
                             Text(Self.relativeFormatter.localizedString(for: next, relativeTo: Date()))
                                 .font(.bond(.caption))
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(.bondTextSecondary)
                         }
                         if let cadence = cadenceLabel {
                             Text(cadence)
@@ -110,7 +111,6 @@ struct ReminderRow: View {
         }
         .padding(.vertical, 4)
         .contentShape(Rectangle())
-        .opacity(isActedOn ? 0.6 : 1)
         .accessibilityHint("Edit reminder")
     }
 

@@ -91,7 +91,7 @@ struct ReminderEditorView: View {
                     if !store.isPremium {
                         Text("Location & surprise-in-a-window need Little Gestures+.")
                             .font(.bond(.caption))
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(.bondTextSecondary)
                     }
                 }
                 .bondWarmRow()
@@ -372,7 +372,7 @@ struct ReminderEditorView: View {
             if geofenceConfigured {
                 Text(String(format: "%.4f, %.4f (200m radius)", geofenceLatitude, geofenceLongitude))
                     .font(.bond(.caption2))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.bondTextSecondary)
             } else {
                 Text("Tap above to capture a location before saving.")
                     .font(.bond(.caption2))
@@ -396,7 +396,7 @@ struct ReminderEditorView: View {
                 } else {
                     Text("Fires once a day, at a different random time in this window each day.")
                         .font(.bond(.footnote))
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.bondTextSecondary)
                 }
             } else {
                 DatePicker("Earliest", selection: $windowStart)
@@ -408,7 +408,7 @@ struct ReminderEditorView: View {
                 } else {
                     Text("Little Gestures will pick one random moment in this window.")
                         .font(.bond(.footnote))
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.bondTextSecondary)
                 }
             }
         }
@@ -655,7 +655,7 @@ private struct ReminderPreviewPane: View {
             if let footer {
                 Text(footer)
                     .font(.bond(.footnote))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.bondTextSecondary)
                     .padding(.horizontal, BondSpacing.l)
             }
         }
@@ -675,7 +675,7 @@ private struct ReminderPreviewPane: View {
                     .font(.bond(.headline))
                 Text(languageNote)
                     .font(.bond(.subheadline))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.bondTextSecondary)
             }
         }
         .padding(.vertical, BondSpacing.xs)
@@ -693,11 +693,11 @@ private struct ReminderPreviewPane: View {
                 HStack {
                     Text(BondBrand.name)
                         .font(.bond(.caption, weight: .semibold))
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.bondTextSecondary)
                     Spacer()
                     Text(when)
                         .font(.bond(.caption))
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.bondTextSecondary)
                 }
                 Text(reminder.title)
                     .font(.bond(.subheadline, weight: .semibold))

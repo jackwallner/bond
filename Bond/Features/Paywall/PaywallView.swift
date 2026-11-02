@@ -69,7 +69,7 @@ struct PaywallView: View {
                         } label: {
                             Image(systemName: "xmark.circle.fill")
                                 .font(.system(size: 26))
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(.bondTextSecondary)
                         }
                         .accessibilityLabel("Close")
                     }
@@ -99,7 +99,7 @@ struct PaywallView: View {
                 .controlSize(.large)
             Text("Loading plans…")
                 .font(.bond(.subheadline))
-                .foregroundStyle(.secondary)
+                .foregroundStyle(.bondTextSecondary)
         }
     }
 
@@ -107,12 +107,12 @@ struct PaywallView: View {
         VStack(spacing: BondSpacing.m) {
             Image(systemName: "wifi.exclamationmark")
                 .font(.system(size: 40))
-                .foregroundStyle(.secondary)
+                .foregroundStyle(.bondTextSecondary)
             Text("Couldn't Load Plans")
                 .font(.bond(.headline))
             Text(purchases.lastError ?? "Check your connection and try again.")
                 .font(.bond(.subheadline))
-                .foregroundStyle(.secondary)
+                .foregroundStyle(.bondTextSecondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, BondSpacing.xl)
             Button("Try Again") {
@@ -148,7 +148,7 @@ struct PaywallView: View {
                 .foregroundStyle(Color.bondAccent.gradient)
             Text(BondPlusBenefits.paywallSubheadline(isSolo: isSolo))
                 .font(.bond(.footnote))
-                .foregroundStyle(.secondary)
+                .foregroundStyle(.bondTextSecondary)
                 .multilineTextAlignment(.center)
                 .lineLimit(2)
                 .minimumScaleFactor(0.9)
@@ -170,7 +170,7 @@ struct PaywallView: View {
                             .lineLimit(1)
                         Text(benefit.detail)
                             .font(.bond(.caption))
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(.bondTextSecondary)
                             .lineLimit(2)
                             .minimumScaleFactor(0.85)
                     }
@@ -210,7 +210,7 @@ struct PaywallView: View {
             if let subline = ctaSubline {
                 Text(subline)
                     .font(.bond(.footnote, weight: .semibold))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.bondTextSecondary)
                     .multilineTextAlignment(.center)
                     .lineLimit(2)
                     .minimumScaleFactor(0.85)
@@ -228,7 +228,7 @@ struct PaywallView: View {
                     ProgressView().controlSize(.small)
                     Text(statusMessage)
                         .font(.bond(.footnote))
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.bondTextSecondary)
                         .multilineTextAlignment(.center)
                 }
             }
@@ -250,7 +250,7 @@ struct PaywallView: View {
             if let restoreMessage {
                 Text(restoreMessage)
                     .font(.bond(.footnote))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.bondTextSecondary)
                     .multilineTextAlignment(.center)
             }
         }
@@ -481,7 +481,7 @@ private struct BondPlanCard: View {
                     } else if let perWeekPrice {
                         Text("Just \(perWeekPrice)")
                             .font(.bond(.caption2, weight: .semibold))
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(.bondTextSecondary)
                     }
                 }
 
@@ -494,7 +494,7 @@ private struct BondPlanCard: View {
                     if showsTrialBadge, let perWeekPrice {
                         Text(perWeekPrice)
                             .font(.system(size: 11, weight: .medium).monospacedDigit())
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(.bondTextSecondary)
                     }
                 }
             }

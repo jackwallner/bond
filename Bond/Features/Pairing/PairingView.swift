@@ -110,13 +110,13 @@ struct PairingView: View {
                             .padding(.top, BondSpacing.s)
                         Text("In the same room? Have them point their camera at this.")
                             .font(.bond(.caption))
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(.bondTextSecondary)
                             .multilineTextAlignment(.center)
                     }
                 } label: {
                     Label("Show QR code", systemImage: "qrcode")
                         .font(.bond(.subheadline))
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.bondTextSecondary)
                 }
                 .padding(.horizontal, BondSpacing.base)
             } else {
@@ -215,7 +215,7 @@ private struct ExpiryCaption: View {
                 }
             }
             .font(.bond(.footnote))
-            .foregroundStyle(.secondary)
+            .foregroundStyle(.bondTextSecondary)
         }
     }
 }
@@ -327,7 +327,7 @@ struct AppleSignInPairingGate: View {
                      ? "Your partner's invite is ready. Sign in with Apple so they stay paired with you across devices."
                      : "Pairing connects your reminders with your partner's. Apple Sign-In keeps that link recoverable across devices.")
                     .font(.bond(.subheadline))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.bondTextSecondary)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, BondSpacing.xl)
             }

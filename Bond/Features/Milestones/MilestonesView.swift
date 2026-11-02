@@ -52,13 +52,13 @@ struct MilestonesView: View {
                                 .font(.bond(.headline))
                             Text(m.nextOccurrence(), style: .date)
                                 .font(.bond(.caption))
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(.bondTextSecondary)
                         }
                         Spacer()
                         let days = max(0, Calendar.current.dateComponents([.day], from: .now, to: m.nextOccurrence()).day ?? 0)
                         Text("\(days)d")
                             .font(.bond(.callout).monospacedDigit())
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(.bondTextSecondary)
                     }
                 }
                 .buttonStyle(.plain)

@@ -208,7 +208,10 @@ final class ReleaseJourneysUITests: XCTestCase {
 
     private func tap(_ element: XCUIElement, in app: XCUIApplication) {
         XCTAssertTrue(element.waitForExistence(timeout: 15))
-        for _ in 0..<4 where !element.isHittable { app.swipeUp() }
+        // Scroll the list itself: a swipe on the whole app lands on the fold
+        // of the unfolded Duo, between its two panes, and moves neither.
+        for _ in 0..<6 where !element.isHittable { QA.swipe(app.collectionViews.firstMatch, .up) }
+        for _ in 0..<12 where !element.isHittable { QA.swipe(app.collectionViews.firstMatch, .down) }
         element.tap()
     }
 }

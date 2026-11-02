@@ -39,7 +39,7 @@ struct InsightsGateContent: View {
     private func metric(_ value: String, _ label: String, _ tint: Color) -> some View {
         VStack(spacing: BondSpacing.xs) {
             Text(value).font(.bond(.title, weight: .bold)).foregroundStyle(tint)
-            Text(label).font(.bond(.caption)).foregroundStyle(.secondary)
+            Text(label).font(.bond(.caption)).foregroundStyle(.bondTextSecondary)
         }
         .frame(maxWidth: .infinity)
     }
@@ -89,7 +89,7 @@ struct TemplatesGateContent: View {
                     Image(systemName: icon).font(.bond(.title2)).foregroundStyle(.pink).frame(width: 32)
                     VStack(alignment: .leading, spacing: 2) {
                         Text(title).font(.bond(.headline))
-                        Text(count).font(.bond(.caption)).foregroundStyle(.secondary)
+                        Text(count).font(.bond(.caption)).foregroundStyle(.bondTextSecondary)
                     }
                     Spacer()
                 }

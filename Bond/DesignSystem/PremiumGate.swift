@@ -47,7 +47,7 @@ struct BondRestoreButton: View {
             } else {
                 Text("Restore purchases")
                     .font(.bond(.footnote))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.bondTextSecondary)
             }
         }
         .disabled(isRestoring)
@@ -84,7 +84,7 @@ struct BondUnlockCard: View {
                     .multilineTextAlignment(.center)
                 Text(subhead)
                     .font(.bond(.subheadline))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.bondTextSecondary)
                     .multilineTextAlignment(.center)
             }
             BondPrimaryButton(title: ctaTitle) {

@@ -168,6 +168,7 @@ struct IntentSetupView: View {
     @State private var purchaseError: String?
     @State private var showFallbackPaywall = false
     @FocusState private var nameFocused: Bool
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     private let mode: Mode
 
@@ -208,6 +209,17 @@ struct IntentSetupView: View {
 
                         if let error = pairing.lastError {
                             BondInlineError(message: error)
+                        }
+
+                        // At accessibility sizes the docked stack would take most of
+                        // the screen; the secondary exits scroll with the page instead.
+                        if isTrialStep && typeSize.isAccessibilitySize {
+                            VStack(spacing: BondSpacing.s) {
+                                continueForFreeButton
+                                legalFooterSlot
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding(.horizontal, BondSpacing.base)
                         }
                     }
                     .frame(maxWidth: .infinity, minHeight: proxy.size.height, alignment: .leading)
@@ -271,7 +283,7 @@ struct IntentSetupView: View {
                 if let disclosure = trialDisclosure {
                     Text(disclosure)
                         .font(.bond(.caption2))
-                        .foregroundStyle(.tertiary)
+                        .foregroundStyle(.bondTextSecondary)
                         .multilineTextAlignment(.center)
                         .fixedSize(horizontal: false, vertical: true)
                 }
@@ -294,20 +306,26 @@ struct IntentSetupView: View {
             }
             .disabled(!canContinue || isPurchasing || isRestoring || isFinishing || isPendingPurchase)
 
-            if isTrialStep {
-                Button { Task { await finish() } } label: {
-                    Text("Continue for free")
-                        .font(.bond(.subheadline, weight: .semibold))
-                        .foregroundStyle(.secondary)
-                        .frame(maxWidth: .infinity, minHeight: 34)
-                }
-                .buttonStyle(.plain)
-                .disabled(isPurchasing || isRestoring || isFinishing)
+            if isTrialStep && !typeSize.isAccessibilitySize {
+                continueForFreeButton
             }
 
-            legalFooterSlot
+            if !typeSize.isAccessibilitySize {
+                legalFooterSlot
+            }
         }
         .padding(.horizontal, BondSpacing.base)
+    }
+
+    private var continueForFreeButton: some View {
+        Button { Task { await finish() } } label: {
+            Text("Continue for free")
+                .font(.bond(.subheadline, weight: .semibold))
+                .foregroundStyle(.bondTextSecondary)
+                .frame(maxWidth: .infinity, minHeight: 34)
+        }
+        .buttonStyle(.plain)
+        .disabled(isPurchasing || isRestoring || isFinishing)
     }
 
     /// Fixed-height footer reserved on all steps so the primary CTA sits at the
@@ -331,7 +349,7 @@ struct IntentSetupView: View {
                         } else {
                             Text("Restore Purchases")
                                 .font(.bond(.caption, weight: .medium))
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(.bondTextSecondary)
                         }
                     }
                     .buttonStyle(.plain)
@@ -339,17 +357,17 @@ struct IntentSetupView: View {
 
                     HStack(spacing: BondSpacing.xs) {
                         Link("Terms", destination: PaywallLinks.terms)
-                        Text("·").foregroundStyle(.tertiary)
+                        Text("·").foregroundStyle(.bondTextSecondary)
                         Link("Privacy", destination: PaywallLinks.privacyPolicy)
                     }
                     .font(.bond(.caption2))
-                    .foregroundStyle(.tertiary)
+                    .foregroundStyle(.bondTextSecondary)
                 }
             } else {
                 Color.clear
             }
         }
-        .frame(height: 44)
+        .frame(minHeight: 44)
     }
 
     private var continueTitle: String {

@@ -45,7 +45,7 @@ struct NotificationPrimerSheet: View {
                     .multilineTextAlignment(.center)
                 Text("Reminders fire as notifications. No notifications, no reminders. That's the whole app.")
                     .font(.bond(.body))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.bondTextSecondary)
                     .multilineTextAlignment(.center)
             }
             .padding(.horizontal, BondSpacing.l)
@@ -59,7 +59,7 @@ struct NotificationPrimerSheet: View {
                 }
                 Button("Maybe later") { dismiss() }
                     .font(.bond(.footnote))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.bondTextSecondary)
                     .padding(.bottom, BondSpacing.s)
             }
             .padding(.horizontal, BondSpacing.base)

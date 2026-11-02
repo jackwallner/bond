@@ -31,7 +31,7 @@ struct BondHero: View {
             if let subtitle {
                 Text(subtitle)
                     .font(.bond(.title3))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.bondTextSecondary)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, BondSpacing.xl)
             }
@@ -56,7 +56,7 @@ struct BondScreenHeader: View {
             if let subtitle {
                 Text(subtitle)
                     .font(.bond(.body))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.bondTextSecondary)
                     .fixedSize(horizontal: false, vertical: true)
             }
         }
@@ -209,7 +209,7 @@ struct BondChoiceCard<Trailing: View>: View {
                     .frame(width: 32, height: 32)
                 VStack(alignment: .leading, spacing: BondSpacing.xs) {
                     Text(title).font(.bond(.headline))
-                    Text(description).font(.bond(.subheadline)).foregroundStyle(.secondary)
+                    Text(description).font(.bond(.subheadline)).foregroundStyle(.bondTextSecondary)
                         .fixedSize(horizontal: false, vertical: true)
                 }
                 Spacer(minLength: BondSpacing.s)
@@ -234,13 +234,13 @@ struct BondSealedCard: View {
         VStack(alignment: .leading, spacing: BondSpacing.s) {
             HStack(spacing: BondSpacing.s) {
                 Image(systemName: "envelope.fill")
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.bondTextSecondary)
                 Text(title).font(.bond(.subheadline, weight: .bold))
                 Spacer()
             }
             Text(hint)
                 .font(.bond(.callout))
-                .foregroundStyle(.secondary)
+                .foregroundStyle(.bondTextSecondary)
         }
         .padding(BondSpacing.base)
         .frame(maxWidth: .infinity, minHeight: 96, alignment: .topLeading)

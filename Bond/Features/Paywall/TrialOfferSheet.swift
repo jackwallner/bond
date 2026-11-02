@@ -67,7 +67,7 @@ struct TrialOfferSheet: View {
 
                 Text(subheadline)
                     .font(.bond(.footnote))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.bondTextSecondary)
                     .multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
             }
@@ -85,7 +85,7 @@ struct TrialOfferSheet: View {
                                 .font(.bond(.subheadline, weight: .semibold))
                             Text(benefit.detail)
                                 .font(.bond(.caption))
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(.bondTextSecondary)
                                 .fixedSize(horizontal: false, vertical: true)
                         }
                         Spacer(minLength: 0)
@@ -136,7 +136,7 @@ struct TrialOfferSheet: View {
                 Button(action: onDismiss) {
                     Text("Not now")
                         .font(.bond(.subheadline, weight: .semibold))
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.bondTextSecondary)
                 }
                 .buttonStyle(.plain)
                 .disabled(isPurchasing)

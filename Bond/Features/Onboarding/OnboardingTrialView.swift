@@ -48,7 +48,7 @@ struct OnboardingTrialView: View {
                                 .font(.bond(.subheadline, weight: .semibold))
                             Text(benefit.detail)
                                 .font(.bond(.caption))
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(.bondTextSecondary)
                                 .fixedSize(horizontal: false, vertical: true)
                         }
                         Spacer(minLength: 0)

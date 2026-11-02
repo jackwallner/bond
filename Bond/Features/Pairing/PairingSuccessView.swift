@@ -20,7 +20,7 @@ struct PairingSuccessView: View {
                     .font(.bond(.largeTitle, weight: .bold))
                 Text(namesLine)
                     .font(.bond(.title3))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.bondTextSecondary)
             }
 
             Spacer()

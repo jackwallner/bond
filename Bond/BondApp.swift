@@ -374,12 +374,12 @@ struct RootView: View {
         VStack(spacing: BondSpacing.m) {
             Image(systemName: "wifi.exclamationmark")
                 .font(.system(size: 40))
-                .foregroundStyle(.secondary)
+                .foregroundStyle(.bondTextSecondary)
             Text("Couldn't connect")
                 .font(.bond(.headline))
             Text("Little Gestures needs a connection the first time you open it. Check your network and try again.")
                 .font(.bond(.subheadline))
-                .foregroundStyle(.secondary)
+                .foregroundStyle(.bondTextSecondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, BondSpacing.xl)
             Button("Try again") { retryBootstrap() }

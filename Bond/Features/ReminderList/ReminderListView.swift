@@ -331,7 +331,7 @@ struct ReminderListView: View {
                             Spacer()
                             Text("\(handledReminders.count)")
                                 .font(.bond(.subheadline))
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(.bondTextSecondary)
                         }
                     }
                     .bondWarmRow()
@@ -662,12 +662,12 @@ private struct PartnerRequestCard: View {
                     if let body = reminder.body, !body.isEmpty {
                         Text(body)
                             .font(.bond(.subheadline))
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(.bondTextSecondary)
                     }
                     if let next = nextFire {
                         Label(next.formatted(date: .abbreviated, time: .shortened), systemImage: "clock")
                             .font(.bond(.caption))
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(.bondTextSecondary)
                     }
                 }
                 Spacer()
@@ -735,7 +735,7 @@ private struct CheckInPromptCard: View {
                     .foregroundStyle(isLoud ? AnyShapeStyle(.white) : AnyShapeStyle(.primary))
                 Text(subhead)
                     .font(.bond(.caption))
-                    .foregroundStyle(isLoud ? AnyShapeStyle(.white.opacity(0.85)) : AnyShapeStyle(.secondary))
+                    .foregroundStyle(isLoud ? AnyShapeStyle(.white) : AnyShapeStyle(.bondTextSecondary))
             }
             Spacer()
             Image(systemName: "chevron.right")
@@ -772,7 +772,7 @@ private struct PairingNudgeRow: View {
                             .foregroundStyle(.primary)
                         Text("Share reminders and a daily check-in.")
                             .font(.bond(.caption))
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(.bondTextSecondary)
                             .fixedSize(horizontal: false, vertical: true)
                     }
                     Spacer(minLength: BondSpacing.s)
@@ -785,7 +785,7 @@ private struct PairingNudgeRow: View {
             Button(action: onDismiss) {
                 Image(systemName: "xmark")
                     .font(.bond(.caption, weight: .semibold))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.bondTextSecondary)
                     .padding(BondSpacing.xs)
             }
             .buttonStyle(.plain)
@@ -817,7 +817,7 @@ private struct MyListEmptyView: View {
                 .font(.bond(.title3, weight: .bold))
             Text(subtitle)
                 .font(.bond(.subheadline))
-                .foregroundStyle(.secondary)
+                .foregroundStyle(.bondTextSecondary)
                 .multilineTextAlignment(.center)
             Button("Add one", action: onAdd)
                 .buttonStyle(.borderedProminent)
@@ -863,7 +863,7 @@ private struct TemplatesHomeRow: View {
                     }
                     Text("Date nights, long distance, daily affirmations & more")
                         .font(.bond(.caption))
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.bondTextSecondary)
                         .lineLimit(2)
                 }
                 Spacer()

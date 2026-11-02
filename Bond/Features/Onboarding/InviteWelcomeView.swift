@@ -30,7 +30,7 @@ struct InviteWelcomeView: View {
                     .multilineTextAlignment(.center)
                 Text("Little Gestures is a small app for the two of you, little reminders, shared milestones, and a daily check-in.")
                     .font(.bond(.body))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.bondTextSecondary)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, BondSpacing.xl)
             }
@@ -59,7 +59,7 @@ struct InviteWelcomeView: View {
 
                     Text("Sign in with Apple so your partner stays paired with you across devices.")
                         .font(.bond(.footnote))
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.bondTextSecondary)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, BondSpacing.xl)
                 } else {
@@ -81,7 +81,7 @@ struct InviteWelcomeView: View {
                     pairing.lastError = nil
                 }
                 .font(.bond(.subheadline, weight: .medium))
-                .foregroundStyle(.secondary)
+                .foregroundStyle(.bondTextSecondary)
             }
         }
         .padding(.vertical, BondSpacing.xxxl)

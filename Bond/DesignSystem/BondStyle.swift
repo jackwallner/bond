@@ -49,6 +49,17 @@ extension Color {
         light: Color(red: 0.549, green: 0.353, blue: 0.451),  // #8C5A73
         dark:  Color(red: 0.780, green: 0.604, blue: 0.690)
     )
+    /// Secondary text on the cream surface and warm cards: 5.2:1 or better in
+    /// light, 6:1 in dark. System `.secondary` measured 4.2:1 on the cream.
+    static let bondTextSecondary = Color(
+        light: Color(red: 0.420, green: 0.353, blue: 0.306),  // #6B5A4E
+        dark:  Color(red: 0.741, green: 0.690, blue: 0.659)   // #BDB0A8
+    )
+    /// "Done" green for small text: system green is 2:1 on the cream.
+    static let bondDone = Color(
+        light: Color(red: 0.118, green: 0.478, blue: 0.227),  // #1E7A3A
+        dark:  Color(red: 0.435, green: 0.831, blue: 0.549)   // #6FD48C
+    )
     /// Tertiary warm accent - soft gold. For highlights, streaks, and small
     /// celebratory moments where terracotta would feel heavy.
     static let bondGold = Color(
@@ -179,4 +190,8 @@ extension View {
     func bondAnimation<Value: Equatable>(_ animation: Animation?, value: Value) -> some View {
         modifier(BondAnimation(animation: animation, value: value))
     }
+}
+
+extension ShapeStyle where Self == Color {
+    static var bondTextSecondary: Color { Color.bondTextSecondary }
 }

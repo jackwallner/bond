@@ -43,7 +43,7 @@ struct ReviewPromptSheet: View {
                         Button("Not now") {
                             handleNotNow()
                         }
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.bondTextSecondary)
                     }
                 }
         }
@@ -56,7 +56,7 @@ struct ReviewPromptSheet: View {
         VStack(alignment: .leading, spacing: 14) {
             Text("What would make Little Gestures work better for you?")
                 .font(.bond(.subheadline))
-                .foregroundStyle(.secondary)
+                .foregroundStyle(.bondTextSecondary)
                 .fixedSize(horizontal: false, vertical: true)
 
             TextEditor(text: $feedbackText)
@@ -68,7 +68,7 @@ struct ReviewPromptSheet: View {
 
             Text("Opens your mail app with a draft to the developer. No analytics, just your words.")
                 .font(.bond(.caption))
-                .foregroundStyle(.secondary)
+                .foregroundStyle(.bondTextSecondary)
 
             Button { sendFeedback() } label: {
                 primaryButtonLabel("Send feedback")

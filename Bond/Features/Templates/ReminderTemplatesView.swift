@@ -38,7 +38,7 @@ struct ReminderTemplatesView: View {
                                 .font(.bond(.headline))
                             Text(group.subtitle)
                                 .font(.bond(.caption))
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(.bondTextSecondary)
                         }
                         Spacer()
                         Text("\(group.reminders.count)")
@@ -80,7 +80,7 @@ struct ReminderTemplatesView: View {
                                 .font(.bond(.headline))
                             Text(group.subtitle)
                                 .font(.bond(.caption))
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(.bondTextSecondary)
                         }
                     }
                     .padding(.vertical, 4)
@@ -113,7 +113,7 @@ struct TemplateGroupDetailView: View {
                         .font(.bond(.title2, weight: .bold))
                     Text(group.subtitle)
                         .font(.bond(.subheadline))
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.bondTextSecondary)
                 }
                 .padding(.vertical, 8)
             }
@@ -131,7 +131,7 @@ struct TemplateGroupDetailView: View {
                             if let body = template.body {
                                 Text(body)
                                     .font(.bond(.caption))
-                                    .foregroundStyle(.secondary)
+                                    .foregroundStyle(.bondTextSecondary)
                             }
                         }
                         Spacer()
@@ -142,7 +142,7 @@ struct TemplateGroupDetailView: View {
                             if let preset = template.triggerRecurrence {
                                 Text(preset.title)
                                     .font(.bond(.caption2))
-                                    .foregroundStyle(.secondary)
+                                    .foregroundStyle(.bondTextSecondary)
                             }
                         }
                     }

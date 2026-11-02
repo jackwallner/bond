@@ -52,13 +52,13 @@ struct EmptyRemindersView: View {
                 VStack(spacing: BondSpacing.m) {
                     Image(systemName: "heart.text.square")
                         .font(.system(size: 48))
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.bondTextSecondary)
                         .accessibilityHidden(true)
                     Text("No reminders yet.")
                         .font(.bond(.title3, weight: .bold))
                     Text("Add one with the + button, or start with these.")
                         .font(.bond(.subheadline))
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.bondTextSecondary)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, BondSpacing.xl)
                 }
