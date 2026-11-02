@@ -210,8 +210,10 @@ final class ReleaseJourneysUITests: XCTestCase {
         XCTAssertTrue(element.waitForExistence(timeout: 15))
         // Scroll the list itself: a swipe on the whole app lands on the fold
         // of the unfolded Duo, between its two panes, and moves neither.
-        for _ in 0..<6 where !element.isHittable { QA.swipe(app.collectionViews.firstMatch, .up) }
-        for _ in 0..<12 where !element.isHittable { QA.swipe(app.collectionViews.firstMatch, .down) }
+        let lists = app.collectionViews.firstMatch
+        let scroller = lists.exists ? lists : app.scrollViews.firstMatch
+        for _ in 0..<6 where !element.isHittable { QA.swipe(scroller, .up) }
+        for _ in 0..<12 where !element.isHittable { QA.swipe(scroller, .down) }
         element.tap()
     }
 }
