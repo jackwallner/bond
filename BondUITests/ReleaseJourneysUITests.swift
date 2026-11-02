@@ -183,7 +183,8 @@ final class ReleaseJourneysUITests: XCTestCase {
     /// the unfolded Duo it is another tab's); screens without a list scroll
     /// as a plain scroll view.
     private func visibleList(_ app: XCUIApplication) -> XCUIElement {
-        app.collectionViews.allElementsBoundByIndex.first { $0.exists && $0.isHittable } ?? app.scrollViews.firstMatch
+        app.collectionViews.allElementsBoundByIndex.first { $0.exists && $0.isHittable }
+            ?? (app.collectionViews.firstMatch.exists ? app.collectionViews.firstMatch : app.scrollViews.firstMatch)
     }
 
     private func scrollToTop(_ app: XCUIApplication) {
