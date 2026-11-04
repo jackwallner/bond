@@ -70,7 +70,6 @@ only_rules:
   - multiple_closures_with_trailing_closure
   - nesting
   - nimble_operator
-  - no_extension_access_modifier
   - no_fallthrough_only
   - no_grouping_extension
   - notification_center_detachment
@@ -151,6 +150,9 @@ only_rules:
 # Relaxed thresholds to match existing codebase style
 type_body_length: 400
 function_body_length: 100
+closure_body_length:
+  warning: 100
+  error: 200
 file_length: 600
 line_length: 140
 identifier_name:
