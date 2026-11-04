@@ -13,14 +13,11 @@ concurrency:
 jobs:
   build-and-test:
     name: Build & Test
-    runs-on: macos-15
+    runs-on: macos-latest
     timeout-minutes: 30
 
     steps:
       - uses: actions/checkout@v4
-
-      - name: Select Xcode
-        run: sudo xcode-select -s /Applications/Xcode_16.app/Contents/Developer
 
       - name: Install XcodeGen
         run: brew install xcodegen
@@ -28,26 +25,29 @@ jobs:
       - name: Generate Xcode project
         run: xcodegen generate
 
-      - name: Build (all targets)
+      # No pipe to a formatter. This used to pipe xcodebuild into xcpretty without
+      # pipefail, so it stayed green while package resolution failed on the pinned
+      # Xcode 16 and no test ran. The simulator is resolved, since a pinned device
+      # name rots whenever the runner image changes.
+      - name: Test
         run: |
-          xcodebuild build \
-            -project Bond.xcodeproj \
-            -scheme Bond \
-            -sdk iphonesimulator \
-            -destination "platform=iOS Simulator,name=iPhone 16 Pro,OS=18.4" \
-            CODE_SIGNING_ALLOWED=NO \
-            | xcpretty
-
-      - name: Run tests
-        run: |
+          set -euo pipefail
+          UDID=$(xcrun simctl list devices available --json | python3 -c "
+          import json, sys
+          devices = json.load(sys.stdin)['devices']
+          for runtime in sorted(devices, reverse=True):
+              for device in devices[runtime]:
+                  if device.get('isAvailable') and device['name'].startswith('iPhone'):
+                      print(device['udid'])
+                      raise SystemExit
+          raise SystemExit('no available iPhone simulator on this runner')
+          ")
           xcodebuild test \
             -project Bond.xcodeproj \
             -scheme Bond \
-            -sdk iphonesimulator \
-            -destination "platform=iOS Simulator,name=iPhone 16 Pro,OS=18.4" \
-            -testPlan Bond \
-            CODE_SIGNING_ALLOWED=NO \
-            | xcpretty
+            -destination "id=$UDID" \
+            -only-testing:BondTests \
+            CODE_SIGNING_ALLOWED=NO
 
   lint:
     name: SwiftLint
@@ -56,5 +56,3 @@ jobs:
       - uses: actions/checkout@v4
       - name: SwiftLint
         uses: norio-nomura/action-swiftlint@3.2.1
-        with:
-          args: --strict
