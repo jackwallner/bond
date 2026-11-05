@@ -71,7 +71,7 @@ struct ReviewPromptSheet: View {
                 .foregroundStyle(.bondTextSecondary)
 
             Button { sendFeedback() } label: {
-                primaryButtonLabel("Send feedback")
+                primaryButtonLabel(String(localized: "Send feedback"))
             }
             .buttonStyle(.plain)
             .disabled(feedbackText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
@@ -114,7 +114,7 @@ struct ReviewPromptSheet: View {
         components.scheme = "mailto"
         components.path = "jackwallner+b@gmail.com"
         components.queryItems = [
-            URLQueryItem(name: "subject", value: "Little Gestures feedback"),
+            URLQueryItem(name: "subject", value: String(localized: "Little Gestures feedback")),
             URLQueryItem(name: "body", value: body),
         ]
         return components.url

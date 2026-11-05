@@ -28,7 +28,7 @@ struct PairingSuccessView: View {
             // Always an explicit Continue - pairing is an emotionally
             // meaningful moment; don't auto-dismiss it out from under the
             // user before they can read the names or screenshot it.
-            BondPrimaryButton(title: "Continue", action: onDone)
+            BondPrimaryButton(title: String(localized: "Continue"), action: onDone)
                 .padding(.horizontal, BondSpacing.base)
 
             Spacer().frame(height: BondSpacing.xxxl)
@@ -48,16 +48,16 @@ struct PairingSuccessView: View {
 
     private var namesLine: String {
         if let partnerName, !partnerName.isEmpty {
-            return "You & \(partnerName)"
+            return String(localized: "You & \(partnerName)")
         }
-        return "You're paired with someone."
+        return String(localized: "You're paired with someone.")
     }
 
     private var accessibilityAnnouncement: String {
         if let partnerName, !partnerName.isEmpty {
-            return "You're paired with \(partnerName)."
+            return String(localized: "You're paired with \(partnerName).")
         }
-        return "You're paired."
+        return String(localized: "You're paired.")
     }
 }
 

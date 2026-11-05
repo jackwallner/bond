@@ -49,8 +49,8 @@ struct DailyCheckInView: View {
                 questionCard
                 BondUnlockCard(
                     icon: "questionmark.bubble.fill",
-                    headline: "Answer together",
-                    subhead: "Little Gestures+ unlocks answering today's question and seeing each other's response once you've both replied.",
+                    headline: String(localized: "Answer together"),
+                    subhead: String(localized: "Little Gestures+ unlocks answering today's question and seeing each other's response once you've both replied."),
                     isPaywallPresented: $isPaywallPresented
                 )
             }
@@ -73,7 +73,7 @@ struct DailyCheckInView: View {
 
                 if let myResponse = checkIn.myResponse {
                     answerBlock(
-                        title: "Your answer",
+                        title: String(localized: "Your answer"),
                         icon: "person.circle.fill",
                         tint: .blue,
                         text: myResponse.response
@@ -83,8 +83,8 @@ struct DailyCheckInView: View {
                         partnerCard(partnerResponse.response)
                     } else {
                         BondSealedCard(
-                            title: "Their answer",
-                            hint: "Sealed until they answer"
+                            title: String(localized: "Their answer"),
+                            hint: String(localized: "Sealed until they answer")
                         )
                     }
                 } else {
@@ -153,13 +153,13 @@ struct DailyCheckInView: View {
             reduceMotion: reduceMotion,
             front: {
                 BondSealedCard(
-                    title: "Their answer",
-                    hint: "Tap to reveal"
+                    title: String(localized: "Their answer"),
+                    hint: String(localized: "Tap to reveal")
                 )
             },
             back: {
                 answerBlock(
-                    title: "Their answer",
+                    title: String(localized: "Their answer"),
                     icon: "person.circle.fill",
                     tint: .bondAccent,
                     text: text
@@ -171,7 +171,7 @@ struct DailyCheckInView: View {
             performReveal()
         }
         .accessibilityAddTraits(.isButton)
-        .accessibilityHint(revealPhase == .revealed ? "" : "Double-tap to reveal their answer.")
+        .accessibilityHint(revealPhase == .revealed ? "" : String(localized: "Double-tap to reveal their answer."))
     }
 
     private func performReveal() {
@@ -198,7 +198,7 @@ struct DailyCheckInView: View {
                 .background(Color.bondCardFill, in: RoundedRectangle(cornerRadius: BondRadius.inline))
 
             BondPrimaryButton(
-                title: "Submit answer",
+                title: String(localized: "Submit answer"),
                 isLoading: checkIn.isLoading
             ) {
                 Task {
@@ -233,8 +233,9 @@ struct DailyCheckInView: View {
     }
 
     private func announceReveal() {
-        let who = pairing.partnerProfile?.displayName ?? "They"
-        UIAccessibility.post(notification: .announcement, argument: "\(who) answered.")
+        let announcement = pairing.partnerProfile?.displayName.map { String(localized: "\($0) answered.") }
+            ?? String(localized: "They answered.")
+        UIAccessibility.post(notification: .announcement, argument: announcement)
     }
 
     private static func dayKey() -> String {

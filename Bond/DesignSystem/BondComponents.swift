@@ -37,7 +37,7 @@ struct BondHero: View {
             }
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(subtitle.map { "\(BondBrand.name). \($0)" } ?? BondBrand.name)
+        .accessibilityLabel(subtitle.map { String(localized: "\(BondBrand.name). \($0)") } ?? BondBrand.name)
     }
 }
 
@@ -172,7 +172,7 @@ struct BondInlineError: View {
         .font(.bond(.footnote))
         .foregroundStyle(.red)
         .padding(.horizontal, BondSpacing.base)
-        .accessibilityLabel("Error: \(message)")
+        .accessibilityLabel(String(localized: "Error: \(message)"))
     }
 }
 
@@ -251,7 +251,7 @@ struct BondSealedCard: View {
                 .foregroundStyle(.secondary.opacity(0.4))
         )
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("\(title). \(hint).")
+        .accessibilityLabel(String(localized: "\(title). \(hint)."))
     }
 }
 

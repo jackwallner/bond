@@ -5,21 +5,21 @@ enum PremiumFeature {
 
     var gateHeadline: String {
         switch self {
-        case .checkIn:    "One question, every day."
-        case .insights:   "How you tend to each other."
-        case .templates:  "Reminder packs, ready to go."
+        case .checkIn:    String(localized: "One question, every day.")
+        case .insights:   String(localized: "How you tend to each other.")
+        case .templates:  String(localized: "Reminder packs, ready to go.")
         }
     }
 
     var gateSubhead: String {
         switch self {
-        case .checkIn:    "Both of you answer the same prompt. You see each other's once you've both replied."
-        case .insights:   "Track which love languages you're leaning on, and which need attention."
-        case .templates:  "Curated sets for date nights, long distance, daily affirmations, and more."
+        case .checkIn:    String(localized: "Both of you answer the same prompt. You see each other's once you've both replied.")
+        case .insights:   String(localized: "Track which love languages you're leaning on, and which need attention.")
+        case .templates:  String(localized: "Curated sets for date nights, long distance, daily affirmations, and more.")
         }
     }
 
-    var ctaTitle: String { "Explore Little Gestures+" }
+    var ctaTitle: String { String(localized: "Explore Little Gestures+") }
 }
 
 /// Restore button shared by every gate card. Restoring success flips
@@ -55,7 +55,7 @@ struct BondRestoreButton: View {
             Button("OK", role: .cancel) {}
         } message: {
             Text(purchases.lastError
-                 ?? "No active Little Gestures+ purchase found for this Apple ID.")
+                 ?? String(localized: "No active Little Gestures+ purchase found for this Apple ID."))
         }
     }
 }
@@ -67,7 +67,7 @@ struct BondUnlockCard: View {
     let icon: String
     let headline: String
     let subhead: String
-    var ctaTitle: String = "Explore Little Gestures+"
+    var ctaTitle: String = String(localized: "Explore Little Gestures+")
     @Binding var isPaywallPresented: Bool
     /// Adds outer padding when the card sits in a Form row whose insets have
     /// been zeroed (so it doesn't run edge-to-edge).

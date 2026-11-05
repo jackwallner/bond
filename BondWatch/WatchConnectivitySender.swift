@@ -40,13 +40,13 @@ final class WatchConnectivitySender: NSObject {
             recipient: recipient
         )
         guard let data = try? JSONEncoder().encode(payload) else {
-            lastError = "Failed to encode payload."
+            lastError = String(localized: "Failed to encode payload.")
             return .failed
         }
 
         let session = WCSession.default
         guard session.activationState == .activated else {
-            lastError = "Watch session not active."
+            lastError = String(localized: "Watch session not active.")
             return .failed
         }
 
@@ -74,7 +74,7 @@ final class WatchConnectivitySender: NSObject {
                 replyHandler: { response in
                     let ok = (response["ok"] as? Bool) ?? false
                     if !ok {
-                        let message = (response["error"] as? String) ?? "Couldn't save on your phone."
+                        let message = (response["error"] as? String) ?? String(localized: "Couldn't save on your phone.")
                         Task { @MainActor in
                             WatchConnectivitySender.shared.lastError = message
                         }

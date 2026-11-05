@@ -34,13 +34,13 @@ struct ReminderRow: View {
         guard case .recurring(let rrule, _) = reminder.trigger,
               let preset = RecurrencePreset(rrule: rrule)
         else {
-            return reminder.repeatsOnSchedule ? "Done today" : "Done"
+            return reminder.repeatsOnSchedule ? String(localized: "Done today") : String(localized: "Done")
         }
         switch preset {
-        case .daily:   return "Done today"
-        case .weekly:  return "Done this week"
-        case .monthly: return "Done this month"
-        case .yearly:  return "Done this year"
+        case .daily:   return String(localized: "Done today")
+        case .weekly:  return String(localized: "Done this week")
+        case .monthly: return String(localized: "Done this month")
+        case .yearly:  return String(localized: "Done this year")
         }
     }
 
@@ -115,7 +115,7 @@ struct ReminderRow: View {
     }
 
     private var cadenceLabel: String? {
-        if case .randomRecurring = reminder.trigger { return "Daily surprise" }
+        if case .randomRecurring = reminder.trigger { return String(localized: "Daily surprise") }
         guard reminder.triggerType == "recurring",
               let rrule = reminder.rrule,
               let preset = RecurrencePreset(rrule: rrule) else { return nil }
@@ -132,7 +132,7 @@ struct ReminderRow: View {
                 circleContent
             }
             .buttonStyle(.plain)
-            .accessibilityLabel(isActedOn ? "Mark as not done" : "Mark as done")
+            .accessibilityLabel(isActedOn ? String(localized: "Mark as not done") : String(localized: "Mark as done"))
         } else {
             circleContent
         }

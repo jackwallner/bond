@@ -67,13 +67,13 @@ struct DictateView: View {
         )
         switch outcome {
         case .confirmed:
-            statusMessage = "Saved. You'll be reminded in about an hour."
+            statusMessage = String(localized: "Saved. You'll be reminded in about an hour.")
             text = ""
         case .queued:
-            statusMessage = "Queued. Open Little Gestures on your phone to confirm."
+            statusMessage = String(localized: "Queued. Open Little Gestures on your phone to confirm.")
             text = ""
         case .failed:
-            statusMessage = sender.lastError ?? "Send failed."
+            statusMessage = sender.lastError ?? String(localized: "Send failed.")
         }
     }
 }

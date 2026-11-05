@@ -4,7 +4,7 @@ import SwiftUI
 /// Compact trial pitch shown as a medium sheet before the full plan picker.
 struct TrialOfferSheet: View {
     let isSolo: Bool
-    let offerLabel: String?
+    let trialPeriodPhrase: String?
     let priceLabel: String?
     let isPurchasing: Bool
     let errorMessage: String?
@@ -12,22 +12,11 @@ struct TrialOfferSheet: View {
     let onSeeAllPlans: () -> Void
     let onDismiss: () -> Void
 
-    private var trialPeriodPhrase: String? {
-        guard let offerLabel else { return nil }
-        let scanner = Scanner(string: offerLabel)
-        var value = 0
-        guard scanner.scanInt(&value) else { return nil }
-        _ = scanner.scanString("-")
-        guard let unit = scanner.scanCharacters(from: .letters) else { return nil }
-        let plural = value == 1 ? unit : "\(unit)s"
-        return "\(value) \(plural)"
-    }
-
     private var headline: String {
         if trialPeriodPhrase != nil {
-            return "Turn intentions into actions."
+            return String(localized: "Turn intentions into actions.")
         }
-        return "Unlock your full Little Gestures plan."
+        return String(localized: "Unlock your full Little Gestures plan.")
     }
 
     var subheadline: String {
@@ -44,9 +33,9 @@ struct TrialOfferSheet: View {
     var billingDisclosure: String? {
         guard let priceLabel else { return nil }
         if let period = trialPeriodPhrase {
-            return "No payment today. Free for \(period), then \(priceLabel). Cancel anytime in App Store settings."
+            return String(localized: "No payment today. Free for \(period), then \(priceLabel). Cancel anytime in App Store settings.")
         }
-        return "\(priceLabel). Payment charged to your Apple ID. Auto-renews unless cancelled."
+        return String(localized: "\(priceLabel). Payment charged to your Apple ID. Auto-renews unless cancelled.")
     }
 
     var body: some View {
@@ -158,8 +147,8 @@ struct TrialOfferSheet: View {
 
     private var trialCTATitle: String {
         if trialPeriodPhrase != nil {
-            return "Try Little Gestures+ Free"
+            return String(localized: "Try Little Gestures+ Free")
         }
-        return "Unlock Little Gestures+"
+        return String(localized: "Unlock Little Gestures+")
     }
 }

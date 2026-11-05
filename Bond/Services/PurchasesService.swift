@@ -140,7 +140,7 @@ final class PurchasesService {
             await refreshIntroEligibility()
             log.info("Loaded \(self.products.count) packages")
         } catch {
-            lastError = "Couldn't load subscription options. Check your connection and try again."
+            lastError = String(localized: "Couldn't load subscription options. Check your connection and try again.")
             log.error("Product fetch failed: \(error.localizedDescription)")
         }
     }
@@ -358,19 +358,19 @@ final class PurchasesService {
         if let code = error as? RevenueCat.ErrorCode {
             switch code {
             case .receiptAlreadyInUseError:
-                return "This purchase is tied to another Apple ID. Tap Restore to unlock with the original account."
+                return String(localized: "This purchase is tied to another Apple ID. Tap Restore to unlock with the original account.")
             case .productAlreadyPurchasedError:
-                return "You already own this. Tap Restore to unlock it on this device."
+                return String(localized: "You already own this. Tap Restore to unlock it on this device.")
             case .paymentPendingError:
-                return "Your payment is pending approval. We'll unlock Little Gestures+ as soon as it clears."
+                return String(localized: "Your payment is pending approval. We'll unlock Little Gestures+ as soon as it clears.")
             case .purchaseNotAllowedError:
-                return "In-app purchases are restricted on this device."
+                return String(localized: "In-app purchases are restricted on this device.")
             case .networkError, .offlineConnectionError:
-                return "Network issue completing the purchase. Check your connection and try again."
+                return String(localized: "Network issue completing the purchase. Check your connection and try again.")
             case .storeProblemError, .unknownBackendError, .unexpectedBackendResponseError:
-                return "The App Store had a problem. Wait a moment and try again, or tap Restore."
+                return String(localized: "The App Store had a problem. Wait a moment and try again, or tap Restore.")
             default:
-                return "Couldn't complete the purchase (\(code.rawValue)). \(error.localizedDescription)"
+                return String(localized: "Couldn't complete the purchase (\(code.rawValue)). \(error.localizedDescription)")
             }
         }
         return error.localizedDescription
@@ -413,10 +413,10 @@ final class PurchasesService {
         do {
             let info = try await Purchases.shared.restorePurchases()
             apply(info: info)
-            lastError = isPremium ? nil : "No active Little Gestures+ purchase found for this Apple ID."
+            lastError = isPremium ? nil : String(localized: "No active Little Gestures+ purchase found for this Apple ID.")
             log.info("Restored purchases - premium: \(self.isPremium)")
         } catch {
-            lastError = "Couldn't restore purchases. Try again."
+            lastError = String(localized: "Couldn't restore purchases. Try again.")
             log.error("Restore failed: \(error.localizedDescription)")
         }
         #endif

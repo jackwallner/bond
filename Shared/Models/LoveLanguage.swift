@@ -11,11 +11,47 @@ public enum LoveLanguage: String, CaseIterable, Codable, Identifiable, Sendable 
 
     public var title: String {
         switch self {
-        case .words: "Words of Affirmation"
-        case .acts:  "Acts of Service"
-        case .gifts: "Receiving Gifts"
-        case .time:  "Quality Time"
-        case .touch: "Physical Touch"
+        case .words: String(localized: "Words of Affirmation")
+        case .acts:  String(localized: "Acts of Service")
+        case .gifts: String(localized: "Receiving Gifts")
+        case .time:  String(localized: "Quality Time")
+        case .touch: String(localized: "Physical Touch")
+        }
+    }
+
+    /// Whole-sentence insight for the least expressed language. One key per
+    /// language so no translated title is lowercased or spliced into a sentence.
+    public var leastExpressedInsight: String {
+        switch self {
+        case .words: String(localized: "Words of Affirmation is your least expressed love language. Consider adding more words of affirmation reminders.")
+        case .acts:  String(localized: "Acts of Service is your least expressed love language. Consider adding more acts of service reminders.")
+        case .gifts: String(localized: "Receiving Gifts is your least expressed love language. Consider adding more receiving gifts reminders.")
+        case .time:  String(localized: "Quality Time is your least expressed love language. Consider adding more quality time reminders.")
+        case .touch: String(localized: "Physical Touch is your least expressed love language. Consider adding more physical touch reminders.")
+        }
+    }
+
+    /// Editor preview note when no other reminder uses this language. One whole
+    /// sentence per language so the translated title can be inflected.
+    public var firstReminderNote: String {
+        switch self {
+        case .words: String(localized: "Your first Words of Affirmation reminder.")
+        case .acts:  String(localized: "Your first Acts of Service reminder.")
+        case .gifts: String(localized: "Your first Receiving Gifts reminder.")
+        case .time:  String(localized: "Your first Quality Time reminder.")
+        case .touch: String(localized: "Your first Physical Touch reminder.")
+        }
+    }
+
+    /// Editor preview note for `count` other reminders in this language (at
+    /// least one). Each key is a plural on the count and a whole sentence.
+    public func otherRemindersNote(_ count: Int) -> String {
+        switch self {
+        case .words: String(localized: "\(count) other reminders speak Words of Affirmation.")
+        case .acts:  String(localized: "\(count) other reminders speak Acts of Service.")
+        case .gifts: String(localized: "\(count) other reminders speak Receiving Gifts.")
+        case .time:  String(localized: "\(count) other reminders speak Quality Time.")
+        case .touch: String(localized: "\(count) other reminders speak Physical Touch.")
         }
     }
 

@@ -19,19 +19,19 @@ enum FocusArea: String, CaseIterable, Identifiable, Codable {
 
     var title: String {
         switch self {
-        case .gestures: "Little gestures"
-        case .dates:    "Important dates"
-        case .loves:    "Things they love"
-        case .avoid:    "Things to avoid"
+        case .gestures: String(localized: "Little gestures")
+        case .dates:    String(localized: "Important dates")
+        case .loves:    String(localized: "Things they love")
+        case .avoid:    String(localized: "Things to avoid")
         }
     }
 
     var subtitle: String {
         switch self {
-        case .gestures: "Day-to-day ways to show up."
-        case .dates:    "Anniversaries, birthdays, plans."
-        case .loves:    "Favorites, hobbies, what they care about."
-        case .avoid:    "Topics, days, or things that hurt."
+        case .gestures: String(localized: "Day-to-day ways to show up.")
+        case .dates:    String(localized: "Anniversaries, birthdays, plans.")
+        case .loves:    String(localized: "Favorites, hobbies, what they care about.")
+        case .avoid:    String(localized: "Topics, days, or things that hurt.")
         }
     }
 
@@ -185,8 +185,15 @@ struct IntentSetupView: View {
         prefs.partnerName.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
-    private var displayName: String {
-        nameTrimmed.isEmpty ? "them" : nameTrimmed
+    /// The partner's name, or nil when none was entered. Each sentence that
+    /// uses it has a complete unnamed key with its own pronoun.
+    private var name: String? {
+        nameTrimmed.isEmpty ? nil : nameTrimmed
+    }
+
+    private var commitTitle: String {
+        name.map { String(localized: "I commit to showing up for \($0)") }
+            ?? String(localized: "I commit to showing up for them")
     }
 
     var body: some View {
@@ -202,7 +209,7 @@ struct IntentSetupView: View {
                             case 1: commitStep
                             case 2: loveLanguageStep
                             case 3: focusAreasStep
-                            default: OnboardingTrialView(displayName: displayName, offersTrial: introEligible)
+                            default: OnboardingTrialView(name: name, offersTrial: introEligible)
                             }
                         }
                         .transition(.opacity)
@@ -249,7 +256,7 @@ struct IntentSetupView: View {
         .alert("Restore Purchases", isPresented: $showRestoreResult) {
             Button("OK", role: .cancel) {}
         } message: {
-            Text(store.lastError ?? "No active Little Gestures+ purchase found for this Apple ID.")
+            Text(store.lastError ?? String(localized: "No active Little Gestures+ purchase found for this Apple ID."))
         }
         // "Have an invite code?" - a fresh install whose partner already uses
         // Bond shouldn't have to finish solo setup just to reach Settings →
@@ -300,7 +307,7 @@ struct IntentSetupView: View {
             BondPrimaryButton(
                 title: continueTitle,
                 isLoading: isFinishing || isPurchasing,
-                reserving: "I commit to showing up for \(displayName)"
+                reserving: commitTitle
             ) {
                 advance()
             }
@@ -372,9 +379,9 @@ struct IntentSetupView: View {
 
     private var continueTitle: String {
         switch step {
-        case 0, 2: "Continue"
-        case 1: "I commit to showing up for \(displayName)"
-        case 3: "Start using Little Gestures"
+        case 0, 2: String(localized: "Continue")
+        case 1: commitTitle
+        case 3: String(localized: "Start using Little Gestures")
         default: trialCTATitle
         }
     }
@@ -441,20 +448,20 @@ struct IntentSetupView: View {
     /// otherwise a plain upgrade label (never promise a trial StoreKit won't
     /// honor for a previously-subscribed Apple ID).
     private var trialCTATitle: String {
-        if isPendingPurchase { return "Purchase pending" }
+        if isPendingPurchase { return String(localized: "Purchase pending") }
         if introEligible {
-            return "Try Little Gestures+ Free"
+            return String(localized: "Try Little Gestures+ Free")
         }
-        return "Get Little Gestures+"
+        return String(localized: "Get Little Gestures+")
     }
 
     private var trialDisclosure: String? {
         guard let price = trialPackage?.bondPriceLabel else { return nil }
         if introEligible, let days = trialPackage?.bondTrialDays {
-            let phrase = days == 1 ? "1 day" : "\(days) days"
-            return "No payment today. Free for \(phrase), then \(price). Cancel anytime in App Store settings."
+            let phrase = Package.durationPhrase(days, .day)
+            return String(localized: "No payment today. Free for \(phrase), then \(price). Cancel anytime in App Store settings.")
         }
-        return "\(price). Auto-renews unless cancelled."
+        return String(localized: "\(price). Auto-renews unless cancelled.")
     }
 
     /// One-tap conversion: buy the yearly package in place (trial when eligible,
@@ -473,7 +480,7 @@ struct IntentSetupView: View {
                 let result = try await store.purchase(package)
                 if case .pending = result {
                     isPendingPurchase = true
-                    purchaseError = "Finalizing your purchase…"
+                    purchaseError = String(localized: "Finalizing your purchase…")
                 }
                 if await OnboardingPurchaseRecovery.resolve(
                     result,
@@ -482,10 +489,10 @@ struct IntentSetupView: View {
                 ) {
                     await finish()
                 } else if isPendingPurchase {
-                    purchaseError = "Your payment went through but we're still syncing it. Tap Restore Purchases to finish unlocking."
+                    purchaseError = String(localized: "Your payment went through but we're still syncing it. Tap Restore Purchases to finish unlocking.")
                 }
             } catch {
-                purchaseError = store.lastError ?? "Couldn't complete the purchase. Please try again."
+                purchaseError = store.lastError ?? String(localized: "Couldn't complete the purchase. Please try again.")
             }
         }
     }
@@ -493,8 +500,8 @@ struct IntentSetupView: View {
     private var nameStep: some View {
         VStack(alignment: .leading, spacing: BondSpacing.xl) {
             BondScreenHeader(
-                title: "Who do you want to show up for?",
-                subtitle: "Your partner. Little Gestures is built to help you keep showing up for them."
+                title: String(localized: "Who do you want to show up for?"),
+                subtitle: String(localized: "Your partner. Little Gestures is built to help you keep showing up for them.")
             )
             .padding(.horizontal, BondSpacing.base)
 
@@ -525,8 +532,9 @@ struct IntentSetupView: View {
     private var commitStep: some View {
         VStack(alignment: .leading, spacing: BondSpacing.xl) {
             BondScreenHeader(
-                title: "Make it real.",
-                subtitle: "Showing up for \(displayName) isn't a feature, it's a choice. Make it now, and Little Gestures will help you keep it."
+                title: String(localized: "Make it real."),
+                subtitle: name.map { String(localized: "Showing up for \($0) isn't a feature, it's a choice. Make it now, and Little Gestures will help you keep it.") }
+                    ?? String(localized: "Showing up for them isn't a feature, it's a choice. Make it now, and Little Gestures will help you keep it.")
             )
             .padding(.horizontal, BondSpacing.base)
 
@@ -545,8 +553,9 @@ struct IntentSetupView: View {
     private var loveLanguageStep: some View {
         VStack(alignment: .leading, spacing: BondSpacing.xl) {
             BondScreenHeader(
-                title: "What lands best with \(displayName)?",
-                subtitle: "Pick any that fit. Your first choice is their primary, we'll lean toward it."
+                title: name.map { String(localized: "What lands best with \($0)?") }
+                    ?? String(localized: "What lands best with them?"),
+                subtitle: String(localized: "Pick any that fit. Your first choice is their primary, we'll lean toward it.")
             )
             .padding(.horizontal, BondSpacing.base)
 
@@ -597,8 +606,9 @@ struct IntentSetupView: View {
     private var focusAreasStep: some View {
         VStack(alignment: .leading, spacing: BondSpacing.xl) {
             BondScreenHeader(
-                title: "What do you want to remember about \(displayName)?",
-                subtitle: "Pick what matters. You can change any of this later."
+                title: name.map { String(localized: "What do you want to remember about \($0)?") }
+                    ?? String(localized: "What do you want to remember about them?"),
+                subtitle: String(localized: "Pick what matters. You can change any of this later.")
             )
             .padding(.horizontal, BondSpacing.base)
 
@@ -641,7 +651,7 @@ struct IntentSetupView: View {
             // Setup that ends without a couple must say so, or the free path
             // looks like a dead button.
             if pairing.coupleId == nil, pairing.lastError == nil {
-                pairing.lastError = "We couldn't finish setup. Please try again in a moment."
+                pairing.lastError = String(localized: "We couldn't finish setup. Please try again in a moment.")
             }
         case .invitee:
             // Already paired - the couple exists. Stamping committedAt marks

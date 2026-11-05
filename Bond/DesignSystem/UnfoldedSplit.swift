@@ -322,7 +322,7 @@ extension View {
 /// display reads as one product rather than a phone screen and a blank half.
 struct UnfoldedBrandPanel: View {
     var body: some View {
-        BondHero(subtitle: "Small, timely reminders of what your partner actually appreciates.")
+        BondHero(subtitle: String(localized: "Small, timely reminders of what your partner actually appreciates."))
             .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }

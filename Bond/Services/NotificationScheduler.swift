@@ -84,24 +84,24 @@ final class NotificationScheduler {
         let dayStart = calendar.startOfDay(for: occurrence)
         guard let fireOn = calendar.date(byAdding: .hour, value: 9, to: dayStart) else { return }
 
-        let offsets: [(days: Int, label: String)] = [
-            (-7, "in 1 week"),
-            (-1, "tomorrow"),
-            (0,  "today")
-        ]
-
         let title = milestone.label?.isEmpty == false
             ? milestone.label!
-            : milestone.kind.capitalized
+            : MilestoneDTO.kindTitle(milestone.kind)
 
-        for (days, when) in offsets {
+        let offsets: [(days: Int, body: String)] = [
+            (-7, String(localized: "\(title) is in 1 week.")),
+            (-1, String(localized: "\(title) is tomorrow.")),
+            (0,  String(localized: "\(title) is today."))
+        ]
+
+        for (days, body) in offsets {
             guard let fireDate = calendar.date(byAdding: .day, value: days, to: fireOn),
                   fireDate > .now
             else { continue }
 
             let content = UNMutableNotificationContent()
             content.title = title
-            content.body = "\(title) is \(when)."
+            content.body = body
             content.sound = .default
             content.threadIdentifier = "milestone"
             content.userInfo = [

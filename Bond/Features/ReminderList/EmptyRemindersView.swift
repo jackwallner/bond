@@ -1,29 +1,34 @@
 import SwiftUI
 
+/// `title` is the stable English text a chip writes into a new reminder (and
+/// so into Supabase) and is also its catalog key. `id` is fixed per chip so
+/// SwiftUI keeps each row across view updates. Screens show `displayTitle`.
 struct StarterChip: Identifiable {
-    let id = UUID()
+    let id: String
     let title: String
     let loveLanguage: LoveLanguage
     var area: FocusArea = .gestures
+
+    var displayTitle: String { TemplateReminder.display(title) }
 }
 
-private let starterChipPool: [StarterChip] = [
+let starterChipPool: [StarterChip] = [
     // Little gestures
-    StarterChip(title: "Tell them they're beautiful", loveLanguage: .words, area: .gestures),
-    StarterChip(title: "Ten-minute walk together", loveLanguage: .time, area: .gestures),
-    StarterChip(title: "Bring home flowers", loveLanguage: .gifts, area: .gestures),
-    StarterChip(title: "A long hug at the door", loveLanguage: .touch, area: .gestures),
-    StarterChip(title: "Handle a chore they dread", loveLanguage: .acts, area: .gestures),
+    StarterChip(id: "gestures_beautiful", title: "Tell them they're beautiful", loveLanguage: .words, area: .gestures),
+    StarterChip(id: "gestures_walk", title: "Ten-minute walk together", loveLanguage: .time, area: .gestures),
+    StarterChip(id: "gestures_flowers", title: "Bring home flowers", loveLanguage: .gifts, area: .gestures),
+    StarterChip(id: "gestures_hug", title: "A long hug at the door", loveLanguage: .touch, area: .gestures),
+    StarterChip(id: "gestures_chore", title: "Handle a chore they dread", loveLanguage: .acts, area: .gestures),
     // Important dates
-    StarterChip(title: "Note an upcoming date", loveLanguage: .time, area: .dates),
-    StarterChip(title: "Plan something for the weekend", loveLanguage: .time, area: .dates),
+    StarterChip(id: "dates_upcoming", title: "Note an upcoming date", loveLanguage: .time, area: .dates),
+    StarterChip(id: "dates_weekend", title: "Plan something for the weekend", loveLanguage: .time, area: .dates),
     // Things they love
-    StarterChip(title: "Pick up their favorite snack", loveLanguage: .gifts, area: .loves),
-    StarterChip(title: "Play a song they love", loveLanguage: .time, area: .loves),
-    StarterChip(title: "Ask about something they care about", loveLanguage: .words, area: .loves),
+    StarterChip(id: "loves_snack", title: "Pick up their favorite snack", loveLanguage: .gifts, area: .loves),
+    StarterChip(id: "loves_song", title: "Play a song they love", loveLanguage: .time, area: .loves),
+    StarterChip(id: "loves_ask", title: "Ask about something they care about", loveLanguage: .words, area: .loves),
     // Things to avoid
-    StarterChip(title: "Note a topic to steer around", loveLanguage: .words, area: .avoid),
-    StarterChip(title: "Phone away during dinner", loveLanguage: .time, area: .avoid)
+    StarterChip(id: "avoid_topic", title: "Note a topic to steer around", loveLanguage: .words, area: .avoid),
+    StarterChip(id: "avoid_phone", title: "Phone away during dinner", loveLanguage: .time, area: .avoid),
 ]
 
 /// Chips tailored to the user's onboarding choices: only their selected
@@ -75,7 +80,7 @@ struct EmptyRemindersView: View {
                                     .font(.bond(.body))
                                     .foregroundStyle(chip.loveLanguage.tint)
                                     .frame(width: 24)
-                                Text(chip.title)
+                                Text(chip.displayTitle)
                                     .font(.bond(.callout))
                                     .foregroundStyle(.primary)
                                     .multilineTextAlignment(.leading)

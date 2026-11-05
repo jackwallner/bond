@@ -14,11 +14,11 @@ struct InsightsGateContent: View {
         Form {
             Section {
                 HStack {
-                    metric("12", "day streak", .pink)
+                    metric(12, PluralLabel.dayStreak(12), .pink)
                     Divider().frame(height: 40)
-                    metric("31", "best streak", .orange)
+                    metric(31, PluralLabel.bestStreak(31), .orange)
                     Divider().frame(height: 40)
-                    metric("64", "balance", .green)
+                    metric(64, String(localized: "balance"), .green)
                 }
             }
             Section("Sample · Love Language Distribution") {
@@ -36,9 +36,9 @@ struct InsightsGateContent: View {
         }
     }
 
-    private func metric(_ value: String, _ label: String, _ tint: Color) -> some View {
+    private func metric(_ value: Int, _ label: String, _ tint: Color) -> some View {
         VStack(spacing: BondSpacing.xs) {
-            Text(value).font(.bond(.title, weight: .bold)).foregroundStyle(tint)
+            Text(value.formatted()).font(.bond(.title, weight: .bold)).foregroundStyle(tint)
             Text(label).font(.bond(.caption)).foregroundStyle(.bondTextSecondary)
         }
         .frame(maxWidth: .infinity)
@@ -67,8 +67,8 @@ struct CheckInGateContent: View {
                 .frame(maxWidth: .infinity)
                 .background(Color.bondCardFill, in: RoundedRectangle(cornerRadius: BondRadius.card))
 
-                BondSealedCard(title: "Sample · Sarah answered",
-                               hint: "Sealed until you both reply")
+                BondSealedCard(title: String(localized: "Sample · Sarah answered"),
+                               hint: String(localized: "Sealed until you both reply"))
             }
             .padding()
         }
@@ -76,11 +76,13 @@ struct CheckInGateContent: View {
 }
 
 struct TemplatesGateContent: View {
-    private let groups: [(String, String, String)] = [
-        ("quote.bubble.fill", "Sample · Daily Affirmations", "7 reminders"),
-        ("sparkles", "Sample · Date Night", "5 reminders"),
-        ("airplane", "Sample · Long Distance", "6 reminders")
-    ]
+    private var groups: [(String, String, String)] {
+        [
+            ("quote.bubble.fill", String(localized: "Sample · Daily Affirmations"), String(localized: "\(7) reminders")),
+            ("sparkles", String(localized: "Sample · Date Night"), String(localized: "\(5) reminders")),
+            ("airplane", String(localized: "Sample · Long Distance"), String(localized: "\(6) reminders"))
+        ]
+    }
 
     var body: some View {
         List {

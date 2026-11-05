@@ -10,13 +10,13 @@ import SwiftUI
 /// pixel-identical to the Continue / "Start using Bond" button on the prior
 /// steps - the user's thumb never moves between the last two taps.
 struct OnboardingTrialView: View {
-    let displayName: String
+    let name: String?
     var offersTrial: Bool = false
 
     var subtitle: String {
         offersTrial
-            ? "Start your free trial to unlock every idea and turn the little things into a habit."
-            : "Unlock every idea and turn the little things into a habit."
+            ? String(localized: "Start your free trial to unlock every idea and turn the little things into a habit.")
+            : String(localized: "Unlock every idea and turn the little things into a habit.")
     }
 
     private var benefits: [BondPlusBenefit] {
@@ -26,7 +26,8 @@ struct OnboardingTrialView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: BondSpacing.xl) {
             BondScreenHeader(
-                title: "Your Little Gestures plan for \(displayName).",
+                title: name.map { String(localized: "Your Little Gestures plan for \($0).") }
+                    ?? String(localized: "Your Little Gestures plan for them."),
                 subtitle: subtitle
             )
             .padding(.horizontal, BondSpacing.base)

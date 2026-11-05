@@ -38,9 +38,9 @@ extension Package {
 
     var bondDisplayName: String {
         switch bondPackageKind {
-        case .lifetime: return "Lifetime"
-        case .yearly:   return "Yearly"
-        case .monthly:  return "Monthly"
+        case .lifetime: return String(localized: "Lifetime")
+        case .yearly:   return String(localized: "Yearly")
+        case .monthly:  return String(localized: "Monthly")
         case .other:    return storeProduct.localizedTitle
         }
     }
@@ -49,18 +49,46 @@ extension Package {
         guard let period = storeProduct.subscriptionPeriod else {
             return storeProduct.localizedPriceString
         }
-        let unit: String
-        switch period.unit {
-        case .day:   unit = period.value == 1 ? "day" : "days"
-        case .week:  unit = period.value == 1 ? "week" : "weeks"
-        case .month: unit = period.value == 1 ? "month" : "months"
-        case .year:  unit = period.value == 1 ? "year" : "years"
-        @unknown default: unit = ""
-        }
+        let price = storeProduct.localizedPriceString
         if period.value == 1 {
-            return "\(storeProduct.localizedPriceString) / \(unit)"
+            switch period.unit {
+            case .day:   return String(localized: "\(price) / day")
+            case .week:  return String(localized: "\(price) / week")
+            case .month: return String(localized: "\(price) / month")
+            case .year:  return String(localized: "\(price) / year")
+            @unknown default: return price
+            }
         }
-        return "\(storeProduct.localizedPriceString) / \(period.value) \(unit)"
+        let length = Self.durationPhrase(period.value, period.unit)
+        return String(localized: "\(price) / \(length)")
+    }
+
+    /// "3 months", "2 weeks": a duration through Foundation, never spliced
+    /// from a number and a hand-pluralised unit.
+    static func durationPhrase(_ value: Int, _ unit: SubscriptionPeriod.Unit) -> String {
+        var components = DateComponents()
+        let formatter = DateComponentsFormatter()
+        formatter.unitsStyle = .full
+        switch unit {
+        case .day:   components.day = value;        formatter.allowedUnits = [.day]
+        case .week:  components.weekOfMonth = value; formatter.allowedUnits = [.weekOfMonth]
+        case .month: components.month = value;      formatter.allowedUnits = [.month]
+        case .year:  components.year = value;       formatter.allowedUnits = [.year]
+        @unknown default: return ""
+        }
+        return formatter.string(from: components) ?? ""
+    }
+
+    /// Free-trial length as a phrase ("7 days", "1 month"), nil without a trial.
+    var bondTrialPeriodPhrase: String? {
+        guard let intro = storeProduct.introductoryDiscount, intro.paymentMode == .freeTrial else {
+            return nil
+        }
+        let period = intro.subscriptionPeriod
+        if period.unit == .week {
+            return Self.durationPhrase(period.value * 7, .day)
+        }
+        return Self.durationPhrase(period.value, period.unit)
     }
 
     var bondIntroOfferLabel: String? {
@@ -68,18 +96,29 @@ extension Package {
             return nil
         }
         let period = intro.subscriptionPeriod
-        let unit: String
         switch period.unit {
-        case .day:   unit = period.value == 1 ? "day" : "days"
-        case .week:  unit = period.value == 1 ? "week" : "weeks"
-        case .month: unit = period.value == 1 ? "month" : "months"
-        case .year:  unit = period.value == 1 ? "year" : "years"
-        @unknown default: unit = ""
+        case .day:   return String(localized: "\(period.value)-day free trial")
+        case .week:  return String(localized: "\(period.value * 7)-day free trial")
+        case .month: return String(localized: "\(period.value)-month free trial")
+        case .year:  return String(localized: "\(period.value)-year free trial")
+        @unknown default: return nil
         }
-        if period.unit == .week {
-            return "\(period.value * 7)-day free trial"
+    }
+
+    /// Title-cased variant of `bondIntroOfferLabel` for the plan-card badge
+    /// ("7-Day Free Trial"). Its own keys, so no translated text is capitalized.
+    var bondIntroOfferBadge: String? {
+        guard let intro = storeProduct.introductoryDiscount, intro.paymentMode == .freeTrial else {
+            return nil
         }
-        return "\(period.value)-\(unit.dropLast(period.value == 1 ? 0 : 1)) free trial"
+        let period = intro.subscriptionPeriod
+        switch period.unit {
+        case .day:   return String(localized: "\(period.value)-Day Free Trial")
+        case .week:  return String(localized: "\(period.value * 7)-Day Free Trial")
+        case .month: return String(localized: "\(period.value)-Month Free Trial")
+        case .year:  return String(localized: "\(period.value)-Year Free Trial")
+        @unknown default: return nil
+        }
     }
 
     /// Trial length in days, if the package has a free-trial intro offer.
@@ -111,7 +150,7 @@ extension Package {
         }
         guard weeks > 0 else { return nil }
         let perWeek = storeProduct.price / weeks
-        return formatted(price: perWeek) + "/wk"
+        return String(localized: "\(formatted(price: perWeek))/wk")
     }
 
     /// Approximate monthly price for this package (used for savings math).

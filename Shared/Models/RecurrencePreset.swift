@@ -12,10 +12,10 @@ public enum RecurrencePreset: String, CaseIterable, Codable, Sendable, Identifia
 
     public var title: String {
         switch self {
-        case .daily:   "Every day"
-        case .weekly:  "Every week"
-        case .monthly: "Every month"
-        case .yearly:  "Every year"
+        case .daily:   String(localized: "Every day")
+        case .weekly:  String(localized: "Every week")
+        case .monthly: String(localized: "Every month")
+        case .yearly:  String(localized: "Every year")
         }
     }
 

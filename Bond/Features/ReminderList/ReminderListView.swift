@@ -276,7 +276,8 @@ struct ReminderListView: View {
                 Section {
                     ForEach(partnerRequests) { requestRow($0) }
                 } header: {
-                    BondSectionHeader(title: "From \(partnerName)")
+                    BondSectionHeader(title: partnerName.map { String(localized: "From \($0)") }
+                        ?? String(localized: "From Your partner"))
                 }
             }
 
@@ -301,7 +302,7 @@ struct ReminderListView: View {
                         .onDelete { offsets in delete(pastDueReminders, at: offsets) }
                         .bondWarmRow()
                 } header: {
-                    BondSectionHeader(title: "Past due", tint: .orange)
+                    BondSectionHeader(title: String(localized: "Past due"), tint: .orange)
                 }
             }
 
@@ -311,7 +312,7 @@ struct ReminderListView: View {
                         .onDelete { offsets in delete(upNextReminders, at: offsets) }
                         .bondWarmRow()
                 } header: {
-                    BondSectionHeader(title: "Up next")
+                    BondSectionHeader(title: String(localized: "Up next"))
                 }
             }
 
@@ -366,11 +367,11 @@ struct ReminderListView: View {
         .bottomHardEdge()
     }
 
-    private var partnerName: String {
-        if let name = pairing.partnerProfile?.displayName, !name.isEmpty {
-            return name
-        }
-        return "Your partner"
+    /// The partner's name, or nil when there is none to show. Sentences that
+    /// use it have a complete unnamed key, never a spliced fallback word.
+    private var partnerName: String? {
+        guard let name = pairing.partnerProfile?.displayName, !name.isEmpty else { return nil }
+        return name
     }
 
     @ViewBuilder
@@ -641,13 +642,13 @@ private struct PartnerRequestCard: View {
     @Environment(\.dynamicTypeSize) private var typeSize
     let reminder: ReminderDTO
     let currentUserId: UUID?
-    let partnerName: String
+    let partnerName: String?
     let onEdit: () -> Void
     let onDone: () -> Void
 
     private var nextFire: Date? { reminder.trigger?.upcomingFireDate() }
     private var primaryActionTitle: String {
-        nextFire == nil ? "Pick a time" : "Reschedule"
+        nextFire == nil ? String(localized: "Pick a time") : String(localized: "Reschedule")
     }
 
     var body: some View {
@@ -655,7 +656,8 @@ private struct PartnerRequestCard: View {
             HStack(alignment: .top, spacing: BondSpacing.m) {
                 CardIconChip(systemName: "sparkles")
                 VStack(alignment: .leading, spacing: BondSpacing.xs) {
-                    Text("\(partnerName) added this")
+                    Text(partnerName.map { String(localized: "\($0) added this") }
+                        ?? String(localized: "Your partner added this"))
                         .font(.bond(.caption, weight: .semibold))
                         .foregroundStyle(Color.bondAccent)
                     Text(reminder.title)
@@ -694,7 +696,7 @@ private struct PartnerRequestCard: View {
 private struct CheckInPromptCard: View {
     enum State { case pending, awaitingPartner, readyToReveal }
     let state: State
-    let partnerName: String
+    let partnerName: String?
 
     private var icon: String {
         switch state {
@@ -705,16 +707,20 @@ private struct CheckInPromptCard: View {
     }
     private var headline: String {
         switch state {
-        case .pending:         "Today's check-in"
-        case .awaitingPartner: "Waiting on \(partnerName)"
-        case .readyToReveal:   "\(partnerName) answered"
+        case .pending:         String(localized: "Today's check-in")
+        case .awaitingPartner:
+            partnerName.map { String(localized: "Waiting on \($0)") } ?? String(localized: "Waiting on Your partner")
+        case .readyToReveal:
+            partnerName.map { String(localized: "\($0) answered") } ?? String(localized: "Your partner answered")
         }
     }
     private var subhead: String {
         switch state {
-        case .pending:         "Answer to see \(partnerName)'s reply."
-        case .awaitingPartner: "We'll let you know when their answer lands."
-        case .readyToReveal:   "Tap to reveal both answers."
+        case .pending:
+            partnerName.map { String(localized: "Answer to see \($0)'s reply.") }
+                ?? String(localized: "Answer to see Your partner's reply.")
+        case .awaitingPartner: String(localized: "We'll let you know when their answer lands.")
+        case .readyToReveal:   String(localized: "Tap to reveal both answers.")
         }
     }
 
@@ -799,15 +805,15 @@ private struct PairingNudgeRow: View {
 }
 
 private struct MyListEmptyView: View {
-    let partnerName: String
+    let partnerName: String?
     let isPaired: Bool
     let onAdd: () -> Void
     let onBrowseTemplates: () -> Void
 
     private var subtitle: String {
-        isPaired
-            ? "Add something for you or \(partnerName), or pick a template below."
-            : "Add a reminder, or pick a template below."
+        guard isPaired else { return String(localized: "Add a reminder, or pick a template below.") }
+        return partnerName.map { String(localized: "Add something for you or \($0), or pick a template below.") }
+            ?? String(localized: "Add something for you or Your partner, or pick a template below.")
     }
 
     var body: some View {
@@ -878,7 +884,7 @@ private struct TemplatesHomeRow: View {
         }
         .buttonStyle(.plain)
         .accessibilityElement(children: .combine)
-        .accessibilityLabel(isPremium ? "Browse reminder templates" : "Preview reminder templates")
+        .accessibilityLabel(isPremium ? String(localized: "Browse reminder templates") : String(localized: "Preview reminder templates"))
     }
 }
 
