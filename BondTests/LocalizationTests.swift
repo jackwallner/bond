@@ -9,7 +9,7 @@ import Testing
 /// Add each language to `languages` when its translations land.
 @Suite("Localization")
 struct LocalizationTests {
-    static let languages = ["en"]
+    static let languages = ["en", "fr", "pt-BR", "es", "ar", "de", "vi", "ru"]
 
     private func bundle(_ language: String) -> Bundle? {
         let hosts = [Bundle.main] + Bundle.allBundles

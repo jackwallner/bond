@@ -4,10 +4,52 @@
     "NSLocationWhenInUseUsageDescription": {
       "extractionState": "manual",
       "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "يستخدم Little Gestures موقعك لتشغيل التذكيرات عند وصولك إلى أماكن محددة أو مغادرتك لها (مثلًا لتذكيرك بمعانقة شريكك عند عودتك إلى المنزل)."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Little Gestures verwendet deinen Standort, um Erinnerungen auszulösen, wenn du bestimmte Orte erreichst oder verlässt (z. B. um dich daran zu erinnern, deinen Partner oder deine Partnerin zu umarmen, wenn du nach Hause kommst)."
+          }
+        },
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Little Gestures uses your location to trigger reminders when you arrive at or leave specific places (e.g. remind you to hug your partner when you get home)."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Little Gestures usa tu ubicación para activar recordatorios cuando llegas a lugares concretos o te vas de ellos (por ejemplo, para recordarte que abraces a tu pareja al llegar a casa)."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Little Gestures utilise ta position pour déclencher des rappels quand tu arrives dans certains lieux ou que tu les quittes (par exemple, te rappeler de faire un câlin à ton ou ta partenaire en rentrant à la maison)."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O Little Gestures usa sua localização para ativar lembretes quando você chega a lugares específicos ou sai deles (por exemplo, lembrar você de abraçar seu parceiro ou sua parceira ao chegar em casa)."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Little Gestures использует твою геопозицию, чтобы запускать напоминания, когда ты приходишь в определённые места или уходишь из них (например, напомнить обнять партнёра или партнёршу, когда ты возвращаешься домой)."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Little Gestures dùng vị trí của bạn để kích hoạt lời nhắc khi bạn đến hoặc rời khỏi những địa điểm cụ thể (ví dụ: nhắc bạn ôm người ấy khi về đến nhà)."
           }
         }
       }

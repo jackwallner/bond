@@ -37,7 +37,7 @@ PLISTS = {
     'BondWatch/Info.plist': 'BondWatch/InfoPlist.xcstrings',
     'BondWidgets/Info.plist': 'BondWidgets/InfoPlist.xcstrings',
 }
-LANGS = []
+LANGS = ['fr', 'pt-BR', 'es', 'ar', 'de', 'vi', 'ru']
 # CLDR plural categories each shipping language must provide in every plural
 # variation. Arabic needs all six: zero and two must never collapse to other.
 PLURAL_CATEGORIES = {

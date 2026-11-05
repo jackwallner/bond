@@ -4,10 +4,52 @@
     "NSMicrophoneUsageDescription": {
       "extractionState": "manual",
       "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "يستخدم Little Gestures الميكروفون لإملاء التذكيرات."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Little Gestures verwendet das Mikrofon, um Erinnerungen zu diktieren."
+          }
+        },
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Little Gestures uses the microphone for dictating reminders."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Little Gestures usa el micrófono para dictar recordatorios."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Little Gestures utilise le micro pour dicter des rappels."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O Little Gestures usa o microfone para ditar lembretes."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Little Gestures использует микрофон для диктовки напоминаний."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Little Gestures dùng micrô để đọc chính tả lời nhắc."
           }
         }
       }
@@ -15,10 +57,52 @@
     "NSSpeechRecognitionUsageDescription": {
       "extractionState": "manual",
       "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "يستخدم Little Gestures التعرف على الكلام لتتمكن من إملاء التذكيرات من ساعتك."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Little Gestures verwendet die Spracherkennung, damit du Erinnerungen auf deiner Uhr diktieren kannst."
+          }
+        },
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Little Gestures uses speech recognition to let you dictate reminders from your watch."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Little Gestures usa el reconocimiento de voz para que puedas dictar recordatorios desde tu reloj."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Little Gestures utilise la reconnaissance vocale pour te permettre de dicter des rappels depuis ta montre."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O Little Gestures usa o reconhecimento de voz para você ditar lembretes pelo seu relógio."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Little Gestures использует распознавание речи, чтобы можно было диктовать напоминания с часов."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Little Gestures dùng tính năng nhận dạng giọng nói để bạn đọc chính tả lời nhắc từ đồng hồ."
           }
         }
       }
