@@ -36,7 +36,7 @@ struct UpcomingReminderProvider: TimelineProvider {
             date: .now,
             snapshot: WidgetSnapshot(
                 nextReminder: .init(
-                    title: "Tell her she's beautiful",
+                    title: String(localized: "Tell her she's beautiful"),
                     fireAt: .now.addingTimeInterval(60 * 60),
                     loveLanguage: .words
                 )
@@ -113,7 +113,7 @@ struct AnniversaryProvider: TimelineProvider {
             date: .now,
             snapshot: WidgetSnapshot(
                 nextMilestone: .init(
-                    label: "Anniversary",
+                    label: String(localized: "Anniversary"),
                     kind: "anniversary",
                     occursOn: .now.addingTimeInterval(60 * 60 * 24 * 60)
                 )
@@ -148,7 +148,7 @@ struct AnniversaryCountdownView: View {
                 Spacer(minLength: 0)
                 Text("\(days)")
                     .font(.system(size: 36, weight: .bold))
-                Text(days == 1 ? "day to go" : "days to go")
+                Text(PluralLabel.daysToGo(days))
                     .font(.caption2)
                     .foregroundStyle(.secondary)
             }

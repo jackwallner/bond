@@ -124,9 +124,9 @@ struct PaywallFunnelTests {
 
 @MainActor
 struct PurchaseUXTests {
-    private func trialSheet(offerLabel: String?, isSolo: Bool) -> TrialOfferSheet {
+    private func trialSheet(trialPeriodPhrase: String?, isSolo: Bool) -> TrialOfferSheet {
         TrialOfferSheet(
-            isSolo: isSolo, offerLabel: offerLabel, priceLabel: "$39.99 / year",
+            isSolo: isSolo, trialPeriodPhrase: trialPeriodPhrase, priceLabel: "$39.99 / year",
             isPurchasing: false, errorMessage: nil,
             onStartTrial: {}, onSeeAllPlans: {}, onDismiss: {}
         )
@@ -140,11 +140,11 @@ struct PurchaseUXTests {
 
     @Test func compactOfferDoesNotPromiseFreeAccessWithoutEligibility() {
         for isSolo in [true, false] {
-            let sheet = trialSheet(offerLabel: nil, isSolo: isSolo)
+            let sheet = trialSheet(trialPeriodPhrase: nil, isSolo: isSolo)
             #expect(!sheet.subheadline.contains("No payment today"))
             #expect(sheet.billingDisclosure?.contains("trial") == false)
             #expect(sheet.billingDisclosure?.contains("Payment charged") == true)
-            let eligible = trialSheet(offerLabel: "7-day free trial", isSolo: isSolo)
+            let eligible = trialSheet(trialPeriodPhrase: "7 days", isSolo: isSolo)
             #expect(eligible.subheadline.contains("No payment today"))
             #expect(eligible.billingDisclosure?.contains("Free for 7 days") == true)
         }

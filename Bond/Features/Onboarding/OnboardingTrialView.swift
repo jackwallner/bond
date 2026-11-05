@@ -15,8 +15,8 @@ struct OnboardingTrialView: View {
 
     var subtitle: String {
         offersTrial
-            ? "Start your free trial to unlock every idea and turn the little things into a habit."
-            : "Unlock every idea and turn the little things into a habit."
+            ? String(localized: "Start your free trial to unlock every idea and turn the little things into a habit.")
+            : String(localized: "Unlock every idea and turn the little things into a habit.")
     }
 
     private var benefits: [BondPlusBenefit] {
@@ -26,7 +26,7 @@ struct OnboardingTrialView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: BondSpacing.xl) {
             BondScreenHeader(
-                title: "Your Little Gestures plan for \(displayName).",
+                title: String(localized: "Your Little Gestures plan for \(displayName)."),
                 subtitle: subtitle
             )
             .padding(.horizontal, BondSpacing.base)

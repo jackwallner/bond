@@ -31,7 +31,7 @@ struct PaywallFlowSheet: View {
             } else {
                 TrialOfferSheet(
                     isSolo: isSolo,
-                    offerLabel: trialPackage.flatMap { purchases.isEligibleForIntroOffer($0) ? $0.bondIntroOfferLabel : nil },
+                    trialPeriodPhrase: trialPackage.flatMap { purchases.isEligibleForIntroOffer($0) ? $0.bondTrialPeriodPhrase : nil },
                     priceLabel: trialPackage?.bondPriceLabel,
                     isPurchasing: isPurchasing,
                     errorMessage: errorMessage,
@@ -74,7 +74,7 @@ struct PaywallFlowSheet: View {
                     await purchases.restore()
                     if purchases.isPremium { onClose() }
                     else {
-                        errorMessage = "Payment went through but we're still syncing. Tap Restore on the next screen."
+                        errorMessage = String(localized: "Payment went through but we're still syncing. Tap Restore on the next screen.")
                         showFullPaywall = true
                     }
                 case .cancelled:

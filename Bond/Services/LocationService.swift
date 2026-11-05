@@ -26,7 +26,7 @@ final class LocationService: NSObject, CLLocationManagerDelegate {
 
     struct LocationDeniedError: LocalizedError {
         var errorDescription: String? {
-            "Location access is off for Little Gestures. Enable it in Settings → Privacy & Security → Location Services."
+            String(localized: "Location access is off for Little Gestures. Enable it in Settings → Privacy & Security → Location Services.")
         }
     }
 

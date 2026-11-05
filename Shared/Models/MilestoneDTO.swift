@@ -80,6 +80,17 @@ public struct MilestoneDTO: Codable, Sendable, Identifiable, Hashable {
         try c.encode(day, forKey: .date)
     }
 
+    /// Display name for a stored `kind` ("anniversary", "birthday", "custom").
+    /// The stored value stays English; only the label is translated.
+    public static func kindTitle(_ kind: String) -> String {
+        switch kind {
+        case "anniversary": String(localized: "Anniversary")
+        case "birthday":    String(localized: "Birthday")
+        case "custom":      String(localized: "Custom")
+        default:            kind.capitalized
+        }
+    }
+
     public func nextOccurrence(reference: Date = .now, calendar: Calendar = .current) -> Date {
         guard recur else { return date }
         var comps = calendar.dateComponents([.month, .day], from: date)

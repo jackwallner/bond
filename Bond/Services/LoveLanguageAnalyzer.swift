@@ -244,24 +244,25 @@ public struct LoveLanguageAnalyzer: Sendable {
 
         let balance = balanceScore()
         if balance < 30 {
-            result.append("Your love language expression is heavily imbalanced. Try adding reminders in your neglected areas.")
+            result.append(String(localized: "Your love language expression is heavily imbalanced. Try adding reminders in your neglected areas."))
         } else if balance < 60 {
-            result.append("You have a moderate spread of love languages. A few more in your lowest area could bring balance.")
+            result.append(String(localized: "You have a moderate spread of love languages. A few more in your lowest area could bring balance."))
         } else {
-            result.append("Great balance! You're expressing love across all five languages.")
+            result.append(String(localized: "Great balance! You're expressing love across all five languages."))
         }
 
         if let neglected = mostNeglected() {
-            result.append("\(neglected.0.title) is your least expressed love language. Consider adding more \(neglected.0.title.lowercased()) reminders.")
+            result.append(neglected.0.leastExpressedInsight)
         }
 
         if let rate = completionRate() {
+            let percent = (Double(Int(rate)) / 100).formatted(.percent)
             if rate > 75 {
-                result.append("Excellent follow-through! You completed \(Int(rate))% of what was due this week.")
+                result.append(String(localized: "Excellent follow-through! You completed \(percent) of what was due this week."))
             } else if rate > 50 {
-                result.append("Good progress: \(Int(rate))% of this week's reminders done. Try to act on more when they fire.")
+                result.append(String(localized: "Good progress: \(percent) of this week's reminders done. Try to act on more when they fire."))
             } else {
-                result.append("You completed \(Int(rate))% of this week's reminders. Small consistent actions build strong habits.")
+                result.append(String(localized: "You completed \(percent) of this week's reminders. Small consistent actions build strong habits."))
             }
         }
 

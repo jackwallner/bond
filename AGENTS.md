@@ -85,6 +85,9 @@ phased plan are in the `project_bond` memory and `project-docs/marketing/aso-pla
 - `.claude/rules/launch-and-schedule.md` (`BondApp`, the reminder, milestone and
   pairing services): what a failed fetch may and may not clear, when milestones
   load, and calendar-day milestone math.
+- `.claude/rules/localization.md` (`Bond/**`, `Shared/**`, `BondWatch/**`,
+  `BondWidgets/**`): the string catalog, how copy is keyed, plurals, formatters
+  and `Tools/Localization/check.py`.
 
 ---
 Shared iOS conventions (build, simulator, release/TestFlight, ASC key, signing,

@@ -86,7 +86,7 @@ struct ReminderTemplatesView: View {
                     .padding(.vertical, 4)
                 }
             } header: {
-                BondSectionHeader(title: "\(group.reminders.count) reminders")
+                BondSectionHeader(title: String(localized: "\(group.reminders.count) reminders"))
             }
             .bondWarmRow()
         }
@@ -149,7 +149,7 @@ struct TemplateGroupDetailView: View {
                     }
                 }
             } header: {
-                BondSectionHeader(title: "Includes")
+                BondSectionHeader(title: String(localized: "Includes"))
             }
             .bondWarmRow()
 
@@ -241,7 +241,7 @@ struct TemplateGroupDetailView: View {
         } catch {
             // Surface a real error instead of celebrating zero inserts.
             createdCount = 0
-            importError = "Couldn't add templates. Check your connection and try again."
+            importError = String(localized: "Couldn't add templates. Check your connection and try again.")
         }
 
         isCreating = false

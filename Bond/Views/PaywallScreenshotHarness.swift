@@ -21,7 +21,7 @@ struct PaywallScreenshotHarness: View {
                     trialBackdrop {
                         TrialOfferSheet(
                             isSolo: isSolo,
-                            offerLabel: trialPackage?.bondIntroOfferLabel ?? "7-day free trial",
+                            trialPeriodPhrase: trialPackage?.bondTrialPeriodPhrase ?? Package.durationPhrase(7, .day),
                             priceLabel: trialPackage?.bondPriceLabel ?? "$29.99 / year",
                             isPurchasing: false,
                             errorMessage: nil,

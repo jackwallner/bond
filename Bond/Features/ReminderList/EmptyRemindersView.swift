@@ -7,24 +7,24 @@ struct StarterChip: Identifiable {
     var area: FocusArea = .gestures
 }
 
-private let starterChipPool: [StarterChip] = [
+private var starterChipPool: [StarterChip] { [
     // Little gestures
-    StarterChip(title: "Tell them they're beautiful", loveLanguage: .words, area: .gestures),
-    StarterChip(title: "Ten-minute walk together", loveLanguage: .time, area: .gestures),
-    StarterChip(title: "Bring home flowers", loveLanguage: .gifts, area: .gestures),
-    StarterChip(title: "A long hug at the door", loveLanguage: .touch, area: .gestures),
-    StarterChip(title: "Handle a chore they dread", loveLanguage: .acts, area: .gestures),
+    StarterChip(title: String(localized: "Tell them they're beautiful"), loveLanguage: .words, area: .gestures),
+    StarterChip(title: String(localized: "Ten-minute walk together"), loveLanguage: .time, area: .gestures),
+    StarterChip(title: String(localized: "Bring home flowers"), loveLanguage: .gifts, area: .gestures),
+    StarterChip(title: String(localized: "A long hug at the door"), loveLanguage: .touch, area: .gestures),
+    StarterChip(title: String(localized: "Handle a chore they dread"), loveLanguage: .acts, area: .gestures),
     // Important dates
-    StarterChip(title: "Note an upcoming date", loveLanguage: .time, area: .dates),
-    StarterChip(title: "Plan something for the weekend", loveLanguage: .time, area: .dates),
+    StarterChip(title: String(localized: "Note an upcoming date"), loveLanguage: .time, area: .dates),
+    StarterChip(title: String(localized: "Plan something for the weekend"), loveLanguage: .time, area: .dates),
     // Things they love
-    StarterChip(title: "Pick up their favorite snack", loveLanguage: .gifts, area: .loves),
-    StarterChip(title: "Play a song they love", loveLanguage: .time, area: .loves),
-    StarterChip(title: "Ask about something they care about", loveLanguage: .words, area: .loves),
+    StarterChip(title: String(localized: "Pick up their favorite snack"), loveLanguage: .gifts, area: .loves),
+    StarterChip(title: String(localized: "Play a song they love"), loveLanguage: .time, area: .loves),
+    StarterChip(title: String(localized: "Ask about something they care about"), loveLanguage: .words, area: .loves),
     // Things to avoid
-    StarterChip(title: "Note a topic to steer around", loveLanguage: .words, area: .avoid),
-    StarterChip(title: "Phone away during dinner", loveLanguage: .time, area: .avoid)
-]
+    StarterChip(title: String(localized: "Note a topic to steer around"), loveLanguage: .words, area: .avoid),
+    StarterChip(title: String(localized: "Phone away during dinner"), loveLanguage: .time, area: .avoid)
+] }
 
 /// Chips tailored to the user's onboarding choices: only their selected
 /// focus areas, with the partner's love language floated to the top. Falls

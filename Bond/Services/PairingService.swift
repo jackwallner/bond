@@ -146,7 +146,7 @@ final class PairingService {
         }
         #endif
         guard let me = supabase.currentUserId else {
-            lastError = "Sign in first."
+            lastError = String(localized: "Sign in first.")
             return
         }
         lastError = nil
@@ -171,7 +171,7 @@ final class PairingService {
                 log.error("create_solo_couple failed: \(error.localizedDescription)")
             }
             // Human copy, not raw PostgREST jargon.
-            lastError = "We couldn't finish setup. Please try again in a moment."
+            lastError = String(localized: "We couldn't finish setup. Please try again in a moment.")
         }
     }
 
@@ -190,7 +190,7 @@ final class PairingService {
 
     func generateInviteCode() async -> URL? {
         guard let me = supabase.currentUserId else {
-            lastError = "Sign in first."
+            lastError = String(localized: "Sign in first.")
             return nil
         }
         lastError = nil
@@ -230,7 +230,7 @@ final class PairingService {
 
     func consumeInviteCode(_ code: String) async {
         guard let me = supabase.currentUserId else {
-            lastError = "Sign in first."
+            lastError = String(localized: "Sign in first.")
             return
         }
         isPairing = true
@@ -259,18 +259,18 @@ final class PairingService {
     private static func friendlyPairingError(_ error: Error) -> String {
         let text = error.localizedDescription.lowercased()
         if text.contains("invalid or expired code") {
-            return "That code didn't work. It may have expired. Ask your partner for a fresh one."
+            return String(localized: "That code didn't work. It may have expired. Ask your partner for a fresh one.")
         }
         if text.contains("cannot pair with yourself") {
-            return "That's your own code. Share it with your partner and enter theirs here."
+            return String(localized: "That's your own code. Share it with your partner and enter theirs here.")
         }
         if text.contains("you are already in a couple") {
-            return "You're already paired. Unpair in Settings before using a new code."
+            return String(localized: "You're already paired. Unpair in Settings before using a new code.")
         }
         if text.contains("inviter already in a couple") {
-            return "Whoever shared that code is already paired with someone."
+            return String(localized: "Whoever shared that code is already paired with someone.")
         }
-        return "Pairing didn't work. Check the code and try again."
+        return String(localized: "Pairing didn't work. Check the code and try again.")
     }
 
     /// Unpairs the current couple. The `leave_couple` RPC splits the shared
@@ -279,7 +279,7 @@ final class PairingService {
     /// neither partner loses data.
     func leaveCouple() async {
         guard let me = supabase.currentUserId else {
-            lastError = "Sign in first."
+            lastError = String(localized: "Sign in first.")
             return
         }
         do {

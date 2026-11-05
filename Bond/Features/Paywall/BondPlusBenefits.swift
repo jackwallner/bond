@@ -14,51 +14,51 @@ enum BondPlusBenefits {
             return [
                 BondPlusBenefit(
                     icon: "square.stack.fill",
-                    title: "Ideas matched to your partner",
-                    detail: "Start with prompts based on what matters to them."
+                    title: String(localized: "Ideas matched to your partner"),
+                    detail: String(localized: "Start with prompts based on what matters to them.")
                 ),
                 BondPlusBenefit(
                     icon: "bell.badge.fill",
-                    title: "Remember at the right moment",
-                    detail: "Schedule thoughtful nudges before the moment passes."
+                    title: String(localized: "Remember at the right moment"),
+                    detail: String(localized: "Schedule thoughtful nudges before the moment passes.")
                 ),
                 BondPlusBenefit(
                     icon: "sparkles",
-                    title: "Learn what lands",
-                    detail: "See which love languages you act on over time."
+                    title: String(localized: "Learn what lands"),
+                    detail: String(localized: "See which love languages you act on over time.")
                 )
             ]
         }
         return [
             BondPlusBenefit(
                 icon: "questionmark.bubble.fill",
-                title: "Daily Check-In",
-                detail: "One question, together, every day."
+                title: String(localized: "Daily Check-In"),
+                detail: String(localized: "One question, together, every day.")
             ),
             BondPlusBenefit(
                 icon: "sparkles",
-                title: "Love-language insights",
-                detail: "Trends from what you both share."
+                title: String(localized: "Love-language insights"),
+                detail: String(localized: "Trends from what you both share.")
             ),
             BondPlusBenefit(
                 icon: "bell.badge.fill",
-                title: "Surprise reminders",
-                detail: "Nudge when you're near their spot."
+                title: String(localized: "Surprise reminders"),
+                detail: String(localized: "Nudge when you're near their spot.")
             )
         ]
     }
 
     static func paywallSubheadline(isSolo: Bool) -> String {
         if isSolo {
-            return "Turn what matters to your partner into actions you remember."
+            return String(localized: "Turn what matters to your partner into actions you remember.")
         }
-        return "Stay close on purpose with the full Little Gestures experience."
+        return String(localized: "Stay close on purpose with the full Little Gestures experience.")
     }
 
     static func trialSubheadline(isSolo: Bool) -> String {
         if isSolo {
-            return "Your personalized plan is ready. No payment today, cancel anytime."
+            return String(localized: "Your personalized plan is ready. No payment today, cancel anytime.")
         }
-        return "Daily Check-In, insights, and thoughtful reminders. No payment today."
+        return String(localized: "Daily Check-In, insights, and thoughtful reminders. No payment today.")
     }
 }

@@ -276,7 +276,7 @@ struct ReminderListView: View {
                 Section {
                     ForEach(partnerRequests) { requestRow($0) }
                 } header: {
-                    BondSectionHeader(title: "From \(partnerName)")
+                    BondSectionHeader(title: String(localized: "From \(partnerName)"))
                 }
             }
 
@@ -301,7 +301,7 @@ struct ReminderListView: View {
                         .onDelete { offsets in delete(pastDueReminders, at: offsets) }
                         .bondWarmRow()
                 } header: {
-                    BondSectionHeader(title: "Past due", tint: .orange)
+                    BondSectionHeader(title: String(localized: "Past due"), tint: .orange)
                 }
             }
 
@@ -311,7 +311,7 @@ struct ReminderListView: View {
                         .onDelete { offsets in delete(upNextReminders, at: offsets) }
                         .bondWarmRow()
                 } header: {
-                    BondSectionHeader(title: "Up next")
+                    BondSectionHeader(title: String(localized: "Up next"))
                 }
             }
 
@@ -370,7 +370,7 @@ struct ReminderListView: View {
         if let name = pairing.partnerProfile?.displayName, !name.isEmpty {
             return name
         }
-        return "Your partner"
+        return String(localized: "Your partner")
     }
 
     @ViewBuilder
@@ -647,7 +647,7 @@ private struct PartnerRequestCard: View {
 
     private var nextFire: Date? { reminder.trigger?.upcomingFireDate() }
     private var primaryActionTitle: String {
-        nextFire == nil ? "Pick a time" : "Reschedule"
+        nextFire == nil ? String(localized: "Pick a time") : String(localized: "Reschedule")
     }
 
     var body: some View {
@@ -705,16 +705,16 @@ private struct CheckInPromptCard: View {
     }
     private var headline: String {
         switch state {
-        case .pending:         "Today's check-in"
-        case .awaitingPartner: "Waiting on \(partnerName)"
-        case .readyToReveal:   "\(partnerName) answered"
+        case .pending:         String(localized: "Today's check-in")
+        case .awaitingPartner: String(localized: "Waiting on \(partnerName)")
+        case .readyToReveal:   String(localized: "\(partnerName) answered")
         }
     }
     private var subhead: String {
         switch state {
-        case .pending:         "Answer to see \(partnerName)'s reply."
-        case .awaitingPartner: "We'll let you know when their answer lands."
-        case .readyToReveal:   "Tap to reveal both answers."
+        case .pending:         String(localized: "Answer to see \(partnerName)'s reply.")
+        case .awaitingPartner: String(localized: "We'll let you know when their answer lands.")
+        case .readyToReveal:   String(localized: "Tap to reveal both answers.")
         }
     }
 
@@ -806,8 +806,8 @@ private struct MyListEmptyView: View {
 
     private var subtitle: String {
         isPaired
-            ? "Add something for you or \(partnerName), or pick a template below."
-            : "Add a reminder, or pick a template below."
+            ? String(localized: "Add something for you or \(partnerName), or pick a template below.")
+            : String(localized: "Add a reminder, or pick a template below.")
     }
 
     var body: some View {
@@ -878,7 +878,7 @@ private struct TemplatesHomeRow: View {
         }
         .buttonStyle(.plain)
         .accessibilityElement(children: .combine)
-        .accessibilityLabel(isPremium ? "Browse reminder templates" : "Preview reminder templates")
+        .accessibilityLabel(isPremium ? String(localized: "Browse reminder templates") : String(localized: "Preview reminder templates"))
     }
 }
 

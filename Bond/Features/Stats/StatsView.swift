@@ -44,8 +44,8 @@ struct StatsView: View {
             Section {
                 BondUnlockCard(
                     icon: "chart.bar.xaxis.ascending",
-                    headline: "Unlock the full picture",
-                    subhead: "Little Gestures+ opens up your love-language balance, weekly trends, and personalized insights.",
+                    headline: String(localized: "Unlock the full picture"),
+                    subhead: String(localized: "Little Gestures+ opens up your love-language balance, weekly trends, and personalized insights."),
                     isPaywallPresented: $isPaywallPresented,
                     outerPadding: true
                 )
@@ -72,7 +72,7 @@ struct StatsView: View {
             Section {
                 balanceSection(a: a)
             } header: {
-                BondSectionHeader(title: "Balance score")
+                BondSectionHeader(title: String(localized: "Balance score"))
             } footer: {
                 Text("How evenly your reminders cover the five love languages. 100 means a perfectly even spread; a low score means most of your reminders lean on one or two languages.")
                     .font(.bond(.footnote))
@@ -94,7 +94,7 @@ struct StatsView: View {
                 }
                 .frame(height: 220)
             } header: {
-                BondSectionHeader(title: "Reminders per love language")
+                BondSectionHeader(title: String(localized: "Reminders per love language"))
             }
             .bondWarmRow()
 
@@ -122,7 +122,7 @@ struct StatsView: View {
                     }
                     .frame(height: 200)
                 } header: {
-                    BondSectionHeader(title: "Weekly activity")
+                    BondSectionHeader(title: String(localized: "Weekly activity"))
                 }
                 .bondWarmRow()
             }
@@ -141,7 +141,7 @@ struct StatsView: View {
                         }
                     }
                 } header: {
-                    BondSectionHeader(title: "Insights")
+                    BondSectionHeader(title: String(localized: "Insights"))
                 }
                 .bondWarmRow()
             }
@@ -150,7 +150,7 @@ struct StatsView: View {
             Section {
                 summarySection(a: a, total: total)
             } header: {
-                BondSectionHeader(title: "Summary")
+                BondSectionHeader(title: String(localized: "Summary"))
             }
             .bondWarmRow()
         }
@@ -205,7 +205,7 @@ struct StatsView: View {
                 }
             }
         } header: {
-            BondSectionHeader(title: "Follow-through · last 7 days")
+            BondSectionHeader(title: String(localized: "Follow-through · last 7 days"))
         }
         .bondWarmRow()
     }
@@ -223,7 +223,7 @@ struct StatsView: View {
                 Text("\(current)")
                     .font(.bond(.title, weight: .bold))
                     .foregroundStyle(.pink)
-                Text("day streak")
+                Text(PluralLabel.dayStreak(current))
                     .font(.bond(.caption))
                     .foregroundStyle(.bondTextSecondary)
             }
@@ -235,7 +235,7 @@ struct StatsView: View {
                 Text("\(longest)")
                     .font(.bond(.title, weight: .bold))
                     .foregroundStyle(.orange)
-                Text("best streak")
+                Text(PluralLabel.bestStreak(longest))
                     .font(.bond(.caption))
                     .foregroundStyle(.bondTextSecondary)
             }
@@ -244,7 +244,7 @@ struct StatsView: View {
             if !large { Divider().frame(height: 40) }
 
             VStack(alignment: .center, spacing: 4) {
-                Text(a.completionRate().map { "\(Int($0))%" } ?? "–")
+                Text(a.completionRate().map { (Double(Int($0)) / 100).formatted(.percent) } ?? "–")
                     .font(.bond(.title, weight: .bold))
                     .foregroundStyle(.green)
                 Text("done this week")
@@ -305,11 +305,11 @@ struct StatsView: View {
 
     private func summarySection(a: LoveLanguageAnalyzer, total: Int) -> some View {
         Group {
-            LabeledContent("Total reminders", value: "\(total)")
-            LabeledContent("For partner", value: "\(repo.reminders.filter { $0.authorId != $0.targetId }.count)")
-            LabeledContent("Repeating", value: "\(repo.reminders.filter(\.repeatsOnSchedule).count)")
-            LabeledContent("Total actions", value: "\(eventsRepo.events.count)")
-            LabeledContent("Actions completed", value: "\(eventsRepo.actedCount)")
+            LabeledContent("Total reminders", value: total.formatted())
+            LabeledContent("For partner", value: repo.reminders.filter { $0.authorId != $0.targetId }.count.formatted())
+            LabeledContent("Repeating", value: repo.reminders.filter(\.repeatsOnSchedule).count.formatted())
+            LabeledContent("Total actions", value: eventsRepo.events.count.formatted())
+            LabeledContent("Actions completed", value: eventsRepo.actedCount.formatted())
         }
     }
 }

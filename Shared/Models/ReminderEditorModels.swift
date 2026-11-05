@@ -3,7 +3,7 @@ enum ReminderTarget: String, CaseIterable, Identifiable {
     case partner
 
     var id: String { rawValue }
-    var title: String { self == .me ? "Me" : "Partner" }
+    var title: String { self == .me ? String(localized: "Me") : String(localized: "Partner") }
 }
 
 enum TriggerKind: String, CaseIterable, Identifiable {
@@ -15,18 +15,18 @@ enum TriggerKind: String, CaseIterable, Identifiable {
     var id: String { rawValue }
     var title: String {
         switch self {
-        case .oneTime:      "One time"
-        case .recurring:    "Recurring"
-        case .location:     "At a place"
-        case .randomWindow: "Random surprise"
+        case .oneTime:      String(localized: "One time")
+        case .recurring:    String(localized: "Recurring")
+        case .location:     String(localized: "At a place")
+        case .randomWindow: String(localized: "Random surprise")
         }
     }
     var subtitle: String {
         switch self {
-        case .oneTime:      "Fires once at a chosen moment."
-        case .recurring:    "Daily, weekly, monthly. Your call."
-        case .location:     "Triggers when you arrive somewhere."
-        case .randomWindow: "A random moment: once, or at a random time every day."
+        case .oneTime:      String(localized: "Fires once at a chosen moment.")
+        case .recurring:    String(localized: "Daily, weekly, monthly. Your call.")
+        case .location:     String(localized: "Triggers when you arrive somewhere.")
+        case .randomWindow: String(localized: "A random moment: once, or at a random time every day.")
         }
     }
     var symbolName: String {

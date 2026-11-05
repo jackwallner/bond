@@ -55,7 +55,7 @@ final class WatchConnectivityBridge: NSObject {
         guard let payload = try? JSONDecoder().decode(
             WatchPayload.CreateReminder.self, from: data
         ) else {
-            box(["ok": false, "error": "Couldn't read the reminder."])
+            box(["ok": false, "error": String(localized: "Couldn't read the reminder.")])
             return
         }
         Task { @MainActor in
@@ -73,7 +73,7 @@ final class WatchConnectivityBridge: NSObject {
               let me = supabase.currentUserId,
               let coupleId = pairing.coupleId
         else {
-            return (false, "Open Little Gestures on your phone and finish setup first.")
+            return (false, String(localized: "Open Little Gestures on your phone and finish setup first."))
         }
 
         let fireAt = Date().addingTimeInterval(payload.scheduledOffsetSeconds)
@@ -107,7 +107,7 @@ final class WatchConnectivityBridge: NSObject {
         do {
             try await repository.upsert(reminder)
         } catch {
-            return (false, "Couldn't save the reminder. Try again.")
+            return (false, String(localized: "Couldn't save the reminder. Try again."))
         }
         // Through the repository, like every other reschedule: it waits for a
         // successful fetch (a rebuild from the empty starting list would cancel
@@ -153,7 +153,7 @@ extension WatchConnectivityBridge: WCSessionDelegate {
         if let data = message[WatchPayload.createReminderKey] as? Data {
             handleCreatePayload(data, reply: replyHandler)
         } else {
-            replyHandler(["ok": false, "error": "Unrecognized request."])
+            replyHandler(["ok": false, "error": String(localized: "Unrecognized request.")])
         }
     }
 }

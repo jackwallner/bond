@@ -53,7 +53,7 @@ struct NotificationPrimerSheet: View {
             Spacer()
 
             VStack(spacing: BondSpacing.s) {
-                BondPrimaryButton(title: "Turn on notifications") {
+                BondPrimaryButton(title: String(localized: "Turn on notifications")) {
                     onRequest()
                     dismiss()
                 }

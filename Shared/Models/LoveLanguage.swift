@@ -11,11 +11,23 @@ public enum LoveLanguage: String, CaseIterable, Codable, Identifiable, Sendable 
 
     public var title: String {
         switch self {
-        case .words: "Words of Affirmation"
-        case .acts:  "Acts of Service"
-        case .gifts: "Receiving Gifts"
-        case .time:  "Quality Time"
-        case .touch: "Physical Touch"
+        case .words: String(localized: "Words of Affirmation")
+        case .acts:  String(localized: "Acts of Service")
+        case .gifts: String(localized: "Receiving Gifts")
+        case .time:  String(localized: "Quality Time")
+        case .touch: String(localized: "Physical Touch")
+        }
+    }
+
+    /// Whole-sentence insight for the least expressed language. One key per
+    /// language so no translated title is lowercased or spliced into a sentence.
+    public var leastExpressedInsight: String {
+        switch self {
+        case .words: String(localized: "Words of Affirmation is your least expressed love language. Consider adding more words of affirmation reminders.")
+        case .acts:  String(localized: "Acts of Service is your least expressed love language. Consider adding more acts of service reminders.")
+        case .gifts: String(localized: "Receiving Gifts is your least expressed love language. Consider adding more receiving gifts reminders.")
+        case .time:  String(localized: "Quality Time is your least expressed love language. Consider adding more quality time reminders.")
+        case .touch: String(localized: "Physical Touch is your least expressed love language. Consider adding more physical touch reminders.")
         }
     }
 

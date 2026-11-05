@@ -1,0 +1,17 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "NSLocationWhenInUseUsageDescription": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Little Gestures uses your location to trigger reminders when you arrive at or leave specific places (e.g. remind you to hug your partner when you get home)."
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

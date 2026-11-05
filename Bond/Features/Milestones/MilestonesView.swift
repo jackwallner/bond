@@ -48,7 +48,7 @@ struct MilestonesView: View {
                             .foregroundStyle(Color.bondAccent)
                             .frame(width: 28)
                         VStack(alignment: .leading) {
-                            Text(m.label ?? m.kind.capitalized)
+                            Text(m.label ?? MilestoneDTO.kindTitle(m.kind))
                                 .font(.bond(.headline))
                             Text(m.nextOccurrence(), style: .date)
                                 .font(.bond(.caption))

@@ -7,7 +7,7 @@ struct PairingView: View {
     @Environment(SupabaseService.self) private var supabase
 
     enum PairMode: String, CaseIterable { case send, receive
-        var title: String { self == .send ? "Send" : "Receive" }
+        var title: String { self == .send ? String(localized: "Send") : String(localized: "Receive") }
     }
 
     @State private var mode: PairMode
@@ -70,8 +70,8 @@ struct PairingView: View {
     private var sendContent: some View {
         VStack(alignment: .leading, spacing: BondSpacing.xl) {
             BondScreenHeader(
-                title: "Invite your partner",
-                subtitle: "Send them this link, or read them the code below."
+                title: String(localized: "Invite your partner"),
+                subtitle: String(localized: "Send them this link, or read them the code below.")
             )
             .padding(.horizontal, BondSpacing.base)
 
@@ -121,7 +121,7 @@ struct PairingView: View {
                 .padding(.horizontal, BondSpacing.base)
             } else {
                 BondPrimaryButton(
-                    title: "Generate code",
+                    title: String(localized: "Generate code"),
                     systemImage: "link.badge.plus",
                     isLoading: isGenerating
                 ) {
@@ -146,15 +146,15 @@ struct PairingView: View {
     private var receiveContent: some View {
         VStack(alignment: .leading, spacing: BondSpacing.xl) {
             BondScreenHeader(
-                title: "Enter their code",
-                subtitle: "Six characters. Your partner can read it to you."
+                title: String(localized: "Enter their code"),
+                subtitle: String(localized: "Six characters. Your partner can read it to you.")
             )
             .padding(.horizontal, BondSpacing.base)
 
             CodeEntryField(text: $manualCode, isFocused: $isCodeFocused)
                 .padding(.horizontal, BondSpacing.base)
 
-            BondPrimaryButton(title: "Pair", isLoading: pairing.isPairing) {
+            BondPrimaryButton(title: String(localized: "Pair"), isLoading: pairing.isPairing) {
                 Task { await pairing.consumeInviteCode(manualCode.uppercased()) }
             }
             .padding(.horizontal, BondSpacing.base)
@@ -186,7 +186,7 @@ private struct CodeCard: View {
         .padding(.vertical, BondSpacing.base)
         .background(.regularMaterial, in: RoundedRectangle(cornerRadius: BondRadius.hero))
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Pairing code: \(code.map(String.init).joined(separator: " "))")
+        .accessibilityLabel(String(localized: "Pairing code: \(code.map(String.init).joined(separator: " "))"))
     }
 }
 
@@ -210,7 +210,10 @@ private struct ExpiryCaption: View {
                 } else {
                     let hours = Int(remaining) / 3600
                     let minutes = (Int(remaining) % 3600) / 60
-                    Text("Expires in \(hours)h \(minutes)m")
+                    let left = Duration.seconds(hours * 3600 + minutes * 60).formatted(
+                        .units(allowed: [.hours, .minutes], width: .narrow,
+                               zeroValueUnits: .show(length: 1)))
+                    Text("Expires in \(left)")
                         .monospacedDigit()
                 }
             }
@@ -321,11 +324,11 @@ struct AppleSignInPairingGate: View {
                 Image(systemName: "person.crop.circle.badge.checkmark")
                     .font(.system(size: 48))
                     .foregroundStyle(Color.bondAccent)
-                Text(pairing.deferredInviteCode != nil ? "One step before pairing" : "Sign in to pair")
+                Text(pairing.deferredInviteCode != nil ? String(localized: "One step before pairing") : String(localized: "Sign in to pair"))
                     .font(.bond(.title2, weight: .bold))
                 Text(pairing.deferredInviteCode != nil
-                     ? "Your partner's invite is ready. Sign in with Apple so they stay paired with you across devices."
-                     : "Pairing connects your reminders with your partner's. Apple Sign-In keeps that link recoverable across devices.")
+                     ? String(localized: "Your partner's invite is ready. Sign in with Apple so they stay paired with you across devices.")
+                     : String(localized: "Pairing connects your reminders with your partner's. Apple Sign-In keeps that link recoverable across devices."))
                     .font(.bond(.subheadline))
                     .foregroundStyle(.bondTextSecondary)
                     .multilineTextAlignment(.center)

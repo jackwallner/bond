@@ -110,7 +110,7 @@ struct PaywallView: View {
                 .foregroundStyle(.bondTextSecondary)
             Text("Couldn't Load Plans")
                 .font(.bond(.headline))
-            Text(purchases.lastError ?? "Check your connection and try again.")
+            Text(purchases.lastError ?? String(localized: "Check your connection and try again."))
                 .font(.bond(.subheadline))
                 .foregroundStyle(.bondTextSecondary)
                 .multilineTextAlignment(.center)
@@ -240,7 +240,7 @@ struct PaywallView: View {
             }
             if needsManualRestore {
                 BondPrimaryButton(
-                    title: isRestoring ? "Restoring…" : "Restore Purchase",
+                    title: isRestoring ? String(localized: "Restoring…") : String(localized: "Restore Purchase"),
                     isLoading: isRestoring
                 ) {
                     startRestore()
@@ -272,7 +272,7 @@ struct PaywallView: View {
                 Button {
                     startRestore()
                 } label: {
-                    Text(isRestoring ? "Restoring…" : "Restore")
+                    Text(isRestoring ? String(localized: "Restoring…") : String(localized: "Restore"))
                         .font(.bond(.caption2, weight: .semibold))
                         .foregroundStyle(.tertiary)
                 }
@@ -306,7 +306,7 @@ struct PaywallView: View {
     private func savingsPercentLabel(for package: Package) -> String? {
         guard package.bondPackageKind == .yearly, let monthly = monthlyPackage else { return nil }
         guard let percent = package.bondSavingsPercent(comparedToMonthly: monthly) else { return nil }
-        return "SAVE \(percent)%"
+        return String(localized: "SAVE \((Double(percent) / 100).formatted(.percent))")
     }
 
     private func perWeekLabel(for package: Package) -> String? {
@@ -315,13 +315,13 @@ struct PaywallView: View {
     }
 
     private var ctaTitle: String {
-        guard let package = selectedPackage else { return "Continue" }
-        if package.bondPackageKind == .lifetime { return "Unlock Lifetime" }
+        guard let package = selectedPackage else { return String(localized: "Continue") }
+        if package.bondPackageKind == .lifetime { return String(localized: "Unlock Lifetime") }
         if purchases.isEligibleForIntroOffer(package), let days = package.bondTrialDays {
-            return "Try Little Gestures+ Free"
+            return String(localized: "Try Little Gestures+ Free")
         }
-        if purchases.isEligibleForIntroOffer(package) { return "Start Free Trial" }
-        return "Get Little Gestures+"
+        if purchases.isEligibleForIntroOffer(package) { return String(localized: "Start Free Trial") }
+        return String(localized: "Get Little Gestures+")
     }
 
     private var ctaSubline: String? {
@@ -331,9 +331,9 @@ struct PaywallView: View {
         if purchases.isEligibleForIntroOffer(package) {
             // "No payment due now" is the single highest-leverage reassurance
             // for trial starts - it answers the exact fear that stops the tap.
-            return "No payment today. Then \(price). Cancel anytime in App Store settings."
+            return String(localized: "No payment today. Then \(price). Cancel anytime in App Store settings.")
         }
-        return "\(price). Renews automatically."
+        return String(localized: "\(price). Renews automatically.")
     }
 
     /// Compact auto-renew disclosure (3.1.2) - shown for subscriptions only, not lifetime.
@@ -341,7 +341,7 @@ struct PaywallView: View {
         guard let package = selectedPackage, package.storeProduct.subscriptionPeriod != nil else {
             return nil
         }
-        return "Payment charged to your Apple ID. Renews unless cancelled at least 24 hours before period end."
+        return String(localized: "Payment charged to your Apple ID. Renews unless cancelled at least 24 hours before period end.")
     }
 
     // MARK: - Actions
@@ -384,14 +384,14 @@ struct PaywallView: View {
                     // common in sandbox. Show a calm finalizing state; the
                     // `onChange(of: isPremium)` will auto-dismiss as soon as
                     // RevenueCat catches up.
-                    statusMessage = "Finalizing your purchase…"
+                    statusMessage = String(localized: "Finalizing your purchase…")
                     await purchases.restore()
                     if purchases.isPremium {
                         statusMessage = nil
                         closePaywall()
                     } else {
                         statusMessage = nil
-                        errorMessage = "Your payment went through but we're still syncing it. Tap below to finish unlocking."
+                        errorMessage = String(localized: "Your payment went through but we're still syncing it. Tap below to finish unlocking.")
                         needsManualRestore = true
                     }
                 case .cancelled:
@@ -423,7 +423,7 @@ struct PaywallView: View {
                 needsManualRestore = false
             } else {
                 restoreMessage = purchases.lastError
-                    ?? "No active Little Gestures+ purchase found for this Apple ID."
+                    ?? String(localized: "No active Little Gestures+ purchase found for this Apple ID.")
             }
         }
     }
@@ -474,8 +474,8 @@ private struct BondPlanCard: View {
                                 .background(Color.bondAccent, in: Capsule())
                         }
                     }
-                    if showsTrialBadge, let trial = package.bondIntroOfferLabel {
-                        Text(trial.capitalized)
+                    if showsTrialBadge, let trial = package.bondIntroOfferBadge {
+                        Text(trial)
                             .font(.bond(.caption2, weight: .semibold))
                             .foregroundStyle(Color.bondAccent)
                     } else if let perWeekPrice {

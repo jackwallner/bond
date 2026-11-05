@@ -44,7 +44,7 @@ struct SettingsView: View {
                         .foregroundStyle(.red)
                 }
             } header: {
-                BondSectionHeader(title: "Account")
+                BondSectionHeader(title: String(localized: "Account"))
             }
             .bondWarmRow()
 
@@ -62,7 +62,7 @@ struct SettingsView: View {
                     HStack(spacing: BondSpacing.m) {
                         InitialsAvatar(name: pairing.partnerProfile?.displayName)
                         VStack(alignment: .leading, spacing: 2) {
-                            Text(pairing.partnerProfile?.displayName ?? "Your partner")
+                            Text(pairing.partnerProfile?.displayName ?? String(localized: "Your partner"))
                                 .font(.bond(.headline))
                             Text("Paired")
                                 .font(.bond(.caption))
@@ -70,7 +70,7 @@ struct SettingsView: View {
                         }
                     }
                     Button("Unpair", role: .destructive) { confirmUnpair = true }
-                    Link(destination: URL(string: "mailto:jackwallner+b@gmail.com?subject=Report%20a%20concern%20about%20my%20Bond%20partner")!) {
+                    Link(destination: reportConcernURL) {
                         Label("Report a concern", systemImage: "exclamationmark.bubble")
                     }
                     Text("Unpairing immediately stops your partner from sending you anything. Reporting lets us know about abusive content.")
@@ -78,7 +78,7 @@ struct SettingsView: View {
                         .foregroundStyle(.bondTextSecondary)
                 }
             } header: {
-                BondSectionHeader(title: "Pairing")
+                BondSectionHeader(title: String(localized: "Pairing"))
             }
             .bondWarmRow()
 
@@ -97,7 +97,7 @@ struct SettingsView: View {
                     Link("Manage subscription",
                          destination: URL(string: "https://apps.apple.com/account/subscriptions")!)
                 } else {
-                    LabeledContent("Status", value: "Free")
+                    LabeledContent("Status", value: String(localized: "Free"))
                     // Free users previously had no purchase path here at all -
                     // only a Restore button. Settings is where people go
                     // looking to upgrade; never leave them without a door.
@@ -130,7 +130,7 @@ struct SettingsView: View {
                 Button("OK", role: .cancel) {}
             } message: {
                 Text(purchases.lastError
-                     ?? "No active \(BondBrand.plusName) purchase found for this Apple ID.")
+                     ?? String(localized: "No active \(BondBrand.plusName) purchase found for this Apple ID."))
             }
             }
 
@@ -156,7 +156,7 @@ struct SettingsView: View {
                 }
                 .pickerStyle(.menu)
             } header: {
-                BondSectionHeader(title: "Theme")
+                BondSectionHeader(title: String(localized: "Theme"))
             }
             .bondWarmRow()
 
@@ -178,7 +178,7 @@ struct SettingsView: View {
                         }
                     }
                 } header: {
-                    BondSectionHeader(title: "Notifications")
+                    BondSectionHeader(title: String(localized: "Notifications"))
                 }
                 .bondWarmRow()
             }
@@ -195,7 +195,7 @@ struct SettingsView: View {
                     Label("Send Feedback", systemImage: "envelope")
                 }
             } header: {
-                BondSectionHeader(title: "Help")
+                BondSectionHeader(title: String(localized: "Help"))
             }
             .bondWarmRow()
 
@@ -273,25 +273,35 @@ struct SettingsView: View {
                 NotificationScheduler.shared.clearAll()
                 WidgetSnapshotPump.clear()
             } catch {
-                deleteError = "Couldn't delete your account. Check your connection and try again."
+                deleteError = String(localized: "Couldn't delete your account. Check your connection and try again.")
             }
         }
     }
 
+    private var reportConcernURL: URL {
+        var components = URLComponents()
+        components.scheme = "mailto"
+        components.path = "jackwallner+b@gmail.com"
+        components.queryItems = [
+            URLQueryItem(name: "subject", value: String(localized: "Report a concern about my Bond partner"))
+        ]
+        return components.url ?? URL(string: "mailto:jackwallner+b@gmail.com")!
+    }
+
     private var notificationStateLabel: String {
         switch notificationStatus {
-        case .authorized, .provisional, .ephemeral: "On"
-        case .denied: "Off, open Settings"
-        default: "Not yet enabled"
+        case .authorized, .provisional, .ephemeral: String(localized: "On")
+        case .denied: String(localized: "Off, open Settings")
+        default: String(localized: "Not yet enabled")
         }
     }
 
     private var appVersion: String {
-        Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "Unknown"
+        Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? String(localized: "Unknown")
     }
 
     private var appBuild: String {
-        Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "Unknown"
+        Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? String(localized: "Unknown")
     }
 }
 

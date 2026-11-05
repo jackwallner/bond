@@ -65,7 +65,7 @@ struct InviteWelcomeView: View {
                 } else {
                     // Already signed in (e.g. the first pairing attempt
                     // failed after sign-in) - offer the pair step directly.
-                    BondPrimaryButton(title: "Accept invite") {
+                    BondPrimaryButton(title: String(localized: "Accept invite")) {
                         Task { await pairing.consumeDeferredInviteIfNeeded() }
                     }
                     .padding(.horizontal, BondSpacing.base)
@@ -98,7 +98,7 @@ struct InviteWelcomeView: View {
             }
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Invite code: \(code.map(String.init).joined(separator: " "))")
+        .accessibilityLabel(String(localized: "Invite code: \(code.map(String.init).joined(separator: " "))"))
     }
 
     private func handleSignIn(_ result: Result<ASAuthorization, Error>) async {

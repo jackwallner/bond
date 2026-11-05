@@ -21,7 +21,7 @@ struct MilestoneEditorView: View {
                 Section {
                     TextField("Label (e.g. \"Our anniversary\")", text: $label)
                     Picker("Kind", selection: $kind) {
-                        ForEach(kinds, id: \.self) { Text($0.capitalized).tag($0) }
+                        ForEach(kinds, id: \.self) { Text(MilestoneDTO.kindTitle($0)).tag($0) }
                     }
                     DatePicker("Date", selection: $date, displayedComponents: .date)
                     Toggle("Repeat yearly", isOn: $recur)
@@ -35,7 +35,7 @@ struct MilestoneEditorView: View {
                 }
             }
             .bondWarmList()
-            .navigationTitle(existing == nil ? "New milestone" : "Edit milestone")
+            .navigationTitle(existing == nil ? String(localized: "New milestone") : String(localized: "Edit milestone"))
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
@@ -60,7 +60,7 @@ struct MilestoneEditorView: View {
 
     private func save() async {
         guard let coupleId = pairing.coupleId else {
-            errorMessage = "Not paired."
+            errorMessage = String(localized: "Not paired.")
             return
         }
         let draft = MilestoneDTO(

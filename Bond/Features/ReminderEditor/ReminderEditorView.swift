@@ -32,7 +32,7 @@ struct ReminderEditorView: View {
         bySettingHour: 21, minute: 0, second: 0, of: .now) ?? .now
     @State private var geofenceLatitude: Double = 0
     @State private var geofenceLongitude: Double = 0
-    @State private var geofenceLabel: String = "Home"
+    @State private var geofenceLabel: String = String(localized: "Home")
     @State private var geofenceConfigured = false
     @State private var isSaving = false
     @State private var errorMessage: String?
@@ -57,7 +57,7 @@ struct ReminderEditorView: View {
                 Section {
                     loveLanguagePicker
                     if pairing.solo {
-                        LabeledContent("For", value: "You")
+                        LabeledContent("For", value: String(localized: "You"))
                     } else {
                         Picker("For", selection: $target) {
                             ForEach(ReminderTarget.allCases) { Text($0.title).tag($0) }
@@ -86,7 +86,7 @@ struct ReminderEditorView: View {
                     }
                     triggerDetail
                 } header: {
-                    BondSectionHeader(title: "When")
+                    BondSectionHeader(title: String(localized: "When"))
                 } footer: {
                     if !store.isPremium {
                         Text("Location & surprise-in-a-window need Little Gestures+.")
@@ -108,7 +108,7 @@ struct ReminderEditorView: View {
                 ideasAndTemplatesSection
             }
             .bondWarmList()
-            .navigationTitle(existing == nil ? "New reminder" : "Edit reminder")
+            .navigationTitle(existing == nil ? String(localized: "New reminder") : String(localized: "Edit reminder"))
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
@@ -202,7 +202,7 @@ struct ReminderEditorView: View {
             coupleId: existing?.coupleId ?? me,
             authorId: existing?.authorId ?? me,
             targetId: previewTargetId ?? me,
-            title: title.trimmingCharacters(in: .whitespaces).isEmpty ? "Your reminder" : title,
+            title: title.trimmingCharacters(in: .whitespaces).isEmpty ? String(localized: "Your reminder") : title,
             body: noteText.isEmpty ? nil : noteText,
             loveLanguage: loveLanguage,
             triggerType: "one_time",
@@ -248,9 +248,9 @@ struct ReminderEditorView: View {
         case .oneTime, .recurring:
             fireAt.formatted(.dateTime.weekday(.abbreviated).hour().minute())
         case .location:
-            "At \(geofenceLabel)"
+            String(localized: "At \(geofenceLabel)")
         case .randomWindow:
-            "Surprise"
+            String(localized: "Surprise")
         }
     }
 
@@ -258,23 +258,22 @@ struct ReminderEditorView: View {
     private var previewLanguageNote: String {
         let others = repo.reminders.filter { $0.loveLanguage == loveLanguage && $0.id != existing?.id }.count
         switch others {
-        case 0: return "Your first \(loveLanguage.title) reminder."
-        case 1: return "1 other reminder speaks \(loveLanguage.title)."
-        default: return "\(others) other reminders speak \(loveLanguage.title)."
+        case 0: return String(localized: "Your first \(loveLanguage.title) reminder.")
+        default: return String(localized: "\(others) other reminders speak \(loveLanguage.title).")
         }
     }
 
     /// Who sees it, under the list row. Solo has no one to tell.
     private var previewAudience: String? {
         guard !pairing.solo else { return nil }
-        let partner = pairing.partnerProfile?.displayName.flatMap { $0.isEmpty ? nil : $0 } ?? "Your partner"
+        let partner = pairing.partnerProfile?.displayName.flatMap { $0.isEmpty ? nil : $0 } ?? String(localized: "Your partner")
         switch target {
         case .me:
-            return "Only you see this one."
+            return String(localized: "Only you see this one.")
         case .partner:
             return surpriseHidden
-                ? "A surprise: \(partner) won't see it in their list."
-                : "\(partner) sees it in their list too."
+                ? String(localized: "A surprise: \(partner) won't see it in their list.")
+                : String(localized: "\(partner) sees it in their list too.")
         }
     }
 
@@ -322,7 +321,7 @@ struct ReminderEditorView: View {
             }
             .bondWarmRow()
         } header: {
-            BondSectionHeader(title: existing == nil ? "Need an idea?" : "Templates")
+            BondSectionHeader(title: existing == nil ? String(localized: "Need an idea?") : String(localized: "Templates"))
         }
     }
 
@@ -365,12 +364,12 @@ struct ReminderEditorView: View {
                 Task { await captureCurrentLocation() }
             } label: {
                 Label(
-                    geofenceConfigured ? "Update to current location" : "Use current location",
+                    geofenceConfigured ? String(localized: "Update to current location") : String(localized: "Use current location"),
                     systemImage: "location.fill"
                 )
             }
             if geofenceConfigured {
-                Text(String(format: "%.4f, %.4f (200m radius)", geofenceLatitude, geofenceLongitude))
+                Text(String(localized: "\(geofenceLatitude.formatted(.number.precision(.fractionLength(4)))), \(geofenceLongitude.formatted(.number.precision(.fractionLength(4)))) (200m radius)"))
                     .font(.bond(.caption2))
                     .foregroundStyle(.bondTextSecondary)
             } else {
@@ -476,7 +475,7 @@ struct ReminderEditorView: View {
         guard let me = supabase.currentUserId,
               let coupleId = pairing.coupleId
         else {
-            errorMessage = "Not set up yet. Please finish setup first."
+            errorMessage = String(localized: "Not set up yet. Please finish setup first.")
             return
         }
         let partnerId = pairing.partnerProfile?.id
@@ -534,7 +533,7 @@ struct ReminderEditorView: View {
             draft.windowEnd = nil
         case .location:
             guard geofenceConfigured else {
-                errorMessage = "Pick a location first."
+                errorMessage = String(localized: "Pick a location first.")
                 return
             }
             draft.triggerType = "location"
@@ -551,7 +550,7 @@ struct ReminderEditorView: View {
         case .randomWindow:
             if randomRepeatsDaily {
                 guard minutesOfDay(dailyWindowEnd) > minutesOfDay(dailyWindowStart) else {
-                    errorMessage = "The end time must be after the start time."
+                    errorMessage = String(localized: "The end time must be after the start time.")
                     return
                 }
                 draft.triggerType = "random_window"
@@ -567,7 +566,7 @@ struct ReminderEditorView: View {
                 draft.geofence = nil
             } else {
                 guard windowEnd > windowStart else {
-                    errorMessage = "Window end must be after start."
+                    errorMessage = String(localized: "Window end must be after start.")
                     return
                 }
                 let interval = windowEnd.timeIntervalSince(windowStart)
@@ -620,11 +619,11 @@ private struct ReminderPreviewPane: View {
                     .font(.bond(.largeTitle, weight: .bold))
                     .accessibilityAddTraits(.isHeader)
                     .padding(.top, Self.titleTop)
-                section("How it arrives") { notification }
-                section("In your list", footer: audience) {
+                section(String(localized: "How it arrives")) { notification }
+                section(String(localized: "In your list"), footer: audience) {
                     ReminderRow(reminder: reminder, currentUserId: currentUserId)
                 }
-                section("Love language") { language }
+                section(String(localized: "Love language")) { language }
             }
             .padding(.horizontal, BondSpacing.l)
             .frame(maxWidth: .infinity, alignment: .topLeading)

@@ -109,9 +109,9 @@ public extension WidgetSnapshot {
 
     private static func defaultLabel(for m: MilestoneDTO) -> String {
         switch m.kind {
-        case "anniversary": "Anniversary"
-        case "birthday":    "Birthday"
-        default:            "Milestone"
+        case "anniversary": String(localized: "Anniversary")
+        case "birthday":    String(localized: "Birthday")
+        default:            String(localized: "Milestone")
         }
     }
 }

@@ -57,7 +57,7 @@ final class DailyCheckInService {
                 log.error("No questions found in DB - using fallback")
                 todaysQuestion = DailyQuestionDTO(
                     id: UUID(),
-                    question: "What is one thing you appreciated about your partner today?",
+                    question: String(localized: "What is one thing you appreciated about your partner today?"),
                     category: "appreciation",
                     loveLanguage: .words
                 )
@@ -97,7 +97,7 @@ final class DailyCheckInService {
               let coupleId = pairing.coupleId,
               let question = todaysQuestion
         else {
-            lastError = "Not set up yet."
+            lastError = String(localized: "Not set up yet.")
             return
         }
 
