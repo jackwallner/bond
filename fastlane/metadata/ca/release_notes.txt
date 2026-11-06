@@ -1,1 +1,1 @@
-Millores internes i correccions d'errors perquè Little Gestures funcioni bé. Gràcies per ser aquí.
+Little Gestures ja està disponible en francès, portuguès, espanyol, àrab, alemany, vietnamita i rus. També inclou correccions i millores.

@@ -1,1 +1,1 @@
-Cải tiến phía sau và sửa lỗi để Little Gestures chạy mượt mà. Cảm ơn bạn đã đồng hành.
+Little Gestures hiện đã có bằng tiếng Pháp, Bồ Đào Nha, Tây Ban Nha, Ả Rập, Đức, Việt và Nga. Bản cập nhật cũng bao gồm các bản sửa lỗi và cải tiến.

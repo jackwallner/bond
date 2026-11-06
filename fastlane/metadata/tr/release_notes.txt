@@ -1,1 +1,1 @@
-Little Gestures'ın sorunsuz çalışması için arka planda iyileştirmeler ve hata düzeltmeleri. Burada olduğun için teşekkürler.
+Little Gestures artık Fransızca, Portekizce, İspanyolca, Arapça, Almanca, Vietnamca ve Rusça dillerinde kullanılabilir. Ayrıca düzeltmeler ve iyileştirmeler içerir.

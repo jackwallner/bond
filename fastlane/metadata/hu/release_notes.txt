@@ -1,1 +1,1 @@
-Háttérbeli fejlesztések és hibajavítások, hogy a Little Gestures gördülékenyen működjön. Köszönjük, hogy itt vagy.
+A Little Gestures már francia, portugál, spanyol, arab, német, vietnámi és orosz nyelven is elérhető. A frissítés javításokat és fejlesztéseket is tartalmaz.

@@ -1,1 +1,1 @@
-Miglioramenti dietro le quinte e correzioni di bug per far funzionare Little Gestures senza intoppi. Grazie di esserci.
+Little Gestures è ora disponibile in francese, portoghese, spagnolo, arabo, tedesco, vietnamita e russo. Include anche correzioni e miglioramenti.

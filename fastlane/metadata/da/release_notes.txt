@@ -1,1 +1,1 @@
-Forbedringer bag kulisserne og fejlrettelser, så Little Gestures kører glat. Tak fordi du er her.
+Little Gestures er nu tilgængelig på fransk, portugisisk, spansk, arabisk, tysk, vietnamesisk og russisk. Indeholder også rettelser og forbedringer.

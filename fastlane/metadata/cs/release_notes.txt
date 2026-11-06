@@ -1,1 +1,1 @@
-Vylepšení na pozadí a opravy chyb, aby Little Gestures běžel hladce. Děkujeme, že jste tu.
+Little Gestures je nyní k dispozici v těchto jazycích: francouzština, portugalština, španělština, arabština, němčina, vietnamština a ruština. Součástí jsou také opravy a vylepšení.
