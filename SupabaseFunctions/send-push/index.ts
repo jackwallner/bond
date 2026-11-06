@@ -1,188 +1,120 @@
-// APNs sender — invoked by Supabase Postgres webhook on inserts into public.reminders.
+// APNs sender. pg_cron calls it when a partner's reminder is due (migration 0014);
+// claim_due_reminder_pushes decides what goes out and moves each row on, so this
+// only sends and clears out dead tokens.
 //
-// Required Supabase secrets (set via `supabase secrets set`):
-//   APNS_TEAM_ID      – Apple Developer Team ID (10 chars)
-//   APNS_KEY_ID       – APNs Auth Key ID (10 chars)
-//   APNS_AUTH_KEY     – contents of the .p8 file (PEM)
-//   APNS_TOPIC        – bundle ID, e.g. com.jackwallner.bond
-//   APNS_USE_SANDBOX  – "true" while developing on Xcode-built builds, "false" in TestFlight/App Store
-//   SUPABASE_URL      – auto-provided
-//   SUPABASE_SERVICE_ROLE_KEY – auto-provided
+// Secrets (`supabase secrets set`, never committed):
+//   APNS_TEAM_ID, APNS_KEY_ID, APNS_TOPIC
+//   APNS_PRIVATE_KEY   the .p8 contents; a literal "\n" is accepted for newlines
+//   PUSH_CRON_SECRET   matches send_push_secret in the Vault
 //
-// Postgres webhook payload shape (Supabase Database Webhooks):
-//   { type: "INSERT" | "UPDATE", record: {...reminder row...}, old_record: {...} | null, schema: "public", table: "reminders" }
+// SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are provided by the platform.
 
-import { create, getNumericDate } from "https://deno.land/x/djwt@v3.0.2/mod.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { createClient } from "jsr:@supabase/supabase-js@2";
+import { apnsRequest, type ClaimedPush, isDeadToken } from "./apns.ts";
 
-const TEAM_ID = mustEnv("APNS_TEAM_ID");
-const KEY_ID = mustEnv("APNS_KEY_ID");
-const AUTH_KEY_PEM = mustEnv("APNS_AUTH_KEY");
-const TOPIC = mustEnv("APNS_TOPIC");
-const USE_SANDBOX = (Deno.env.get("APNS_USE_SANDBOX") ?? "true") === "true";
-const APNS_HOST = USE_SANDBOX
-  ? "https://api.sandbox.push.apple.com"
-  : "https://api.push.apple.com";
+const REQUIRED = [
+  "APNS_TEAM_ID",
+  "APNS_KEY_ID",
+  "APNS_TOPIC",
+  "APNS_PRIVATE_KEY",
+  "PUSH_CRON_SECRET",
+] as const;
 
-const supabase = createClient(
-  Deno.env.get("SUPABASE_URL")!,
-  Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
-);
-
-interface ReminderRow {
-  id: string;
-  couple_id: string;
-  author_id: string;
-  target_id: string;
-  title: string;
-  body: string | null;
-  love_language: string;
-  trigger_type: string;
-  surprise_hidden_from_partner: boolean;
-}
-
-interface WebhookPayload {
-  type: "INSERT" | "UPDATE" | "DELETE";
-  record: ReminderRow | null;
-  old_record: ReminderRow | null;
-  schema: string;
-  table: string;
-}
-
-Deno.serve(async (req) => {
-  try {
-    if (req.method !== "POST") {
-      return new Response("method not allowed", { status: 405 });
-    }
-
-    // Verify the request is from Supabase (has service role key).
-    const authHeader = req.headers.get("authorization");
-    const expected = `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}`;
-    if (authHeader !== expected) {
-      return new Response("unauthorized", { status: 401 });
-    }
-
-    const payload = (await req.json()) as WebhookPayload;
-    if (payload.type === "DELETE" || !payload.record) {
-      return jsonOK({ skipped: "delete or empty record" });
-    }
-    const reminder = payload.record;
-
-    // Only push when the target is the partner (i.e. not the author).
-    if (reminder.target_id === reminder.author_id) {
-      return jsonOK({ skipped: "self-targeted" });
-    }
-
-    // Fetch the target's APNs token.
-    const { data: profile, error: profileErr } = await supabase
-      .from("profiles")
-      .select("apns_token")
-      .eq("id", reminder.target_id)
-      .single();
-
-    if (profileErr || !profile?.apns_token) {
-      return jsonOK({ skipped: "no apns_token for target", error: profileErr?.message });
-    }
-
-    const token = await mintProviderToken();
-
-    const apnsBody = {
-      aps: {
-        alert: {
-          title: reminder.title,
-          body: reminder.body ?? "",
-        },
-        sound: "default",
-        "thread-id": reminder.love_language,
-        "interruption-level": "active",
-      },
-      reminder_id: reminder.id,
-      couple_id: reminder.couple_id,
-      love_language: reminder.love_language,
-    };
-
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 5000);
-
-    const apnsRes = await fetch(`${APNS_HOST}/3/device/${profile.apns_token}`, {
-      method: "POST",
-      headers: {
-        "authorization": `bearer ${token}`,
-        "apns-topic": TOPIC,
-        "apns-push-type": "alert",
-        "apns-priority": "10",
-        "content-type": "application/json",
-      },
-      body: JSON.stringify(apnsBody),
-      signal: controller.signal,
-    });
-
-    clearTimeout(timeout);
-
-    if (!apnsRes.ok) {
-      const text = await apnsRes.text();
-      return new Response(
-        JSON.stringify({ ok: false, status: apnsRes.status, body: text }),
-        { status: 502, headers: { "content-type": "application/json" } },
-      );
-    }
-
-    return jsonOK({ pushed: true });
-  } catch (err) {
-    const message = err instanceof Error ? err.message : String(err);
-    return new Response(
-      JSON.stringify({ ok: false, error: message }),
-      { status: 500, headers: { "content-type": "application/json" } },
-    );
-  }
-});
-
-// ---------- helpers ----------
-
-function mustEnv(name: string): string {
-  const v = Deno.env.get(name);
-  if (!v) throw new Error(`missing env: ${name}`);
-  return v;
-}
-
-function jsonOK(body: unknown): Response {
-  return new Response(JSON.stringify({ ok: true, ...((body as object) ?? {}) }), {
+function json(body: unknown, status = 200): Response {
+  return new Response(JSON.stringify(body), {
+    status,
     headers: { "content-type": "application/json" },
   });
 }
 
-// Cache the provider token for ~50 minutes (Apple allows max 1 hour).
-let cachedToken: { token: string; expires: number } | null = null;
+function base64url(bytes: ArrayBuffer | Uint8Array): string {
+  const array = bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes);
+  let binary = "";
+  for (const byte of array) binary += String.fromCharCode(byte);
+  return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
 
-async function mintProviderToken(): Promise<string> {
-  const now = Math.floor(Date.now() / 1000);
-  if (cachedToken && cachedToken.expires > now + 60) return cachedToken.token;
+// Apple rejects a provider token older than an hour and limits how often one
+// changes, so it lives for 50 minutes in this isolate.
+let provider: { token: string; mintedAt: number } | null = null;
 
+async function providerToken(nowSeconds: number): Promise<string> {
+  if (provider && nowSeconds - provider.mintedAt < 50 * 60) return provider.token;
+
+  const pem = Deno.env.get("APNS_PRIVATE_KEY")!
+    .replace(/\\n/g, "\n")
+    .replace(/-----(BEGIN|END) PRIVATE KEY-----/g, "")
+    .replace(/\s+/g, "");
   const key = await crypto.subtle.importKey(
     "pkcs8",
-    pemToBuffer(AUTH_KEY_PEM),
+    Uint8Array.from(atob(pem), (c) => c.charCodeAt(0)),
     { name: "ECDSA", namedCurve: "P-256" },
     false,
     ["sign"],
   );
-
-  const token = await create(
-    { alg: "ES256", kid: KEY_ID, typ: "JWT" },
-    { iss: TEAM_ID, iat: getNumericDate(0) },
+  const encode = (value: unknown) => base64url(new TextEncoder().encode(JSON.stringify(value)));
+  const unsigned = `${encode({ alg: "ES256", kid: Deno.env.get("APNS_KEY_ID") })}.${
+    encode({ iss: Deno.env.get("APNS_TEAM_ID"), iat: nowSeconds })
+  }`;
+  const signature = await crypto.subtle.sign(
+    { name: "ECDSA", hash: "SHA-256" },
     key,
+    new TextEncoder().encode(unsigned),
+  );
+  provider = { token: `${unsigned}.${base64url(signature)}`, mintedAt: nowSeconds };
+  return provider.token;
+}
+
+Deno.serve(async (req) => {
+  const missing = REQUIRED.filter((name) => !(Deno.env.get(name) ?? "").trim());
+  if (missing.length > 0) return json({ ok: false, missing }, 500);
+
+  if (req.headers.get("authorization") !== `Bearer ${Deno.env.get("PUSH_CRON_SECRET")}`) {
+    return json({ ok: false, error: "unauthorized" }, 401);
+  }
+
+  const supabase = createClient(
+    Deno.env.get("SUPABASE_URL")!,
+    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
   );
 
-  cachedToken = { token, expires: now + 50 * 60 };
-  return token;
-}
+  const { data, error } = await supabase.rpc("claim_due_reminder_pushes");
+  if (error) return json({ ok: false, error: error.message }, 500);
+  const pushes = (data ?? []) as ClaimedPush[];
+  if (pushes.length === 0) return json({ ok: true, sent: 0 });
 
-function pemToBuffer(pem: string): ArrayBuffer {
-  const cleaned = pem
-    .replace("-----BEGIN PRIVATE KEY-----", "")
-    .replace("-----END PRIVATE KEY-----", "")
-    .replace(/\s+/g, "");
-  const binary = atob(cleaned);
-  const bytes = new Uint8Array(binary.length);
-  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
-  return bytes.buffer;
-}
+  const nowSeconds = Math.floor(Date.now() / 1000);
+  const authorization = `bearer ${await providerToken(nowSeconds)}`;
+  const topic = Deno.env.get("APNS_TOPIC")!;
+  let sent = 0;
+  let deadTokens = 0;
+  const failures: string[] = [];
+
+  await Promise.all(pushes.map(async (push) => {
+    const request = apnsRequest(push, topic, nowSeconds);
+    try {
+      const response = await fetch(request.url, {
+        method: "POST",
+        headers: { ...request.headers, authorization },
+        body: request.body,
+        signal: AbortSignal.timeout(8000),
+      });
+      if (response.ok) {
+        await response.body?.cancel();
+        sent += 1;
+        return;
+      }
+      const text = await response.text();
+      if (isDeadToken(response.status, text)) {
+        deadTokens += 1;
+        await supabase.rpc("delete_push_device", { p_token: push.token });
+      } else {
+        failures.push(`${response.status} ${text}`);
+      }
+    } catch (err) {
+      failures.push(err instanceof Error ? err.message : String(err));
+    }
+  }));
+
+  return json({ ok: failures.length === 0, sent, deadTokens, failures });
+});

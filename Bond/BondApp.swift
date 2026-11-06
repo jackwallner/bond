@@ -4,6 +4,7 @@ import UIKit
 
 @main
 struct BondApp: App {
+    @UIApplicationDelegateAdaptor(BondAppDelegate.self) private var appDelegate
     @Environment(\.scenePhase) private var scenePhase
     @State private var supabase = SupabaseService.shared
     @State private var store = PurchasesService.shared
@@ -25,6 +26,19 @@ struct BondApp: App {
         _milestonesService = State(initialValue: milestones)
         _eventsRepo = State(initialValue: events)
         _checkInService = State(initialValue: checkIn)
+
+        // Here rather than in onAppear: a silent push can launch the app in the
+        // background with no scene at all.
+        PushRegistrar.shared.onRegistered = { await repo.rearm() }
+        PushRegistrar.shared.onRemoteChange = {
+            await SupabaseService.shared.bootstrap()
+            if pairing.coupleId == nil { await pairing.loadCouple() }
+            guard let me = SupabaseService.shared.currentUserId else { return }
+            await repo.catchUp(forSelfUserId: me) {
+                await events.refresh()
+                return events.events
+            }
+        }
 
         Self.applyNavigationBarFont()
         ReviewPromptTracker.recordAppLaunch()
@@ -181,6 +195,7 @@ struct BondApp: App {
             await pairingService.loadCouple()
         }
         await catchUpReminders()
+        await PushRegistrar.shared.refresh()
     }
 
     /// Re-reads the reminders and the completions and re-arms the notifications

@@ -43,12 +43,24 @@ final class NotificationScheduler {
             .filter { !$0.hasPrefix("milestone.") }
         center.removePendingNotificationRequests(withIdentifiers: toRemove)
 
-        for reminder in reminders where reminder.targetId == selfId {
+        let serverDelivers = PushRegistrar.shared.serverDelivers(for: selfId)
+        for reminder in reminders
+        where Self.armsLocally(reminder, me: selfId, serverDelivers: serverDelivers) {
             let completed = reminder.isCompleted(in: events)
             // A handled one-shot is done forever - never ping it again.
             if completed && !reminder.repeatsOnSchedule { continue }
             await schedule(reminder, completedThisPeriod: completed)
         }
+    }
+
+    /// Which reminders this phone arms itself. Nothing for the partner. Once the
+    /// server delivers here, it owns the time of what the partner wrote, so a
+    /// local copy would ping twice; only a place stays here, because only the
+    /// phone knows where it is.
+    nonisolated static func armsLocally(_ reminder: ReminderDTO, me: UUID, serverDelivers: Bool) -> Bool {
+        guard reminder.targetId == me else { return false }
+        guard serverDelivers, reminder.authorId != me else { return true }
+        return reminder.triggerType == "location"
     }
 
     /// Wipes every pending request (reminders + milestones). For sign-out and

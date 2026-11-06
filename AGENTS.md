@@ -65,6 +65,12 @@ phased plan are in the `project_bond` memory and `project-docs/marketing/aso-pla
 - **Never raise a paywall on a beat where the entitlement may still be
   resolving.** `BondApp` checks `!store.isPremium` alongside its own
   one-shot flags (for example the post-pairing paywall) for that reason.
+- **The server delivers what a partner wrote.** Migration 0014 keeps
+  `reminder_push_queue` current, pg_cron calls `send-push` when something is due,
+  and a phone stops arming those reminders locally once `PushRegistrar` has
+  registered it (`NotificationScheduler.armsLocally`), so nothing arrives twice.
+  Only location reminders stay on the device. The target of a partner's reminder
+  changes only its schedule (`reschedule_reminder`).
 - **Present sheets with `unfoldedSheet`, never `.sheet`.** On the unfolded
   iPhone Duo a system sheet sits across the fold; `unfoldedSheet`
   (`UnfoldedSplit.swift`) keeps the form in one pane there and is an

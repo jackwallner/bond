@@ -1,37 +1,35 @@
 # send-push
 
-APNs sender. Triggered by a Supabase Postgres webhook on inserts/updates to `public.reminders`.
+Delivers partner-written reminders over APNs. pg_cron calls it each minute that
+something is due (`supabase/migrations/0014_partner_delivery.sql`).
 
 ## Deploy
 
+The CLI expects `supabase/functions`, so deploy from a temporary link:
+
 ```sh
-supabase functions deploy send-push --project-ref rmtkpokdsyfvrisfygta
+mkdir -p supabase/functions && ln -s ../../SupabaseFunctions/send-push supabase/functions/send-push
+supabase functions deploy send-push --no-verify-jwt --project-ref rmtkpokdsyfvrisfygta
+rm -r supabase/functions
 ```
+
+`--no-verify-jwt` because the caller is pg_cron with `PUSH_CRON_SECRET`, not a user.
 
 ## Secrets
 
+`supabase secrets set`: `APNS_TEAM_ID`, `APNS_KEY_ID`, `APNS_TOPIC`
+(`com.jackwallner.bond`), `APNS_PRIVATE_KEY`, `PUSH_CRON_SECRET`. The key is the
+fleet APNs key, not an App Store Connect key: both are `.p8` files and the wrong
+one answers `InvalidProviderToken`.
+
+The Vault holds `send_push_url` and `send_push_secret` (the same value as
+`PUSH_CRON_SECRET`).
+
+## Tests
+
 ```sh
-supabase secrets set \
-  APNS_TEAM_ID=YXG4MP6W39 \
-  APNS_KEY_ID=ABCD123456 \
-  APNS_AUTH_KEY="$(cat AuthKey_ABCD123456.p8)" \
-  APNS_TOPIC=com.jackwallner.bond \
-  APNS_USE_SANDBOX=true \
-  --project-ref rmtkpokdsyfvrisfygta
+deno test SupabaseFunctions/send-push/apns_test.ts
 ```
 
-`APNS_AUTH_KEY` is the full PEM contents of the `.p8` file downloaded from the Apple Developer portal (Certificates, Identifiers & Profiles → Keys → register an APNs Auth Key, copy the Key ID, download the file once).
-
-## Wire the webhook
-
-Dashboard → Database → Webhooks → "Create a new hook":
-- Name: `reminder-push`
-- Table: `public.reminders`
-- Events: Insert, Update
-- HTTP method: POST
-- URL: `https://rmtkpokdsyfvrisfygta.supabase.co/functions/v1/send-push`
-- HTTP headers: `Authorization: Bearer <service_role_key>` (Supabase auto-includes it for webhooks targeting your project — verify in UI)
-
-## Blocker
-
-Requires a paid Apple Developer Program account ($99/yr) to create the APNs Auth Key. Without that, this function will 401 from APNs.
+Each device row says which APNs environment its build uses, so a debug build's
+sandbox token cannot be refused by production and deleted.

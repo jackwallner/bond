@@ -131,6 +131,16 @@ object Codec {
         .put("surprise_hidden_from_partner", r.surpriseHiddenFromPartner)
         .also { json -> r.createdAt?.let { json.put("created_at", it.toString()) } }
 
+    /** Every argument goes out, even when null: PostgREST finds the function by its argument names. */
+    fun rescheduleJson(r: ReminderDto): JSONObject = JSONObject()
+        .put("p_id", r.id.toString())
+        .put("p_trigger_type", r.triggerType)
+        .putNullable("p_fire_at", r.fireAt?.toString())
+        .putNullable("p_rrule", r.rrule)
+        .putNullable("p_geofence", r.geofence?.let(::geofenceJson))
+        .putNullable("p_window_start", r.windowStart?.toString())
+        .putNullable("p_window_end", r.windowEnd?.toString())
+
     // Events
 
     fun event(o: JSONObject) = ReminderEventDto(

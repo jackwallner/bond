@@ -87,6 +87,7 @@ struct ReminderListView: View {
                     primerRequestedAuth = true
                     Task {
                         await NotificationScheduler.shared.requestAuthorizationIfNeeded()
+                        await PushRegistrar.shared.refresh()
                         // Now that permission is (hopefully) granted, schedule
                         // anything that already exists.
                         await repo.rescheduleNotifications(

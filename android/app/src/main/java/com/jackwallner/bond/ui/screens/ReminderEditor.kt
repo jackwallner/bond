@@ -91,6 +91,9 @@ fun ReminderEditorSheet(existing: ReminderDto?, prefill: StarterChip?, onClose: 
     val colors = Bond.colors
     val now = remember { Instant.now().toMinute() }
 
+    // A reminder the partner wrote: the words stay theirs, the time is this user's to change.
+    val isPartnerRequest = existing != null && existing.authorId != me
+
     var title by remember { mutableStateOf(existing?.title ?: prefill?.title ?: "") }
     var note by remember { mutableStateOf(existing?.body ?: "") }
     var language by remember { mutableStateOf(existing?.loveLanguage ?: prefill?.loveLanguage ?: LoveLanguage.WORDS) }
@@ -169,7 +172,7 @@ fun ReminderEditorSheet(existing: ReminderDto?, prefill: StarterChip?, onClose: 
             body = note.ifEmpty { null },
             loveLanguage = language,
             targetId = targetId,
-            surpriseHiddenFromPartner = target == ReminderTarget.PARTNER && surpriseHidden,
+            surpriseHiddenFromPartner = target == ReminderTarget.PARTNER && kind != TriggerKind.LOCATION && surpriseHidden,
         )
         draft = when (kind) {
             TriggerKind.ONE_TIME -> draft.copy(triggerType = "one_time", fireAt = fireAt, rrule = null, geofence = null, windowStart = null, windowEnd = null)
@@ -200,7 +203,7 @@ fun ReminderEditorSheet(existing: ReminderDto?, prefill: StarterChip?, onClose: 
         isSaving = true
         scope.launch {
             try {
-                graph.reminders.upsert(draft)
+                if (isPartnerRequest) graph.reminders.reschedule(draft) else graph.reminders.upsert(draft)
                 graph.rescheduleNotifications()
                 onClose()
             } catch (e: Exception) {
@@ -212,7 +215,7 @@ fun ReminderEditorSheet(existing: ReminderDto?, prefill: StarterChip?, onClose: 
     }
 
     SheetScaffold(
-        if (existing == null) "New reminder" else "Edit reminder",
+        if (isPartnerRequest) "Reschedule" else if (existing == null) "New reminder" else "Edit reminder",
         leading = { BarButton("Cancel", tag = "editor.cancel", onClick = onClose) },
         trailing = {
             if (isSaving) {
@@ -228,12 +231,12 @@ fun ReminderEditorSheet(existing: ReminderDto?, prefill: StarterChip?, onClose: 
             verticalArrangement = Arrangement.spacedBy(Spacing.l),
         ) {
             GroupSection(footer = if (trimmedTitle.isEmpty()) ({ BText("Add a title to save.", BondType.footnote, colors.inkSecondary) }) else null) {
-                FormTextField(title, { title = it }, "Title", tag = "editor.title")
+                FormTextField(title, { title = it }, "Title", tag = "editor.title", enabled = !isPartnerRequest)
                 RowDivider()
-                FormTextField(note, { note = it }, "Note (optional)", tag = "editor.note", singleLine = false, minLines = 2)
+                FormTextField(note, { note = it }, "Note (optional)", tag = "editor.note", singleLine = false, minLines = 2, enabled = !isPartnerRequest)
             }
 
-            GroupSection {
+            if (!isPartnerRequest) GroupSection {
                 LoveLanguagePicker(language) { language = it }
                 RowDivider()
                 if (pairing.solo) {
@@ -247,7 +250,7 @@ fun ReminderEditorSheet(existing: ReminderDto?, prefill: StarterChip?, onClose: 
                         Spacer(Modifier.width(Spacing.base))
                         Segmented(ReminderTarget.entries, target, { it.title }, Modifier.weight(1f)) { target = it }
                     }
-                    if (target == ReminderTarget.PARTNER) {
+                    if (target == ReminderTarget.PARTNER && kind != TriggerKind.LOCATION) {
                         RowDivider()
                         ToggleRow("Surprise (hidden from partner)", surpriseHidden, tag = "editor.surprise") { surpriseHidden = it }
                     }

@@ -45,8 +45,10 @@ struct ReminderEditorView: View {
             Form {
                 Section {
                     TextField("Title", text: $title)
+                        .disabled(isPartnerRequest)
                     TextField("Note (optional)", text: $noteText, axis: .vertical)
                         .lineLimit(2...4)
+                        .disabled(isPartnerRequest)
                 } footer: {
                     if title.trimmingCharacters(in: .whitespaces).isEmpty {
                         Text("Add a title to save.")
@@ -56,14 +58,17 @@ struct ReminderEditorView: View {
 
                 Section {
                     loveLanguagePicker
-                    if pairing.solo {
+                        .disabled(isPartnerRequest)
+                    if isPartnerRequest {
+                        EmptyView()
+                    } else if pairing.solo {
                         LabeledContent("For", value: String(localized: "You"))
                     } else {
                         Picker("For", selection: $target) {
                             ForEach(ReminderTarget.allCases) { Text($0.title).tag($0) }
                         }
                         .pickerStyle(.segmented)
-                        if target == .partner {
+                        if target == .partner && triggerKind != .location {
                             Toggle("Surprise (hidden from partner)", isOn: $surpriseHidden)
                         }
                     }
@@ -105,10 +110,12 @@ struct ReminderEditorView: View {
                     .bondWarmRow()
                 }
 
-                ideasAndTemplatesSection
+                if !isPartnerRequest {
+                    ideasAndTemplatesSection
+                }
             }
             .bondWarmList()
-            .navigationTitle(existing == nil ? String(localized: "New reminder") : String(localized: "Edit reminder"))
+            .navigationTitle(navigationTitle)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
@@ -139,6 +146,18 @@ struct ReminderEditorView: View {
                 languageNote: previewLanguageNote
             )
         }
+    }
+
+    /// A reminder the partner wrote: the words stay theirs, the time is this
+    /// user's to change.
+    private var isPartnerRequest: Bool {
+        guard let existing, let me = supabase.currentUserId else { return false }
+        return existing.authorId != me
+    }
+
+    private var navigationTitle: String {
+        if isPartnerRequest { return String(localized: "Reschedule") }
+        return existing == nil ? String(localized: "New reminder") : String(localized: "Edit reminder")
     }
 
     /// Label on its own line, then one scrollable row of chips clearly below
@@ -212,7 +231,7 @@ struct ReminderEditorView: View {
             windowStart: nil,
             windowEnd: nil,
             status: "scheduled",
-            surpriseHiddenFromPartner: target == .partner && surpriseHidden,
+            surpriseHiddenFromPartner: target == .partner && triggerKind != .location && surpriseHidden,
             createdAt: nil
         )
         switch triggerKind {
@@ -271,7 +290,7 @@ struct ReminderEditorView: View {
         case .me:
             return String(localized: "Only you see this one.")
         case .partner:
-            if surpriseHidden {
+            if surpriseHidden && triggerKind != .location {
                 return partner.map { String(localized: "A surprise: \($0) won't see it in their list.") }
                     ?? String(localized: "A surprise: Your partner won't see it in their list.")
             }
@@ -517,7 +536,9 @@ struct ReminderEditorView: View {
         draft.body = noteText.isEmpty ? nil : noteText
         draft.loveLanguage = loveLanguage
         draft.targetId = targetId
-        draft.surpriseHiddenFromPartner = (target == .partner) ? surpriseHidden : false
+        // Only the server can deliver a surprise, and it cannot tell where the
+        // partner is, so a place is never one.
+        draft.surpriseHiddenFromPartner = target == .partner && triggerKind != .location && surpriseHidden
 
         switch triggerKind {
         case .oneTime:

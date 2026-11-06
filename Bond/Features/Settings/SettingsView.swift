@@ -232,6 +232,7 @@ struct SettingsView: View {
         .confirmationDialog("Sign out?", isPresented: $confirmSignOut, titleVisibility: .visible) {
             Button("Sign out", role: .destructive) {
                 Task {
+                    await PushRegistrar.shared.unregister()
                     await purchases.signOut()
                     await supabase.signOut()
                     pairing.reset()
@@ -268,6 +269,7 @@ struct SettingsView: View {
             defer { isDeleting = false }
             do {
                 try await supabase.deleteAccount()
+                PushRegistrar.shared.forget()
                 await purchases.signOut()
                 pairing.reset()
                 NotificationScheduler.shared.clearAll()

@@ -234,12 +234,14 @@ fun FormTextField(
     tag: String,
     singleLine: Boolean = true,
     minLines: Int = 1,
+    enabled: Boolean = true,
 ) {
     val colors = Bond.colors
     Column(Modifier.fillMaxWidth().padding(horizontal = Spacing.base, vertical = 12.dp)) {
         androidx.compose.foundation.text.BasicTextField(
             value = value,
             onValueChange = onChange,
+            enabled = enabled,
             singleLine = singleLine,
             minLines = minLines,
             maxLines = if (singleLine) 1 else 6,

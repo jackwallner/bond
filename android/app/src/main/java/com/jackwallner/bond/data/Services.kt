@@ -393,6 +393,16 @@ class ReminderRepository(
         refresh()
     }
 
+    /** Moves a reminder the partner wrote: its schedule is all the target may change. */
+    suspend fun reschedule(reminder: ReminderDto) {
+        if (seed.enabled) {
+            upsert(reminder)
+            return
+        }
+        client.rpc("reschedule_reminder", Codec.rescheduleJson(reminder))
+        refresh()
+    }
+
     suspend fun bulkInsert(drafts: List<ReminderDto>) {
         if (drafts.isEmpty()) return
         if (seed.enabled) {

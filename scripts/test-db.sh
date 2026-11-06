@@ -5,6 +5,10 @@
 # Requires postgresql@17:  brew install postgresql@17
 # Override the binary dir with PGBIN=/path/to/pg/bin if needed.
 set -euo pipefail
+# Postgres refuses to start without a valid locale ("postmaster became multithreaded").
+export LC_ALL=en_US.UTF-8
+# A long TMPDIR overflows the socket path limit.
+export TMPDIR=/tmp
 
 PGBIN="${PGBIN:-/opt/homebrew/opt/postgresql@17/bin}"
 [[ -x "$PGBIN/initdb" ]] || PGBIN="$(dirname "$(command -v initdb)")"
@@ -43,5 +47,6 @@ done
 
 echo "==> run tests"
 "${PSQL[@]}" -d "$DB" -f "$TESTS/rpc_lifecycle_test.sql"
+"${PSQL[@]}" -d "$DB" -f "$TESTS/partner_delivery_test.sql"
 
 echo "==> OK"

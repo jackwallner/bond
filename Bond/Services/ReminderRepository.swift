@@ -38,6 +38,18 @@ final class ReminderRepository {
             .execute()
     }
 
+    /// Who is signed in, which decides how a save reaches the server.
+    @ObservationIgnored
+    var currentUserId: @MainActor () -> UUID? = { SupabaseService.shared.currentUserId }
+
+    /// Moves a reminder the partner wrote. Tests swap it for a stub.
+    @ObservationIgnored
+    var rescheduleRow: @MainActor (ReminderDTO) async throws -> Void = { reminder in
+        try await SupabaseService.shared.client
+            .rpc("reschedule_reminder", params: RescheduleReminderParams(reminder))
+            .execute()
+    }
+
     /// Lays down the on-device notifications for the signed-in user from the
     /// given list and events; the flag says whether it may raise the system
     /// permission prompt. Tests swap it for a stub, because a test host has no
@@ -166,6 +178,13 @@ final class ReminderRepository {
             return
         }
         #endif
+        // The row is the partner's, so only its schedule is this user's to change.
+        if let me = currentUserId(), reminder.authorId != me {
+            try await rescheduleRow(reminder)
+            log.info("Rescheduled reminder \(reminder.id)")
+            await refresh()
+            return
+        }
         let _: ReminderDTO = try await supabase.client
             .from("reminders")
             .upsert(reminder)
@@ -261,5 +280,37 @@ final class ReminderRepository {
             realtimeChannel = nil
             subscribedCoupleId = nil
         }
+    }
+}
+
+/// The arguments of the `reschedule_reminder` RPC. Every one goes out even when
+/// nil: PostgREST finds the function by its argument names, and a cleared field
+/// has to clear.
+struct RescheduleReminderParams: Encodable, Sendable {
+    let reminder: ReminderDTO
+
+    init(_ reminder: ReminderDTO) {
+        self.reminder = reminder
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case id = "p_id"
+        case triggerType = "p_trigger_type"
+        case fireAt = "p_fire_at"
+        case rrule = "p_rrule"
+        case geofence = "p_geofence"
+        case windowStart = "p_window_start"
+        case windowEnd = "p_window_end"
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var c = encoder.container(keyedBy: CodingKeys.self)
+        try c.encode(reminder.id, forKey: .id)
+        try c.encode(reminder.triggerType, forKey: .triggerType)
+        try c.encode(reminder.fireAt, forKey: .fireAt)
+        try c.encode(reminder.rrule, forKey: .rrule)
+        try c.encode(reminder.geofence, forKey: .geofence)
+        try c.encode(reminder.windowStart, forKey: .windowStart)
+        try c.encode(reminder.windowEnd, forKey: .windowEnd)
     }
 }
