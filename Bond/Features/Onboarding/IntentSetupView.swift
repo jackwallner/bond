@@ -330,8 +330,11 @@ struct IntentSetupView: View {
                 .font(.bond(.subheadline, weight: .semibold))
                 .foregroundStyle(.bondTextSecondary)
                 .frame(maxWidth: .infinity, minHeight: 44)
+                .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .frame(minHeight: 44)
+        .fixedSize(horizontal: false, vertical: true)
         .disabled(isPurchasing || isRestoring || isFinishing)
     }
 

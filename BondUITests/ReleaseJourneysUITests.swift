@@ -182,6 +182,11 @@ final class ReleaseJourneysUITests: XCTestCase {
         for _ in 0..<24 where !element.exists {
             QA.swipe(visibleList(app), up ? .up : .down)
         }
+        // A row above the current position (large text, a list left mid-scroll
+        // after the editor closes) is reached by going back the other way.
+        for _ in 0..<24 where !element.exists {
+            QA.swipe(visibleList(app), up ? .down : .up)
+        }
         return element.exists
     }
 
