@@ -21,31 +21,31 @@ final class ReleaseJourneysUITests: XCTestCase {
         let app = XCUIApplication(bundleIdentifier: Self.bundle)
         QA.launch(app, environment: ["RC_PROBE_USER": "qa-bond-journeys", "RC_PROBE_SURFACE": "qa_journeys"],
                   arguments: ["-rcfunnelprobe", "-BondOnboardingSeed"])
-        let name = app.textFields["Their name"]
+        let name = localized(app.textFields, "Their name", "Name deines Partners")
         XCTAssertTrue(name.waitForExistence(timeout: 45), "name step never rendered")
         QA.checkpoint(app, "partner-name")
 
         name.tap()
         // Return submits the step; at large text the keyboard covers Continue.
         name.typeText("Sam\n")
-        let commit = app.buttons.containing(NSPredicate(format: "label BEGINSWITH %@", "I commit")).firstMatch
+        let commit = localized(app.buttons, "I commit to showing up for Sam", "Ich verspreche, für Sam da zu sein")
         XCTAssertTrue(commit.waitForExistence(timeout: 15))
         QA.checkpoint(app, "commit")
 
         tap(commit, in: app)
-        XCTAssertTrue(app.buttons["Continue"].firstMatch.waitForExistence(timeout: 15))
+        XCTAssertTrue(localized(app.buttons, "Continue", "Weiter").waitForExistence(timeout: 15))
         QA.checkpoint(app, "love-language")
 
-        tap(onScreenButton("Continue", in: app), in: app)
-        let start = app.buttons["Start using Little Gestures"]
+        tap(onScreenButton("Continue", "Weiter", in: app), in: app)
+        let start = localized(app.buttons, "Start using Little Gestures", "Little Gestures nutzen")
         XCTAssertTrue(start.waitForExistence(timeout: 15))
         if !start.isEnabled {
-            tap(app.buttons.containing(NSPredicate(format: "label CONTAINS %@", "Little gestures")).firstMatch, in: app)
+            tap(app.buttons.containing(NSPredicate(format: "label CONTAINS %@ OR label CONTAINS %@", "Little gestures", "Kleine Gesten")).firstMatch, in: app)
         }
         QA.checkpoint(app, "focus-areas")
 
         tap(start, in: app)
-        let free = app.buttons["Continue for free"]
+        let free = localized(app.buttons, "Continue for free", "Kostenlos weiter")
         XCTAssertTrue(free.waitForExistence(timeout: 20), "trial page never rendered")
         QA.checkpoint(app, "onboarding-trial", paywall: true)
 
@@ -91,21 +91,25 @@ final class ReleaseJourneysUITests: XCTestCase {
     /// session id keeps the changes on disk across `QA.relaunch`; no network.
     func testCoreLoopAddThenMarkGestureDone() {
         continueAfterFailure = false
-        let title = "Write Sam a note \(Int.random(in: 1000...9999))"
+        let title = "Note \(Int.random(in: 1000...9999))"
         let app = XCUIApplication(bundleIdentifier: Self.bundle)
         QA.launch(app, arguments: Self.seeded + ["-BondSeedSession", UUID().uuidString])
         XCTAssertTrue(tab("Reminders", in: app).waitForExistence(timeout: 25), "seeded home never rendered")
         XCTAssertFalse(listed(title, in: app).exists)
         let handled = app.descendants(matching: .any)
-            .matching(NSPredicate(format: "label MATCHES %@", "^Handled\\W*1$")).firstMatch
+            .matching(NSPredicate(format: "label MATCHES %@", "^(Handled|Erledigt)\\W*1$")).firstMatch
         XCTAssertFalse(handled.exists, "seed should start with nothing handled")
         QA.checkpoint(app, "core-home")
 
-        app.buttons["Add reminder"].tap()
-        let field = app.textFields["Title"]
+        localized(app.buttons, "Add reminder", "Erinnerung hinzufügen").tap()
+        let field = localized(app.textFields, "Title", "Titel")
         XCTAssertTrue(field.waitForExistence(timeout: 15), "editor never opened")
         field.tap()
         field.typeText(title)
+        if let typed = field.value as? String, title.hasPrefix(typed), typed != title {
+            field.typeText(String(title.dropFirst(typed.count)))
+        }
+        XCTAssertEqual(field.value as? String, title, "title was not entered completely")
         // The keyboard covers the schedule rows, and the oracles would measure
         // them through its blur; judge the form with the keyboard away.
         field.typeText("\n")
@@ -115,17 +119,17 @@ final class ReleaseJourneysUITests: XCTestCase {
         }
         QA.checkpoint(app, "core-editor")
 
-        let save = app.buttons["Save"]
+        let save = localized(app.buttons, "Save", "Speichern")
         XCTAssertTrue(save.waitForExistence(timeout: 10))
         save.tap()
         // The first reminder asks for notification permission; answer it as a
         // person would so it does not sit over every later step.
         let alert = XCUIApplication(bundleIdentifier: "com.apple.springboard").alerts.firstMatch
-        if alert.waitForExistence(timeout: 8) { alert.buttons["Allow"].tap() }
+        if alert.waitForExistence(timeout: 8) { localized(alert.buttons, "Allow", "Erlauben").tap() }
         XCTAssertTrue(listed(title, in: app).waitForExistence(timeout: 20) || scrollTo(listed(title, in: app), in: app),
                       "saved reminder is not listed")
         // The editor's dismissal animation would otherwise be captured mid-slide.
-        let add = app.buttons["Add reminder"]
+        let add = localized(app.buttons, "Add reminder", "Erinnerung hinzufügen")
         let closed = Date().addingTimeInterval(10)
         while !(add.exists && add.isHittable) && Date() < closed {
             RunLoop.current.run(until: Date().addingTimeInterval(0.25))
@@ -145,7 +149,7 @@ final class ReleaseJourneysUITests: XCTestCase {
         // lazy list; bring it back before reaching for its check circle.
         _ = scrollTo(listed(title, in: app), in: app, up: false)
         let cell = app.cells.containing(NSPredicate(format: "label CONTAINS %@", title)).firstMatch
-        let done = cell.buttons["Mark as done"]
+        let done = localized(cell.buttons, "Mark as done", "Als erledigt markieren")
         tap(done, in: app)
         scrollTo(handled, in: app)
         XCTAssertTrue(handled.exists, "done reminder never reached Handled")
@@ -173,7 +177,7 @@ final class ReleaseJourneysUITests: XCTestCase {
     /// scrolled to. Returns whether the element exists afterwards.
     @discardableResult
     private func scrollTo(_ element: XCUIElement, in app: XCUIApplication, up: Bool = true) -> Bool {
-        for _ in 0..<8 where !element.exists {
+        for _ in 0..<24 where !element.exists {
             QA.swipe(visibleList(app), up ? .up : .down)
         }
         return element.exists
@@ -186,8 +190,7 @@ final class ReleaseJourneysUITests: XCTestCase {
     private func visibleList(_ app: XCUIApplication) -> XCUIElement {
         // The Reminders list is the one holding reminder rows; on the unfolded
         // Duo the first collection view is the Insights pane's.
-        let rows = NSPredicate(format: "label BEGINSWITH 'Mark as' OR label MATCHES %@", "^Handled\\W*\\d+$")
-        let reminders = app.collectionViews.containing(rows).firstMatch
+        let reminders = app.collectionViews["reminders-list"]
         if reminders.exists { return reminders }
         return app.collectionViews.allElementsBoundByIndex.first { $0.exists && $0.isHittable }
             ?? (app.collectionViews.firstMatch.exists ? app.collectionViews.firstMatch : app.scrollViews.firstMatch)
@@ -207,8 +210,9 @@ final class ReleaseJourneysUITests: XCTestCase {
     /// A tab bar button. The unfolded Duo's floating bar is not always a
     /// `tabBars` element, so fall back to the button by label.
     private func tab(_ name: String, in app: XCUIApplication) -> XCUIElement {
-        let bar = app.tabBars.buttons[name]
-        return bar.exists ? bar : app.buttons.matching(NSPredicate(format: "label == %@", name)).firstMatch
+        let german = ["Reminders": "Erinnerungen", "Check-In": "Check-in", "Milestones": "Meilensteine", "Insights": "Einblicke", "Settings": "Einstellungen"][name] ?? name
+        let bar = localized(app.tabBars.buttons, name, german)
+        return bar.exists ? bar : localized(app.buttons, name, german)
     }
 
     private func launchSeeded() -> XCUIApplication {
@@ -220,8 +224,12 @@ final class ReleaseJourneysUITests: XCTestCase {
 
     /// The hittable button with this label. A step change cross-fades, so the
     /// outgoing step's button can still be in the tree for a moment.
-    private func onScreenButton(_ label: String, in app: XCUIApplication) -> XCUIElement {
-        let matches = app.buttons.matching(NSPredicate(format: "label == %@", label))
+    private func localized(_ query: XCUIElementQuery, _ english: String, _ german: String) -> XCUIElement {
+        query.matching(NSPredicate(format: "label == %@ OR label == %@", english, german)).firstMatch
+    }
+
+    private func onScreenButton(_ label: String, _ german: String, in app: XCUIApplication) -> XCUIElement {
+        let matches = app.buttons.matching(NSPredicate(format: "label == %@ OR label == %@", label, german))
         let deadline = Date().addingTimeInterval(5)
         repeat {
             if let hit = matches.allElementsBoundByIndex.first(where: { $0.isHittable }) { return hit }

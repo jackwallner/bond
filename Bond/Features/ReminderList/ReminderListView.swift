@@ -9,9 +9,11 @@ struct ReminderListView: View {
     @Environment(PurchasesService.self) private var store
     @Environment(DailyCheckInService.self) private var checkIn
     @Environment(\.isUnfoldedSplit) private var isUnfoldedSplit
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @State private var router = NotificationRouter.shared
 
     @State private var isEditorPresented = false
+    @State private var isCheckInPresented = false
     @State private var isTemplatesPresented = false
     @State private var editingReminder: ReminderDTO?
     @State private var showNotificationPrimer = false
@@ -46,13 +48,18 @@ struct ReminderListView: View {
                 }
             }
             .navigationTitle(BondBrand.name)
-            // Unfolded, add sits in the bar as on Milestones: a floating
-            // button would rest on the pane's last row above the tab bar.
+            // Keep large reminder rows clear of the floating tab bar.
             .safeAreaInset(edge: .bottom, alignment: .trailing) {
-                if !isUnfoldedSplit { composeButton }
+                if !isUnfoldedSplit {
+                    if dynamicTypeSize.isAccessibilitySize {
+                        Color.clear.frame(height: 88)
+                    } else {
+                        composeButton
+                    }
+                }
             }
             .toolbar {
-                if isUnfoldedSplit {
+                if isUnfoldedSplit || dynamicTypeSize.isAccessibilitySize {
                     ToolbarItem(placement: .topBarTrailing) {
                         Button {
                             editingReminder = nil
@@ -63,6 +70,9 @@ struct ReminderListView: View {
                         .accessibilityLabel("Add reminder")
                     }
                 }
+            }
+            .navigationDestination(isPresented: $isCheckInPresented) {
+                DailyCheckInView()
             }
             .unfoldedSheet(isPresented: $isEditorPresented, onDismiss: { starterPrefill = nil }, splitsItself: true) {
                 ReminderEditorView(
@@ -255,17 +265,12 @@ struct ReminderListView: View {
         List {
             if let state = checkInCardState {
                 Section {
-                    // The card draws its own chevron; a visible link would
-                    // add List's disclosure indicator outside the card.
-                    ZStack {
-                        NavigationLink {
-                            DailyCheckInView()
-                        } label: {
-                            EmptyView()
-                        }
-                        .opacity(0)
+                    Button {
+                        isCheckInPresented = true
+                    } label: {
                         CheckInPromptCard(state: state, partnerName: partnerName)
                     }
+                    .buttonStyle(.plain)
                     .paneRow()
                     .listRowInsets(Self.heroCardInsets)
                     .listRowBackground(Color.clear)
@@ -362,6 +367,7 @@ struct ReminderListView: View {
                     .listRowSeparator(.hidden)
             }
         }
+        .accessibilityIdentifier("reminders-list")
         .listStyle(.insetGrouped)
         .listSectionSpacing(BondSpacing.base)
         .bondWarmList()
