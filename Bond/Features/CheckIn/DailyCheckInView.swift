@@ -119,7 +119,7 @@ struct DailyCheckInView: View {
                 if let lang = question.loveLanguage {
                     Text(lang.title)
                         .font(.bond(.caption))
-                        .foregroundStyle(lang.tint)
+                        .foregroundStyle(lang.textTint)
                         .padding(.horizontal, BondSpacing.m)
                         .padding(.vertical, BondSpacing.xs)
                         .background(lang.tint.opacity(0.12), in: Capsule())

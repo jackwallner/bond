@@ -35,7 +35,7 @@ struct OnboardingTrialView: View {
             VStack(alignment: .leading, spacing: BondSpacing.s) {
                 Label("Chosen for your setup", systemImage: "checkmark.seal.fill")
                     .font(.bond(.subheadline, weight: .semibold))
-                    .foregroundStyle(Color.bondAccent)
+                    .foregroundStyle(Color.bondAccentText)
 
                 ForEach(benefits) { benefit in
                     HStack(alignment: .top, spacing: BondSpacing.m) {

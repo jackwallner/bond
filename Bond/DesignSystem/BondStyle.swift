@@ -55,6 +55,17 @@ extension Color {
         light: Color(red: 0.420, green: 0.353, blue: 0.306),  // #6B5A4E
         dark:  Color(red: 0.741, green: 0.690, blue: 0.659)   // #BDB0A8
     )
+    /// Accent for small text on the cream surface: `bondAccent` measures 3.7:1
+    /// there. Follows the Pink theme through the accent.
+    @MainActor
+    static var bondAccentText: Color {
+        switch BondTheme.shared.accent {
+        case .terracotta:
+            Color(light: Color(red: 0.620, green: 0.235, blue: 0.200), dark: BondTheme.shared.accent.color)
+        case .pink:
+            Color(light: Color(red: 0.780, green: 0.090, blue: 0.330), dark: BondTheme.shared.accent.color)
+        }
+    }
     /// "Done" green for small text: system green is 2:1 on the cream.
     static let bondDone = Color(
         light: Color(red: 0.118, green: 0.478, blue: 0.227),  // #1E7A3A

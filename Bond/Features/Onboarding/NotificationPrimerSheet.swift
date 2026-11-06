@@ -60,6 +60,8 @@ struct NotificationPrimerSheet: View {
                 Button("Maybe later") { dismiss() }
                     .font(.bond(.footnote))
                     .foregroundStyle(.bondTextSecondary)
+                    .frame(minWidth: 44, minHeight: 44)
+                    .contentShape(Rectangle())
                     .padding(.bottom, BondSpacing.s)
             }
             .padding(.horizontal, BondSpacing.base)

@@ -329,7 +329,7 @@ struct IntentSetupView: View {
             Text("Continue for free")
                 .font(.bond(.subheadline, weight: .semibold))
                 .foregroundStyle(.bondTextSecondary)
-                .frame(maxWidth: .infinity, minHeight: 34)
+                .frame(maxWidth: .infinity, minHeight: 44)
         }
         .buttonStyle(.plain)
         .disabled(isPurchasing || isRestoring || isFinishing)
@@ -359,13 +359,19 @@ struct IntentSetupView: View {
                                 .foregroundStyle(.bondTextSecondary)
                         }
                     }
+                    .frame(minHeight: 44)
+                    .contentShape(Rectangle())
                     .buttonStyle(.plain)
                     .disabled(isPurchasing || isRestoring || isFinishing)
 
                     HStack(spacing: BondSpacing.xs) {
                         Link("Terms", destination: PaywallLinks.terms)
+                            .frame(minHeight: 44)
+                            .contentShape(Rectangle())
                         Text("·").foregroundStyle(.bondTextSecondary)
                         Link("Privacy", destination: PaywallLinks.privacyPolicy)
+                            .frame(minHeight: 44)
+                            .contentShape(Rectangle())
                     }
                     .font(.bond(.caption2))
                     .foregroundStyle(.bondTextSecondary)
@@ -374,7 +380,7 @@ struct IntentSetupView: View {
                 Color.clear
             }
         }
-        .frame(minHeight: 44)
+        .frame(minHeight: 88)
     }
 
     private var continueTitle: String {
@@ -524,7 +530,7 @@ struct IntentSetupView: View {
                 Label("Have an invite from your partner?", systemImage: "envelope.open.fill")
                     .font(.bond(.subheadline, weight: .medium))
             }
-            .foregroundStyle(Color.bondAccent)
+            .foregroundStyle(Color.bondAccentText)
             .padding(.horizontal, BondSpacing.base)
         }
     }

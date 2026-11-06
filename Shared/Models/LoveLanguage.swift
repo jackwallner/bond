@@ -77,6 +77,18 @@ public enum LoveLanguage: String, CaseIterable, Codable, Identifiable, Sendable 
         }
     }
 
+    /// `tint` for small text on the cream surface: system hues measure 2 to 3:1
+    /// there. Light uses darkened hues that hold 4.5:1; dark keeps `tint`.
+    public var textTint: Color {
+        switch self {
+        case .words: Color(light: Color(red: 0.761, green: 0.094, blue: 0.357), dark: tint)
+        case .acts:  Color(light: Color(red: 0.600, green: 0.255, blue: 0.020), dark: tint)
+        case .gifts: Color(light: Color(red: 0.482, green: 0.247, blue: 0.710), dark: tint)
+        case .time:  Color(light: Color(red: 0.122, green: 0.373, blue: 0.800), dark: tint)
+        case .touch: Color(light: Color(red: 0.600, green: 0.250, blue: 0.145), dark: tint)
+        }
+    }
+
     /// Solid fill behind white text (a selected chip). `tint` is lightened in
     /// dark mode for text on a dark card, which white cannot read on; these
     /// hold 4.5:1 against white in both appearances.

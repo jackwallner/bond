@@ -87,7 +87,7 @@ struct StatsView: View {
                         x: .value("Count", item.1),
                         y: .value("Language", item.0.title)
                     )
-                    .foregroundStyle(item.0.tint)
+                    .foregroundStyle(item.0.textTint)
                     .annotation(position: .trailing) {
                         Text("\(item.1)").font(.bond(.caption2)).foregroundStyle(.bondTextSecondary)
                     }
@@ -111,7 +111,7 @@ struct StatsView: View {
                                 x: .value("Week", week.weekStart, unit: .weekOfYear),
                                 y: .value("Actions", count)
                             )
-                            .foregroundStyle(lang.tint)
+                            .foregroundStyle(lang.textTint)
                             .position(by: .value("Language", lang.title))
                         }
                     }
@@ -222,7 +222,7 @@ struct StatsView: View {
             VStack(alignment: .center, spacing: 4) {
                 Text("\(current)")
                     .font(.bond(.title, weight: .bold))
-                    .foregroundStyle(.pink)
+                    .foregroundStyle(LoveLanguage.words.textTint)
                 Text(PluralLabel.dayStreak(current))
                     .font(.bond(.caption))
                     .foregroundStyle(.bondTextSecondary)
@@ -234,7 +234,7 @@ struct StatsView: View {
             VStack(alignment: .center, spacing: 4) {
                 Text("\(longest)")
                     .font(.bond(.title, weight: .bold))
-                    .foregroundStyle(.orange)
+                    .foregroundStyle(LoveLanguage.acts.textTint)
                 Text(PluralLabel.bestStreak(longest))
                     .font(.bond(.caption))
                     .foregroundStyle(.bondTextSecondary)
@@ -246,7 +246,7 @@ struct StatsView: View {
             VStack(alignment: .center, spacing: 4) {
                 Text(a.completionRate().map { (Double(Int($0)) / 100).formatted(.percent) } ?? "–")
                     .font(.bond(.title, weight: .bold))
-                    .foregroundStyle(.green)
+                    .foregroundStyle(Color.bondDone)
                 Text("done this week")
                     .font(.bond(.caption))
                     .foregroundStyle(.bondTextSecondary)
@@ -282,7 +282,7 @@ struct StatsView: View {
                         .font(.bond(.caption, weight: .bold))
                     Image(systemName: most.0.symbolName)
                         .font(.bond(.caption))
-                        .foregroundStyle(most.0.tint)
+                        .foregroundStyle(most.0.textTint)
                 }
             }
 
@@ -295,7 +295,7 @@ struct StatsView: View {
                         .font(.bond(.caption, weight: .bold))
                     Image(systemName: neglected.0.symbolName)
                         .font(.bond(.caption))
-                        .foregroundStyle(neglected.0.tint)
+                        .foregroundStyle(neglected.0.textTint)
                 }
             }
         }

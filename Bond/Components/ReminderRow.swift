@@ -71,10 +71,7 @@ struct ReminderRow: View {
                             .foregroundStyle(.bondTextSecondary)
                             .lineLimit(isLarge ? nil : 2)
                     }
-                    let chips = isLarge
-                        ? AnyLayout(FlowLayout(spacing: 8))
-                        : AnyLayout(HStackLayout(spacing: 8))
-                    chips {
+                    FlowLayout(spacing: 8) {
                         if isActedOn {
                             Text(doneLabel)
                                 .font(.bond(.caption, weight: .semibold))
@@ -91,12 +88,14 @@ struct ReminderRow: View {
                         if let cadence = cadenceLabel {
                             Text(cadence)
                                 .font(.bond(.caption2))
+                                .foregroundStyle(.bondTextSecondary)
                                 .padding(.horizontal, 6).padding(.vertical, 2)
                                 .background(Color.bondHairline, in: Capsule())
                         }
                         if reminder.targetId != currentUserId {
                             Text("for partner")
                                 .font(.bond(.caption2))
+                                .foregroundStyle(reminder.loveLanguage.textTint)
                                 .padding(.horizontal, 6).padding(.vertical, 2)
                                 .background(reminder.loveLanguage.tint.opacity(0.15), in: Capsule())
                         }

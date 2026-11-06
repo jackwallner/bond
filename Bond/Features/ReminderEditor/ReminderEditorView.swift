@@ -193,7 +193,7 @@ struct ReminderEditorView: View {
                 }
                 .padding(.horizontal, BondSpacing.m)
                 .padding(.vertical, BondSpacing.s)
-                .foregroundStyle(selected ? .white : lang.tint)
+                .foregroundStyle(selected ? .white : lang.textTint)
                 .background(
                     selected ? AnyShapeStyle(lang.chipFill) : AnyShapeStyle(lang.tint.opacity(0.12)),
                     in: Capsule()
@@ -313,7 +313,7 @@ struct ReminderEditorView: View {
                                 HStack(spacing: BondSpacing.xs) {
                                     Image(systemName: chip.loveLanguage.symbolName)
                                         .font(.bond(.caption))
-                                        .foregroundStyle(chip.loveLanguage.tint)
+                                        .foregroundStyle(chip.loveLanguage.textTint)
                                     Text(chip.displayTitle)
                                         .font(.bond(.caption))
                                         .foregroundStyle(.primary)

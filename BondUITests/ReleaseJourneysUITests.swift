@@ -147,9 +147,11 @@ final class ReleaseJourneysUITests: XCTestCase {
 
         // Large text and the Duo's narrow pane scroll the new row out of the
         // lazy list; bring it back before reaching for its check circle.
-        _ = scrollTo(listed(title, in: app), in: app, up: false)
         let cell = app.cells.containing(NSPredicate(format: "label CONTAINS %@", title)).firstMatch
         let done = localized(cell.buttons, "Mark as done", "Als erledigt markieren")
+        // The title can stay in the tree after its row is recycled, so scroll
+        // until the row's own button exists, not just its text.
+        for _ in 0..<24 where !done.exists { QA.swipe(visibleList(app), .up) }
         tap(done, in: app)
         scrollTo(handled, in: app)
         XCTAssertTrue(handled.exists, "done reminder never reached Handled")
