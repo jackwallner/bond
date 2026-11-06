@@ -224,8 +224,11 @@ final class ReleaseJourneysUITests: XCTestCase {
 
     /// The hittable button with this label. A step change cross-fades, so the
     /// outgoing step's button can still be in the tree for a moment.
+    /// The element by either language's text. A text field's label is empty: its
+    /// words are the placeholder.
     private func localized(_ query: XCUIElementQuery, _ english: String, _ german: String) -> XCUIElement {
-        query.matching(NSPredicate(format: "label == %@ OR label == %@", english, german)).firstMatch
+        let names = [english, german]
+        return query.matching(NSPredicate(format: "label IN %@ OR placeholderValue IN %@ OR identifier IN %@", names, names, names)).firstMatch
     }
 
     private func onScreenButton(_ label: String, _ german: String, in app: XCUIApplication) -> XCUIElement {
