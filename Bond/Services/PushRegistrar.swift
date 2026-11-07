@@ -53,17 +53,27 @@ final class PushRegistrar {
     func store(deviceToken: Data) async {
         guard let me = SupabaseService.shared.currentUserId else { return }
         let token = deviceToken.map { String(format: "%02x", $0) }.joined()
-        let timezone = TimeZone.current.identifier
+        let registration = PushRegistration(
+            token: token, env: Self.environment, timezone: TimeZone.current.identifier, calendar: .current
+        )
         // Once a day is enough: every registration re-reads this user's schedule.
         let day = Date.now.formatted(.iso8601.year().month().day())
-        let sync = [token, me.uuidString, timezone, day].joined(separator: "|")
+        let sync = [
+            token, me.uuidString, registration.timezone, "\(registration.firstWeekday ?? 0)", day
+        ].joined(separator: "|")
         guard defaults.string(forKey: Self.syncedKey) != sync else { return }
         do {
-            try await SupabaseService.shared.client
-                .rpc("register_push_device", params: [
-                    "p_token": token, "p_env": Self.environment, "p_timezone": timezone
-                ])
-                .execute()
+            do {
+                try await SupabaseService.shared.client
+                    .rpc("register_push_device", params: registration)
+                    .execute()
+            } catch {
+                // A server without the week (migration 0017) still delivers.
+                log.notice("Registering with the week failed, retrying without: \(error.localizedDescription)")
+                try await SupabaseService.shared.client
+                    .rpc("register_push_device", params: registration.withoutWeek)
+                    .execute()
+            }
             defaults.set(token, forKey: Self.tokenKey)
             defaults.set(me.uuidString, forKey: Self.userKey)
             defaults.set(sync, forKey: Self.syncedKey)
@@ -122,5 +132,46 @@ final class BondAppDelegate: NSObject, UIApplicationDelegate {
     ) async -> UIBackgroundFetchResult {
         await PushRegistrar.shared.onRemoteChange?()
         return .newData
+    }
+}
+
+/// The arguments of `register_push_device`. The first weekday is the one the
+/// phone's weekly completions count from (`ReminderCompletion`), so the server's
+/// "done this week" (0017) starts on the same day. Without it the call matches
+/// the three-argument version the store builds use.
+struct PushRegistration: Encodable, Equatable, Sendable {
+    let token: String
+    let env: String
+    let timezone: String
+    let firstWeekday: Int?
+
+    init(token: String, env: String, timezone: String, calendar: Calendar) {
+        self.init(token: token, env: env, timezone: timezone, firstWeekday: calendar.firstWeekday)
+    }
+
+    private init(token: String, env: String, timezone: String, firstWeekday: Int?) {
+        self.token = token
+        self.env = env
+        self.timezone = timezone
+        self.firstWeekday = firstWeekday
+    }
+
+    var withoutWeek: PushRegistration {
+        PushRegistration(token: token, env: env, timezone: timezone, firstWeekday: nil)
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case token = "p_token"
+        case env = "p_env"
+        case timezone = "p_timezone"
+        case firstWeekday = "p_first_weekday"
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var c = encoder.container(keyedBy: CodingKeys.self)
+        try c.encode(token, forKey: .token)
+        try c.encode(env, forKey: .env)
+        try c.encode(timezone, forKey: .timezone)
+        try c.encodeIfPresent(firstWeekday, forKey: .firstWeekday)
     }
 }

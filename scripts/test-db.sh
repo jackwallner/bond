@@ -48,5 +48,6 @@ done
 echo "==> run tests"
 "${PSQL[@]}" -d "$DB" -f "$TESTS/rpc_lifecycle_test.sql"
 "${PSQL[@]}" -d "$DB" -f "$TESTS/partner_delivery_test.sql"
+"${PSQL[@]}" -d "$DB" -f "$TESTS/week_start_test.sql"
 
 echo "==> OK"
