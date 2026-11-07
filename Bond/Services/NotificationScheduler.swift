@@ -322,16 +322,16 @@ final class NotificationScheduler {
             // window would ping again on every rebuild (each app open re-runs
             // this, including the open caused by tapping today's notification).
             // Only a reminder created today after its pick, which therefore never
-            // rang, falls forward into what is left of the window.
+            // rang, falls forward into what is left of the window: from a minute
+            // after it was made, at the same stable fraction. The server picks the
+            // same moment (0019 reminder_next_push_at), so a handoff between the
+            // two neither drops nor repeats it.
             let created = reminder.createdAt ?? .distantPast
-            guard pick <= now, !skipToday, span.upperBound > now,
-                  created > pick, cal.isDate(created, inSameDayAs: now)
+            let lower = created.addingTimeInterval(60)
+            guard pick <= now, !skipToday, created > pick, cal.isDate(created, inSameDayAs: now),
+                  lower < span.upperBound
             else { continue }
-            let fallForward = Date(
-                timeIntervalSince1970: .random(
-                    in: now.timeIntervalSince1970...span.upperBound.timeIntervalSince1970
-                )
-            )
+            let fallForward = stablePick(in: lower...span.upperBound, reminderId: reminder.id, day: day)
             if let request = oneShot("\(id).today", at: fallForward, now: now) {
                 plan.append(request)
             }
@@ -342,6 +342,8 @@ final class NotificationScheduler {
     /// Deterministic "random" moment inside the window for a given reminder +
     /// day. Stable across reschedules so reopening the app mid-window can't
     /// silently move today's pick into the past and drop the notification.
+    /// The server computes the same bytes (0019 daily_pick_unit), so both agree
+    /// on the moment; change one only with the other.
     nonisolated static func stablePick(in window: ClosedRange<Date>, reminderId: UUID, day: Date) -> Date {
         // FNV-1a over the uuid + day ordinal - UUID.hashValue is salted per
         // process, so it can't be the seed.

@@ -31,6 +31,12 @@ extension NotificationRouter: UNUserNotificationCenterDelegate {
         withCompletionHandler completionHandler:
             @escaping (UNNotificationPresentationOptions) -> Void
     ) {
+        // A push while a signed-out account may still hold this phone's token is
+        // that account's: it is not shown here.
+        if notification.request.trigger is UNPushNotificationTrigger, PushRegistrar.hasPendingRelease() {
+            completionHandler([])
+            return
+        }
         completionHandler([.banner, .sound, .list])
     }
 

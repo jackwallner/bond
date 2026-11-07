@@ -114,6 +114,38 @@ struct CoupleLookupTests {
         session.currentUserId = before
     }
 
+    /// A silent push says the pair state changed. The inviter keeps the couple
+    /// id when unpairing and the other side moves to a new couple, so the couple
+    /// is looked up again even when one is known, and the list comes from it.
+    @Test func silentPush_looksTheCoupleUpAgain_andRearmsFromIt() async {
+        let before = UUID()
+        let after = UUID()
+        let mine = me
+        await signedIn {
+            let pairing = PairingService()
+            pairing.fetchCouples = { _ in [CoupleDTO(id: before, partnerA: mine, partnerB: mine, pairedAt: nil, solo: true)] }
+            await pairing.loadCouple()
+            #expect(pairing.coupleId == before)
+
+            let repo = ReminderRepository(pairing: pairing)
+            let events = ReminderEventRepository(pairing: pairing)
+            var listedFor: [UUID] = []
+            var rearmedFor: [UUID] = []
+            repo.loadRows = { couple in
+                listedFor.append(couple)
+                return []
+            }
+            repo.scheduleNotifications = { user, _, _, _ in rearmedFor.append(user) }
+            events.loadRows = { _ in [] }
+            pairing.fetchCouples = { _ in [CoupleDTO(id: after, partnerA: mine, partnerB: mine, pairedAt: nil, solo: true)] }
+
+            await PushRegistrar.rebuildAfterSilentPush(pairing: pairing, repo: repo, events: events, bootstrap: {})
+            #expect(pairing.coupleId == after)
+            #expect(listedFor == [after])
+            #expect(rearmedFor == [mine])
+        }
+    }
+
     @Test func failedLookup_isRecorded_andKeepsWhatWasKnown() async {
         let known = UUID()
         let mine = me
