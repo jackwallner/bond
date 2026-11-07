@@ -378,3 +378,246 @@ struct LaunchRescheduleTests {
         #expect(seen.map(\.2) == [false, true])
     }
 }
+
+// MARK: - State machine audit 2026-11-06: completions and saves (B2, B8, B12, B14)
+
+/// Regression tests moved from project-docs/audits/state-machines-2026-11-06-repro.swift
+/// (sm2, sm5, sm6) plus the review's B12.
+@MainActor
+@Suite(.serialized)
+struct CompletionStateTests {
+    private let me = UUID()
+    private let partner = UUID()
+    private let coupleId = UUID()
+
+    private func reminder(
+        title: String, author: UUID, target: UUID, type: String = "one_time",
+        fireAt: Date, rrule: String? = nil
+    ) -> ReminderDTO {
+        ReminderDTO(
+            id: UUID(), coupleId: coupleId, authorId: author, targetId: target,
+            title: title, body: nil, loveLanguage: .words, triggerType: type,
+            fireAt: fireAt, rrule: rrule, geofence: nil, windowStart: nil, windowEnd: nil,
+            status: "scheduled", surpriseHiddenFromPartner: false, createdAt: nil
+        )
+    }
+
+    private func completion(_ reminder: ReminderDTO, at when: Date) -> ReminderEventDTO {
+        ReminderEventDTO(
+            id: UUID(), reminderId: reminder.id, coupleId: coupleId,
+            firedAt: when, actedAt: when, reaction: nil
+        )
+    }
+
+    private func repos() -> (ReminderRepository, ReminderEventRepository, PairingService) {
+        let pairing = PairingService()
+        pairing.coupleId = coupleId
+        return (ReminderRepository(pairing: pairing), ReminderEventRepository(pairing: pairing), pairing)
+    }
+
+    /// What a rebuild would arm on this phone, as `NotificationScheduler.reschedule` decides it.
+    private func armed(_ reminders: [ReminderDTO], _ events: [ReminderEventDTO]) -> [String] {
+        reminders
+            .filter { NotificationScheduler.armsLocally($0, me: me, serverDelivers: false) }
+            .filter { !($0.isCompleted(in: events) && !$0.repeatsOnSchedule) }
+            .map(\.title)
+    }
+
+    // B2 (sm5): a launch whose completions failed to load must not re-arm a handled one-shot.
+
+    @Test func b2_aLaunchWhoseCompletionsFailedDoesNotPingAHandledReminderAgain() async {
+        let handled = reminder(title: "Call her", author: me, target: me, fireAt: .now.addingTimeInterval(4 * 3_600))
+        let (repo, eventsRepo, _) = repos()
+        var armedTitles: [[String]] = []
+        repo.scheduleNotifications = { _, reminders, events, _ in armedTitles.append(armed(reminders, events)) }
+        repo.loadRows = { [handled] _ in [handled] }
+        eventsRepo.loadRows = { _ in throw URLError(.timedOut) }
+
+        // Cold launch, as ReminderListView.task runs it.
+        await repo.refresh()
+        await eventsRepo.refresh()
+        #expect(repo.hasLoaded, "precondition: the reminders loaded")
+        #expect(!eventsRepo.hasLoaded, "precondition: the completions did not")
+        await repo.rescheduleNotifications(forSelfUserId: me, events: eventsRepo.loadedEvents, requestAuthIfNeeded: false)
+
+        #expect(!armedTitles.contains { $0.contains("Call her") }, "re-armed a handled reminder: \(armedTitles)")
+    }
+
+    @Test func b2_control_loadedCompletionsKeepTheHandledReminderQuiet_andArmTheRest() async {
+        let handled = reminder(title: "Call her", author: me, target: me, fireAt: .now.addingTimeInterval(4 * 3_600))
+        let open = reminder(title: "Flowers", author: me, target: me, fireAt: .now.addingTimeInterval(5 * 3_600))
+        let done = completion(handled, at: .now)
+        let (repo, eventsRepo, _) = repos()
+        var armedTitles: [[String]] = []
+        repo.scheduleNotifications = { _, reminders, events, _ in armedTitles.append(armed(reminders, events)) }
+        repo.loadRows = { [handled, open] _ in [handled, open] }
+        eventsRepo.loadRows = { [done] _ in [done] }
+
+        await repo.catchUp(forSelfUserId: me) {
+            await eventsRepo.refresh()
+            return eventsRepo.loadedEvents
+        }
+
+        #expect(armedTitles == [["Flowers"]])
+    }
+
+    @Test func b2_completionsOfAnotherCoupleAreNotTrusted() async {
+        let (_, eventsRepo, pairing) = repos()
+        eventsRepo.loadRows = { _ in [] }
+        await eventsRepo.refresh()
+        #expect(eventsRepo.loadedEvents == [])
+        pairing.coupleId = UUID()
+        #expect(eventsRepo.loadedEvents == nil)
+    }
+
+    // B14 (sm2): the saved time is what gets armed even when the re-read after the save fails.
+
+    @Test func b14_aRescheduleWhoseReReadFailedArmsTheNewTime() async throws {
+        let old = reminder(title: "Flowers", author: partner, target: me, fireAt: .now.addingTimeInterval(2 * 3_600))
+        var moved = old
+        moved.fireAt = .now.addingTimeInterval(6 * 3_600)
+        let (repo, _, _) = repos()
+        repo.currentUserId = { [me] in me }
+        var serverAccepted = 0
+        repo.rescheduleRow = { _ in serverAccepted += 1 }
+        var armedRows: [[ReminderDTO]] = []
+        repo.scheduleNotifications = { _, rs, _, _ in armedRows.append(rs) }
+        repo.loadRows = { [old] _ in [old] }
+        await repo.refresh()
+        repo.loadRows = { _ in throw URLError(.networkConnectionLost) }
+
+        try await repo.upsert(moved)
+        #expect(serverAccepted == 1)
+        await repo.rescheduleNotifications(forSelfUserId: me, events: [])
+
+        #expect(armedRows.count == 1)
+        #expect(armedRows.first?.first?.fireAt == moved.fireAt, "armed from the pre-save list")
+        #expect(repo.reminders.first?.fireAt == moved.fireAt, "listed at the old time")
+    }
+
+    @Test func b14_anEditOfMyOwnReminderWhoseReReadFailedArmsTheNewTime() async throws {
+        let old = reminder(title: "Flowers", author: me, target: me, fireAt: .now.addingTimeInterval(2 * 3_600))
+        var moved = old
+        moved.fireAt = .now.addingTimeInterval(6 * 3_600)
+        moved.title = "Tulips"
+        let (repo, _, _) = repos()
+        repo.currentUserId = { [me] in me }
+        repo.upsertRow = { $0 }
+        var armedRows: [[ReminderDTO]] = []
+        repo.scheduleNotifications = { _, rs, _, _ in armedRows.append(rs) }
+        repo.loadRows = { [old] _ in [old] }
+        await repo.refresh()
+        repo.loadRows = { _ in throw URLError(.networkConnectionLost) }
+
+        try await repo.upsert(moved)
+        await repo.rescheduleNotifications(forSelfUserId: me, events: [])
+
+        #expect(armedRows.first == [moved])
+    }
+
+    @Test func b14_aPartnerRowKeepsItsTextWhenOnlyTheScheduleWasSaved() async throws {
+        let old = reminder(title: "Flowers", author: partner, target: me, fireAt: .now.addingTimeInterval(2 * 3_600))
+        var edited = old
+        edited.fireAt = .now.addingTimeInterval(6 * 3_600)
+        edited.title = "Not mine to change"
+        let (repo, _, _) = repos()
+        repo.currentUserId = { [me] in me }
+        repo.rescheduleRow = { _ in }
+        repo.loadRows = { [old] _ in [old] }
+        await repo.refresh()
+        repo.loadRows = { _ in throw URLError(.networkConnectionLost) }
+
+        try await repo.upsert(edited)
+
+        #expect(repo.reminders.first?.title == "Flowers")
+        #expect(repo.reminders.first?.fireAt == edited.fireAt)
+    }
+
+    @Test func b14_aPackWhoseReReadFailedIsStillArmed() async throws {
+        let pack = [
+            reminder(title: "One", author: me, target: me, fireAt: .now.addingTimeInterval(86_400)),
+            reminder(title: "Two", author: me, target: me, fireAt: .now.addingTimeInterval(2 * 86_400))
+        ]
+        let (repo, _, _) = repos()
+        repo.insertRows = { _ in }
+        repo.loadRows = { _ in [] }
+        await repo.refresh()
+        repo.loadRows = { _ in throw URLError(.networkConnectionLost) }
+        var armedRows: [[ReminderDTO]] = []
+        repo.scheduleNotifications = { _, rs, _, _ in armedRows.append(rs) }
+
+        try await repo.importReminders(pack, forSelfUserId: me, events: [])
+
+        #expect(armedRows == [pack])
+    }
+
+    // B8 (sm6): Not done reopens the reminder even when two completions were recorded.
+
+    @Test func b8_control_undoOfASingleCompletionReopensTheReminder() {
+        let r = reminder(title: "Flowers", author: me, target: me, fireAt: .now.addingTimeInterval(3_600))
+        var events = [completion(r, at: .now)]
+        #expect(r.isCompleted(in: events))
+        let undone = r.currentCompletionEvents(in: events).map(\.id)
+        events.removeAll { undone.contains($0.id) }
+        #expect(!r.isCompleted(in: events))
+    }
+
+    @Test func b8_undoReopensTheReminderEvenWhenBothPartnersMarkedItDone() async throws {
+        // Both partners see it, and the events list is not on the realtime feed,
+        // so the second tap saw a stale "not done".
+        let r = reminder(title: "Flowers", author: partner, target: me, fireAt: .now.addingTimeInterval(3_600))
+        let first = completion(r, at: .now.addingTimeInterval(-60))
+        let second = completion(r, at: .now)
+        let (_, eventsRepo, _) = repos()
+        eventsRepo.loadRows = { _ in [second, first] }
+        var deleted: [UUID] = []
+        eventsRepo.deleteRows = { deleted.append(contentsOf: $0) }
+        await eventsRepo.refresh()
+        #expect(r.isCompleted(in: eventsRepo.events))
+
+        try await eventsRepo.undoCompletion(of: r)
+
+        #expect(!r.isCompleted(in: eventsRepo.events), "Not done left \(eventsRepo.events.count) completion(s) in place")
+        #expect(Set(deleted) == [first.id, second.id])
+    }
+
+    @Test func b8_aDoneWhoseReReadFailedStillShowsDone_soASecondTapCannotRecordItTwice() async throws {
+        let r = reminder(title: "Flowers", author: me, target: me, fireAt: .now.addingTimeInterval(3_600))
+        let (_, eventsRepo, _) = repos()
+        eventsRepo.loadRows = { _ in [] }
+        await eventsRepo.refresh()
+        var inserted = 0
+        eventsRepo.insertRow = { _ in inserted += 1 }
+        eventsRepo.loadRows = { _ in throw URLError(.networkConnectionLost) }
+
+        try await eventsRepo.createEvent(reminderId: r.id, coupleId: coupleId)
+
+        #expect(inserted == 1)
+        #expect(r.isCompleted(in: eventsRepo.events))
+    }
+
+    // B12: a Done that did not save is not a positive moment.
+
+    @Test func b12_aDoneThatFailedToSaveIsNotReportedAsDone() async {
+        let r = reminder(title: "Flowers", author: me, target: me, fireAt: .now.addingTimeInterval(3_600))
+        let (_, eventsRepo, _) = repos()
+        eventsRepo.insertRow = { _ in throw URLError(.notConnectedToInternet) }
+
+        let saved = await eventsRepo.markDone(r, coupleId: coupleId)
+
+        #expect(!saved)
+        #expect(!r.isCompleted(in: eventsRepo.events))
+    }
+
+    @Test func b12_control_aSavedDoneIsReportedAsDone() async {
+        let r = reminder(title: "Flowers", author: me, target: me, fireAt: .now.addingTimeInterval(3_600))
+        let (_, eventsRepo, _) = repos()
+        eventsRepo.insertRow = { _ in }
+        eventsRepo.loadRows = { _ in throw URLError(.timedOut) }
+
+        let saved = await eventsRepo.markDone(r, coupleId: coupleId)
+
+        #expect(saved)
+        #expect(r.isCompleted(in: eventsRepo.events))
+    }
+}

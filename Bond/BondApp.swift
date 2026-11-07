@@ -36,7 +36,7 @@ struct BondApp: App {
             guard let me = SupabaseService.shared.currentUserId else { return }
             await repo.catchUp(forSelfUserId: me) {
                 await events.refresh()
-                return events.events
+                return events.loadedEvents
             }
         }
 
@@ -154,7 +154,7 @@ struct BondApp: App {
                     }
                     reminderRepo.armingContext = {
                         guard let me = supabase.currentUserId else { return nil }
-                        return (me, eventsRepo.events)
+                        return (me, eventsRepo.loadedEvents)
                     }
                     pairingService.onRelationshipChange = {
                         // Pairing or unpairing moves reminders and milestones
@@ -204,7 +204,7 @@ struct BondApp: App {
         guard let me = supabase.currentUserId, pairingService.coupleId != nil else { return }
         await reminderRepo.catchUp(forSelfUserId: me) {
             await eventsRepo.refresh()
-            return eventsRepo.events
+            return eventsRepo.loadedEvents
         }
     }
 }

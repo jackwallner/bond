@@ -40,11 +40,18 @@ public extension ReminderDTO {
         return acted.contains { ($0.actedAt ?? $0.firedAt) >= periodStart }
     }
 
-    /// The acted event covering the current period (used to undo a
-    /// completion). For one-shot reminders, any acted event.
+    /// The acted event covering the current period. For one-shot reminders,
+    /// any acted event.
     func currentCompletionEvent(in events: [ReminderEventDTO], at now: Date = .now) -> ReminderEventDTO? {
+        currentCompletionEvents(in: events, at: now).first
+    }
+
+    /// Every acted event covering the current period, which is what an undo
+    /// removes: both partners can mark a shared reminder done, and any one left
+    /// keeps it done.
+    func currentCompletionEvents(in events: [ReminderEventDTO], at now: Date = .now) -> [ReminderEventDTO] {
         let acted = events.filter { $0.reminderId == id && $0.actedAt != nil }
-        guard let periodStart = currentPeriodStart(at: now) else { return acted.first }
-        return acted.first { ($0.actedAt ?? $0.firedAt) >= periodStart }
+        guard let periodStart = currentPeriodStart(at: now) else { return acted }
+        return acted.filter { ($0.actedAt ?? $0.firedAt) >= periodStart }
     }
 }

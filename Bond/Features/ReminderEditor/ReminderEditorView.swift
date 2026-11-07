@@ -610,7 +610,7 @@ struct ReminderEditorView: View {
 
         do {
             try await repo.upsert(draft)
-            await repo.rescheduleNotifications(forSelfUserId: me, events: eventsRepo.events)
+            await repo.rescheduleNotifications(forSelfUserId: me, events: eventsRepo.loadedEvents)
             dismiss()
         } catch {
             errorMessage = error.localizedDescription
