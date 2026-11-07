@@ -44,28 +44,28 @@ begin
     perform set_config('test.uid', b::text, false);
 
     -- A phone that never said keeps the Monday week it had.
-    perform public.register_push_device('tok-b', 'sandbox', tz);
+    perform public.register_push_device(repeat('b', 64), 'sandbox', tz);
     assert public.reminder_done_at(weekly, tz, sunday), 'no first weekday: Sunday is still last week';
     assert not public.reminder_done_at(weekly, tz, monday), 'no first weekday: Monday starts a new week';
 
     -- A Sunday-first phone (en_US): Sunday starts a new week, as on the device.
-    perform public.register_push_device('tok-b', 'sandbox', tz, 1);
-    assert (select first_weekday from public.push_devices where token = 'tok-b') = 1, 'the first weekday is stored';
+    perform public.register_push_device(repeat('b', 64), 'sandbox', tz, 1);
+    assert (select first_weekday from public.push_devices where token = repeat('b', 64)) = 1, 'the first weekday is stored';
     assert public.reminder_done_at(weekly, tz, saturday), 'done on Saturday covers Saturday';
     assert not public.reminder_done_at(weekly, tz, sunday), 'Sunday is a new week on a Sunday-first phone';
 
     -- A Monday-first phone.
-    perform public.register_push_device('tok-b', 'sandbox', tz, 2);
+    perform public.register_push_device(repeat('b', 64), 'sandbox', tz, 2);
     assert public.reminder_done_at(weekly, tz, sunday), 'Sunday is the same week on a Monday-first phone';
     assert not public.reminder_done_at(weekly, tz, monday), 'Monday is a new week on a Monday-first phone';
 
     -- The store version re-registers without a weekday: the stored one stays.
-    perform public.register_push_device('tok-b', 'sandbox', tz);
-    assert (select first_weekday from public.push_devices where token = 'tok-b') = 2, 'an old registration keeps it';
+    perform public.register_push_device(repeat('b', 64), 'sandbox', tz);
+    assert (select first_weekday from public.push_devices where token = repeat('b', 64)) = 2, 'an old registration keeps it';
 
     -- Nonsense is ignored, and the other periods are unchanged.
-    perform public.register_push_device('tok-b', 'sandbox', tz, 9);
-    assert (select first_weekday from public.push_devices where token = 'tok-b') is null, 'out of range is no answer';
+    perform public.register_push_device(repeat('b', 64), 'sandbox', tz, 9);
+    assert (select first_weekday from public.push_devices where token = repeat('b', 64)) is null, 'out of range is no answer';
     assert public.reminder_done_at(daily, tz, saturday), 'daily: done today';
     assert not public.reminder_done_at(daily, tz, sunday), 'daily: open the next day';
     assert public.reminder_done_now(daily, tz) = public.reminder_done_at(daily, tz, now()), 'done_now is done_at now';
