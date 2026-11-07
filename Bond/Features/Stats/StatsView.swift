@@ -2,6 +2,7 @@ import Charts
 import SwiftUI
 
 struct StatsView: View {
+    @Environment(SupabaseService.self) private var supabase
     @Environment(ReminderRepository.self) private var repo
     @Environment(ReminderEventRepository.self) private var eventsRepo
     @Environment(PurchasesService.self) private var store
@@ -9,13 +10,13 @@ struct StatsView: View {
     @State private var isPaywallPresented = false
 
     private var analyzer: LoveLanguageAnalyzer {
-        LoveLanguageAnalyzer(reminders: repo.reminders, events: eventsRepo.events)
+        LoveLanguageAnalyzer(visibleTo: supabase.currentUserId, reminders: repo.reminders, events: eventsRepo.events)
     }
 
     var body: some View {
         NavigationStack {
             Group {
-                if repo.reminders.isEmpty {
+                if analyzer.reminderCount == 0 {
                     ContentUnavailableView(
                         "No data yet",
                         systemImage: "chart.bar.xaxis",
@@ -306,10 +307,10 @@ struct StatsView: View {
     private func summarySection(a: LoveLanguageAnalyzer, total: Int) -> some View {
         Group {
             LabeledContent("Total reminders", value: total.formatted())
-            LabeledContent("For partner", value: repo.reminders.filter { $0.authorId != $0.targetId }.count.formatted())
-            LabeledContent("Repeating", value: repo.reminders.filter(\.repeatsOnSchedule).count.formatted())
-            LabeledContent("Total actions", value: eventsRepo.events.count.formatted())
-            LabeledContent("Actions completed", value: eventsRepo.actedCount.formatted())
+            LabeledContent("For partner", value: a.partnerReminderCount.formatted())
+            LabeledContent("Repeating", value: a.repeatingReminderCount.formatted())
+            LabeledContent("Total actions", value: a.eventCount.formatted())
+            LabeledContent("Actions completed", value: a.actedEventCount.formatted())
         }
     }
 }

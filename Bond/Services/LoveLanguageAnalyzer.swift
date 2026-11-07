@@ -11,6 +11,21 @@ public struct LoveLanguageAnalyzer: Sendable {
         self.events = events
     }
 
+    /// The analysis one user may see: the reminders they wrote or that are
+    /// addressed to them, and only those reminders' events. The partner's own
+    /// reminders are readable to the couple but private to the partner.
+    public init(visibleTo user: UUID?, reminders: [ReminderDTO], events: [ReminderEventDTO]) {
+        let visible = ReminderDTO.visible(reminders, to: user)
+        let ids = Set(visible.map(\.id))
+        self.init(reminders: visible, events: events.filter { ids.contains($0.reminderId) })
+    }
+
+    public var reminderCount: Int { reminders.count }
+    public var partnerReminderCount: Int { reminders.filter { $0.authorId != $0.targetId }.count }
+    public var repeatingReminderCount: Int { reminders.filter(\.repeatsOnSchedule).count }
+    public var eventCount: Int { events.count }
+    public var actedEventCount: Int { events.filter { $0.actedAt != nil }.count }
+
     // MARK: - Core Analysis
 
     /// Count of reminders per love language

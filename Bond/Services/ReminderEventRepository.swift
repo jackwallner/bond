@@ -147,10 +147,6 @@ final class ReminderEventRepository {
         log.info("Removed \(ids.count) completion(s) of reminder \(reminder.id)")
     }
 
-    var actedCount: Int {
-        events.filter { $0.actedAt != nil }.count
-    }
-
     func eventsPastWeek() -> [ReminderEventDTO] {
         let weekAgo = Date().addingTimeInterval(-7 * 24 * 60 * 60)
         return events.filter { $0.firedAt >= weekAgo }
