@@ -282,6 +282,58 @@ begin
 end
 $$;
 
+-- ============================================================
+-- Scenario 6: Unpair cuts delivery in both directions, and pairing again restores it
+-- ============================================================
+do $$
+declare
+    a uuid := 'a0000000-0000-0000-0000-00000000000a';
+    b uuid := 'b0000000-0000-0000-0000-00000000000b';
+    d uuid := 'd0000000-0000-0000-0000-00000000000d';
+    to_b uuid := pg_temp.reminder('e5000000-0000-0000-0000-000000000001', 'recurring', now() - interval '1 hour', 'FREQ=DAILY');
+    to_a uuid := 'e5000000-0000-0000-0000-000000000002';
+    loc uuid := pg_temp.reminder('e5000000-0000-0000-0000-000000000003', 'location', null);
+    n int;
+begin
+    insert into public.reminders (id, couple_id, author_id, target_id, title, love_language,
+                                  trigger_type, fire_at, rrule)
+    values (to_a, d, b, a, to_a::text, 'words', 'recurring', now() - interval '1 hour', 'FREQ=DAILY');
+
+    perform set_config('test.uid', a::text, false);
+    perform public.register_push_device('token-a', 'production', 'UTC');
+    perform set_config('test.uid', b::text, false);
+    perform public.register_push_device('token-b', 'production', 'UTC');
+    assert (select count(*) from public.reminder_push_queue where reminder_id in (to_b, to_a, loc)) = 3,
+        'paired, all three are queued';
+
+    perform public.leave_couple(b);
+    assert not exists (select 1 from public.reminder_push_queue where reminder_id in (to_b, to_a, loc)),
+        'unpairing empties the queue in both directions';
+
+    -- The ex can still edit their own row, and an edit must not reach the other phone.
+    update public.reminders set title = 'Still here', fire_at = now() + interval '1 hour' where id = to_b;
+    assert not exists (select 1 from public.reminder_push_queue where reminder_id = to_b), 'an edit does not requeue';
+    update public.reminders set trigger_type = 'location', fire_at = null, rrule = null where id = to_b;
+    assert not exists (select 1 from public.reminder_push_queue where reminder_id = to_b), 'nor does a location edit';
+    update public.reminders set trigger_type = 'recurring', fire_at = now() - interval '1 hour', rrule = 'FREQ=DAILY' where id = to_b;
+
+    -- A row that got into the queue before the split is dropped, not sent.
+    insert into public.reminder_push_queue (reminder_id, next_push_at, silent) values (to_b, now(), false);
+    select count(*) into n from public.claim_due_reminder_pushes() c where c.reminder_id = to_b;
+    assert n = 0, 'a queued row for an ex is not delivered';
+    assert not exists (select 1 from public.reminder_push_queue where reminder_id = to_b), 'and it leaves the queue';
+
+    -- Someone new does not inherit the ex's reminders either.
+    update public.couples set partner_b = 'c0000000-0000-0000-0000-00000000000c', solo = false where id = d;
+    assert not exists (select 1 from public.reminder_push_queue where reminder_id = to_b), 'a new partner changes nothing';
+
+    -- The same two pairing again get their reminders back.
+    delete from public.couples where partner_a = b and partner_b = b;
+    update public.couples set partner_b = b, solo = false where id = d;
+    assert exists (select 1 from public.reminder_push_queue where reminder_id = to_b), 'paired again, queued again';
+end
+$$;
+
 rollback;
 
 \echo 'partner delivery tests passed'
