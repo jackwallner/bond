@@ -415,6 +415,46 @@ end
 $$;
 
 -- ============================================================
+-- 9. Unpairing and pairing keep every completion in its reminder's couple
+-- ============================================================
+do $$
+declare
+    a uuid := 'a0000000-0000-0000-0000-00000000000a';
+    b uuid := 'b0000000-0000-0000-0000-00000000000b';
+    c uuid := 'c0000000-0000-0000-0000-00000000000c';
+    d uuid := 'd0000000-0000-0000-0000-00000000000d';
+    mismatched int;
+begin
+    -- Back to a paired a and b, each with a reminder for the other and a completion on each.
+    delete from public.couples where id <> d and (partner_a in (a, b) or partner_b in (a, b));
+    update public.couples set partner_a = a, partner_b = b, solo = false where id = d;
+    insert into public.reminders (id, couple_id, author_id, target_id, title, love_language, trigger_type, fire_at)
+    values ('e9000000-0000-0000-0000-000000000001', d, a, b, 'from a', 'words', 'one_time', now() + interval '1 day'),
+           ('e9000000-0000-0000-0000-000000000002', d, b, a, 'from b', 'words', 'one_time', now() + interval '1 day');
+    insert into public.reminder_events (reminder_id, couple_id, acted_at)
+    select id, d, now() from public.reminders where id in ('e9000000-0000-0000-0000-000000000001',
+                                                          'e9000000-0000-0000-0000-000000000002');
+
+    perform set_config('test.uid', b::text, false);
+    perform public.leave_couple(b);
+    select count(*) into mismatched from public.reminder_events e join public.reminders r on r.id = e.reminder_id
+     where e.couple_id <> r.couple_id and r.id::text like 'e9%';
+    assert mismatched = 0, 'leave_couple moved a completion away from its reminder';
+
+    -- b invites from their solo couple, a joins from theirs: the two merge.
+    insert into public.invite_codes (code, created_by, expires_at) values ('MERGE9', b, now() + interval '1 hour');
+    perform set_config('test.uid', a::text, false);
+    perform public.consume_invite_code('MERGE9', a);
+    select count(*) into mismatched from public.reminder_events e join public.reminders r on r.id = e.reminder_id
+     where e.couple_id <> r.couple_id and r.id::text like 'e9%';
+    assert mismatched = 0, 'consume_invite_code moved a completion away from its reminder';
+    assert (select count(*) from public.reminder_events e
+             where e.reminder_id in ('e9000000-0000-0000-0000-000000000001', 'e9000000-0000-0000-0000-000000000002')) = 2,
+        'and none was lost';
+end
+$$;
+
+-- ============================================================
 -- 8. Privileges
 -- ============================================================
 do $$
