@@ -70,7 +70,8 @@ phased plan are in the `project_bond` memory and `project-docs/marketing/aso-pla
   and a phone stops arming those reminders locally once `PushRegistrar` has
   registered it (`NotificationScheduler.armsLocally`), so nothing arrives twice.
   Only location reminders stay on the device. The target of a partner's reminder
-  changes only its schedule (`reschedule_reminder`).
+  changes only its schedule (`reschedule_reminder`). Since 0019 each delivery is
+  leased and acknowledged; see `.claude/rules/push-delivery.md`.
 - **Present sheets with `unfoldedSheet`, never `.sheet`.** On the unfolded
   iPhone Duo a system sheet sits across the fold; `unfoldedSheet`
   (`UnfoldedSplit.swift`) keeps the form in one pane there and is an
@@ -91,6 +92,9 @@ phased plan are in the `project_bond` memory and `project-docs/marketing/aso-pla
 - `.claude/rules/launch-and-schedule.md` (`BondApp`, the reminder, milestone and
   pairing services): what a failed fetch may and may not clear, when milestones
   load, and calendar-day milestone math.
+- `.claude/rules/push-delivery.md` (migrations, `send-push`, `PushRegistrar`):
+  lease and ack, phone signals, registration, sign-out, the shared daily pick
+  and the deploy order.
 - `.claude/rules/localization.md` (`Bond/**`, `Shared/**`, `BondWatch/**`,
   `BondWidgets/**`): the string catalog, how copy is keyed, plurals, formatters
   and `Tools/Localization/check.py`.
