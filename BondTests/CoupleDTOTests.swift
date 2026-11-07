@@ -519,3 +519,110 @@ struct IdentityAndCoupleStateTests {
         #expect(told == 0)
     }
 }
+
+// MARK: - State machine review 2026-11-06: N1, the daily check-in question
+
+struct DailyCheckInRuleTests {
+    private let me = UUID()
+    private let partner = UUID()
+    private let couple = UUID()
+
+    private func zone(_ id: String) -> TimeZone { TimeZone(identifier: id)! }
+
+    private func at(_ y: Int, _ m: Int, _ d: Int, _ h: Int, _ min: Int = 0, in tz: TimeZone) -> Date {
+        var cal = Calendar(identifier: .gregorian)
+        cal.timeZone = tz
+        return cal.date(from: DateComponents(year: y, month: m, day: d, hour: h, minute: min))!
+    }
+
+    private func calendar(_ tz: TimeZone) -> Calendar {
+        var cal = Calendar(identifier: .gregorian)
+        cal.timeZone = tz
+        return cal
+    }
+
+    private func answer(_ question: UUID, by user: UUID, at time: Date) -> QuestionResponseDTO {
+        QuestionResponseDTO(id: UUID(), questionId: question, coupleId: couple, userId: user, response: "x", createdAt: time)
+    }
+
+    @Test func n1_theQuestionDoesNotChangeAtMidnightUTC() {
+        let la = zone("America/Los_Angeles")
+        // 4 PM in Los Angeles is midnight UTC.
+        let before = DailyCheckInService.dayNumber(for: at(2026, 11, 6, 15, in: la), in: la)
+        let after = DailyCheckInService.dayNumber(for: at(2026, 11, 6, 17, in: la), in: la)
+        let nextMorning = DailyCheckInService.dayNumber(for: at(2026, 11, 7, 0, 30, in: la), in: la)
+        #expect(before == after, "changed at 00:00 UTC")
+        #expect(nextMorning == before + 1)
+    }
+
+    @Test func n1_whileTheDatesMatchTheDayIsTheOneTheStoreVersionUses() {
+        // The store version counts the UTC date. At 10 AM in Los Angeles both dates are the 6th.
+        let la = zone("America/Los_Angeles")
+        let utc = zone("UTC")
+        let morning = at(2026, 11, 6, 10, in: la)
+        #expect(DailyCheckInService.dayNumber(for: morning, in: la) == DailyCheckInService.dayNumber(for: morning, in: utc))
+    }
+
+    @Test func n1_answersEitherSideOfMidnightStayOnOneQuestionAndBothSeeTheReveal() {
+        let la = zone("America/Los_Angeles")
+        let cal = calendar(la)
+        let yesterdays = UUID(), todays = UUID()
+        var answers = [answer(yesterdays, by: partner, at: at(2026, 11, 6, 23, 50, in: la))]
+
+        // I open it ten minutes after midnight: the question my partner answered is mine to answer.
+        let tenPast = at(2026, 11, 7, 0, 10, in: la)
+        #expect(DailyCheckInService.currentQuestionId(dayQuestion: todays, responses: answers, me: me, now: tenPast, calendar: cal) == yesterdays)
+        // My partner, meanwhile, waits on it rather than moving on.
+        #expect(DailyCheckInService.currentQuestionId(dayQuestion: todays, responses: answers, me: partner, now: tenPast, calendar: cal) == yesterdays)
+
+        answers.append(answer(yesterdays, by: me, at: tenPast))
+        let later = at(2026, 11, 7, 8, in: la)
+        // Both see the reveal for the rest of the day.
+        #expect(DailyCheckInService.currentQuestionId(dayQuestion: todays, responses: answers, me: me, now: later, calendar: cal) == yesterdays)
+        #expect(DailyCheckInService.currentQuestionId(dayQuestion: todays, responses: answers, me: partner, now: later, calendar: cal) == yesterdays)
+        // The next day starts a new question.
+        let nextDay = at(2026, 11, 8, 9, in: la)
+        let tomorrows = UUID()
+        #expect(DailyCheckInService.currentQuestionId(dayQuestion: tomorrows, responses: answers, me: me, now: nextDay, calendar: cal) == tomorrows)
+    }
+
+    @Test func n1_partnersInDifferentZonesAnswerTheSameQuestion() {
+        let newYork = zone("America/New_York"), tokyo = zone("Asia/Tokyo")
+        let tokyoQuestion = UUID(), newYorkQuestion = UUID()
+        // 10 AM on the 7th in Tokyo is 8 PM on the 6th in New York.
+        let tokyoMorning = at(2026, 11, 7, 10, in: tokyo)
+        var answers = [answer(tokyoQuestion, by: partner, at: tokyoMorning)]
+        let soon = tokyoMorning.addingTimeInterval(1_800)
+        #expect(DailyCheckInService.currentQuestionId(
+            dayQuestion: newYorkQuestion, responses: answers, me: me, now: soon, calendar: calendar(newYork)
+        ) == tokyoQuestion)
+
+        answers.append(answer(tokyoQuestion, by: me, at: soon))
+        let after = soon.addingTimeInterval(600)
+        #expect(DailyCheckInService.currentQuestionId(
+            dayQuestion: newYorkQuestion, responses: answers, me: me, now: after, calendar: calendar(newYork)
+        ) == tokyoQuestion)
+        #expect(DailyCheckInService.currentQuestionId(
+            dayQuestion: tokyoQuestion, responses: answers, me: partner, now: after, calendar: calendar(tokyo)
+        ) == tokyoQuestion)
+    }
+
+    @Test func n1_aPartnerOnTheStoreVersionStillGetsAnAnswerToTheirQuestion() {
+        // The store version moved to its next question at 4 PM in Los Angeles and my partner answered it.
+        let la = zone("America/Los_Angeles")
+        let storeQuestion = UUID(), myDayQuestion = UUID()
+        let answers = [answer(storeQuestion, by: partner, at: at(2026, 11, 6, 16, 30, in: la))]
+        #expect(DailyCheckInService.currentQuestionId(
+            dayQuestion: myDayQuestion, responses: answers, me: me, now: at(2026, 11, 6, 19, in: la), calendar: calendar(la)
+        ) == storeQuestion)
+    }
+
+    @Test func n1_control_aQuestionNobodyAnsweredIsTheDaysQuestion_andAnUnansweredOneExpiresAfterADay() {
+        let la = zone("America/Los_Angeles")
+        let day = UUID(), stale = UUID()
+        let now = at(2026, 11, 7, 12, in: la)
+        #expect(DailyCheckInService.currentQuestionId(dayQuestion: day, responses: [], me: me, now: now, calendar: calendar(la)) == day)
+        let old = [answer(stale, by: partner, at: now.addingTimeInterval(-25 * 3_600))]
+        #expect(DailyCheckInService.currentQuestionId(dayQuestion: day, responses: old, me: me, now: now, calendar: calendar(la)) == day)
+    }
+}
