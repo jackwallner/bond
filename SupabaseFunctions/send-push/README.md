@@ -1,7 +1,14 @@
 # send-push
 
-Delivers partner-written reminders over APNs. pg_cron calls it each minute that
-something is due (`supabase/migrations/0014_partner_delivery.sql`).
+Delivers partner-written reminders, and the silent pushes that make a phone
+rebuild what it armed, over APNs. pg_cron calls it each minute that something is
+due (`supabase/migrations/0014_partner_delivery.sql`, `0019_reliable_delivery.sql`).
+
+Since 0019 the claim leases each occurrence for 2 minutes. `send.ts` sends it to
+every device in chunks of 50 and calls `ack_reminder_push` when no device failed
+for a passing reason (a dead token does not count); anything else is claimed
+again when the lease runs out, until it is an hour late. The function also
+handles the claim's pre-0019 rows, so it can be deployed before the migration.
 
 ## Deploy
 
@@ -28,7 +35,7 @@ The Vault holds `send_push_url` and `send_push_secret` (the same value as
 ## Tests
 
 ```sh
-deno test SupabaseFunctions/send-push/apns_test.ts
+deno test SupabaseFunctions/send-push
 ```
 
 Each device row says which APNs environment its build uses, so a debug build's
