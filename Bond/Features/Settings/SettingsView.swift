@@ -73,7 +73,7 @@ struct SettingsView: View {
                     Link(destination: reportConcernURL) {
                         Label("Report a concern", systemImage: "exclamationmark.bubble")
                     }
-                    Text("Unpairing immediately stops your partner from sending you anything. Reporting lets us know about abusive content.")
+                    Text("Unpairing stops your partner from sending you anything. Reporting lets us know about abusive content.")
                         .font(.bond(.caption))
                         .foregroundStyle(.bondTextSecondary)
                 }
@@ -240,6 +240,9 @@ struct SettingsView: View {
                     // showing on widgets for whoever signs in next.
                     NotificationScheduler.shared.clearAll()
                     WidgetSnapshotPump.clear()
+                    // If the old account could not be reached, the new session
+                    // takes the token over from it.
+                    await PushRegistrar.shared.refresh()
                 }
             }
             Button("Cancel", role: .cancel) {}

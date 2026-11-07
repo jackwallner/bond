@@ -26583,37 +26583,37 @@
         }
       }
     },
-    "Unpairing immediately stops your partner from sending you anything. Reporting lets us know about abusive content.": {
+    "Unpairing stops your partner from sending you anything. Reporting lets us know about abusive content.": {
       "extractionState": "manual",
       "localizations": {
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "إلغاء الربط يمنع شريكك فورًا من إرسال أي شيء إليك. الإبلاغ يتيح لنا معرفة المحتوى المسيء."
+            "value": "إلغاء الربط يمنع شريكك من إرسال أي شيء إليك. الإبلاغ يتيح لنا معرفة المحتوى المسيء."
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Wenn du die Verbindung trennst, kann dein Partner dir sofort nichts mehr schicken. Mit einer Meldung informierst du uns über missbräuchliche Inhalte."
+            "value": "Wenn du die Verbindung trennst, kann dein Partner dir nichts mehr schicken. Mit einer Meldung informierst du uns über missbräuchliche Inhalte."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Unpairing immediately stops your partner from sending you anything. Reporting lets us know about abusive content."
+            "value": "Unpairing stops your partner from sending you anything. Reporting lets us know about abusive content."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Al desvincular, tu pareja deja de poder enviarte cosas de inmediato. Al informar de un problema, nos avisas de contenido abusivo."
+            "value": "Al desvincular, tu pareja deja de poder enviarte cosas. Al informar de un problema, nos avisas de contenido abusivo."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Dissocier arrête immédiatement tout envoi de ton ou ta partenaire. Un signalement nous informe des contenus abusifs."
+            "value": "Dissocier arrête tout envoi de ton ou ta partenaire. Un signalement nous informe des contenus abusifs."
           }
         },
         "pt-BR": {
@@ -26625,13 +26625,13 @@
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Если отвязать партнёра, он сразу перестанет что-либо тебе отправлять. Жалоба сообщит нам о недопустимом контенте."
+            "value": "Если отвязать партнёра, он перестанет что-либо тебе отправлять. Жалоба сообщит нам о недопустимом контенте."
           }
         },
         "vi": {
           "stringUnit": {
             "state": "translated",
-            "value": "Hủy ghép đôi sẽ ngay lập tức ngăn nửa kia gửi bất cứ thứ gì cho bạn. Báo cáo giúp chúng tôi biết về nội dung mang tính lạm dụng."
+            "value": "Hủy ghép đôi sẽ ngăn nửa kia gửi bất cứ thứ gì cho bạn. Báo cáo giúp chúng tôi biết về nội dung mang tính lạm dụng."
           }
         }
       }
