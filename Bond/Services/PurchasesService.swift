@@ -422,9 +422,21 @@ final class PurchasesService {
         #endif
     }
 
+    /// When the subscription began. `latestPurchaseDate` moves with every
+    /// renewal, so "since" read as the last charge.
     var premiumSince: Date? {
-        customerInfo?.entitlements[Self.entitlementId]?.latestPurchaseDate
-            ?? customerInfo?.entitlements.active.values.compactMap(\.latestPurchaseDate).max()
+        if let entitlement = customerInfo?.entitlements[Self.entitlementId] {
+            return Self.memberSince(
+                original: entitlement.originalPurchaseDate, latest: entitlement.latestPurchaseDate
+            )
+        }
+        return customerInfo?.entitlements.active.values
+            .compactMap { Self.memberSince(original: $0.originalPurchaseDate, latest: $0.latestPurchaseDate) }
+            .min()
+    }
+
+    nonisolated static func memberSince(original: Date?, latest: Date?) -> Date? {
+        original ?? latest
     }
 
     /// Whether this customer should have Bond+ unlocked.

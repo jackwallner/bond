@@ -187,3 +187,19 @@ struct PurchaseUXTests {
         #expect(completed)
     }
 }
+
+// MARK: - State machine audit 2026-11-06: B16, "Little Gestures+ since"
+
+struct MemberSinceTests {
+    @Test func b16_sinceIsWhenTheSubscriptionBegan_notTheLatestRenewal() {
+        let began = Date(timeIntervalSince1970: 1_767_225_600)        // 2026-01-01
+        let renewed = Date(timeIntervalSince1970: 1_793_491_200)      // 2026-11-01
+        #expect(PurchasesService.memberSince(original: began, latest: renewed) == began)
+    }
+
+    @Test func b16_control_withoutAnOriginalDateTheLatestIsAllThereIs() {
+        let renewed = Date(timeIntervalSince1970: 1_793_491_200)
+        #expect(PurchasesService.memberSince(original: nil, latest: renewed) == renewed)
+        #expect(PurchasesService.memberSince(original: nil, latest: nil) == nil)
+    }
+}
