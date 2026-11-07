@@ -574,6 +574,34 @@ begin
     perform public.register_push_device(repeat('d', 64), 'production', 'UTC');
     assert not public.remove_dead_push_device(repeat('d', 64), b, now() - interval '1 second'), 'registered since: stays';
     assert public.remove_dead_push_device(repeat('d', 64), b, (select updated_at from public.push_devices where token = repeat('d', 64))), 'gone';
+    assert public.remove_dead_push_device(repeat('d', 64), b, now()), 'a second row sharing the token finds it gone';
+
+    -- A fast phone just before midnight does not count for the new day.
+    insert into public.reminders (id, couple_id, author_id, target_id, title, love_language, trigger_type, fire_at, rrule)
+    values (rid, d, a, b, 'x', 'words', 'recurring', now() - interval '3 days', 'FREQ=DAILY');
+    insert into public.reminder_events (reminder_id, couple_id, acted_at) values (rid, d, now() + interval '4 minutes');
+    assert (select acted_seen_at from public.reminder_events where reminder_id = rid) = now(), 'the server notes when it heard';
+    assert public.reminder_done_at((select x from public.reminders x where x.id = rid), 'UTC', now()),
+        'it counts for the period the server is in';
+    assert not public.reminder_done_at((select x from public.reminders x where x.id = rid), 'UTC', now() + interval '1 day'),
+        'it does not silence the next one';
+    update public.reminder_events set reaction = 'x' where reminder_id = rid;
+    update public.reminder_events set acted_seen_at = now() + interval '9 days' where reminder_id = rid;
+    assert (select acted_seen_at from public.reminder_events where reminder_id = rid) = now(), 'only the server sets it';
+    update public.reminder_events set acted_at = now() - interval '2 days', acted_seen_at = null where reminder_id = rid;
+    assert public.reminder_done_at((select x from public.reminders x where x.id = rid), 'UTC', now() - interval '2 days'),
+        'an offline completion keeps its past date';
+    delete from public.reminders where id = rid;
+
+    -- What is left to send, as the cron job and send-push see it.
+    delete from public.push_signals;
+    assert not public.push_work_left() or exists (select 1 from public.reminder_push_queue where next_push_at <= now()), 'nothing due';
+    perform public.signal_push_user(b);
+    update public.push_signals set due_at = now() - interval '1 second', lease_until = null;
+    assert public.push_work_left(), 'a due signal is work';
+    update public.push_signals set lease_until = now() + interval '1 minute';
+    assert not public.push_work_left() or exists (select 1 from public.reminder_push_queue where next_push_at <= now()), 'a leased one is not';
+    delete from public.push_signals;
 
     -- Renaming a time reminder leaves its lease alone.
     insert into public.reminders (id, couple_id, author_id, target_id, title, love_language, trigger_type, fire_at)
@@ -650,7 +678,7 @@ begin
         'public.refresh_reminder_push(public.reminders)', 'public.reminder_next_push_at(public.reminders, timestamptz, text)',
         'public.reminder_done_at(public.reminders, text, timestamptz)', 'public.couples_sync_push_queue()',
         'public.reminders_sync_push_queue()', 'public.reminder_events_clamp_acted_at()',
-        'public.push_register(text, text, text, boolean)'
+        'public.push_register(text, text, text, boolean)', 'public.push_work_left()'
     ] loop
         assert not has_function_privilege('anon', fn, 'execute'), fn || ' is closed to anon';
         assert not has_function_privilege('authenticated', fn, 'execute'), fn || ' is closed to signed in users';

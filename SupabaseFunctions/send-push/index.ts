@@ -75,7 +75,8 @@ Deno.serve(async (req) => {
   const keyId = Deno.env.get("APNS_KEY_ID")!;
   tokens ??= new ProviderTokens(mintProviderToken, {
     async load() {
-      const { data, error } = await supabase.rpc("get_apns_provider_token", { p_key_id: keyId });
+      const { data, error } = await supabase.rpc("get_apns_provider_token", { p_key_id: keyId })
+        .abortSignal(AbortSignal.timeout(2_000));
       const row = (data as { token: string; issued_at: string }[] | null)?.[0];
       if (error || !row) return null;
       return { token: row.token, issuedAt: Math.floor(Date.parse(row.issued_at) / 1000) };
@@ -85,11 +86,11 @@ Deno.serve(async (req) => {
         p_key_id: keyId,
         p_token: token.token,
         p_issued_at: new Date(token.issuedAt * 1000).toISOString(),
-      });
+      }).abortSignal(AbortSignal.timeout(2_000));
     },
   });
   const started = Date.now();
-  const nowSeconds = Math.floor(started / 1000);
+  const nowSeconds = () => Math.floor(Date.now() / 1000);
 
   const result = await sendDue({
     rpc: async (name, args) => {
@@ -99,7 +100,7 @@ Deno.serve(async (req) => {
       return { data, error: error ? { message: error.message } : null };
     },
     fetch: (url, init) => fetch(url, init),
-    providerToken: () => tokens!.get(nowSeconds),
+    providerToken: () => tokens!.get(nowSeconds()),
     dropProviderToken: () => tokens!.drop(),
     topic: Deno.env.get("APNS_TOPIC")!,
     nowSeconds,

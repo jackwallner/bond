@@ -8,10 +8,10 @@ paths:
   - "Bond/Services/NotificationRouter.swift"
 ---
 
-# Partner push delivery (0014 to 0023, council reviews 2026-11-06)
+# Partner push delivery (0014 to 0025, council reviews 2026-11-06)
 
 - **Lease, then acknowledge.** `claim_due_reminder_pushes` leases each due
-  occurrence for 2 minutes and returns it once, with `due_at`, `user_id` and a
+  occurrence for 3 minutes and returns it once, with `due_at`, `user_id` and a
   `devices` list. Only `ack_reminder_push(reminder, due_at, user)` moves it on
   (delete a silent or one-shot row, refresh a repeating one). send-push acks
   when no device failed for a passing reason (429, 5xx, network, a refused provider
@@ -27,8 +27,8 @@ paths:
 - **Batches fit the lease.** A claim returns up to 25 occurrences and 25 signals to
   send, past any it finishes unsent. With every request timing out (10 phones each,
   chunks of 50, 8 s) and every token dead (2 s database limit) it takes about 110 s,
-  inside the 2 minute lease. Sends finish first, then removals, then records. It
-  claims again while there is more, for 25 s, so a run ends inside the 150 s limit.
+  inside the 3 minute lease. Sends finish first, then removals, then records. It
+  claims again while `push_work_left` says there is more, for 25 s, so a run ends inside the 150 s limit.
   The cron request waits 145 s. A failed record is tried once more, and a failed ack
   falls back to `mark_push_sent`.
 - **Late is skipped, never burst.** The claim moves a row on unsent once it is
@@ -52,11 +52,10 @@ paths:
   user keeps 10 devices. An evicted phone trusts the server until it next opens, so
   the cap is well above a real household. Test tokens are hex (`repeat('b', 64)`).
 - **Dead tokens.** `remove_dead_push_device(token, user, seen)` removes the row only
-  if `updated_at` is what the claim returned, and says so. False means the phone
-  registered again, so it stays and is retried.
+  if `updated_at` is what the claim returned. False means the phone is still
+  registered for that user, so it stays and is retried.
 - **Completion dates.** A trigger stops an `acted_at` more than 5 minutes ahead at
-  the server's now. Past dates stay, for offline completions. A phone more than 5
-  minutes fast at midnight can see a completion land in the previous period.
+  the server's now. Past dates stay, for offline completions. `acted_seen_at` records when the server heard, and server delivery counts a completion from the earlier of the two, so a fast phone can't silence the next period. That phone may still get one push it sees as done, and one more than 5 minutes fast can see its completion land in the previous period.
 - **Words on a place.** `reminders_sync_location_text` queues a silent push when the
   title, body or love language of a location reminder changes.
 - **Sign-out offline.** A failed `unregister_push_device` keeps the token in

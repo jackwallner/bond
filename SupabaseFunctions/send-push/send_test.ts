@@ -60,7 +60,7 @@ function harness(
       h.dropped += 1;
     },
     topic: "com.jackwallner.bond",
-    nowSeconds: 1_793_988_030,
+    nowSeconds: () => 1_793_988_030,
     elapsedMs: () => 0,
     log: (message) => h.logs.push(message),
     ...overrides,
@@ -129,6 +129,57 @@ Deno.test("our own setup failing is counted and retried, so it can't lose remind
   }
 });
 
+Deno.test("the expiry is worked out when each push is sent", async () => {
+  let seconds = 1_793_988_030;
+  const expiries: string[] = [];
+  const h = harness([row("r1", [device(1)])], ok, { nowSeconds: () => (seconds += 100) });
+  const fetcher = h.deps.fetch;
+  h.deps.fetch = (url, init) => {
+    expiries.push((init?.headers as Record<string, string>)["apns-expiration"]);
+    return fetcher(url, init);
+  };
+  await sendDue(h.deps);
+  assert(Number(expiries[0]) >= seconds + 60, "never already past");
+});
+
+Deno.test("two rows sharing a dead token both count as dead", async () => {
+  const h = harness([row("r1", [device(1)]), row("r2", [device(1)])],
+    () => new Response('{"reason":"Unregistered"}', { status: 410 }));
+  const result = await sendDue(h.deps);
+  assertEquals(result.body.deadTokens, 2);
+  assertEquals(result.body.failed, 0);
+  assertEquals(result.body.ok, true);
+});
+
+Deno.test("a short claim with work left claims again", async () => {
+  const h = harness([], ok);
+  const claims: ClaimedRow[][] = [[], [row("r1", [device(1)])], []];
+  let left = 2;
+  const rpc = h.deps.rpc;
+  h.deps.rpc = (name, args) => {
+    if (name === "claim_due_reminder_pushes") return Promise.resolve({ data: claims.shift() ?? [], error: null });
+    if (name === "push_work_left") return Promise.resolve({ data: left-- > 0, error: null });
+    return rpc(name, args);
+  };
+  const result = await sendDue(h.deps);
+  assertEquals(result.body.sent, 1);
+  assertEquals(claims.length, 0);
+});
+
+Deno.test("work left does not outrun the budget", async () => {
+  const h = harness([], ok, { elapsedMs: () => 60_000 });
+  await sendDue(h.deps);
+  assertEquals(h.calls.filter((c) => c.name === "claim_due_reminder_pushes").length, 1);
+  assertEquals(h.calls.some((c) => c.name === "push_work_left"), false);
+});
+
+Deno.test("a record that can't be written at all counts as a failure", async () => {
+  const h = harness([row("r1", [device(1)])], ok, {}, new Map([["ack_reminder_push", 2], ["mark_push_sent", 2]]));
+  const result = await sendDue(h.deps);
+  assertEquals(result.body.failed, 1);
+  assertEquals(result.body.ok, false);
+});
+
 Deno.test("a record that fails is tried again", async () => {
   const h = harness([row("r1", [device(1)])], ok, {}, new Map([["ack_reminder_push", 1]]));
   const result = await sendDue(h.deps);
@@ -166,7 +217,7 @@ Deno.test("every send is finished before anything is removed or recorded", async
     return rpc(name, args);
   };
   await sendDue(h.deps);
-  assertEquals(order, ["send", "send", "remove_dead_push_device", "ack_reminder_push"]);
+  assertEquals(order, ["send", "send", "remove_dead_push_device", "ack_reminder_push", "push_work_left"]);
 });
 
 Deno.test("a dead token alone is not a failure, and goes only for the user it was claimed for", async () => {

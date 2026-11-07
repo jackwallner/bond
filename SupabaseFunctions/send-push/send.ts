@@ -25,7 +25,7 @@ export interface SendDeps {
   /// APNs refused the provider token: mint a new one next time.
   dropProviderToken(): void | Promise<void>;
   topic: string;
-  nowSeconds: number;
+  nowSeconds: () => number;
   elapsedMs(): number;
   log(message: string): void;
 }
@@ -45,10 +45,10 @@ export interface SendResult {
 
 /// How many requests are in flight at once, so a large batch cannot exhaust the function.
 export const CHUNK = 50;
-/// A claim leases its rows for 2 minutes. 25 occurrences and 25 signals at 10
-/// phones each is 10 chunks: 80 s if every request times out, 20 s more if every
-/// token is dead and every removal hits the database's 2 s limit, then the records.
-/// So all of it is recorded before the lease ends and nothing is claimed twice.
+/// A claim leases its rows for 3 minutes, longer than the function can run. 25
+/// occurrences and 25 signals at 10 phones each is 10 chunks: 80 s if every request
+/// times out, 20 s more if every token is dead and every removal hits the database's
+/// 2 s limit, then the records. So nothing is claimed twice.
 export const CLAIM_LIMIT = 25;
 /// Claim again while there is more. One more claim can take 125 s with the claim
 /// itself, and the function is cut off at 150 s.
@@ -69,7 +69,7 @@ interface Send {
 }
 
 async function deliver(push: Occurrence, device: Device, authorization: string, deps: SendDeps): Promise<Outcome> {
-  const request = apnsRequest(push, device, deps.topic, deps.nowSeconds);
+  const request = apnsRequest(push, device, deps.topic, deps.nowSeconds());
   try {
     const response = await deps.fetch(request.url, {
       method: "POST",
@@ -123,7 +123,16 @@ async function record(push: Occurrence, retry: boolean, finished: string[], coun
     return;
   }
   // The retry goes only to the phones that are still owed it.
-  if (finished.length > 0) await call("mark_push_sent", key, deps);
+  if (finished.length > 0 && !await call("mark_push_sent", key, deps)) counts.failed += 1;
+}
+
+/// A short claim may only have stopped at its examined limit, with good rows still
+/// behind stale ones, and those can pass their hour by the next run.
+async function keepGoing(claimed: number, deps: SendDeps): Promise<boolean> {
+  if (deps.elapsedMs() > BUDGET_MS) return false;
+  if (claimed === CLAIM_LIMIT) return true;
+  const { data, error } = await deps.rpc("push_work_left", {});
+  return !error && data === true;
 }
 
 export async function sendDue(deps: SendDeps): Promise<SendResult> {
@@ -136,7 +145,10 @@ export async function sendDue(deps: SendDeps): Promise<SendResult> {
       return { status: 500, body: { ok: false, ...counts, error: "claim failed" } };
     }
     const pushes = ((data ?? []) as ClaimedRow[]).map(occurrence);
-    if (pushes.length === 0) break;
+    if (pushes.length === 0) {
+      if (await keepGoing(0, deps)) continue;
+      break;
+    }
 
     let authorization: string;
     try {
@@ -170,7 +182,7 @@ export async function sendDue(deps: SendDeps): Promise<SendResult> {
     }
     await inChunks(pushes, (push) => record(push, retry.has(push), finished.get(push)!, counts, deps));
 
-    if (pushes.length < CLAIM_LIMIT || deps.elapsedMs() > BUDGET_MS) break;
+    if (!await keepGoing(pushes.length, deps)) break;
   }
 
   return { status: 200, body: { ok: counts.failed === 0, ...counts } };

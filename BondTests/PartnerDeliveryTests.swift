@@ -95,8 +95,6 @@ struct WeekStartTests {
         #expect(try body(registration)["p_token"] as? String == "t")
         let mondayFirst = PushRegistration(token: "t", env: "sandbox", timezone: "UTC", calendar: calendar(firstWeekday: 2))
         #expect(try body(mondayFirst)["p_first_weekday"] as? Int == 2)
-        // Without the week the call matches the three-argument function the store builds use.
-        #expect(try body(registration.withoutWeek).keys.sorted() == ["p_env", "p_timezone", "p_token"])
     }
 }
 
@@ -155,6 +153,16 @@ struct PushRegistrarTests {
         await registrar.register(token: tokenA)
         await registrar.register(token: tokenB)
         #expect(sent == [true, false], "a served phone with a new token armed nothing, and is owed what is due")
+    }
+
+    @Test func aFailedRegistrationIsNotSentAgainWithoutTheFlag() async {
+        let server = Server()
+        server.failing = ["register_push_device"]
+        let me = UUID()
+        let (registrar, _) = makeRegistrar(server) { me }
+        await registrar.register(token: tokenA)
+        #expect(server.calls.filter { $0.function == "register_push_device" }.count == 1,
+                "without the flag the server would guess what this phone armed")
     }
 
     @Test func aFailedFirstRegistrationTakesTheTokenBack() async {
