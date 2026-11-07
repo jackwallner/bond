@@ -286,7 +286,7 @@ struct SchedulePlanTests {
     @Test func b3_dailyPacksImportedTogetherNeverRingAtTheSameTime() {
         let target = UUID()
         var imported: [ReminderDTO] = []
-        for group in [ReminderTemplateGroup.dailyAffirmations, .newParents, .appreciation] {
+        for group in [ReminderTemplateStore.dailyAffirmations, ReminderTemplateStore.newParents, ReminderTemplateStore.appreciation] {
             let dates = TemplateSchedule.fireDates(for: group.reminders, target: target, existing: imported)
             #expect(dates.count == group.reminders.count)
             imported += zip(group.reminders, dates).map { template, date in
@@ -309,7 +309,7 @@ struct SchedulePlanTests {
         let nine = try #require(Calendar.current.date(bySettingHour: 9, minute: 0, second: 0, of: .now))
         let existing = [reminder("recurring", fireAt: nine, rrule: "FREQ=DAILY", target: target)]
         let dates = TemplateSchedule.fireDates(
-            for: ReminderTemplateGroup.newParents.reminders, target: target, existing: existing
+            for: ReminderTemplateStore.newParents.reminders, target: target, existing: existing
         )
         #expect(!dates.contains { Calendar.current.component(.hour, from: $0) == 9 && Calendar.current.component(.minute, from: $0) == 0 })
     }
