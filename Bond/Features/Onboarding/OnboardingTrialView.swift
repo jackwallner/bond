@@ -24,7 +24,7 @@ struct OnboardingTrialView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: BondSpacing.xl) {
+        VStack(alignment: .leading, spacing: BondSpacing.base) {
             BondScreenHeader(
                 title: name.map { String(localized: "Your Little Gestures plan for \($0).") }
                     ?? String(localized: "Your Little Gestures plan for them."),
@@ -54,7 +54,8 @@ struct OnboardingTrialView: View {
                         }
                         Spacer(minLength: 0)
                     }
-                    .padding(BondSpacing.base)
+                    .padding(.horizontal, BondSpacing.base)
+                    .padding(.vertical, BondSpacing.m)
                     .background(Color.bondCardFill, in: RoundedRectangle(cornerRadius: BondRadius.inline))
                 }
             }

@@ -175,6 +175,7 @@ struct IntentSetupView: View {
     /// Total steps for the solo flow. The invitee flow (partner already known)
     /// stops after focus areas and never reaches the trial step.
     private static let trialStep = 4
+    private static let pageTop = "page-top"
 
     init(mode: Mode = .solo) {
         self.mode = mode
@@ -201,42 +202,59 @@ struct IntentSetupView: View {
             // The step scrolls and the button stays docked: at accessibility
             // sizes a step outgrows the screen and pushed the button off it.
             GeometryReader { proxy in
-                ScrollView {
-                    VStack(alignment: .leading, spacing: BondSpacing.xl) {
-                        Group {
-                            switch step {
-                            case 0: nameStep
-                            case 1: commitStep
-                            case 2: loveLanguageStep
-                            case 3: focusAreasStep
-                            default: OnboardingTrialView(name: name, offersTrial: introEligible)
+                ScrollViewReader { scroller in
+                    ScrollView {
+                        VStack(alignment: .leading, spacing: BondSpacing.xl) {
+                            Group {
+                                switch step {
+                                case 0: nameStep
+                                case 1: commitStep
+                                case 2: loveLanguageStep
+                                case 3: focusAreasStep
+                                default: OnboardingTrialView(name: name, offersTrial: introEligible)
+                                }
+                            }
+                            .transition(.opacity)
+
+                            if let error = pairing.lastError {
+                                BondInlineError(message: error)
+                            }
+
+                            // At accessibility sizes the docked stack would take most of
+                            // the screen; the secondary exits scroll with the page instead.
+                            if isTrialStep && typeSize.isAccessibilitySize {
+                                VStack(spacing: BondSpacing.s) {
+                                    continueForFreeButton
+                                    legalFooterSlot
+                                }
+                                .frame(maxWidth: .infinity)
+                                .padding(.horizontal, BondSpacing.base)
                             }
                         }
-                        .transition(.opacity)
-
-                        if let error = pairing.lastError {
-                            BondInlineError(message: error)
-                        }
-
-                        // At accessibility sizes the docked stack would take most of
-                        // the screen; the secondary exits scroll with the page instead.
-                        if isTrialStep && typeSize.isAccessibilitySize {
-                            VStack(spacing: BondSpacing.s) {
-                                continueForFreeButton
-                                legalFooterSlot
-                            }
-                            .frame(maxWidth: .infinity)
-                            .padding(.horizontal, BondSpacing.base)
+                        // Room to scroll a long translation clear of the fade.
+                        .padding(.bottom, isTrialStep ? BondSpacing.base : 0)
+                        .frame(maxWidth: .infinity, minHeight: proxy.size.height, alignment: .leading)
+                        .id(Self.pageTop)
+                    }
+                    .scrollBounceBehavior(.basedOnSize)
+                    // One scroll view serves every step: each opens at its own top.
+                    .onChange(of: step) { _, _ in scroller.scrollTo(Self.pageTop, anchor: .top) }
+                    // A page too long for the screen fades into the button stack,
+                    // rather than a card being cut in a hard line.
+                    .mask {
+                        VStack(spacing: 0) {
+                            Color.black
+                            LinearGradient(colors: [.black, .clear], startPoint: .top, endPoint: .bottom)
+                                .frame(height: isTrialStep ? BondSpacing.base : 0)
                         }
                     }
-                    .frame(maxWidth: .infinity, minHeight: proxy.size.height, alignment: .leading)
                 }
-                .scrollBounceBehavior(.basedOnSize)
             }
 
             ctaRegion
         }
-        .padding(.vertical, BondSpacing.xxxl)
+        .padding(.top, BondSpacing.xl)
+        .padding(.bottom, BondSpacing.base)
         .bondAnimation(.easeOut(duration: 0.25), value: step)
         // Don't carry a stale error in from a previous failed attempt.
         .onAppear {
