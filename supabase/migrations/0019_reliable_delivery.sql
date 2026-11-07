@@ -36,7 +36,7 @@ alter table public.reminders
 -- ============================================================
 -- Writes stay inside the writer's couple
 -- ============================================================
--- Without a check the author could move a row into any couple.
+-- An edit keeps the row in a couple the editor belongs to.
 drop policy "reminders_author_update" on public.reminders;
 create policy "reminders_author_update"
     on public.reminders for update
