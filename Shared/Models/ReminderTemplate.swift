@@ -132,3 +132,49 @@ public enum ReminderTemplateStore {
         ]
     ) }
 }
+
+/// When each reminder of an imported pack first fires. Each one gets its own
+/// clock time, one no other reminder for the same person already uses, and
+/// they start a day apart: a pack never rings together, with itself or with
+/// anything imported before it.
+public enum TemplateSchedule {
+    /// Friendly clock times as minutes after midnight, in the order they are handed out.
+    static let slots: [Int] = [
+        9 * 60, 12 * 60 + 30, 18 * 60, 20 * 60 + 30, 8 * 60, 10 * 60 + 30, 15 * 60,
+        19 * 60 + 30, 7 * 60 + 30, 13 * 60 + 30, 17 * 60, 21 * 60, 11 * 60, 16 * 60, 14 * 60
+    ]
+
+    public static func fireDates(
+        for templates: [TemplateReminder],
+        target: UUID,
+        existing: [ReminderDTO],
+        now: Date = .now,
+        calendar: Calendar = .current
+    ) -> [Date] {
+        var taken = Set(existing.compactMap { reminder -> Int? in
+            guard reminder.targetId == target, let fireAt = reminder.fireAt else { return nil }
+            switch reminder.trigger {
+            case .recurring?: break
+            case .oneTime? where fireAt > now: break
+            default: return nil
+            }
+            let parts = calendar.dateComponents([.hour, .minute], from: fireAt)
+            return (parts.hour ?? 0) * 60 + (parts.minute ?? 0)
+        })
+        return templates.enumerated().map { index, template in
+            // Repeating reminders lead at 9:00, one-time nudges at 2:00 PM.
+            let preferred = template.triggerRecurrence == nil ? 14 * 60 : 9 * 60
+            let minute = ([preferred] + slots).first { !taken.contains($0) }
+                ?? stride(from: 9 * 60 + 5, to: 24 * 60, by: 5).first { !taken.contains($0) }
+                ?? preferred
+            taken.insert(minute)
+            var base = calendar.date(
+                bySettingHour: minute / 60, minute: minute % 60, second: 0, of: now
+            ) ?? now
+            if base <= now {
+                base = calendar.date(byAdding: .day, value: 1, to: base) ?? base
+            }
+            return calendar.date(byAdding: .day, value: index, to: base) ?? base
+        }
+    }
+}

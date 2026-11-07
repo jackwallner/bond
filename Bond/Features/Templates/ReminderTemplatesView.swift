@@ -197,23 +197,11 @@ struct TemplateGroupDetailView: View {
 
         let partnerId = pairing.partnerProfile?.id
         let targetId: UUID = pairing.solo ? me : (partnerId ?? me)
-        let cal = Calendar.current
-        let now = Date()
+        let fireDates = TemplateSchedule.fireDates(
+            for: group.reminders, target: targetId, existing: repo.reminders
+        )
 
-        let drafts: [ReminderDTO] = group.reminders.enumerated().map { index, template in
-            // Anchor each reminder to a friendly clock time - recurring packs at
-            // 9am, one-time nudges at 2pm - then stagger one day apart so
-            // importing a whole pack doesn't dogpile notifications into one
-            // moment. Start from the next occurrence of that hour so one-time
-            // items are always in the future (a past fireAt would be dropped
-            // by the scheduler).
-            let targetHour = template.triggerRecurrence == nil ? 14 : 9 // 2pm vs 9am
-            var base = cal.date(bySettingHour: targetHour, minute: 0, second: 0, of: now) ?? now
-            if base <= now {
-                base = cal.date(byAdding: .day, value: 1, to: base) ?? base
-            }
-            let fireAt = cal.date(byAdding: .day, value: index, to: base) ?? base
-
+        let drafts: [ReminderDTO] = zip(group.reminders, fireDates).map { template, fireAt in
             return ReminderDTO(
                 id: UUID(),
                 coupleId: coupleId,

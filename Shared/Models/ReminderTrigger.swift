@@ -40,12 +40,7 @@ public enum ReminderTrigger: Codable, Sendable, Hashable {
             return d
         case .recurring(let rrule, let anchor):
             guard let preset = RecurrencePreset(rrule: rrule) else { return anchor }
-            var next = anchor
-            for _ in 0..<10_000 {
-                if next > reference { return next }
-                next = preset.nextOccurrence(after: next)
-            }
-            return next
+            return preset.firstOccurrence(after: reference, anchor: anchor)
         case .randomWindow(_, let end):
             return end
         case .randomRecurring:
