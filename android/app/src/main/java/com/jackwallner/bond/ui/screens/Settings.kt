@@ -164,7 +164,7 @@ fun SettingsScreen() {
                     LinkRow(Icons.Rounded.ReportProblem, "Report a concern") { openLink(context, StoreLinks.REPORT_CONCERN_URI) }
                     GroupRow {
                         BText(
-                            "Unpairing immediately stops your partner from sending you anything. Reporting lets us know about abusive content.",
+                            "Unpairing stops your partner from sending you anything. Reporting lets us know about abusive content.",
                             BondType.caption, colors.inkSecondary,
                         )
                     }
