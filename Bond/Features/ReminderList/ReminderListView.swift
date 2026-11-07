@@ -102,7 +102,7 @@ struct ReminderListView: View {
                         // anything that already exists.
                         await repo.rescheduleNotifications(
                             forSelfUserId: supabase.currentUserId ?? UUID(),
-                            events: eventsRepo.events,
+                            events: eventsRepo.loadedEvents,
                             requestAuthIfNeeded: false
                         )
                         NotificationCenter.default.post(name: .bondNotificationPrimerResolved, object: nil)
@@ -121,7 +121,7 @@ struct ReminderListView: View {
                 // the primer's `.notDetermined` guard never passes.
                 await repo.rescheduleNotifications(
                     forSelfUserId: supabase.currentUserId ?? UUID(),
-                    events: eventsRepo.events,
+                    events: eventsRepo.loadedEvents,
                     requestAuthIfNeeded: false
                 )
                 await maybeShowNotificationPrimer()
@@ -504,7 +504,9 @@ struct ReminderListView: View {
         guard !togglingIds.contains(reminder.id), !isActedOn(reminder) else { return }
         togglingIds.insert(reminder.id)
         defer { togglingIds.remove(reminder.id) }
-        try? await eventsRepo.createEvent(reminderId: reminder.id, coupleId: coupleId)
+        // Only a saved completion is a positive moment: an offline tap changes
+        // nothing, so it must not move the review counter either.
+        guard await eventsRepo.markDone(reminder, coupleId: coupleId) else { return }
         await rescheduleNotifications()
         ReviewPromptTracker.recordPositiveMoment()
         NotificationCenter.default.post(name: .bondPositiveMomentForReview, object: nil)
@@ -516,8 +518,7 @@ struct ReminderListView: View {
         guard !togglingIds.contains(reminder.id) else { return }
         togglingIds.insert(reminder.id)
         defer { togglingIds.remove(reminder.id) }
-        guard let event = reminder.currentCompletionEvent(in: eventsRepo.events) else { return }
-        try? await eventsRepo.deleteEvent(event)
+        try? await eventsRepo.undoCompletion(of: reminder)
         await rescheduleNotifications()
     }
 
@@ -528,7 +529,7 @@ struct ReminderListView: View {
 
     private func rescheduleNotifications() async {
         guard let me = supabase.currentUserId else { return }
-        await repo.rescheduleNotifications(forSelfUserId: me, events: eventsRepo.events)
+        await repo.rescheduleNotifications(forSelfUserId: me, events: eventsRepo.loadedEvents)
     }
 
     /// Pull to refresh: pulling to see what the partner added should also arm it.
@@ -540,7 +541,7 @@ struct ReminderListView: View {
         }
         await repo.catchUp(forSelfUserId: me) {
             await eventsRepo.refresh()
-            return eventsRepo.events
+            return eventsRepo.loadedEvents
         }
     }
 
@@ -593,7 +594,7 @@ private struct HandledRemindersView: View {
                         try? await repo.delete(source[index])
                     }
                     if let me = supabase.currentUserId {
-                        await repo.rescheduleNotifications(forSelfUserId: me, events: eventsRepo.events)
+                        await repo.rescheduleNotifications(forSelfUserId: me, events: eventsRepo.loadedEvents)
                     }
                 }
             }

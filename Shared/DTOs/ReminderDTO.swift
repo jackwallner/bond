@@ -86,3 +86,26 @@ public struct ReminderDTO: Codable, Sendable, Identifiable, Hashable {
         }
     }
 }
+
+public extension ReminderDTO {
+    /// This row with another copy's schedule: what `reschedule_reminder` changes
+    /// on a reminder the partner wrote, and nothing else.
+    func withSchedule(of other: ReminderDTO) -> ReminderDTO {
+        var row = self
+        row.triggerType = other.triggerType
+        row.fireAt = other.fireAt
+        row.rrule = other.rrule
+        row.geofence = other.geofence
+        row.windowStart = other.windowStart
+        row.windowEnd = other.windowEnd
+        return row
+    }
+
+    /// The reminders this user sees: the ones they wrote and the ones addressed
+    /// to them. The couple's rows are all readable, and the partner's own
+    /// reminders (including the private ones) are not for this user.
+    static func visible(_ reminders: [ReminderDTO], to user: UUID?) -> [ReminderDTO] {
+        guard let user else { return [] }
+        return reminders.filter { $0.authorId == user || $0.targetId == user }
+    }
+}

@@ -73,8 +73,9 @@ final class ReminderRepository {
     /// changes that arrive outside any screen (the realtime feed, the watch).
     /// The app sets it at launch; without one (previews, tests) `rearm()` does
     /// nothing.
+    /// `events` is nil while the completions have not been fetched.
     @ObservationIgnored
-    var armingContext: @MainActor () -> (user: UUID, events: [ReminderEventDTO])? = { nil }
+    var armingContext: @MainActor () -> (user: UUID, events: [ReminderEventDTO]?)? = { nil }
 
     private var realtimeChannel: RealtimeChannelV2?
     /// The couple the active realtime channel is filtered on. Lets us detect
@@ -86,11 +87,12 @@ final class ReminderRepository {
         self.pairing = pairing
     }
 
-    func refresh() async {
+    @discardableResult
+    func refresh() async -> Bool {
         #if DEBUG
-        if BondScreenshotSeed.isEnabled { return }
+        if BondScreenshotSeed.isEnabled { return true }
         #endif
-        guard let coupleId = pairing.coupleId else { return }
+        guard let coupleId = pairing.coupleId else { return false }
         isLoading = true
         defer { isLoading = false }
         do {
@@ -99,10 +101,28 @@ final class ReminderRepository {
             loadedCoupleId = coupleId
             onChange(rows)
             log.info("Refreshed \(rows.count) reminders")
+            return true
         } catch {
             lastError = error.localizedDescription
             log.error("Refresh failed: \(error.localizedDescription)")
+            return false
         }
+    }
+
+    /// Puts rows the server just accepted into the loaded list when the re-read
+    /// after the write failed, so the list and the schedule rebuilt from it show
+    /// the save instead of what was there before it. Before any list loaded
+    /// there is nothing to patch: the rebuild waits for a fetch anyway.
+    private func keepSaved(_ saved: [ReminderDTO]) {
+        guard hasLoaded else { return }
+        for row in saved {
+            if let index = reminders.firstIndex(where: { $0.id == row.id }) {
+                reminders[index] = row
+            } else {
+                reminders.append(row)
+            }
+        }
+        onChange(reminders)
     }
 
     private static func fetchRows(coupleId: UUID) async throws -> [ReminderDTO] {
@@ -119,13 +139,15 @@ final class ReminderRepository {
     /// A rebuild replaces every pending notification with what `reminders`
     /// says, so it waits for a successful fetch: before one the list is the
     /// empty starting value, and a launch whose fetch failed would cancel
-    /// every scheduled reminder.
+    /// every scheduled reminder. The completions are held to the same rule
+    /// (`events` is nil until they were fetched): without them every handled
+    /// one-shot and every daily random reminder done today pings again.
     func rescheduleNotifications(
         forSelfUserId me: UUID,
-        events: [ReminderEventDTO],
+        events: [ReminderEventDTO]?,
         requestAuthIfNeeded: Bool = true
     ) async {
-        guard hasLoaded else { return }
+        guard hasLoaded, let events else { return }
         await scheduleNotifications(me, reminders, events, requestAuthIfNeeded)
     }
 
@@ -156,7 +178,7 @@ final class ReminderRepository {
     /// to the notification primer.
     func catchUp(
         forSelfUserId me: UUID,
-        refreshEvents: () async -> [ReminderEventDTO]
+        refreshEvents: () async -> [ReminderEventDTO]?
     ) async {
         await refresh()
         let events = await refreshEvents()
@@ -182,18 +204,28 @@ final class ReminderRepository {
         if let me = currentUserId(), reminder.authorId != me {
             try await rescheduleRow(reminder)
             log.info("Rescheduled reminder \(reminder.id)")
-            await refresh()
+            let reread = await refresh()
+            if !reread, let stored = reminders.first(where: { $0.id == reminder.id }) {
+                keepSaved([stored.withSchedule(of: reminder)])
+            }
             return
         }
-        let _: ReminderDTO = try await supabase.client
+        let saved = try await upsertRow(reminder)
+        log.info("Upserted reminder \(reminder.id)")
+        let reread = await refresh()
+        if !reread { keepSaved([saved]) }
+    }
+
+    /// Writes one reminder and returns the stored row. Tests swap it for a stub.
+    @ObservationIgnored
+    var upsertRow: @MainActor (ReminderDTO) async throws -> ReminderDTO = { reminder in
+        try await SupabaseService.shared.client
             .from("reminders")
             .upsert(reminder)
             .select()
             .single()
             .execute()
             .value
-        log.info("Upserted reminder \(reminder.id)")
-        await refresh()
     }
 
     /// Insert many reminders in a single round-trip, then refresh once. The
@@ -203,7 +235,8 @@ final class ReminderRepository {
         guard !reminders.isEmpty else { return }
         try await insertRows(reminders)
         log.info("Bulk-inserted \(reminders.count) reminders")
-        await refresh()
+        let reread = await refresh()
+        if !reread { keepSaved(reminders) }
     }
 
     /// Adds a batch (a template pack) for the signed-in user and arms it. The
@@ -213,7 +246,7 @@ final class ReminderRepository {
     func importReminders(
         _ reminders: [ReminderDTO],
         forSelfUserId me: UUID,
-        events: [ReminderEventDTO]
+        events: [ReminderEventDTO]?
     ) async throws {
         try await bulkInsert(reminders)
         await rescheduleNotifications(forSelfUserId: me, events: events)

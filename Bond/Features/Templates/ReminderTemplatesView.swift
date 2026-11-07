@@ -235,7 +235,7 @@ struct TemplateGroupDetailView: View {
         }
 
         do {
-            try await repo.importReminders(drafts, forSelfUserId: me, events: eventsRepo.events)
+            try await repo.importReminders(drafts, forSelfUserId: me, events: eventsRepo.loadedEvents)
             createdCount = drafts.count
             showConfirmation = true
         } catch {
