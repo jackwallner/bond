@@ -17,6 +17,10 @@ insert into public.couples (id, partner_a, partner_b, solo) values
     ('dc000000-0000-0000-0000-00000000000c',
      'c0000000-0000-0000-0000-00000000000c', 'c0000000-0000-0000-0000-00000000000c', true);
 
+create function pg_temp.ack(p_reminder uuid, p_due timestamptz, p_user uuid default null) returns void language sql as $$
+    select public.ack_reminder_push(p_reminder, p_due, p_user, array(select token from public.push_devices));
+$$;
+
 create function pg_temp.reminder(
     p_id text, p_trigger text, p_fire timestamptz, p_rrule text default null,
     p_hidden boolean default false
@@ -94,11 +98,11 @@ begin
         'an unacknowledged occurrence is sent again';
 
     -- An acknowledgement for another occurrence changes nothing.
-    perform public.ack_reminder_push(one, due_one - interval '1 day');
+    perform pg_temp.ack(one, due_one - interval '1 day');
     assert exists (select 1 from public.reminder_push_queue where reminder_id = one), 'a stale ack is ignored';
 
-    perform public.ack_reminder_push(one, due_one);
-    perform public.ack_reminder_push(day, due_day);
+    perform pg_temp.ack(one, due_one);
+    perform pg_temp.ack(day, due_day);
     assert not exists (select 1 from public.reminder_push_queue where reminder_id = one), 'an acked one shot leaves';
     assert (select next_push_at from public.reminder_push_queue where reminder_id = day) > now(),
         'an acked recurring row moves to its next time';
@@ -224,7 +228,7 @@ begin
     perform pg_temp.due(bad, interval '2 minutes');
     select count(*) into n from public.claim_due_reminder_pushes() x where x.reminder_id = bad;
     assert n = 1, 'sent';
-    perform public.ack_reminder_push(bad, now() - interval '2 minutes');
+    perform pg_temp.ack(bad, now() - interval '2 minutes');
     assert not exists (select 1 from public.reminder_push_queue where reminder_id = bad), 'then leaves the queue';
 
     -- A save of it and a pairing change still go through.
@@ -338,11 +342,11 @@ begin
 
     -- A dead token goes only while it is still the same account's.
     seen := (select updated_at from public.push_devices where token = repeat('7', 64));
-    perform public.delete_push_device(repeat('7', 64), b, seen);
+    perform public.remove_dead_push_device(repeat('7', 64), b, seen);
     assert exists (select 1 from public.push_devices where token = repeat('7', 64)), 'moved on, not deleted';
-    perform public.delete_push_device(repeat('7', 64), a, seen - interval '1 second');
+    perform public.remove_dead_push_device(repeat('7', 64), a, seen - interval '1 second');
     assert exists (select 1 from public.push_devices where token = repeat('7', 64)), 'registered since, not deleted';
-    perform public.delete_push_device(repeat('7', 64), a, seen);
+    perform public.remove_dead_push_device(repeat('7', 64), a, seen);
     assert not exists (select 1 from public.push_devices where token = repeat('7', 64)), 'deleted';
     perform set_config('test.uid', b::text, false);
     delete from public.push_devices where user_id = b and token <> repeat('b', 64);
@@ -386,7 +390,7 @@ begin
     assert c.reminder_id is null and c.silent and c.title is null and c.body is null, 'a silent push with nothing in it';
     assert jsonb_array_length(c.devices) = 1, 'to each of the user''s phones';
     assert (select count(*) from public.claim_due_reminder_pushes()) = 0, 'leased like the rest';
-    perform public.ack_reminder_push(null, s.due_at, s.user_id) from signal_claim s;
+    perform pg_temp.ack(null, s.due_at, s.user_id) from signal_claim s;
     assert not exists (select 1 from public.push_signals), 'acknowledged, gone';
 
     -- Pairing again tells them too, and the place is armed again.
@@ -396,7 +400,7 @@ begin
     assert (select silent from public.reminder_push_queue where reminder_id = loc), 'the place gets its silent push';
 
     -- A newer signal outlives the acknowledgement of an older one.
-    perform public.ack_reminder_push(null, now() - interval '1 minute', b);
+    perform pg_temp.ack(null, now() - interval '1 minute', b);
     assert exists (select 1 from public.push_signals where user_id = b), 'a newer signal stays';
 end
 $$;
@@ -482,7 +486,7 @@ begin
     perform public.mark_push_sent(rid, '2000-01-01', b, array[repeat('c', 64)]);
     assert (select array_length(sent_tokens, 1) from public.reminder_push_queue where reminder_id = rid) = 1,
         'a mark for another occurrence does nothing';
-    perform public.ack_reminder_push(rid, c.due_at, b);
+    perform pg_temp.ack(rid, c.due_at, b);
     assert (select sent_tokens from public.reminder_push_queue where reminder_id = rid) = '{}', 'the next occurrence owes everyone';
     delete from public.reminders where id = rid;
 
@@ -499,11 +503,16 @@ begin
     insert into public.reminders (id, couple_id, author_id, target_id, title, love_language, trigger_type, fire_at, rrule)
     values (rid, d, a, b, 'x', 'words', 'recurring', now() + interval '1 hour', 'FREQ=DAILY');
     insert into public.reminder_events (reminder_id, couple_id, acted_at) values (rid, d, '2099-01-01');
-    assert (select acted_at from public.reminder_events where reminder_id = rid) <= now(), 'a future date stops at now';
+    assert (select acted_at from public.reminder_events where reminder_id = rid) <= now(), 'a far future date stops at now';
     update public.reminder_events set acted_at = '2099-01-01' where reminder_id = rid;
     assert (select acted_at from public.reminder_events where reminder_id = rid) <= now(), 'on an edit too';
     assert not public.reminder_done_at((select r from public.reminders r where r.id = rid), 'UTC', now() + interval '2 days'),
         'so it never silences a later day';
+
+    -- A little ahead of the server keeps its date: a fast phone at midnight.
+    update public.reminder_events set acted_at = now() + interval '2 minutes' where reminder_id = rid;
+    assert (select acted_at from public.reminder_events where reminder_id = rid) = now() + interval '2 minutes',
+        'a fast clock stays in the period the phone counted it in';
     delete from public.reminders where id = rid;
 
     -- New words on a place the phone armed reach it.
@@ -516,6 +525,55 @@ begin
     update public.reminders set title = 'Skip the milk' where id = place;
     assert not exists (select 1 from public.reminder_push_queue where reminder_id = place), 'the same words do not';
     delete from public.reminders where id = place;
+
+    -- The phone says what it armed: a served phone with a new token armed nothing.
+    insert into public.reminders (id, couple_id, author_id, target_id, title, love_language, trigger_type, fire_at)
+    values (rid, d, a, b, 'x', 'words', 'one_time', now() + interval '1 hour');
+    perform pg_temp.due(rid, interval '30 seconds');
+    perform public.register_push_device(repeat('d', 64), 'production', 'UTC', 1, false);
+    assert (select sent_tokens from public.reminder_push_queue where reminder_id = rid) = '{}', 'served phone: still owed';
+    perform public.register_push_device(repeat('e', 64), 'production', 'UTC', 1, true);
+    assert (select sent_tokens from public.reminder_push_queue where reminder_id = rid) = array[repeat('e', 64)],
+        'armed its own: left out';
+    assert (select first_weekday from public.push_devices where token = repeat('e', 64)) = 1, 'the week is kept';
+    delete from public.push_devices where token in (repeat('d', 64), repeat('e', 64));
+    delete from public.reminders where id = rid;
+
+    -- Rows finished unsent do not use up the limit.
+    insert into public.reminders (id, couple_id, author_id, target_id, title, love_language, trigger_type, fire_at)
+    select ('eb000000-0000-0000-0000-0000000000' || lpad(i::text, 2, '0'))::uuid, d, a, b, 'x', 'words', 'one_time', now() + interval '1 hour'
+      from generate_series(1, 9) i;
+    update public.reminder_push_queue set next_push_at = now() - interval '3 hours'
+     where reminder_id in ('eb000000-0000-0000-0000-000000000001', 'eb000000-0000-0000-0000-000000000002',
+                           'eb000000-0000-0000-0000-000000000003');
+    update public.reminder_push_queue set next_push_at = now() - interval '1 minute'
+     where next_push_at > now() and reminder_id::text like 'eb000000%';
+    assert (select count(*) from public.claim_due_reminder_pushes(2) x where x.reminder_id is not null) = 2,
+        'a full batch past the stale rows';
+    assert (select count(*) from public.reminder_push_queue
+             where reminder_id::text like 'eb000000%' and lease_until is null and next_push_at <= now()) = 4,
+        'the rest wait for the next claim';
+    delete from public.reminders where id::text like 'eb000000%';
+
+    -- An ack covers the phones it names. One that registered since is still owed it.
+    insert into public.reminders (id, couple_id, author_id, target_id, title, love_language, trigger_type, fire_at)
+    values (rid, d, a, b, 'x', 'words', 'one_time', now() + interval '1 hour');
+    perform pg_temp.due(rid, interval '30 seconds');
+    select * into c from public.claim_due_reminder_pushes() x where x.reminder_id = rid;
+    perform public.register_push_device(repeat('d', 64), 'production', 'UTC', 1, false);
+    perform public.ack_reminder_push(rid, c.due_at, b, array[repeat('b', 64), repeat('c', 64)]);
+    assert exists (select 1 from public.reminder_push_queue where reminder_id = rid and lease_until is null), 'still owed';
+    select * into c from public.claim_due_reminder_pushes() x where x.reminder_id = rid;
+    assert jsonb_array_length(c.devices) = 1 and c.devices->0->>'token' = repeat('d', 64), 'only to the new phone';
+    perform public.ack_reminder_push(rid, c.due_at, b, array[repeat('d', 64)]);
+    assert not exists (select 1 from public.reminder_push_queue where reminder_id = rid), 'then it is over';
+    delete from public.reminders where id = rid;
+    delete from public.push_devices where token = repeat('d', 64);
+
+    -- Removing a dead token says whether it went.
+    perform public.register_push_device(repeat('d', 64), 'production', 'UTC');
+    assert not public.remove_dead_push_device(repeat('d', 64), b, now() - interval '1 second'), 'registered since: stays';
+    assert public.remove_dead_push_device(repeat('d', 64), b, (select updated_at from public.push_devices where token = repeat('d', 64))), 'gone';
 
     -- Renaming a time reminder leaves its lease alone.
     insert into public.reminders (id, couple_id, author_id, target_id, title, love_language, trigger_type, fire_at)
@@ -575,8 +633,8 @@ declare
     fn text;
 begin
     foreach fn in array array[
-        'public.claim_due_reminder_pushes(int)', 'public.ack_reminder_push(uuid, timestamptz, uuid)',
-        'public.delete_push_device(text, uuid, timestamptz)', 'public.mark_push_sent(uuid, timestamptz, uuid, text[])',
+        'public.claim_due_reminder_pushes(int)', 'public.ack_reminder_push(uuid, timestamptz, uuid, text[])',
+        'public.remove_dead_push_device(text, uuid, timestamptz)', 'public.mark_push_sent(uuid, timestamptz, uuid, text[])',
         'public.get_apns_provider_token(text)',
         'public.put_apns_provider_token(text, text, timestamptz)'
     ] loop
@@ -591,12 +649,14 @@ begin
         'public.finish_reminder_push(public.reminder_push_queue, public.reminders)',
         'public.refresh_reminder_push(public.reminders)', 'public.reminder_next_push_at(public.reminders, timestamptz, text)',
         'public.reminder_done_at(public.reminders, text, timestamptz)', 'public.couples_sync_push_queue()',
-        'public.reminders_sync_push_queue()', 'public.reminder_events_clamp_acted_at()'
+        'public.reminders_sync_push_queue()', 'public.reminder_events_clamp_acted_at()',
+        'public.push_register(text, text, text, boolean)'
     ] loop
         assert not has_function_privilege('anon', fn, 'execute'), fn || ' is closed to anon';
         assert not has_function_privilege('authenticated', fn, 'execute'), fn || ' is closed to signed in users';
     end loop;
-    foreach fn in array array['public.reminder_in_couple(uuid, uuid)', 'public.register_push_device(text, text, text)'] loop
+    foreach fn in array array['public.reminder_in_couple(uuid, uuid)', 'public.register_push_device(text, text, text)',
+        'public.register_push_device(text, text, text, int, boolean)'] loop
         assert not has_function_privilege('anon', fn, 'execute'), fn || ' is closed to anon';
         assert has_function_privilege('authenticated', fn, 'execute'), fn || ' is open to signed in users';
     end loop;

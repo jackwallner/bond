@@ -70,7 +70,8 @@ export function apnsRequest(push: Occurrence, device: Device, topic: string, now
     "apns-push-type": push.silent ? "background" : "alert",
     // Apple requires 5 for a background push.
     "apns-priority": push.silent ? "5" : "10",
-    "apns-expiration": String(Math.min(nowSeconds, due ?? nowSeconds) + STALE_SECONDS),
+    // Never already past, for a row claimed at the very end of its hour.
+    "apns-expiration": String(Math.max(Math.min(nowSeconds, due ?? nowSeconds) + STALE_SECONDS, nowSeconds + 60)),
     "content-type": "application/json",
   };
   // One id per occurrence, so a retry replaces the copy a phone already got.
@@ -154,9 +155,17 @@ export function isProviderTokenRefused(status: number, responseBody: string): bo
     (responseBody.includes("ExpiredProviderToken") || responseBody.includes("InvalidProviderToken"));
 }
 
+/// Our setup, or the connection, rather than this push or this phone. Retrying
+/// keeps them in `failed`, and the reminder comes if it is fixed within the hour.
+const NOT_THE_PUSH = [
+  "BadTopic", "MissingTopic", "TopicDisallowed", "MissingProviderToken", "BadCertificate",
+  "BadCertificateEnvironment", "Forbidden", "IdleTimeout",
+];
+
 /// True when trying the same request again may work. Any other 4xx never will.
 export function isPassing(status: number, responseBody: string): boolean {
-  return status === 429 || status >= 500 || isProviderTokenRefused(status, responseBody);
+  return status === 429 || status >= 500 || isProviderTokenRefused(status, responseBody) ||
+    NOT_THE_PUSH.includes(reason(responseBody));
 }
 
 /// APNs' reason code alone, never the token or URL.

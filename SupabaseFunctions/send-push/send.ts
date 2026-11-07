@@ -46,11 +46,13 @@ export interface SendResult {
 /// How many requests are in flight at once, so a large batch cannot exhaust the function.
 export const CHUNK = 50;
 /// A claim leases its rows for 2 minutes. 25 occurrences and 25 signals at 10
-/// phones each is 10 chunks, 80 s if every request times out, so all of it is
-/// recorded before the lease ends and nothing is claimed twice.
+/// phones each is 10 chunks: 80 s if every request times out, 20 s more if every
+/// token is dead and every removal hits the database's 2 s limit, then the records.
+/// So all of it is recorded before the lease ends and nothing is claimed twice.
 export const CLAIM_LIMIT = 25;
-/// Claim again while there is more, stopping well inside the function's limit.
-const BUDGET_MS = 60_000;
+/// Claim again while there is more. One more claim can take 125 s with the claim
+/// itself, and the function is cut off at 150 s.
+const BUDGET_MS = 25_000;
 
 async function inChunks<T>(items: T[], run: (item: T) => Promise<void>): Promise<void> {
   for (let start = 0; start < items.length; start += CHUNK) {
@@ -59,6 +61,12 @@ async function inChunks<T>(items: T[], run: (item: T) => Promise<void>): Promise
 }
 
 type Outcome = "sent" | "dead" | "rejected" | "retry";
+
+interface Send {
+  push: Occurrence;
+  device: Device;
+  outcome?: Outcome;
+}
 
 async function deliver(push: Occurrence, device: Device, authorization: string, deps: SendDeps): Promise<Outcome> {
   const request = apnsRequest(push, device, deps.topic, deps.nowSeconds);
@@ -74,16 +82,7 @@ async function deliver(push: Occurrence, device: Device, authorization: string, 
       return "sent";
     }
     const text = await response.text();
-    if (isDeadToken(response.status, text)) {
-      // Only while the row is the one claimed: the phone may have registered since.
-      const { error } = await deps.rpc("delete_push_device", {
-        p_token: device.token,
-        p_user: push.userId,
-        p_seen: device.updated_at,
-      });
-      if (error) deps.log(`dead token not removed: ${error.message}`);
-      return "dead";
-    }
+    if (isDeadToken(response.status, text)) return "dead";
     if (isProviderTokenRefused(response.status, text)) await deps.dropProviderToken();
     deps.log(`APNs ${response.status} ${reason(text)}`);
     return isPassing(response.status, text) ? "retry" : "rejected";
@@ -94,20 +93,37 @@ async function deliver(push: Occurrence, device: Device, authorization: string, 
   }
 }
 
+/// Only while the row is the one claimed. If the phone registered since, this
+/// token works after all, and it still needs the occurrence.
+async function removeDead(send: Send, deps: SendDeps): Promise<Outcome> {
+  const { data, error } = await deps.rpc("remove_dead_push_device", {
+    p_token: send.device.token,
+    p_user: send.push.userId,
+    p_seen: send.device.updated_at,
+  });
+  if (error) deps.log(`dead token not removed: ${error.message}`);
+  return !error && data === true ? "dead" : "retry";
+}
+
 type Counts = Omit<SendResult["body"], "ok" | "error">;
 
+async function call(name: string, args: Record<string, unknown>, deps: SendDeps): Promise<boolean> {
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    const { error } = await deps.rpc(name, args);
+    if (!error) return true;
+    deps.log(`${name} failed: ${error.message}`);
+  }
+  return false;
+}
+
 async function record(push: Occurrence, retry: boolean, finished: string[], counts: Counts, deps: SendDeps) {
-  const key = { p_reminder_id: push.reminderId, p_due_at: push.dueAt, p_user_id: push.userId };
-  if (retry) {
-    // The retry goes only to the phones that are still owed it.
-    if (finished.length === 0) return;
-    const { error } = await deps.rpc("mark_push_sent", { ...key, p_tokens: finished });
-    if (error) deps.log(`sent phones not recorded: ${error.message}`);
+  const key = { p_reminder_id: push.reminderId, p_due_at: push.dueAt, p_user_id: push.userId, p_tokens: finished };
+  if (!retry && await call("ack_reminder_push", key, deps)) {
+    counts.acked += 1;
     return;
   }
-  const { error } = await deps.rpc("ack_reminder_push", key);
-  if (error) deps.log(`ack failed: ${error.message}`);
-  else counts.acked += 1;
+  // The retry goes only to the phones that are still owed it.
+  if (finished.length > 0) await call("mark_push_sent", key, deps);
 }
 
 export async function sendDue(deps: SendDeps): Promise<SendResult> {
@@ -131,21 +147,27 @@ export async function sendDue(deps: SendDeps): Promise<SendResult> {
       return { status: 500, body: { ok: false, ...counts, error: "provider token failed" } };
     }
 
+    const sends: Send[] = pushes.flatMap((push) => push.devices.map((device) => ({ push, device })));
+    await inChunks(sends, async (send) => {
+      send.outcome = await deliver(send.push, send.device, authorization, deps);
+    });
+    await inChunks(sends.filter((send) => send.outcome === "dead"), async (send) => {
+      send.outcome = await removeDead(send, deps);
+    });
+
     const retry = new Set<Occurrence>();
     const finished = new Map<Occurrence, string[]>(pushes.map((push) => [push, []]));
-    const sends = pushes.flatMap((push) => push.devices.map((device) => ({ push, device })));
-    await inChunks(sends, async ({ push, device }) => {
-      const outcome = await deliver(push, device, authorization, deps);
+    for (const { push, device, outcome } of sends) {
       if (outcome === "retry") {
         counts.failed += 1;
         retry.add(push);
-        return;
+        continue;
       }
       if (outcome === "sent") counts.sent += 1;
       else if (outcome === "dead") counts.deadTokens += 1;
       else counts.rejected += 1;
       finished.get(push)!.push(device.token);
-    });
+    }
     await inChunks(pushes, (push) => record(push, retry.has(push), finished.get(push)!, counts, deps));
 
     if (pushes.length < CLAIM_LIMIT || deps.elapsedMs() > BUDGET_MS) break;

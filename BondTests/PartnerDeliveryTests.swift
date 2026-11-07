@@ -142,6 +142,21 @@ struct PushRegistrarTests {
         #expect(rearmed == 1, "the local copies go once, when the server starts delivering")
     }
 
+    @Test func theServerIsToldWhetherThisPhoneArmedItsOwn() async throws {
+        var sent: [Bool?] = []
+        let me = UUID()
+        let defaults = UserDefaults(suiteName: "push-tests-\(UUID().uuidString)")!
+        let registrar = PushRegistrar(defaults: defaults)
+        registrar.currentUser = { me }
+        registrar.call = { _, params in
+            let json = try JSONSerialization.jsonObject(with: JSONEncoder().encode(params)) as? [String: Any]
+            sent.append(json?["p_armed_locally"] as? Bool)
+        }
+        await registrar.register(token: tokenA)
+        await registrar.register(token: tokenB)
+        #expect(sent == [true, false], "a served phone with a new token armed nothing, and is owed what is due")
+    }
+
     @Test func aFailedFirstRegistrationTakesTheTokenBack() async {
         let server = Server()
         server.failing = ["register_push_device"]

@@ -40,6 +40,8 @@ Deno.test("an alert carries the reminder and the keys a tap routes on", () => {
 Deno.test("APNs drops it once it is as late as the claim would skip it", () => {
   const late = apnsRequest(push, device, "t", due + 45 * 60);
   assertEquals(late.headers["apns-expiration"], String(due + 3600), "a retry does not extend it");
+  const last = apnsRequest(push, device, "t", due + 3599);
+  assertEquals(last.headers["apns-expiration"], String(due + 3599 + 60), "and it is never already past");
 });
 
 Deno.test("a retry of the same occurrence replaces it, the next one does not", () => {

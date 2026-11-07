@@ -72,10 +72,11 @@ final class PushRegistrar {
 
     func register(token: String, calendar: Calendar = .current, timezone: TimeZone = .current) async {
         guard let me = currentUser() else { return }
-        let registration = PushRegistration(
-            token: token, env: Self.environment, timezone: timezone.identifier, calendar: calendar
-        )
         let wasServed = serverDelivers(for: me)
+        let registration = PushRegistration(
+            token: token, env: Self.environment, timezone: timezone.identifier, calendar: calendar,
+            armedLocally: !wasServed
+        )
         do {
             try await send(registration)
             defaults.set(token, forKey: Self.tokenKey)
@@ -213,26 +214,32 @@ final class BondAppDelegate: NSObject, UIApplicationDelegate {
 /// The arguments of `register_push_device`. The first weekday is the one the
 /// phone's weekly completions count from (`ReminderCompletion`), so the server's
 /// "done this week" (0017) starts on the same day. Without it the call matches
-/// the three-argument version the store builds use.
+/// the three-argument version the store builds use. A phone the server already
+/// served armed nothing itself, even if its token is new to the server.
 struct PushRegistration: Encodable, Equatable, Sendable {
     let token: String
     let env: String
     let timezone: String
     let firstWeekday: Int?
+    let armedLocally: Bool?
 
-    init(token: String, env: String, timezone: String, calendar: Calendar) {
-        self.init(token: token, env: env, timezone: timezone, firstWeekday: calendar.firstWeekday)
+    init(token: String, env: String, timezone: String, calendar: Calendar, armedLocally: Bool = true) {
+        self.init(
+            token: token, env: env, timezone: timezone, firstWeekday: calendar.firstWeekday,
+            armedLocally: armedLocally
+        )
     }
 
-    private init(token: String, env: String, timezone: String, firstWeekday: Int?) {
+    private init(token: String, env: String, timezone: String, firstWeekday: Int?, armedLocally: Bool?) {
         self.token = token
         self.env = env
         self.timezone = timezone
         self.firstWeekday = firstWeekday
+        self.armedLocally = armedLocally
     }
 
     var withoutWeek: PushRegistration {
-        PushRegistration(token: token, env: env, timezone: timezone, firstWeekday: nil)
+        PushRegistration(token: token, env: env, timezone: timezone, firstWeekday: nil, armedLocally: nil)
     }
 
     private enum CodingKeys: String, CodingKey {
@@ -240,6 +247,7 @@ struct PushRegistration: Encodable, Equatable, Sendable {
         case env = "p_env"
         case timezone = "p_timezone"
         case firstWeekday = "p_first_weekday"
+        case armedLocally = "p_armed_locally"
     }
 
     func encode(to encoder: Encoder) throws {
@@ -248,5 +256,6 @@ struct PushRegistration: Encodable, Equatable, Sendable {
         try c.encode(env, forKey: .env)
         try c.encode(timezone, forKey: .timezone)
         try c.encodeIfPresent(firstWeekday, forKey: .firstWeekday)
+        try c.encodeIfPresent(armedLocally, forKey: .armedLocally)
     }
 }

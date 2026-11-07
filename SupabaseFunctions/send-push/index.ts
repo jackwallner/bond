@@ -93,7 +93,9 @@ Deno.serve(async (req) => {
 
   const result = await sendDue({
     rpc: async (name, args) => {
-      const { data, error } = await supabase.rpc(name, args);
+      const { data, error } = await supabase.rpc(name, args).abortSignal(AbortSignal.timeout(
+        name === "claim_due_reminder_pushes" ? 15_000 : 2_000,
+      ));
       return { data, error: error ? { message: error.message } : null };
     },
     fetch: (url, init) => fetch(url, init),

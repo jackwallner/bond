@@ -15,6 +15,10 @@ insert into public.couples (id, partner_a, partner_b, solo) values
     ('d0000000-0000-0000-0000-00000000000d',
      'a0000000-0000-0000-0000-00000000000a', 'b0000000-0000-0000-0000-00000000000b', false);
 
+create function pg_temp.ack(p_reminder uuid, p_due timestamptz, p_user uuid default null) returns void language sql as $$
+    select public.ack_reminder_push(p_reminder, p_due, p_user, array(select token from public.push_devices));
+$$;
+
 create function pg_temp.reminder(
     p_id text, p_trigger text, p_fire timestamptz, p_rrule text default null,
     p_hidden boolean default false, p_ws timestamptz default null, p_we timestamptz default null
@@ -223,7 +227,7 @@ begin
     assert (select count(*) from public.claim_due_reminder_pushes()) = 0, 'a claimed row is leased';
 
     -- Sent: send-push acknowledges each occurrence.
-    perform public.ack_reminder_push(c.reminder_id, c.due_at) from claimed c;
+    perform pg_temp.ack(c.reminder_id, c.due_at) from claimed c;
 
     next_at := (select next_push_at from public.reminder_push_queue where reminder_id = day);
     assert next_at > now() and next_at <= now() + interval '1 day', 'a recurring row moves to its next time';
@@ -246,7 +250,7 @@ begin
     assert (select user_id from public.push_devices where token = repeat('1', 64)) = a, 'the token moves accounts';
     perform public.unregister_push_device(repeat('1', 64));
     assert not exists (select 1 from public.push_devices where token = repeat('1', 64)), 'sign out removes it';
-    perform public.delete_push_device(d.token, d.user_id, d.updated_at)
+    perform public.remove_dead_push_device(d.token, d.user_id, d.updated_at)
        from public.push_devices d where d.token = repeat('2', 64);
     assert not exists (select 1 from public.push_devices where token = repeat('2', 64)), 'a dead token is removed';
 end
@@ -271,7 +275,7 @@ begin
     create temp table claimed_loc on commit drop as select * from public.claim_due_reminder_pushes();
     select count(*) into n from claimed_loc c where c.reminder_id = loc and c.silent;
     assert n = 1, 'one silent push';
-    perform public.ack_reminder_push(c.reminder_id, c.due_at) from claimed_loc c where c.reminder_id is not null;
+    perform pg_temp.ack(c.reminder_id, c.due_at) from claimed_loc c where c.reminder_id is not null;
     assert not exists (select 1 from public.reminder_push_queue where reminder_id = loc), 'and it is gone';
 end
 $$;
@@ -353,7 +357,7 @@ do $$
 declare
     fn text;
 begin
-    foreach fn in array array['public.claim_due_reminder_pushes(int)', 'public.delete_push_device(text, uuid, timestamptz)'] loop
+    foreach fn in array array['public.claim_due_reminder_pushes(int)', 'public.remove_dead_push_device(text, uuid, timestamptz)'] loop
         assert not has_function_privilege('anon', fn, 'execute'), fn || ' is closed to anon';
         assert not has_function_privilege('authenticated', fn, 'execute'), fn || ' is closed to signed in users';
         assert has_function_privilege('service_role', fn, 'execute'), fn || ' is open to the service role';
