@@ -9,6 +9,7 @@ struct ReminderEditorView: View {
     @Environment(PurchasesService.self) private var store
     @Environment(\.dismiss) private var dismiss
     @Environment(\.isUnfoldedSplit) private var isUnfoldedSplit
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var existing: ReminderDTO?
     /// Optional seed for a brand-new reminder (e.g. tapped from a starter
@@ -163,12 +164,15 @@ struct ReminderEditorView: View {
     /// Label on its own line, then one scrollable row of chips clearly below
     /// it - the menu-style picker squeezed the icon+title onto the trailing
     /// edge where long titles wrapped awkwardly. In the unfolded Duo's pane
-    /// all five wrap into view instead, so none is cut at the card edge.
+    /// all five wrap into view instead, so none is cut at the card edge. At
+    /// accessibility sizes one chip can be wider than the card, so they stack.
     private var loveLanguagePicker: some View {
         VStack(alignment: .leading, spacing: BondSpacing.s) {
             Text("Love language")
                 .font(.bond(.body))
-            if isUnfoldedSplit {
+            if dynamicTypeSize.isAccessibilitySize {
+                VStack(alignment: .leading, spacing: BondSpacing.s) { loveLanguageChips }
+            } else if isUnfoldedSplit {
                 FlowLayout { loveLanguageChips }
             } else {
                 ScrollView(.horizontal, showsIndicators: false) {
