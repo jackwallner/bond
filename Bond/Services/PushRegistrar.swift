@@ -12,18 +12,31 @@ import UserNotifications
 final class PushRegistrar {
     static let shared = PushRegistrar()
 
-    /// After registering, so the local copies of what the server now owns go away.
+    /// After the server starts delivering here, so the local copies of what it
+    /// now owns go away.
     var onRegistered: (@MainActor () async -> Void)?
-    /// A silent push: the partner changed something this phone has to arm itself.
+    /// A silent push: the couple or something this phone armed itself changed.
     var onRemoteChange: (@MainActor () async -> Void)?
 
+    /// Who is signed in, and the server call. Tests swap them.
+    var currentUser: @MainActor () -> UUID? = { SupabaseService.shared.currentUserId }
+    var call: @MainActor (_ function: String, _ params: any Encodable & Sendable) async throws -> Void = {
+        try await SupabaseService.shared.client.rpc($0, params: $1).execute()
+    }
+
     private let log = Logger(subsystem: "com.jackwallner.bond", category: "push")
-    private let defaults = UserDefaults.standard
+    private let defaults: UserDefaults
     private static let tokenKey = "push.token"
     private static let userKey = "push.user"
-    private static let syncedKey = "push.synced"
+    /// Before 0019 registration ran once a day; the key is only cleared now.
+    private static let legacySyncedKey = "push.synced"
+    /// A token a signed-out account still holds on the server, because the
+    /// sign-out could not reach it. Kept until another registration moves it.
+    nonisolated static let pendingReleaseKey = "push.pendingRelease"
 
-    private init() {}
+    init(defaults: UserDefaults = .standard) {
+        self.defaults = defaults
+    }
 
     private static var environment: String {
         #if DEBUG
@@ -34,53 +47,61 @@ final class PushRegistrar {
     }
 
     /// Asks for a token when notifications are allowed. Apple answers through the
-    /// app delegate, usually straight away from its cache.
+    /// app delegate, usually straight away from its cache. Runs on every return
+    /// to the foreground: registering again is harmless (0019 keeps what is due),
+    /// and it restores a device row the server dropped.
     func refresh() async {
         #if DEBUG
         if BondScreenshotSeed.isEnabled || BondScreenshotSeed.isOnboarding { return }
         #endif
-        guard SupabaseService.shared.currentUserId != nil else { return }
+        guard currentUser() != nil else { return }
         switch await UNUserNotificationCenter.current().notificationSettings().authorizationStatus {
         case .authorized, .provisional, .ephemeral:
             UIApplication.shared.registerForRemoteNotifications()
         case .denied:
             await unregister()
+            await releasePending()
         default:
-            break
+            await releasePending()
         }
     }
 
     func store(deviceToken: Data) async {
-        guard let me = SupabaseService.shared.currentUserId else { return }
-        let token = deviceToken.map { String(format: "%02x", $0) }.joined()
+        await register(token: deviceToken.map { String(format: "%02x", $0) }.joined())
+    }
+
+    func register(token: String, calendar: Calendar = .current, timezone: TimeZone = .current) async {
+        guard let me = currentUser() else { return }
         let registration = PushRegistration(
-            token: token, env: Self.environment, timezone: TimeZone.current.identifier, calendar: .current
+            token: token, env: Self.environment, timezone: timezone.identifier, calendar: calendar
         )
-        // Once a day is enough: every registration re-reads this user's schedule.
-        let day = Date.now.formatted(.iso8601.year().month().day())
-        let sync = [
-            token, me.uuidString, registration.timezone, "\(registration.firstWeekday ?? 0)", day
-        ].joined(separator: "|")
-        guard defaults.string(forKey: Self.syncedKey) != sync else { return }
+        let wasServed = serverDelivers(for: me)
         do {
-            do {
-                try await SupabaseService.shared.client
-                    .rpc("register_push_device", params: registration)
-                    .execute()
-            } catch {
-                // A server without the week (migration 0017) still delivers.
-                log.notice("Registering with the week failed, retrying without: \(error.localizedDescription)")
-                try await SupabaseService.shared.client
-                    .rpc("register_push_device", params: registration.withoutWeek)
-                    .execute()
-            }
+            try await send(registration)
             defaults.set(token, forKey: Self.tokenKey)
             defaults.set(me.uuidString, forKey: Self.userKey)
-            defaults.set(sync, forKey: Self.syncedKey)
+            defaults.removeObject(forKey: Self.legacySyncedKey)
             log.info("Registered for push")
-            await onRegistered?()
+            await releasePending(movedBy: token)
+            if !wasServed { await onRegistered?() }
         } catch {
             log.error("Push registration failed: \(error.localizedDescription)")
+            // The server may have taken it and the answer got lost. A phone it was
+            // not serving still arms everything itself, so take the token back
+            // rather than have both deliver. One it was serving keeps its row.
+            if !wasServed {
+                try? await call("unregister_push_device", ["p_token": token])
+            }
+        }
+    }
+
+    private func send(_ registration: PushRegistration) async throws {
+        do {
+            try await call("register_push_device", registration)
+        } catch {
+            // A server without the week (migration 0017) still delivers.
+            log.notice("Registering with the week failed, retrying without: \(error.localizedDescription)")
+            try await call("register_push_device", registration.withoutWeek)
         }
     }
 
@@ -89,22 +110,70 @@ final class PushRegistrar {
         defaults.string(forKey: Self.userKey) == user.uuidString
     }
 
+    /// Whether a signed-out account may still reach this phone. Read from the
+    /// notification delegate, off the main actor.
+    nonisolated static func hasPendingRelease(_ defaults: UserDefaults = .standard) -> Bool {
+        defaults.string(forKey: pendingReleaseKey) != nil
+    }
+
     /// For sign-out and for notifications being turned off, while the session
-    /// still exists. A failure is left to `forget`: the row points at a phone
-    /// whose next sign-in takes the token over.
+    /// still exists. When the server cannot be reached the token is remembered,
+    /// and the next registration, by whoever is signed in then, takes it over.
     func unregister() async {
         if let token = defaults.string(forKey: Self.tokenKey) {
-            try? await SupabaseService.shared.client
-                .rpc("unregister_push_device", params: ["p_token": token])
-                .execute()
+            do {
+                try await call("unregister_push_device", ["p_token": token])
+            } catch {
+                log.error("Unregistering failed, kept for the next sign-in: \(error.localizedDescription)")
+                defaults.set(token, forKey: Self.pendingReleaseKey)
+            }
         }
         forget()
     }
 
+    /// Moves a token a signed-out account still holds to this account, then lets
+    /// it go. A token this phone just registered was moved already.
+    func releasePending(movedBy registered: String? = nil) async {
+        guard let pending = defaults.string(forKey: Self.pendingReleaseKey) else { return }
+        if pending == registered {
+            defaults.removeObject(forKey: Self.pendingReleaseKey)
+            return
+        }
+        guard currentUser() != nil else { return }
+        do {
+            try await send(PushRegistration(
+                token: pending, env: Self.environment, timezone: TimeZone.current.identifier, calendar: .current
+            ))
+            try await call("unregister_push_device", ["p_token": pending])
+            defaults.removeObject(forKey: Self.pendingReleaseKey)
+        } catch {
+            log.error("Releasing the old account's token failed: \(error.localizedDescription)")
+        }
+    }
+
     /// Clears the promise, so the next schedule rebuild arms everything locally.
     func forget() {
-        for key in [Self.tokenKey, Self.userKey, Self.syncedKey] {
+        for key in [Self.tokenKey, Self.userKey, Self.legacySyncedKey] {
             defaults.removeObject(forKey: key)
+        }
+    }
+
+    /// A silent push: an unpair or a pairing may have moved the couple, or the
+    /// partner removed a place this phone armed. The couple is looked up again
+    /// every time, because the inviter keeps the couple id when unpairing, then
+    /// what this phone armed is rebuilt from the fresh list.
+    static func rebuildAfterSilentPush(
+        pairing: PairingService,
+        repo: ReminderRepository,
+        events: ReminderEventRepository,
+        bootstrap: @MainActor () async -> Void = { await SupabaseService.shared.bootstrap() }
+    ) async {
+        await bootstrap()
+        await pairing.loadCouple()
+        guard let me = SupabaseService.shared.currentUserId else { return }
+        await repo.catchUp(forSelfUserId: me) {
+            await events.refresh()
+            return events.loadedEvents
         }
     }
 }

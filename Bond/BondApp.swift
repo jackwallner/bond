@@ -31,13 +31,13 @@ struct BondApp: App {
         // background with no scene at all.
         PushRegistrar.shared.onRegistered = { await repo.rearm() }
         PushRegistrar.shared.onRemoteChange = {
-            await SupabaseService.shared.bootstrap()
-            if pairing.coupleId == nil { await pairing.loadCouple() }
-            guard let me = SupabaseService.shared.currentUserId else { return }
-            await repo.catchUp(forSelfUserId: me) {
-                await events.refresh()
-                return events.loadedEvents
-            }
+            await PushRegistrar.rebuildAfterSilentPush(pairing: pairing, repo: repo, events: events)
+        }
+        // The server times partner reminders in the zone the phone last sent.
+        _ = NotificationCenter.default.addObserver(
+            forName: .NSSystemTimeZoneDidChange, object: nil, queue: .main
+        ) { _ in
+            Task { @MainActor in await PushRegistrar.shared.refresh() }
         }
 
         Self.applyNavigationBarFont()
@@ -162,6 +162,9 @@ struct BondApp: App {
                         // couple re-reads them (onRelationshipChange).
                         await store.identify(supabaseUserId: user)
                         await pairingService.loadCouple()
+                        // The token moves to this account now, not at the next
+                        // return to the foreground.
+                        await PushRegistrar.shared.refresh()
                     }
                     pairingService.onRelationshipChange = {
                         // Pairing or unpairing moves reminders and milestones
@@ -377,6 +380,7 @@ struct RootView: View {
             Task {
                 await pairing.loadCouple()
                 isAppBootstrapped = true
+                await PushRegistrar.shared.refresh()
             }
         }
         .onReceive(NotificationCenter.default.publisher(for: .bondPositiveMomentForReview)) { _ in
