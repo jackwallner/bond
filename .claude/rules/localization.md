@@ -90,3 +90,15 @@ English only for now; other languages are written in separate runs by adding
 language, `gh-sim all` with `--screen "-AppleLanguages (de) -AppleLocale de_DE"`
 plus the existing screenshot switches. Never set the production RevenueCat
 `appl_` key on a simulator run.
+
+## Language row
+
+Settings has a Language row (Theme section) that names the running localization
+in itself (`Bundle.main.preferredLocalizations`) and opens `openSettingsURLString`,
+Apple's route for a per-app language change. Its catalog key is
+`Language (Settings row)`, because the plain `Language` key is the Stats chart
+axis (a love language) and translates differently ("Lenguaje" vs "Idioma"). iOS
+hides the app's Language option on a device with one preferred language unless
+`UIPrefersShowingLanguageSettings` is YES in `Bond/Info.plist`, so keep that key.
+The simulator's Settings opens at its root for this link; check the landing on a
+real iPhone.
