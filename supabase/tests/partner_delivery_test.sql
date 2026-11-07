@@ -334,6 +334,26 @@ begin
 end
 $$;
 
+-- ============================================================
+-- Scenario 7: only the service role can claim pushes or delete a device
+-- ============================================================
+do $$
+declare
+    fn text;
+begin
+    foreach fn in array array['public.claim_due_reminder_pushes(int)', 'public.delete_push_device(text)'] loop
+        assert not has_function_privilege('anon', fn, 'execute'), fn || ' is closed to anon';
+        assert not has_function_privilege('authenticated', fn, 'execute'), fn || ' is closed to signed in users';
+        assert has_function_privilege('service_role', fn, 'execute'), fn || ' is open to the service role';
+    end loop;
+    foreach fn in array array['public.register_push_device(text, text, text)', 'public.unregister_push_device(text)',
+                              'public.reschedule_reminder(uuid, text, timestamptz, text, jsonb, timestamptz, timestamptz)'] loop
+        assert not has_function_privilege('anon', fn, 'execute'), fn || ' is closed to anon';
+        assert has_function_privilege('authenticated', fn, 'execute'), fn || ' is open to signed in users';
+    end loop;
+end
+$$;
+
 rollback;
 
 \echo 'partner delivery tests passed'

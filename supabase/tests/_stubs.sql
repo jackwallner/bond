@@ -38,3 +38,8 @@ begin
     end if;
 end
 $$;
+
+-- Supabase grants every new public function to these roles by name, so a plain
+-- "revoke from public" does not close it. Match that, or the tests pass while production is open.
+alter default privileges in schema public grant execute on functions to anon, authenticated, service_role;
+
