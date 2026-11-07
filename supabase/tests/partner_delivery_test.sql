@@ -354,6 +354,43 @@ begin
 end
 $$;
 
+-- ============================================================
+-- Scenario 8: account RPCs need a signed in caller acting on themselves
+-- ============================================================
+do $$
+declare
+    b uuid := 'b0000000-0000-0000-0000-00000000000b';
+    fn text;
+    calls text[] := array[
+        format('select public.delete_account(%L)', b),
+        format('select public.leave_couple(%L)', b),
+        format('select public.consume_invite_code(%L, %L)', 'CODE', b)
+    ];
+    call text;
+    raised boolean;
+begin
+    foreach fn in array array['public.consume_invite_code(text, uuid)', 'public.create_solo_couple(text)',
+                              'public.delete_account(uuid)', 'public.leave_couple(uuid)'] loop
+        assert not has_function_privilege('anon', fn, 'execute'), fn || ' is closed to anon';
+        assert has_function_privilege('authenticated', fn, 'execute'), fn || ' is open to signed in users';
+    end loop;
+
+    foreach call in array calls loop
+        foreach fn in array array['', 'c0000000-0000-0000-0000-00000000000c'] loop
+            perform set_config('test.uid', fn, false);
+            raised := false;
+            begin
+                execute call;
+            exception when others then
+                raised := sqlerrm like '%unauthorized%';
+            end;
+            assert raised, call || ' refuses caller "' || fn || '"';
+        end loop;
+    end loop;
+    assert exists (select 1 from auth.users where id = b), 'the account is still there';
+end
+$$;
+
 rollback;
 
 \echo 'partner delivery tests passed'
