@@ -122,25 +122,72 @@ object ReminderTemplateStore {
     )
 
     /**
-     * Reminders for a whole pack: recurring ones anchored at 9am, one-time ones
-     * at 2pm, starting from the next such hour and staggered a day apart so the
-     * import does not land as one burst of notifications.
+     * When each reminder of an imported pack first fires. Each one gets its own
+     * clock time, one no other reminder for the same person already uses, and
+     * they start a day apart: a pack never rings together, with itself or with
+     * anything imported before it (`TemplateSchedule` on iOS).
      */
+    fun fireDates(
+        templates: List<TemplateReminder>,
+        target: UUID,
+        existing: List<ReminderDto>,
+        now: Instant = Instant.now(),
+        zone: ZoneId = ZoneId.systemDefault(),
+    ): List<Instant> {
+        val taken = existing.mapNotNull { reminder ->
+            val fireAt = reminder.fireAt
+            if (reminder.targetId != target || fireAt == null) return@mapNotNull null
+            when (val trigger = reminder.trigger) {
+                is ReminderTrigger.Recurring -> Unit
+                is ReminderTrigger.OneTime -> if (!trigger.fireAt.isAfter(now)) return@mapNotNull null
+                else -> return@mapNotNull null
+            }
+            val local = fireAt.atZone(zone)
+            local.hour * 60 + local.minute
+        }.toMutableSet()
+        return templates.mapIndexed { index, template ->
+            // Repeating reminders lead at 9:00, one-time nudges at 2:00 PM.
+            val preferred = if (template.triggerRecurrence == null) 14 * 60 else 9 * 60
+            val minute = (listOf(preferred) + SLOTS).firstOrNull { it !in taken }
+                ?: (9 * 60 + 5 until 24 * 60 step 5).firstOrNull { it !in taken }
+                ?: preferred
+            taken += minute
+            var base = now.atZone(zone).toLocalDate().atTime(minute / 60, minute % 60).atZone(zone)
+            if (!base.toInstant().isAfter(now)) base = base.plusDays(1)
+            base.plusDays(index.toLong()).toInstant()
+        }
+    }
+
+    /** Friendly clock times as minutes after midnight, in the order they are handed out. */
+    private val SLOTS = listOf(
+        9 * 60, 12 * 60 + 30, 18 * 60, 20 * 60 + 30, 8 * 60, 10 * 60 + 30, 15 * 60,
+        19 * 60 + 30, 7 * 60 + 30, 13 * 60 + 30, 17 * 60, 21 * 60, 11 * 60, 16 * 60, 14 * 60,
+    )
+
+    /** Reminders for a whole pack, first firing at [fireDates]. */
     fun drafts(
         group: ReminderTemplateGroup,
         coupleId: UUID,
         authorId: UUID,
         targetId: UUID,
+        existing: List<ReminderDto> = emptyList(),
         now: Instant = Instant.now(),
         zone: ZoneId = ZoneId.systemDefault(),
         newId: () -> UUID = UUID::randomUUID,
-    ): List<ReminderDto> = group.reminders.mapIndexed { index, template ->
-        val hour = if (template.triggerRecurrence == null) 14 else 9
-        var base = now.atZone(zone).toLocalDate().atTime(hour, 0).atZone(zone)
-        if (!base.toInstant().isAfter(now)) base = base.plusDays(1)
-        val fireAt = base.plusDays(index.toLong()).toInstant()
+    ): List<ReminderDto> = fireDates(group.reminders, targetId, existing, now, zone).let { dates ->
+        group.reminders.mapIndexed { index, template -> draft(template, dates[index], coupleId, authorId, targetId, newId()) }
+    }
+
+    private fun draft(
+        template: TemplateReminder,
+        fireAt: Instant,
+        coupleId: UUID,
+        authorId: UUID,
+        targetId: UUID,
+        id: UUID,
+    ): ReminderDto =
         ReminderDto(
-            id = newId(),
+            id = id,
             coupleId = coupleId,
             authorId = authorId,
             targetId = targetId,
@@ -151,5 +198,4 @@ object ReminderTemplateStore {
             fireAt = fireAt,
             rrule = template.triggerRecurrence?.rrule,
         )
-    }
 }

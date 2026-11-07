@@ -2,8 +2,6 @@ package com.jackwallner.bond.model
 
 import java.time.Instant
 import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.YearMonth
 import java.time.ZoneId
 import java.time.temporal.ChronoUnit
 import java.util.UUID
@@ -28,7 +26,8 @@ data class NotificationSpec(
  * out (no geofencing on Android, see `.claude/rules/android.md`).
  */
 object NotificationPlanner {
-    const val RANDOM_RECURRING_RUNWAY_DAYS = 5
+    /** A daily random reminder gets one weekly repeating ping per weekday. */
+    const val RANDOM_RECURRING_DAYS = 7
 
     fun reminderSpecs(
         selfId: UUID,
@@ -85,8 +84,11 @@ object NotificationPlanner {
     }
 
     /**
-     * No "daily at a random time" trigger exists, so the next five days go down
-     * as separate one-time pings, each at a stable pick inside that day's window.
+     * No "daily at a random time" trigger exists. Each weekday gets its own
+     * weekly repeating ping at that day's stable pick inside the window, so the
+     * reminder fires every day even if the app is never opened again (one-time
+     * pings ran out after five days). Every rebuild (app open, save, completion)
+     * picks new moments for the coming week.
      */
     private fun randomRecurring(
         reminder: ReminderDto,
@@ -100,28 +102,57 @@ object NotificationPlanner {
         val start = trigger.start.atZone(zone)
         val end = trigger.end.atZone(zone)
         val today = now.atZone(zone).toLocalDate()
-        val specs = mutableListOf<NotificationSpec>()
-        for (offset in 0 until RANDOM_RECURRING_RUNWAY_DAYS) {
-            if (offset == 0 && skipToday) continue
-            val day = today.plusDays(offset.toLong())
-            val dayStart = day.atStartOfDay(zone).toInstant()
+
+        fun window(day: LocalDate): Triple<Instant, Instant, Instant>? {
             val windowStart = day.atTime(start.hour, start.minute).atZone(zone).toInstant()
             val windowEnd = day.atTime(end.hour, end.minute).atZone(zone).toInstant()
-            if (!windowEnd.isAfter(windowStart)) continue
-            var fireAt = stablePick(windowStart, windowEnd, reminder.id, dayStart)
-            if (!fireAt.isAfter(now)) {
-                // Today's pick already passed. Only a reminder created today after its
-                // pick (so never scheduled) falls forward into what is left of the window.
-                val created = reminder.createdAt ?: Instant.MIN
-                val createdToday = reminder.createdAt?.atZone(zone)?.toLocalDate() == today
-                if (!windowEnd.isAfter(now) || !created.isAfter(fireAt) || !createdToday) continue
-                val span = windowEnd.toEpochMilli() - now.toEpochMilli()
-                fireAt = Instant.ofEpochMilli(now.toEpochMilli() + random.nextLong(0, span + 1))
+            if (!windowEnd.isAfter(windowStart)) return null
+            return Triple(day.atStartOfDay(zone).toInstant(), windowStart, windowEnd)
+        }
+
+        fun weekly(id: String, at: Instant): NotificationSpec {
+            val anchor = at.truncatedTo(ChronoUnit.MINUTES)
+            val first = RecurrencePreset.WEEKLY.firstOccurrence(now, anchor, zone)
+            return NotificationSpec(id, reminder.title, body, first, reminder.id, RecurrencePreset.WEEKLY, anchor)
+        }
+
+        val specs = mutableListOf<NotificationSpec>()
+        for (offset in 0 until RANDOM_RECURRING_DAYS) {
+            val day = today.plusDays(offset.toLong())
+            val (dayStart, windowStart, windowEnd) = window(day) ?: continue
+            val id = "${reminder.id}.day$offset"
+            val pick = stablePick(windowStart, windowEnd, reminder.id, dayStart)
+
+            if (offset > 0) {
+                specs += weekly(id, pick)
+                continue
             }
-            specs += NotificationSpec(
-                "${reminder.id}.day$offset", reminder.title, body,
-                fireAt.truncatedTo(ChronoUnit.MINUTES), reminder.id,
-            )
+            if (pick.isAfter(now) && skipToday) {
+                // Done today before today's moment: today's ping must not ring today.
+                // A moment already behind us next fires in a week.
+                val latest = now.minusSeconds(60)
+                if (latest.isAfter(windowStart)) {
+                    specs += weekly(id, stablePick(windowStart, latest, reminder.id, dayStart))
+                } else {
+                    val nextWeek = day.plusDays(7)
+                    val (nextDayStart, nextStart, nextEnd) = window(nextWeek) ?: continue
+                    val at = stablePick(nextStart, nextEnd, reminder.id, nextDayStart)
+                    oneShot(reminder, at, body, now)?.let { specs += it.copy(id = id) }
+                }
+                continue
+            }
+            specs += weekly(id, pick)
+            // Today's pick already passed. Picking again later in the window would ping
+            // again on every rebuild (each app open runs this, including the open caused
+            // by tapping today's notification). Only a reminder created today after its
+            // pick, which therefore never rang, falls forward into what is left of the window.
+            val created = reminder.createdAt ?: continue
+            if (pick.isAfter(now) || skipToday || !windowEnd.isAfter(now) ||
+                !created.isAfter(pick) || created.atZone(zone).toLocalDate() != today
+            ) continue
+            val span = windowEnd.toEpochMilli() - now.toEpochMilli()
+            val fallForward = Instant.ofEpochMilli(now.toEpochMilli() + random.nextLong(0, span + 1))
+            oneShot(reminder, fallForward, body, now)?.let { specs += it.copy(id = "${reminder.id}.today") }
         }
         return specs
     }
@@ -146,38 +177,14 @@ object NotificationPlanner {
     }
 
     /**
-     * The next moment after [after] that matches [anchor]'s clock fields for
-     * [preset]: hour and minute daily, plus weekday weekly, day of month monthly
-     * (months without that day are skipped), month and day yearly.
+     * The first occurrence of [preset] after [after], counted in whole steps from
+     * [anchor] like the list and the server do: a recurring reminder that starts
+     * later first fires at its start, and a monthly reminder on the 29th to the
+     * 31st (or a yearly one on February 29) lands on the last day of a shorter
+     * month instead of skipping it.
      */
-    fun nextCalendarMatch(anchor: Instant, preset: RecurrencePreset, after: Instant, zone: ZoneId): Instant? {
-        val a = anchor.atZone(zone)
-        val from = after.atZone(zone).toLocalDate()
-        fun candidate(date: LocalDate): Instant? {
-            val local = LocalDateTime.of(date, java.time.LocalTime.of(a.hour, a.minute))
-            val instant = local.atZone(zone).toInstant()
-            return instant.takeIf { it.isAfter(after) }
-        }
-        when (preset) {
-            RecurrencePreset.DAILY -> for (i in 0..2) candidate(from.plusDays(i.toLong()))?.let { return it }
-            RecurrencePreset.WEEKLY -> for (i in 0..14) {
-                val date = from.plusDays(i.toLong())
-                if (date.dayOfWeek == a.dayOfWeek) candidate(date)?.let { return it }
-            }
-            RecurrencePreset.MONTHLY -> {
-                var month = YearMonth.from(from)
-                repeat(48) {
-                    if (a.dayOfMonth <= month.lengthOfMonth()) candidate(month.atDay(a.dayOfMonth))?.let { return it }
-                    month = month.plusMonths(1)
-                }
-            }
-            RecurrencePreset.YEARLY -> for (y in from.year..from.year + 8) {
-                val month = YearMonth.of(y, a.monthValue)
-                if (a.dayOfMonth <= month.lengthOfMonth()) candidate(month.atDay(a.dayOfMonth))?.let { return it }
-            }
-        }
-        return null
-    }
+    fun nextCalendarMatch(anchor: Instant, preset: RecurrencePreset, after: Instant, zone: ZoneId): Instant? =
+        preset.firstOccurrence(after, anchor.truncatedTo(ChronoUnit.MINUTES), zone)
 
     /** Up to three pings per milestone at 9am local: a week before, the day before, and the day of. */
     fun milestoneSpecs(

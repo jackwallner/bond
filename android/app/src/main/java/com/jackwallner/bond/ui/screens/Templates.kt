@@ -143,7 +143,7 @@ private fun TemplateGroupDetail(group: ReminderTemplateGroup, onBack: () -> Unit
         created = 0
         importError = null
         val target = if (graph.pairing.solo) me else graph.pairing.partnerProfile?.id ?: me
-        val drafts = ReminderTemplateStore.drafts(group, coupleId, me, target)
+        val drafts = ReminderTemplateStore.drafts(group, coupleId, me, target, graph.reminders.reminders)
         scope.launch {
             try {
                 graph.reminders.bulkInsert(drafts)

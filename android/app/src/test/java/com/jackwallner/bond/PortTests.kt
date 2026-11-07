@@ -132,10 +132,11 @@ class NotificationPlannerTests {
         assertEquals(RecurrencePreset.WEEKLY, spec.repeat)
     }
 
-    @Test fun randomRecurringLaysDownAFiveDayRunway() {
+    @Test fun randomRecurringLaysDownOneWeeklyPingPerWeekday() {
         val r = reminder("random_window", rrule = "FREQ=DAILY", windowStart = at(2026, 10, 1, 18), windowEnd = at(2026, 10, 1, 21), authorId = me)
         val specs = NotificationPlanner.reminderSpecs(me, listOf(r), emptyList(), now, LA)
-        assertEquals((0 until 5).map { "${r.id}.day$it" }, specs.map { it.id })
+        assertEquals((0 until 7).map { "${r.id}.day$it" }, specs.map { it.id })
+        assertTrue(specs.all { it.repeat == RecurrencePreset.WEEKLY })
         specs.forEachIndexed { offset, spec ->
             val day = LocalDate.of(2026, 10, 18).plusDays(offset.toLong())
             assertFalse(spec.fireAt.isBefore(day.atTime(18, 0).atZone(LA).toInstant()))
@@ -143,10 +144,11 @@ class NotificationPlannerTests {
         }
     }
 
-    @Test fun randomRecurringDoneTodaySkipsToday() {
+    @Test fun randomRecurringDoneTodayDoesNotRingToday() {
         val r = reminder("random_window", rrule = "FREQ=DAILY", windowStart = at(2026, 10, 1, 18), windowEnd = at(2026, 10, 1, 21), authorId = me)
         val specs = NotificationPlanner.reminderSpecs(me, listOf(r), listOf(acted(r, now)), now, LA)
-        assertEquals((1 until 5).map { "${r.id}.day$it" }, specs.map { it.id })
+        assertEquals((0 until 7).map { "${r.id}.day$it" }, specs.map { it.id })
+        assertTrue(specs.none { it.fireAt.isBefore(at(2026, 10, 19)) })
     }
 
     @Test fun locationRemindersAreNotPlannedOnAndroid() {
@@ -154,14 +156,14 @@ class NotificationPlannerTests {
         assertTrue(NotificationPlanner.reminderSpecs(me, listOf(r), emptyList(), now, LA).isEmpty())
     }
 
-    @Test fun monthlySkipsMonthsWithoutTheDay() {
+    @Test fun monthlyOnThe31stLandsOnTheLastDayOfAShortMonth() {
         val next = NotificationPlanner.nextCalendarMatch(at(2026, 1, 31, 9), RecurrencePreset.MONTHLY, at(2026, 2, 1), LA)
-        assertEquals(at(2026, 3, 31, 9), next)
+        assertEquals(at(2026, 2, 28, 9), next)
     }
 
-    @Test fun yearlyFeb29OnlyInLeapYears() {
+    @Test fun yearlyFeb29LandsOnFeb28InOtherYears() {
         val next = NotificationPlanner.nextCalendarMatch(at(2024, 2, 29, 9), RecurrencePreset.YEARLY, at(2024, 3, 1), LA)
-        assertEquals(at(2028, 2, 29, 9), next)
+        assertEquals(at(2025, 2, 28, 9), next)
     }
 
     @Test fun dailyLaterTodayWhenTheTimeIsStillAhead() =
@@ -310,12 +312,13 @@ class ContentTests {
         assertTrue(ReminderTemplateStore.groups.all { it.reminders.isNotEmpty() })
     }
 
-    @Test fun templateDraftsAreStaggeredAtFriendlyHours() {
+    @Test fun templateDraftsAreStaggeredAtDistinctFriendlyHours() {
         val group = ReminderTemplateStore.groups.first { it.id == "daily_affirmations" }
         val me = UUID.randomUUID()
-        val drafts = ReminderTemplateStore.drafts(group, UUID.randomUUID(), me, me, at(2026, 10, 18, 12), LA)
-        // Recurring packs anchor at 9am; noon has passed it, so the first is tomorrow.
-        assertEquals(listOf(at(2026, 10, 19, 9), at(2026, 10, 20, 9), at(2026, 10, 21, 9)), drafts.map { it.fireAt })
+        val drafts = ReminderTemplateStore.drafts(group, UUID.randomUUID(), me, me, now = at(2026, 10, 18, 12), zone = LA)
+        // Recurring packs lead at 9am and each reminder takes its own clock time; noon has
+        // passed 9am, so the first is tomorrow, while 12:30 and 18:00 are still ahead today.
+        assertEquals(listOf(at(2026, 10, 19, 9), at(2026, 10, 19, 12, 30), at(2026, 10, 20, 18)), drafts.map { it.fireAt })
         assertEquals(listOf("FREQ=DAILY", "FREQ=DAILY", "FREQ=WEEKLY"), drafts.map { it.rrule })
         assertTrue(drafts.all { it.triggerType == "recurring" })
     }

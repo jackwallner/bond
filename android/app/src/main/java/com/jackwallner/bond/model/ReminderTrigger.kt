@@ -36,25 +36,15 @@ sealed class ReminderTrigger {
         }
 
     /**
-     * Future-aware next fire. Recurring triggers walk the rule forward from the
-     * stored anchor until they land after [reference].
+     * Future-aware next fire. Recurring triggers count whole steps from the
+     * stored anchor to the first occurrence after [reference].
      */
     fun upcomingFireDate(reference: Instant = Instant.now(), zone: ZoneId = ZoneId.systemDefault()): Instant? =
         when (this) {
             is OneTime -> fireAt
             is Recurring -> {
                 val preset = RecurrencePreset.fromRrule(rrule)
-                if (preset == null) {
-                    nextFire
-                } else {
-                    var next = nextFire
-                    var found: Instant? = null
-                    for (i in 0 until 10_000) {
-                        if (next.isAfter(reference)) { found = next; break }
-                        next = preset.nextOccurrence(next, zone)
-                    }
-                    found ?: next
-                }
+                if (preset == null) nextFire else preset.firstOccurrence(reference, nextFire, zone)
             }
             is RandomWindow -> end
             is RandomRecurring -> nextWindow(reference, zone)?.second
@@ -98,6 +88,35 @@ enum class RecurrencePreset(val title: String, val rrule: String) {
         }
         return next.toInstant()
     }
+
+    private fun unit(): ChronoUnit = when (this) {
+        DAILY -> ChronoUnit.DAYS
+        WEEKLY -> ChronoUnit.WEEKS
+        MONTHLY -> ChronoUnit.MONTHS
+        YEARLY -> ChronoUnit.YEARS
+    }
+
+    /**
+     * The [n]-th occurrence counted from the anchor in whole steps, so a monthly
+     * reminder on the 31st lands on the last day of a short month and is back on
+     * the 31st after it, as the server counts it (`reminder_next_push_at`).
+     * Stepping from the previous occurrence drifted to the 28th for good.
+     */
+    fun occurrence(n: Long, anchor: Instant, zone: ZoneId = ZoneId.systemDefault()): Instant =
+        anchor.atZone(zone).plus(n, unit()).toInstant()
+
+    /** Index of the first occurrence strictly after [reference]. */
+    fun firstIndex(reference: Instant, anchor: Instant, zone: ZoneId = ZoneId.systemDefault()): Long {
+        if (anchor.isAfter(reference)) return 0
+        val elapsed = unit().between(anchor.atZone(zone), reference.atZone(zone))
+        var n = maxOf(0L, elapsed - 1)
+        while (!occurrence(n, anchor, zone).isAfter(reference)) n += 1
+        return n
+    }
+
+    /** The first occurrence strictly after [reference]. */
+    fun firstOccurrence(reference: Instant, anchor: Instant, zone: ZoneId = ZoneId.systemDefault()): Instant =
+        occurrence(firstIndex(reference, anchor, zone), anchor, zone)
 
     companion object {
         fun fromRrule(rrule: String): RecurrencePreset? {
