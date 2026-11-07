@@ -196,10 +196,10 @@ begin
 
     -- Registering re-reads the schedule, so what went by unsent is not delivered late.
     perform set_config('test.uid', b::text, false);
-    perform public.register_push_device('token-1', 'production', 'Not/AZone');
-    assert (select timezone from public.push_devices where token = 'token-1') = 'UTC', 'bad zones fall back to UTC';
-    perform public.register_push_device('token-1', 'production', 'America/New_York');
-    perform public.register_push_device('token-2', 'sandbox', 'America/New_York');
+    perform public.register_push_device(repeat('1', 64), 'production', 'Not/AZone');
+    assert (select timezone from public.push_devices where token = repeat('1', 64)) = 'UTC', 'bad zones fall back to UTC';
+    perform public.register_push_device(repeat('1', 64), 'production', 'America/New_York');
+    perform public.register_push_device(repeat('2', 64), 'sandbox', 'America/New_York');
 
     assert not exists (select 1 from public.reminder_push_queue where reminder_id = one),
         'a one shot that went by unsent is not delivered late';
@@ -210,11 +210,15 @@ begin
 
     create temp table claimed on commit drop as select * from public.claim_due_reminder_pushes();
 
-    assert (select count(*) from claimed where reminder_id = one) = 2, 'one push per device';
-    assert (select count(*) from claimed where reminder_id = hid) = 2, 'a hidden surprise is delivered';
-    assert (select count(*) from claimed where reminder_id = day) = 2, 'a recurring occurrence is delivered';
+    assert (select jsonb_array_length(devices) from claimed where reminder_id = one) = 2, 'one push per device';
+    assert (select jsonb_array_length(devices) from claimed where reminder_id = hid) = 2, 'a hidden surprise is delivered';
+    assert (select jsonb_array_length(devices) from claimed where reminder_id = day) = 2, 'a recurring occurrence is delivered';
     assert (select count(*) from claimed where reminder_id = done) = 0, 'marked done, not delivered';
     assert (select count(*) from claimed where reminder_id = old) = 0, 'two hours late, not delivered';
+    assert (select count(*) from public.claim_due_reminder_pushes()) = 0, 'a claimed row is leased';
+
+    -- Sent: send-push acknowledges each occurrence.
+    perform public.ack_reminder_push(c.reminder_id, c.due_at) from claimed c;
 
     next_at := (select next_push_at from public.reminder_push_queue where reminder_id = day);
     assert next_at > now() and next_at <= now() + interval '1 day', 'a recurring row moves to its next time';
@@ -231,14 +235,14 @@ begin
 
     -- The token is the phone: another account signing in takes it over.
     perform set_config('test.uid', a::text, false);
-    perform public.unregister_push_device('token-1');
-    assert exists (select 1 from public.push_devices where token = 'token-1'), 'not your device, not removed';
-    perform public.register_push_device('token-1', 'production', 'UTC');
-    assert (select user_id from public.push_devices where token = 'token-1') = a, 'the token moves accounts';
-    perform public.unregister_push_device('token-1');
-    assert not exists (select 1 from public.push_devices where token = 'token-1'), 'sign out removes it';
-    perform public.delete_push_device('token-2');
-    assert not exists (select 1 from public.push_devices where token = 'token-2'), 'a dead token is removed';
+    perform public.unregister_push_device(repeat('1', 64));
+    assert exists (select 1 from public.push_devices where token = repeat('1', 64)), 'not your device, not removed';
+    perform public.register_push_device(repeat('1', 64), 'production', 'UTC');
+    assert (select user_id from public.push_devices where token = repeat('1', 64)) = a, 'the token moves accounts';
+    perform public.unregister_push_device(repeat('1', 64));
+    assert not exists (select 1 from public.push_devices where token = repeat('1', 64)), 'sign out removes it';
+    perform public.delete_push_device(repeat('2', 64));
+    assert not exists (select 1 from public.push_devices where token = repeat('2', 64)), 'a dead token is removed';
 end
 $$;
 
@@ -253,13 +257,15 @@ declare
     n int;
 begin
     perform set_config('test.uid', b::text, false);
-    perform public.register_push_device('token-3', 'production', 'UTC');
+    perform public.register_push_device(repeat('3', 64), 'production', 'UTC');
 
     assert (select silent from public.reminder_push_queue where reminder_id = loc), 'queued silent';
     assert not exists (select 1 from public.reminder_push_queue where reminder_id = hid), 'no way to arm a hidden one';
 
-    select count(*) into n from public.claim_due_reminder_pushes() c where c.reminder_id = loc and c.silent;
+    create temp table claimed_loc on commit drop as select * from public.claim_due_reminder_pushes();
+    select count(*) into n from claimed_loc c where c.reminder_id = loc and c.silent;
     assert n = 1, 'one silent push';
+    perform public.ack_reminder_push(c.reminder_id, c.due_at) from claimed_loc c where c.reminder_id is not null;
     assert not exists (select 1 from public.reminder_push_queue where reminder_id = loc), 'and it is gone';
 end
 $$;
@@ -300,9 +306,9 @@ begin
     values (to_a, d, b, a, to_a::text, 'words', 'recurring', now() - interval '1 hour', 'FREQ=DAILY');
 
     perform set_config('test.uid', a::text, false);
-    perform public.register_push_device('token-a', 'production', 'UTC');
+    perform public.register_push_device(repeat('a', 64), 'production', 'UTC');
     perform set_config('test.uid', b::text, false);
-    perform public.register_push_device('token-b', 'production', 'UTC');
+    perform public.register_push_device(repeat('b', 64), 'production', 'UTC');
     assert (select count(*) from public.reminder_push_queue where reminder_id in (to_b, to_a, loc)) = 3,
         'paired, all three are queued';
 
