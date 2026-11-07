@@ -194,19 +194,24 @@ begin
     insert into public.reminder_events (reminder_id, couple_id, acted_at)
     values (done, 'd0000000-0000-0000-0000-00000000000d', now());
 
-    -- Registering re-reads the schedule, so what went by unsent is not delivered late.
+    -- Registering re-reads the schedule. What is due stays due, but not for a phone
+    -- new to the server, which rang it itself. It could not ring a hidden surprise.
     perform set_config('test.uid', b::text, false);
     perform public.register_push_device(repeat('1', 64), 'production', 'Not/AZone');
     assert (select timezone from public.push_devices where token = repeat('1', 64)) = 'UTC', 'bad zones fall back to UTC';
     perform public.register_push_device(repeat('1', 64), 'production', 'America/New_York');
     perform public.register_push_device(repeat('2', 64), 'sandbox', 'America/New_York');
 
-    assert not exists (select 1 from public.reminder_push_queue where reminder_id = one),
-        'a one shot that went by unsent is not delivered late';
+    assert (select sent_tokens from public.reminder_push_queue where reminder_id = one)
+           = array[repeat('1', 64), repeat('2', 64)],
+        'new phones are left out of what went by';
+    assert (select sent_tokens from public.reminder_push_queue where reminder_id = hid) = '{}',
+        'a hidden surprise is still owed';
     update public.reminders set fire_at = now() + interval '1 hour' where id in (one, hid, done, old);
-    assert (select count(*) from public.reminder_push_queue where reminder_id = one) = 1, 'moved ahead, queued again';
+    assert (select next_push_at from public.reminder_push_queue where reminder_id = one) > now(), 'moved ahead, queued again';
     perform pg_temp.make_due(array[one, hid, day, done], interval '1 minute');
     perform pg_temp.make_due(array[old], interval '2 hours');
+    update public.reminder_push_queue set sent_tokens = '{}';
 
     create temp table claimed on commit drop as select * from public.claim_due_reminder_pushes();
 
@@ -241,7 +246,8 @@ begin
     assert (select user_id from public.push_devices where token = repeat('1', 64)) = a, 'the token moves accounts';
     perform public.unregister_push_device(repeat('1', 64));
     assert not exists (select 1 from public.push_devices where token = repeat('1', 64)), 'sign out removes it';
-    perform public.delete_push_device(repeat('2', 64));
+    perform public.delete_push_device(d.token, d.user_id, d.updated_at)
+       from public.push_devices d where d.token = repeat('2', 64);
     assert not exists (select 1 from public.push_devices where token = repeat('2', 64)), 'a dead token is removed';
 end
 $$;
@@ -347,7 +353,7 @@ do $$
 declare
     fn text;
 begin
-    foreach fn in array array['public.claim_due_reminder_pushes(int)', 'public.delete_push_device(text)'] loop
+    foreach fn in array array['public.claim_due_reminder_pushes(int)', 'public.delete_push_device(text, uuid, timestamptz)'] loop
         assert not has_function_privilege('anon', fn, 'execute'), fn || ' is closed to anon';
         assert not has_function_privilege('authenticated', fn, 'execute'), fn || ' is closed to signed in users';
         assert has_function_privilege('service_role', fn, 'execute'), fn || ' is open to the service role';

@@ -82,8 +82,8 @@ begin
     select * into c from first_claim where reminder_id = one;
     assert c.due_at = due_one, 'the claim says which occurrence it is';
     assert c.user_id = 'b0000000-0000-0000-0000-00000000000b', 'and whose';
-    assert c.devices = jsonb_build_array(jsonb_build_object('token', repeat('b', 64), 'env', 'production')),
-        'and where it goes: ' || c.devices;
+    assert jsonb_array_length(c.devices) = 1 and c.devices->0->>'token' = repeat('b', 64)
+           and c.devices->0->>'env' = 'production', 'and where it goes: ' || c.devices::text;
     assert (select next_push_at from public.reminder_push_queue where reminder_id = one) = due_one,
         'a claim does not move a row on';
     assert (select count(*) from public.claim_due_reminder_pushes()) = 0, 'a leased row is not claimed twice';
@@ -255,6 +255,8 @@ declare
     first_due uuid;
     denied boolean;
     bad text;
+    owed jsonb;
+    seen timestamptz;
 begin
     -- Already served here: what is due and unsent stays due.
     perform pg_temp.due(kept, interval '30 seconds');
@@ -263,7 +265,7 @@ begin
     assert exists (select 1 from public.reminder_push_queue where reminder_id = kept and next_push_at <= now()),
         'registering again keeps a due occurrence';
 
-    -- A first phone rang it itself, so it is not sent again.
+    -- A phone new to the server rang it itself, so it is not sent to that phone.
     insert into public.reminders (id, couple_id, author_id, target_id, title, love_language, trigger_type, fire_at)
     values ('e5000000-0000-0000-0000-000000000002', 'd0000000-0000-0000-0000-00000000000d', a, b,
             'x', 'words', 'one_time', now() + interval '1 hour');
@@ -271,8 +273,37 @@ begin
     delete from public.push_devices where user_id = b;
     perform pg_temp.due(first_due, interval '30 seconds');
     perform public.register_push_device(repeat('b', 64), 'production', 'UTC');
-    assert not exists (select 1 from public.reminder_push_queue where reminder_id = first_due),
-        'a first phone does not get what already rang on it';
+    assert (select sent_tokens from public.reminder_push_queue where reminder_id = first_due) = array[repeat('b', 64)],
+        'a new phone is left out of what already rang on it';
+    assert not exists (
+        select 1 from public.claim_due_reminder_pushes() c where c.reminder_id = first_due),
+        'and with no other phone nothing goes out';
+    assert not exists (
+        select 1 from public.reminder_push_queue where reminder_id = first_due),
+        'and the one-shot is over';
+
+    -- A second phone joining does not cost the first one the occurrence.
+    update public.reminders set fire_at = now() + interval '1 hour' where id = first_due;
+    perform pg_temp.due(first_due, interval '30 seconds');
+    perform public.register_push_device(repeat('c', 64), 'production', 'UTC');
+    select c.devices into owed from public.claim_due_reminder_pushes() c where c.reminder_id = first_due;
+    assert jsonb_array_length(owed) = 1 and owed->0->>'token' = repeat('b', 64),
+        'the phone already served still gets it, the new one does not: ' || owed::text;
+    delete from public.push_devices where token = repeat('c', 64);
+    delete from public.reminder_push_queue where reminder_id = first_due;
+
+    -- A hidden surprise was never armed on the phone, so a new phone still gets it.
+    delete from public.push_devices where user_id = b;
+    insert into public.reminders (id, couple_id, author_id, target_id, title, love_language, trigger_type, fire_at, surprise_hidden_from_partner)
+    values ('e5000000-0000-0000-0000-000000000003', 'd0000000-0000-0000-0000-00000000000d', a, b,
+            'x', 'words', 'one_time', now() + interval '1 hour', true);
+    perform pg_temp.due('e5000000-0000-0000-0000-000000000003', interval '30 seconds');
+    perform public.register_push_device(repeat('b', 64), 'production', 'UTC');
+    assert exists (
+        select 1 from public.claim_due_reminder_pushes() c
+         where c.reminder_id = 'e5000000-0000-0000-0000-000000000003'),
+        'a due surprise survives a first registration';
+    delete from public.reminders where id = 'e5000000-0000-0000-0000-000000000003';
 
     foreach bad in array array['token-1', repeat('g', 64), repeat('a', 63), repeat('a', 201), ''] loop
         denied := false;
@@ -283,13 +314,14 @@ begin
     end loop;
     perform public.register_push_device(upper(repeat('ab', 32)), 'production', 'UTC');
 
-    -- Five phones at most, the newest kept.
-    for i in 1..7 loop
-        perform public.register_push_device(repeat(to_hex(i), 64), 'production', 'UTC');
-        update public.push_devices set updated_at = now() - (10 - i) * interval '1 minute'
-         where token = repeat(to_hex(i), 64);
+    -- Ten phones at most, the newest kept.
+    for i in 1..12 loop
+        perform public.register_push_device(repeat(to_hex(i + 16), 32), 'production', 'UTC');
+        update public.push_devices set updated_at = now() - (20 - i) * interval '1 minute'
+         where token = repeat(to_hex(i + 16), 32);
     end loop;
-    assert (select count(*) from public.push_devices where user_id = b) <= 5, 'five phones at most';
+    perform public.register_push_device(repeat('7', 64), 'production', 'UTC');
+    assert (select count(*) from public.push_devices where user_id = b) = 10, 'ten phones at most';
     assert exists (select 1 from public.push_devices where token = repeat('7', 64)), 'the newest stays';
 
     -- A zone the server does not know keeps the one it had.
@@ -305,9 +337,12 @@ begin
         'the week start stays with the old account';
 
     -- A dead token goes only while it is still the same account's.
-    perform public.delete_push_device(repeat('7', 64), b);
+    seen := (select updated_at from public.push_devices where token = repeat('7', 64));
+    perform public.delete_push_device(repeat('7', 64), b, seen);
     assert exists (select 1 from public.push_devices where token = repeat('7', 64)), 'moved on, not deleted';
-    perform public.delete_push_device(repeat('7', 64), a);
+    perform public.delete_push_device(repeat('7', 64), a, seen - interval '1 second');
+    assert exists (select 1 from public.push_devices where token = repeat('7', 64)), 'registered since, not deleted';
+    perform public.delete_push_device(repeat('7', 64), a, seen);
     assert not exists (select 1 from public.push_devices where token = repeat('7', 64)), 'deleted';
     perform set_config('test.uid', b::text, false);
     delete from public.push_devices where user_id = b and token <> repeat('b', 64);
@@ -415,6 +450,84 @@ end
 $$;
 
 -- ============================================================
+-- 10. One phone at a time, future dates, words on a place
+-- ============================================================
+do $$
+declare
+    a uuid := 'a0000000-0000-0000-0000-00000000000a';
+    b uuid := 'b0000000-0000-0000-0000-00000000000b';
+    d uuid := 'd0000000-0000-0000-0000-00000000000d';
+    rid uuid := 'ea000000-0000-0000-0000-000000000001';
+    place uuid := 'ea000000-0000-0000-0000-000000000002';
+    c record;
+begin
+    perform set_config('test.uid', b::text, false);
+    delete from public.push_devices where user_id = b;
+    perform public.register_push_device(repeat('b', 64), 'production', 'UTC');
+    perform public.register_push_device(repeat('c', 64), 'production', 'UTC');
+    delete from public.reminder_push_queue;
+    delete from public.push_signals;
+
+    -- A retry goes only to the phone still owed it, and marks never outlive the occurrence.
+    insert into public.reminders (id, couple_id, author_id, target_id, title, love_language, trigger_type, fire_at, rrule)
+    values (rid, d, a, b, 'x', 'words', 'recurring', now() + interval '1 hour', 'FREQ=DAILY');
+    perform pg_temp.due(rid, interval '30 seconds');
+    select * into c from public.claim_due_reminder_pushes() x where x.reminder_id = rid;
+    assert jsonb_array_length(c.devices) = 2, 'both phones are owed it';
+    assert c.devices->0 ? 'updated_at', 'and the claim says which row it saw';
+    perform public.mark_push_sent(rid, c.due_at, b, array[repeat('b', 64)]);
+    update public.reminder_push_queue set lease_until = null where reminder_id = rid;
+    select * into c from public.claim_due_reminder_pushes() x where x.reminder_id = rid;
+    assert jsonb_array_length(c.devices) = 1 and c.devices->0->>'token' = repeat('c', 64), 'only the other one: ' || c.devices::text;
+    perform public.mark_push_sent(rid, '2000-01-01', b, array[repeat('c', 64)]);
+    assert (select array_length(sent_tokens, 1) from public.reminder_push_queue where reminder_id = rid) = 1,
+        'a mark for another occurrence does nothing';
+    perform public.ack_reminder_push(rid, c.due_at, b);
+    assert (select sent_tokens from public.reminder_push_queue where reminder_id = rid) = '{}', 'the next occurrence owes everyone';
+    delete from public.reminders where id = rid;
+
+    -- A signal retried the same way.
+    perform public.signal_push_user(b);
+    select * into c from public.claim_due_reminder_pushes() x where x.user_id = b and x.reminder_id is null;
+    perform public.mark_push_sent(null, c.due_at, b, array[repeat('b', 64), repeat('c', 64)]);
+    update public.push_signals set lease_until = null where user_id = b;
+    assert not exists (select 1 from public.claim_due_reminder_pushes() x where x.user_id = b),
+        'no phone is owed it any more';
+    assert not exists (select 1 from public.push_signals where user_id = b), 'so it is over';
+
+    -- Dates ahead of the server stop at the server.
+    insert into public.reminders (id, couple_id, author_id, target_id, title, love_language, trigger_type, fire_at, rrule)
+    values (rid, d, a, b, 'x', 'words', 'recurring', now() + interval '1 hour', 'FREQ=DAILY');
+    insert into public.reminder_events (reminder_id, couple_id, acted_at) values (rid, d, '2099-01-01');
+    assert (select acted_at from public.reminder_events where reminder_id = rid) <= now(), 'a future date stops at now';
+    update public.reminder_events set acted_at = '2099-01-01' where reminder_id = rid;
+    assert (select acted_at from public.reminder_events where reminder_id = rid) <= now(), 'on an edit too';
+    assert not public.reminder_done_at((select r from public.reminders r where r.id = rid), 'UTC', now() + interval '2 days'),
+        'so it never silences a later day';
+    delete from public.reminders where id = rid;
+
+    -- New words on a place the phone armed reach it.
+    insert into public.reminders (id, couple_id, author_id, target_id, title, love_language, trigger_type, geofence)
+    values (place, d, a, b, 'Pick up milk', 'acts', 'location', '{}');
+    delete from public.reminder_push_queue where reminder_id = place;
+    update public.reminders set title = 'Skip the milk' where id = place;
+    assert (select silent from public.reminder_push_queue where reminder_id = place), 'a silent push tells the phone';
+    delete from public.reminder_push_queue where reminder_id = place;
+    update public.reminders set title = 'Skip the milk' where id = place;
+    assert not exists (select 1 from public.reminder_push_queue where reminder_id = place), 'the same words do not';
+    delete from public.reminders where id = place;
+
+    -- Renaming a time reminder leaves its lease alone.
+    insert into public.reminders (id, couple_id, author_id, target_id, title, love_language, trigger_type, fire_at)
+    values (rid, d, a, b, 'x', 'words', 'one_time', now() + interval '1 hour');
+    update public.reminder_push_queue set lease_until = now() + interval '1 minute' where reminder_id = rid;
+    update public.reminders set title = 'y' where id = rid;
+    assert (select lease_until from public.reminder_push_queue where reminder_id = rid) is not null, 'lease kept';
+    delete from public.reminders where id = rid;
+end
+$$;
+
+-- ============================================================
 -- 9. Unpairing and pairing keep every completion in its reminder's couple
 -- ============================================================
 do $$
@@ -463,7 +576,8 @@ declare
 begin
     foreach fn in array array[
         'public.claim_due_reminder_pushes(int)', 'public.ack_reminder_push(uuid, timestamptz, uuid)',
-        'public.delete_push_device(text, uuid)', 'public.get_apns_provider_token(text)',
+        'public.delete_push_device(text, uuid, timestamptz)', 'public.mark_push_sent(uuid, timestamptz, uuid, text[])',
+        'public.get_apns_provider_token(text)',
         'public.put_apns_provider_token(text, text, timestamptz)'
     ] loop
         assert not has_function_privilege('anon', fn, 'execute'), fn || ' is closed to anon';
@@ -477,7 +591,7 @@ begin
         'public.finish_reminder_push(public.reminder_push_queue, public.reminders)',
         'public.refresh_reminder_push(public.reminders)', 'public.reminder_next_push_at(public.reminders, timestamptz, text)',
         'public.reminder_done_at(public.reminders, text, timestamptz)', 'public.couples_sync_push_queue()',
-        'public.reminders_sync_push_queue()'
+        'public.reminders_sync_push_queue()', 'public.reminder_events_clamp_acted_at()'
     ] loop
         assert not has_function_privilege('anon', fn, 'execute'), fn || ' is closed to anon';
         assert not has_function_privilege('authenticated', fn, 'execute'), fn || ' is closed to signed in users';

@@ -23,11 +23,14 @@ values ('e1000000-0000-0000-0000-000000000001', 'd0000000-0000-0000-0000-0000000
         'a0000000-0000-0000-0000-00000000000a', 'b0000000-0000-0000-0000-00000000000b',
         'Call', 'words', 'recurring', '2026-11-01 09:00 America/Los_Angeles', 'FREQ=DAILY');
 
--- Done on Saturday 2026-11-07 in Los Angeles.
+-- Done on Saturday 2026-11-07 in Los Angeles. A fixed date, so the check that
+-- stops a date ahead of the server stays out of it.
+alter table public.reminder_events disable trigger reminder_events_clamp_acted_at;
 insert into public.reminder_events (reminder_id, couple_id, fired_at, acted_at)
 select id, 'd0000000-0000-0000-0000-00000000000d',
        '2026-11-07 10:00 America/Los_Angeles', '2026-11-07 10:00 America/Los_Angeles'
 from public.reminders;
+alter table public.reminder_events enable trigger reminder_events_clamp_acted_at;
 
 do $$
 declare

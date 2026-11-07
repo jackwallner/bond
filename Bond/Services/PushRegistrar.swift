@@ -90,7 +90,13 @@ final class PushRegistrar {
             // not serving still arms everything itself, so take the token back
             // rather than have both deliver. One it was serving keeps its row.
             if !wasServed {
-                try? await call("unregister_push_device", ["p_token": token])
+                do {
+                    try await call("unregister_push_device", ["p_token": token])
+                } catch {
+                    // Both may deliver until the next registration settles it.
+                    log.error("Taking the token back failed: \(error.localizedDescription)")
+                    defaults.set(token, forKey: Self.pendingReleaseKey)
+                }
             }
         }
     }

@@ -152,6 +152,22 @@ struct PushRegistrarTests {
         #expect(!registrar.serverDelivers(for: me), "so the phone keeps arming everything itself")
     }
 
+    @Test func aTokenThatCouldNotBeTakenBackIsSettledByTheNextRegistration() async {
+        let server = Server()
+        server.failing = ["register_push_device", "unregister_push_device"]
+        let me = UUID()
+        let (registrar, defaults) = makeRegistrar(server) { me }
+        await registrar.register(token: tokenA)
+        #expect(PushRegistrar.hasPendingRelease(defaults), "the server may be delivering to this phone as well")
+        server.failing = []
+        var rearmed = 0
+        registrar.onRegistered = { rearmed += 1 }
+        await registrar.register(token: tokenA)
+        #expect(!PushRegistrar.hasPendingRelease(defaults))
+        #expect(registrar.serverDelivers(for: me))
+        #expect(rearmed == 1, "the local copies go now that the server delivers")
+    }
+
     @Test func aFailedRepeatRegistrationKeepsServing() async {
         let server = Server()
         let me = UUID()

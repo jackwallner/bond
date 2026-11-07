@@ -3,11 +3,12 @@
 export interface Device {
   token: string;
   env: "production" | "sandbox";
+  /// Exactly as the claim returned it: a dead token goes only from this same row.
+  updated_at: string;
 }
 
-/// A row from claim_due_reminder_pushes. Since 0019 it is one occurrence with
-/// its due time, target and devices, and a phone signal has no reminder. Before
-/// 0019 it was one row per device (token, env) that the claim had already moved on.
+/// A row from claim_due_reminder_pushes: one occurrence with its due time, target
+/// and the phones still owed it. A phone signal has no reminder.
 export interface ClaimedRow {
   reminder_id: string | null;
   couple_id: string | null;
@@ -15,11 +16,9 @@ export interface ClaimedRow {
   body: string | null;
   love_language: string | null;
   silent: boolean;
-  user_id?: string | null;
-  due_at?: string | null;
-  devices?: Device[] | null;
-  token?: string;
-  env?: Device["env"];
+  user_id: string | null;
+  due_at: string;
+  devices: Device[] | null;
 }
 
 export interface Occurrence {
@@ -31,14 +30,11 @@ export interface Occurrence {
   silent: boolean;
   userId: string | null;
   /// Exactly as the claim returned it, because the acknowledgement compares it.
-  dueAt: string | null;
+  dueAt: string;
   devices: Device[];
-  /// A pre-0019 row: already moved on by the claim, so it is never acknowledged.
-  legacy: boolean;
 }
 
 export function occurrence(row: ClaimedRow): Occurrence {
-  const legacy = typeof row.token === "string";
   return {
     reminderId: row.reminder_id,
     coupleId: row.couple_id,
@@ -46,10 +42,9 @@ export function occurrence(row: ClaimedRow): Occurrence {
     body: row.body,
     loveLanguage: row.love_language,
     silent: row.silent,
-    userId: row.user_id ?? null,
-    dueAt: legacy ? null : row.due_at ?? null,
-    devices: legacy ? [{ token: row.token!, env: row.env ?? "production" }] : row.devices ?? [],
-    legacy,
+    userId: row.user_id,
+    dueAt: row.due_at,
+    devices: row.devices ?? [],
   };
 }
 
@@ -64,7 +59,6 @@ const STALE_SECONDS = 3_600;
 export const MAX_PAYLOAD_BYTES = 4_096;
 
 export function dueSeconds(push: Occurrence): number | null {
-  if (!push.dueAt) return null;
   const ms = Date.parse(push.dueAt);
   return Number.isFinite(ms) ? Math.floor(ms / 1000) : null;
 }
@@ -158,6 +152,11 @@ export function isDeadToken(status: number, responseBody: string): boolean {
 export function isProviderTokenRefused(status: number, responseBody: string): boolean {
   return status === 403 &&
     (responseBody.includes("ExpiredProviderToken") || responseBody.includes("InvalidProviderToken"));
+}
+
+/// True when trying the same request again may work. Any other 4xx never will.
+export function isPassing(status: number, responseBody: string): boolean {
+  return status === 429 || status >= 500 || isProviderTokenRefused(status, responseBody);
 }
 
 /// APNs' reason code alone, never the token or URL.

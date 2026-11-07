@@ -38,9 +38,9 @@ export class ProviderTokens {
   }
 
   /// APNs refused it: the next run mints a new one rather than reuse it.
-  drop(): void {
+  async drop(): Promise<void> {
     this.cached = null;
-    this.store.save({ token: "", issuedAt: 0 }).catch(() => {});
+    await this.store.save({ token: "", issuedAt: 0 }).catch(() => {});
   }
 
   private fresh(token: StoredToken | null, nowSeconds: number): boolean {

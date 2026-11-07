@@ -88,7 +88,8 @@ Deno.serve(async (req) => {
       });
     },
   });
-  const nowSeconds = Math.floor(Date.now() / 1000);
+  const started = Date.now();
+  const nowSeconds = Math.floor(started / 1000);
 
   const result = await sendDue({
     rpc: async (name, args) => {
@@ -100,6 +101,7 @@ Deno.serve(async (req) => {
     dropProviderToken: () => tokens!.drop(),
     topic: Deno.env.get("APNS_TOPIC")!,
     nowSeconds,
+    elapsedMs: () => Date.now() - started,
     log: (message) => console.error(message),
   });
   return json(result.body, result.status);

@@ -9,7 +9,7 @@ import {
   reason,
 } from "./apns.ts";
 
-const device = { token: "ab".repeat(32), env: "production" as const };
+const device = { token: "ab".repeat(32), env: "production" as const, updated_at: "2026-11-06T17:00:00+00:00" };
 const row: ClaimedRow = {
   reminder_id: "e1000000-0000-0000-0000-000000000001",
   couple_id: "d0000000-0000-0000-0000-00000000000d",
@@ -40,8 +40,6 @@ Deno.test("an alert carries the reminder and the keys a tap routes on", () => {
 Deno.test("APNs drops it once it is as late as the claim would skip it", () => {
   const late = apnsRequest(push, device, "t", due + 45 * 60);
   assertEquals(late.headers["apns-expiration"], String(due + 3600), "a retry does not extend it");
-  const legacy = occurrence({ ...row, devices: undefined, due_at: undefined, token: device.token, env: "production" });
-  assertEquals(apnsRequest(legacy, device, "t", 1000).headers["apns-expiration"], String(1000 + 3600));
 });
 
 Deno.test("a retry of the same occurrence replaces it, the next one does not", () => {
