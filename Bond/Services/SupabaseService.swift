@@ -16,6 +16,13 @@ final class SupabaseService {
 
     private var bootstrapTask: Task<Void, Never>?
 
+    /// Called when a sign-in replaced the signed-in user with another one (an
+    /// Apple ID that already belongs to an older account). Everything in memory
+    /// was the previous user's, so the app re-reads the couple and what hangs
+    /// off it. Unset in previews and tests.
+    @ObservationIgnored
+    var onIdentityChange: (@MainActor (UUID) async -> Void)?
+
     private init() {
         self.client = SupabaseClient(
             supabaseURL: SupabaseConfig.url,
@@ -173,9 +180,13 @@ final class SupabaseService {
         } else {
             identity = try await signIn()
         }
+        let previous = currentUserId
         currentUserId = identity.userId
         isAnonymous = identity.isAnonymous
         log.info("Signed in with Apple - user \(identity.userId)")
+        if let previous, previous != identity.userId {
+            await onIdentityChange?(identity.userId)
+        }
     }
 
     func signOut() async {

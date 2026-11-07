@@ -374,3 +374,148 @@ struct AppleSignInTests {
         #expect(links == 0)
     }
 }
+
+// MARK: - State machine audit 2026-11-06: B13 (sm4) and B11, who and what the app is on
+
+@MainActor
+@Suite(.serialized)
+struct IdentityAndCoupleStateTests {
+    private let me = UUID()
+    private let partner = UUID()
+
+    private func signedIn(_ body: () async -> Void) async {
+        let session = SupabaseService.shared
+        let before = session.currentUserId
+        session.currentUserId = me
+        await body()
+        session.currentUserId = before
+    }
+
+    @Test func b13_control_aFailedCouplesRequestChangesNothing() async {
+        await signedIn {
+            let old = UUID()
+            let pairing = PairingService()
+            pairing.coupleId = old
+            pairing.solo = true
+            var told = 0
+            pairing.onRelationshipChange = { told += 1 }
+            pairing.fetchCouples = { _ in throw URLError(.notConnectedToInternet) }
+            await pairing.loadCouple()
+            #expect(pairing.lastLoadFailed)
+            #expect(pairing.coupleId == old && pairing.solo && told == 0)
+        }
+    }
+
+    @Test func b13_aLookupWhoseProfileRequestFailsKeepsWhatWasKnown() async {
+        let mine = me, theirs = partner
+        await signedIn {
+            let old = UUID()
+            let newCouple = UUID()
+            let pairing = PairingService()
+            pairing.coupleId = old
+            pairing.solo = true
+            var told = 0
+            pairing.onRelationshipChange = { told += 1 }
+            // The couples request works; the partner-profile request that follows does not.
+            pairing.fetchCouples = { _ in
+                [CoupleDTO(id: newCouple, partnerA: mine, partnerB: theirs, pairedAt: nil, solo: false)]
+            }
+            pairing.fetchProfile = { _ in throw URLError(.networkConnectionLost) }
+
+            await pairing.loadCouple()
+
+            #expect(pairing.lastLoadFailed)
+            #expect(pairing.coupleId == old && pairing.solo,
+                    "paired with no partner profile: coupleId=\(String(describing: pairing.coupleId)) solo=\(pairing.solo)")
+            #expect(told == 0, "a failed lookup announced a relationship change")
+        }
+    }
+
+    @Test func b13_control_aLookupWithItsProfileCommitsTheWholeCouple() async {
+        let mine = me, theirs = partner
+        await signedIn {
+            let newCouple = UUID()
+            let pairing = PairingService()
+            pairing.coupleId = UUID()
+            pairing.solo = true
+            var told = 0
+            pairing.onRelationshipChange = { told += 1 }
+            pairing.fetchCouples = { _ in
+                [CoupleDTO(id: newCouple, partnerA: mine, partnerB: theirs, pairedAt: nil, solo: false)]
+            }
+            pairing.fetchProfile = { id in ProfileDTO(id: id, displayName: "") }
+
+            await pairing.loadCouple()
+
+            #expect(!pairing.lastLoadFailed)
+            #expect(pairing.coupleId == newCouple && !pairing.solo)
+            #expect(pairing.partnerProfile?.id == theirs)
+            #expect(told == 1)
+        }
+    }
+
+    private struct IdentityBelongsToSomeoneElse: Error {}
+
+    @Test func b11_anAppleSignInThatRecoversAnotherAccountReloadsWhatTheAppIsOn() async throws {
+        let service = SupabaseService.shared
+        let before = (service.currentUserId, service.isAnonymous, service.onIdentityChange)
+        defer {
+            service.currentUserId = before.0
+            service.isAnonymous = before.1
+            service.onIdentityChange = before.2
+        }
+        let anonymous = UUID()
+        let recovered = UUID()
+        let recoveredCouple = UUID()
+        service.currentUserId = anonymous
+        service.isAnonymous = true
+
+        // The app's handler, as BondApp wires it: look the couple up again.
+        let pairing = PairingService()
+        pairing.coupleId = UUID()
+        pairing.solo = true
+        var relationshipChanges = 0
+        pairing.onRelationshipChange = { relationshipChanges += 1 }
+        pairing.fetchCouples = { user in
+            user == recovered
+                ? [CoupleDTO(id: recoveredCouple, partnerA: recovered, partnerB: recovered, pairedAt: nil, solo: true)]
+                : []
+        }
+        var told: [UUID] = []
+        service.onIdentityChange = { user in
+            told.append(user)
+            await pairing.loadCouple()
+        }
+
+        try await service.signInWithApple(
+            link: { throw IdentityBelongsToSomeoneElse() },
+            signIn: { SupabaseService.RestoredIdentity(userId: recovered, isAnonymous: false) }
+        )
+
+        #expect(told == [recovered])
+        #expect(pairing.coupleId == recoveredCouple, "the old anonymous couple stayed in memory")
+        #expect(relationshipChanges == 1)
+    }
+
+    @Test func b11_control_aLinkThatKeepsTheSameUserReloadsNothing() async throws {
+        let service = SupabaseService.shared
+        let before = (service.currentUserId, service.isAnonymous, service.onIdentityChange)
+        defer {
+            service.currentUserId = before.0
+            service.isAnonymous = before.1
+            service.onIdentityChange = before.2
+        }
+        let mine = UUID()
+        service.currentUserId = mine
+        service.isAnonymous = true
+        var told = 0
+        service.onIdentityChange = { _ in told += 1 }
+
+        try await service.signInWithApple(
+            link: { SupabaseService.RestoredIdentity(userId: mine, isAnonymous: false) },
+            signIn: { SupabaseService.RestoredIdentity(userId: UUID(), isAnonymous: false) }
+        )
+
+        #expect(told == 0)
+    }
+}

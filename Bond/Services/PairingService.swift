@@ -29,6 +29,18 @@ final class PairingService {
         try await PairingService.queryCouples(for: me)
     }
 
+    /// Where `loadCouple()` gets the partner's profile. Tests swap it for a stub.
+    @ObservationIgnored
+    var fetchProfile: @MainActor (UUID) async throws -> ProfileDTO = { partner in
+        try await SupabaseService.shared.client
+            .from("profiles")
+            .select()
+            .eq("id", value: partner.uuidString)
+            .single()
+            .execute()
+            .value
+    }
+
     /// Called when a lookup finds the app's couple changed under it: another
     /// couple, or the same one turned solo or paired. The app sets it at launch
     /// to re-read what moved with it. Empty is fine for previews and tests.
@@ -73,29 +85,26 @@ final class PairingService {
             // (even paired) user back into intent setup, where the solo-couple
             // RPC then failed with "already in a couple".
             let rows = try await fetchCouples(me)
-            lastLoadFailed = false
             let row = rows.first
+            // The partner's profile is part of the answer: commit nothing until
+            // it is in, so a failure here leaves the state as it was instead of
+            // "paired with no partner" (where For: Partner saved for oneself).
+            var profile: ProfileDTO?
+            if let partnerUUID = row?.partnerId(forSelf: me), partnerUUID != me {
+                profile = try await fetchProfile(partnerUUID)
+            }
+            lastLoadFailed = false
             coupleId = row?.id
             solo = row?.solo ?? false
-            if let partnerUUID = row?.partnerId(forSelf: me), partnerUUID != me {
-                partnerProfile = try await supabase.client
-                    .from("profiles")
-                    .select()
-                    .eq("id", value: partnerUUID.uuidString)
-                    .single()
-                    .execute()
-                    .value
-                // An invitee who paired during onboarding never typed a
-                // partner name - seed it from the partner's profile so
-                // prompts and headers don't address "them".
-                let prefs = OnboardingPreferences.shared
-                if prefs.partnerName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
-                   let name = partnerProfile?.displayName,
-                   !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                    prefs.partnerName = name
-                }
-            } else {
-                partnerProfile = nil
+            partnerProfile = profile
+            // An invitee who paired during onboarding never typed a partner
+            // name - seed it from the partner's profile so prompts and headers
+            // don't address "them".
+            let prefs = OnboardingPreferences.shared
+            if prefs.partnerName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+               let name = profile?.displayName,
+               !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                prefs.partnerName = name
             }
             log.info("Loaded couple \(self.coupleId?.uuidString ?? "nil") (solo: \(self.solo))")
         } catch {

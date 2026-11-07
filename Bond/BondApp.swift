@@ -156,6 +156,13 @@ struct BondApp: App {
                         guard let me = supabase.currentUserId else { return nil }
                         return (me, eventsRepo.loadedEvents)
                     }
+                    supabase.onIdentityChange = { user in
+                        // The couple, reminders and completions in memory were
+                        // the previous user's. A lookup that finds another
+                        // couple re-reads them (onRelationshipChange).
+                        await store.identify(supabaseUserId: user)
+                        await pairingService.loadCouple()
+                    }
                     pairingService.onRelationshipChange = {
                         // Pairing or unpairing moves reminders and milestones
                         // between couples. Re-arm right away: unpairing has to
