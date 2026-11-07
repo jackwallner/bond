@@ -112,11 +112,14 @@ final class ReleaseJourneysUITests: XCTestCase {
         XCTAssertEqual(field.value as? String, title, "title was not entered completely")
         // The keyboard covers the schedule rows, and the oracles would measure
         // them through its blur; judge the form with the keyboard away.
-        field.typeText("\n")
-        let keyboardGone = Date().addingTimeInterval(10)
-        while app.keyboards.count > 0 && Date() < keyboardGone {
-            RunLoop.current.run(until: Date().addingTimeInterval(0.25))
+        closeKeyboard(with: "\n", on: field, in: app)
+        // A loaded host can also lose the last key as the keyboard closes, so check
+        // again: the row is looked for by this exact title.
+        if let kept = field.value as? String, title.hasPrefix(kept), kept != title {
+            field.tap()
+            closeKeyboard(with: String(title.dropFirst(kept.count)) + "\n", on: field, in: app)
         }
+        XCTAssertEqual(field.value as? String, title, "title did not stay as typed")
         QA.checkpoint(app, "core-editor")
 
         let save = localized(app.buttons, "Save", "Speichern")
@@ -170,6 +173,14 @@ final class ReleaseJourneysUITests: XCTestCase {
 
     /// Whatever shows this title: a plain text, or the row's combined label
     /// when large text or the Duo's pane merges it into the row.
+    private func closeKeyboard(with text: String, on field: XCUIElement, in app: XCUIApplication) {
+        field.typeText(text)
+        let gone = Date().addingTimeInterval(10)
+        while app.keyboards.count > 0 && Date() < gone {
+            RunLoop.current.run(until: Date().addingTimeInterval(0.25))
+        }
+    }
+
     private func listed(_ title: String, in app: XCUIApplication) -> XCUIElement {
         app.descendants(matching: .any)
             .matching(NSPredicate(format: "label CONTAINS %@", title)).firstMatch

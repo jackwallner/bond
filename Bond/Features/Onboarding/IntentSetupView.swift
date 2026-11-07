@@ -398,7 +398,9 @@ struct IntentSetupView: View {
                     .foregroundStyle(.bondTextSecondary)
                 }
             } else {
-                Color.clear
+                // A set height: on its own Color.clear takes half of the screen
+                // from the step above it.
+                Color.clear.frame(height: 88)
             }
         }
         .frame(minHeight: 88)
