@@ -79,6 +79,8 @@ struct ReminderListView: View {
                     existing: editingReminder,
                     prefill: starterPrefill.map { ($0.title, $0.loveLanguage) }
                 )
+                // The form's state belongs to one reminder.
+                .id(editingReminder?.id)
             }
             .unfoldedSheet(isPresented: $isTemplatesPresented) {
                 ReminderTemplatesView()
@@ -130,6 +132,10 @@ struct ReminderListView: View {
                 openReminderFromNotification(id)
             }
             .onAppear { openReminderFromNotification(router.pendingReminderId) }
+            .onChange(of: isPresentingSheet) { _, presenting in
+                // A banner tapped while a sheet was up waited for it to close.
+                if !presenting { openReminderFromNotification(router.pendingReminderId) }
+            }
             .onChange(of: pairing.justPaired) { _, paired in
                 // Drop the pairing sheet so RootView's success interstitial
                 // isn't hidden underneath it.
@@ -154,12 +160,26 @@ struct ReminderListView: View {
     /// list has loaded); if it's not present yet, leaves the id pending so a
     /// later refresh + onAppear can resolve it.
     private func openReminderFromNotification(_ id: UUID?) {
-        guard let id else { return }
-        guard let match = repo.reminders.first(where: { $0.id == id }) else { return }
+        guard let match = Self.reminderToOpen(id, in: repo.reminders, whilePresenting: isPresentingSheet)
+        else { return }
         editingReminder = match
         starterPrefill = nil
         isEditorPresented = true
         router.pendingReminderId = nil
+    }
+
+    private var isPresentingSheet: Bool {
+        isEditorPresented || isTemplatesPresented || isPairingPresented || showNotificationPrimer
+    }
+
+    /// The reminder a tapped notification opens now, or nil to keep it pending.
+    /// Never while a sheet is up: swapping the reminder under an open editor
+    /// kept the form of the first one, and Save wrote it over the second.
+    static func reminderToOpen(
+        _ id: UUID?, in reminders: [ReminderDTO], whilePresenting presenting: Bool
+    ) -> ReminderDTO? {
+        guard let id, !presenting else { return nil }
+        return reminders.first { $0.id == id }
     }
 
     /// Show the pre-prompt primer once, only if the system hasn't been asked
