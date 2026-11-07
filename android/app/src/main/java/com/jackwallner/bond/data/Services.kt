@@ -11,7 +11,9 @@ import com.jackwallner.bond.model.ProfileDto
 import com.jackwallner.bond.model.QuestionResponseDto
 import com.jackwallner.bond.model.ReminderDto
 import com.jackwallner.bond.model.ReminderEventDto
+import com.jackwallner.bond.model.currentCompletionEvents
 import com.jackwallner.bond.model.nextOccurrence
+import com.jackwallner.bond.model.withSchedule
 import java.io.IOException
 import java.time.Instant
 import java.time.LocalDate
@@ -30,6 +32,25 @@ interface ReminderScheduling {
     fun reschedule(selfId: UUID, reminders: List<ReminderDto>, events: List<ReminderEventDto>)
     fun rescheduleMilestones(milestones: List<MilestoneDto>)
     fun clearAll()
+}
+
+/**
+ * Rebuilds the armed reminders from the two lists. A rebuild replaces every armed
+ * reminder with what the lists say, so it waits until both were fetched for the
+ * couple the app is on: before that an empty list means "not fetched", and a launch
+ * whose fetch failed would cancel every reminder (reminders) or ping every handled
+ * one again (completions). Returns whether it ran.
+ */
+fun rebuildSchedule(
+    scheduler: ReminderScheduling,
+    me: UUID,
+    reminders: ReminderRepository,
+    events: ReminderEventRepository,
+): Boolean {
+    if (!reminders.hasLoaded) return false
+    val loaded = events.loadedEvents ?: return false
+    scheduler.reschedule(me, reminders.reminders, loaded)
+    return true
 }
 
 /** Debug screenshot seeding turns every network refresh into a no-op, like `BondScreenshotSeed.isEnabled`. */
@@ -146,18 +167,21 @@ class PairingService(
         return try {
             val rows = client.select("couples", "select=*&or=(partner_a.eq.$me,partner_b.eq.$me)&limit=1")
             val row = Codec.objects(rows).firstOrNull()?.let(Codec::couple)
+            // The partner's profile is part of the answer: commit nothing until it is in,
+            // so a failure here leaves the state as it was instead of "paired with no
+            // partner" (where For: Partner saved for oneself).
+            val partner = row?.partnerId(me)?.takeIf { it != me }
+            val profile = partner?.let { id ->
+                val profiles = client.select("profiles", "select=*&id=eq.$id")
+                Codec.objects(profiles).firstOrNull()?.let(Codec::profile)
+                    ?: throw SupabaseException(404, "Partner profile not found")
+            }
             coupleId = row?.id
             solo = row?.solo ?: false
-            val partner = row?.partnerId(me)
-            if (partner != null && partner != me) {
-                val profiles = client.select("profiles", "select=*&id=eq.$partner")
-                partnerProfile = Codec.objects(profiles).firstOrNull()?.let(Codec::profile)
-                // An invitee never typed a name; seed it from the partner's profile.
-                val name = partnerProfile?.displayName?.trim().orEmpty()
-                if (prefs.partnerName.isBlank() && name.isNotEmpty()) prefs.updatePartnerName(name)
-            } else {
-                partnerProfile = null
-            }
+            partnerProfile = profile
+            // An invitee never typed a name; seed it from the partner's profile.
+            val name = profile?.displayName?.trim().orEmpty()
+            if (prefs.partnerName.isBlank() && name.isNotEmpty()) prefs.updatePartnerName(name)
             true
         } catch (error: CancellationException) {
             throw error
@@ -364,23 +388,53 @@ class ReminderRepository(
     var lastError by mutableStateOf<String?>(null)
     var onChange: (List<ReminderDto>) -> Unit = {}
 
-    suspend fun refresh() {
-        if (seed.enabled) return
-        val coupleId = pairing.coupleId ?: return
+    /** The couple the current `reminders` were fetched for. */
+    private var loadedCoupleId: UUID? = null
+
+    /**
+     * True once a refresh has succeeded for the couple the app is on now. Until
+     * then an empty list means "not fetched", not "no reminders", and a schedule
+     * rebuilt from it would cancel every armed reminder.
+     */
+    val hasLoaded: Boolean get() = loadedCoupleId != null && loadedCoupleId == pairing.coupleId
+
+    /** Reads the couple's reminders. True when the list is now what the server holds. */
+    suspend fun refresh(): Boolean {
+        if (seed.enabled) return true
+        val coupleId = pairing.coupleId ?: return false
         isLoading = true
         try {
             val rows = client.select("reminders", "select=*&couple_id=eq.$coupleId&order=fire_at.asc.nullslast")
             reminders = Codec.objects(rows).map(Codec::reminder)
+            loadedCoupleId = coupleId
             lastError = null
             onChange(reminders)
+            return true
         } catch (error: CancellationException) {
             throw error
         } catch (error: Exception) {
             lastError = error.message
             logError("reminders", "refresh failed", error)
+            return false
         } finally {
             isLoading = false
         }
+    }
+
+    /**
+     * Puts rows the server just accepted into the loaded list when the re-read
+     * after the write failed, so the list and the schedule rebuilt from it show
+     * the save instead of what was there before it. Before any list loaded there
+     * is nothing to patch: the rebuild waits for a fetch anyway.
+     */
+    private fun keepSaved(saved: List<ReminderDto>) {
+        if (!hasLoaded) return
+        var list = reminders
+        for (row in saved) {
+            list = if (list.any { it.id == row.id }) list.map { if (it.id == row.id) row else it } else list + row
+        }
+        reminders = list
+        onChange(reminders)
     }
 
     suspend fun upsert(reminder: ReminderDto) {
@@ -389,8 +443,9 @@ class ReminderRepository(
             onChange(reminders)
             return
         }
-        client.upsert("reminders", Codec.reminderJson(reminder))
-        refresh()
+        val stored = client.upsert("reminders", Codec.reminderJson(reminder))
+        val saved = runCatching { Codec.objects(stored).firstOrNull()?.let(Codec::reminder) }.getOrNull() ?: reminder
+        if (!refresh()) keepSaved(listOf(saved))
     }
 
     /** Moves a reminder the partner wrote: its schedule is all the target may change. */
@@ -400,7 +455,7 @@ class ReminderRepository(
             return
         }
         client.rpc("reschedule_reminder", Codec.rescheduleJson(reminder))
-        refresh()
+        if (!refresh()) reminders.firstOrNull { it.id == reminder.id }?.let { keepSaved(listOf(it.withSchedule(reminder))) }
     }
 
     suspend fun bulkInsert(drafts: List<ReminderDto>) {
@@ -411,7 +466,7 @@ class ReminderRepository(
             return
         }
         client.insert("reminders", JSONArray(drafts.map(Codec::reminderJson)))
-        refresh()
+        if (!refresh()) keepSaved(drafts)
     }
 
     suspend fun delete(reminder: ReminderDto) {
@@ -432,39 +487,86 @@ class ReminderEventRepository(
     var events by mutableStateOf<List<ReminderEventDto>>(emptyList())
     var lastError by mutableStateOf<String?>(null)
 
-    suspend fun refresh() {
-        if (seed.enabled) return
-        val coupleId = pairing.coupleId ?: return
-        try {
+    /** The couple the current `events` were fetched for. */
+    private var loadedCoupleId: UUID? = null
+
+    /**
+     * True once a refresh has succeeded for the couple the app is on now. Until
+     * then an empty `events` means "not fetched", not "nothing done", and a
+     * schedule rebuilt from it would ping every handled reminder again.
+     */
+    val hasLoaded: Boolean get() = loadedCoupleId != null && loadedCoupleId == pairing.coupleId
+
+    /** The completions a schedule rebuild may trust: null until fetched for the couple the app is on. */
+    val loadedEvents: List<ReminderEventDto>? get() = if (hasLoaded) events else null
+
+    /** Reads the couple's completions. True when the list is now what the server holds. */
+    suspend fun refresh(): Boolean {
+        if (seed.enabled) return true
+        val coupleId = pairing.coupleId ?: return false
+        return try {
             val rows = client.select("reminder_events", "select=*&couple_id=eq.$coupleId&order=fired_at.desc")
             events = Codec.objects(rows).map(Codec::event)
+            loadedCoupleId = coupleId
+            true
         } catch (error: CancellationException) {
             throw error
         } catch (error: Exception) {
             lastError = error.message
             logError("events", "refresh failed", error)
+            false
         }
     }
 
+    /** Records "I did this". Throws when the server did not take it. */
     suspend fun createEvent(reminderId: UUID, coupleId: UUID, now: Instant = Instant.now()) {
+        val event = ReminderEventDto(UUID.randomUUID(), reminderId, coupleId, now, now)
         if (seed.enabled) {
-            events = listOf(ReminderEventDto(UUID.randomUUID(), reminderId, coupleId, now, now)) + events
+            events = listOf(event) + events
             return
         }
         client.insert(
             "reminder_events",
             JSONObject()
+                .put("id", event.id.toString())
                 .put("reminder_id", reminderId.toString())
                 .put("couple_id", coupleId.toString())
                 .put("fired_at", now.toString())
                 .put("acted_at", now.toString()),
         )
         refresh()
+        // The server has it even when the re-read failed. Without it here the reminder
+        // still looks open, and a second tap records it twice.
+        if (events.none { it.id == event.id }) events = listOf(event) + events
     }
 
-    suspend fun deleteEvent(event: ReminderEventDto) {
-        if (!seed.enabled) client.delete("reminder_events", "id=eq.${event.id}")
-        events = events.filter { it.id != event.id }
+    /**
+     * Marks a reminder done. True only when the completion was saved, which is
+     * what lets the caller count it as a positive moment.
+     */
+    suspend fun markDone(reminder: ReminderDto, coupleId: UUID, now: Instant = Instant.now()): Boolean =
+        try {
+            createEvent(reminder.id, coupleId, now)
+            true
+        } catch (error: CancellationException) {
+            throw error
+        } catch (error: Exception) {
+            lastError = error.message
+            logError("events", "marking done failed", error)
+            false
+        }
+
+    /**
+     * Undo of "done": removes every completion covering the current period. Both
+     * partners can tick off a shared reminder, so there may be more than one, and
+     * leaving any behind keeps it done.
+     */
+    suspend fun undoCompletion(reminder: ReminderDto, now: Instant = Instant.now()) {
+        val covering = reminder.currentCompletionEvents(events, now)
+        if (covering.isEmpty()) return
+        val ids = covering.map { it.id }.toSet()
+        if (!seed.enabled) client.delete("reminder_events", "id=in.(${ids.joinToString(",")})")
+        events = events.filter { it.id !in ids }
     }
 }
 
@@ -528,17 +630,17 @@ class DailyCheckInService(
 
     val hasBothResponded: Boolean get() = myResponse != null && partnerResponse != null
 
-    suspend fun loadTodaysQuestion(today: LocalDate = LocalDate.now()) {
+    suspend fun loadTodaysQuestion(now: Instant = Instant.now(), zone: ZoneId = ZoneId.systemDefault()) {
         if (seed.enabled) return
         val coupleId = pairing.coupleId ?: return
         isLoading = true
         try {
             val count = client.count("daily_questions") ?: 30
-            val index = questionIndex(today, coupleId, count)
+            val index = questionIndex(dayNumber(now, zone), stableSeed(coupleId), count)
             // Explicit order: both partners must resolve the same index to the same row.
             val rows = client.select("daily_questions", "select=*&order=id.asc&offset=$index&limit=1")
-            val question = Codec.objects(rows).firstOrNull()?.let(Codec::question)
-            if (question == null) {
+            val dayQuestion = Codec.objects(rows).firstOrNull()?.let(Codec::question)
+            if (dayQuestion == null) {
                 todaysQuestion = DailyQuestionDto(
                     UUID.randomUUID(),
                     "What is one thing you appreciated about your partner today?",
@@ -547,8 +649,17 @@ class DailyCheckInService(
                 )
                 return
             }
+            val me = auth.currentUserId ?: return
+            val recent = recentResponses(coupleId, now)
+            val currentId = currentQuestionId(dayQuestion.id, recent, me, now, zone)
+            val question = if (currentId == dayQuestion.id) {
+                dayQuestion
+            } else {
+                val row = client.select("daily_questions", "select=*&id=eq.$currentId&limit=1")
+                Codec.objects(row).firstOrNull()?.let(Codec::question) ?: throw SupabaseException(404, "Question not found")
+            }
             todaysQuestion = question
-            loadResponses(question.id, coupleId)
+            apply(recent, question.id, me)
         } catch (error: CancellationException) {
             throw error
         } catch (error: Exception) {
@@ -559,13 +670,30 @@ class DailyCheckInService(
         }
     }
 
+    /**
+     * The couple's answers from the last two days: an open question was answered
+     * within a day, and the second answer to it within the next. Older ones belong
+     * to an earlier round of the same question.
+     */
+    private suspend fun recentResponses(coupleId: UUID, now: Instant): List<QuestionResponseDto> {
+        val since = now.minusMillis(2 * OPEN_WINDOW_MS)
+        val rows = client.select(
+            "question_responses",
+            "select=*&couple_id=eq.$coupleId&created_at=gte.${SupabaseClient.encode(since.toString())}",
+        )
+        return Codec.objects(rows).map(Codec::response)
+    }
+
+    private fun apply(responses: List<QuestionResponseDto>, questionId: UUID, me: UUID) {
+        val answers = responses.filter { it.questionId == questionId }
+        myResponse = answers.firstOrNull { it.userId == me }
+        partnerResponse = answers.firstOrNull { it.userId != me }
+    }
+
     private suspend fun loadResponses(questionId: UUID, coupleId: UUID) {
         val me = auth.currentUserId ?: return
         try {
-            val rows = client.select("question_responses", "select=*&question_id=eq.$questionId&couple_id=eq.$coupleId")
-            val responses = Codec.objects(rows).map(Codec::response)
-            myResponse = responses.firstOrNull { it.userId == me }
-            partnerResponse = responses.firstOrNull { it.userId != me }
+            apply(recentResponses(coupleId, Instant.now()), questionId, me)
         } catch (error: CancellationException) {
             throw error
         } catch (error: Exception) {
@@ -573,7 +701,7 @@ class DailyCheckInService(
         }
     }
 
-    suspend fun submitResponse(text: String) {
+    suspend fun submitResponse(text: String, now: Instant = Instant.now()) {
         val me = auth.currentUserId
         val coupleId = pairing.coupleId
         val question = todaysQuestion
@@ -582,7 +710,7 @@ class DailyCheckInService(
             return
         }
         if (seed.enabled) {
-            myResponse = QuestionResponseDto(UUID.randomUUID(), question.id, coupleId, me, text, Instant.now())
+            myResponse = QuestionResponseDto(UUID.randomUUID(), question.id, coupleId, me, text, now)
             return
         }
         isLoading = true
@@ -593,7 +721,10 @@ class DailyCheckInService(
                     .put("question_id", question.id.toString())
                     .put("couple_id", coupleId.toString())
                     .put("user_id", me.toString())
-                    .put("response", text),
+                    .put("response", text)
+                    // A question comes round again after the bank is used up; the new answer
+                    // starts a new round, so its time moves with it.
+                    .put("created_at", now.toString()),
                 onConflict = "question_id,couple_id,user_id",
             )
             loadResponses(question.id, coupleId)
@@ -614,8 +745,19 @@ class DailyCheckInService(
     }
 
     companion object {
+        /** How far back an answer can still be the couple's open question. */
+        const val OPEN_WINDOW_MS = 24L * 3_600_000
+
         /** Swift's `ordinality(of: .day, in: .era)` for a Gregorian date: days since 0001-01-01, plus one. */
         fun dayOrdinal(day: LocalDate): Long = day.toEpochDay() + 719_163
+
+        /**
+         * The day a question belongs to: the local calendar date, numbered the way the
+         * store version numbers its UTC date, so the two agree for every hour the dates
+         * are the same.
+         */
+        fun dayNumber(at: Instant, zone: ZoneId = ZoneId.systemDefault()): Long =
+            dayOrdinal(at.atZone(zone).toLocalDate())
 
         /** UUID bytes folded as `(acc &* 31) &+ byte`, stable across processes and platforms. */
         fun stableSeed(uuid: UUID): Long {
@@ -626,7 +768,54 @@ class DailyCheckInService(
             return acc
         }
 
+        fun questionIndex(day: Long, seed: Long, count: Int): Int =
+            abs((day + seed) % maxOf(count, 1)).toInt()
+
         fun questionIndex(day: LocalDate, coupleId: UUID, count: Int): Int =
-            abs((dayOrdinal(day) + stableSeed(coupleId)) % maxOf(count, 1)).toInt()
+            questionIndex(dayOrdinal(day), stableSeed(coupleId), count)
+
+        /**
+         * Which question the couple is on, so both partners answer the same one and each
+         * sees the reveal, whatever their zones or app versions:
+         * 1. one the partner answered in the last day and this user has not,
+         * 2. else one both answered, completed today, to keep showing the reveal,
+         * 3. else one this user answered in the last day and the partner has not,
+         * 4. else the question of this user's local day.
+         * A question answered first is the couple's until the other answers it (for a
+         * day), so a midnight between the two answers, a partner in another zone, or a
+         * partner on a version that changes at 00:00 UTC no longer splits them onto
+         * different questions.
+         */
+        fun currentQuestionId(
+            dayQuestion: UUID,
+            responses: List<QuestionResponseDto>,
+            me: UUID,
+            now: Instant,
+            zone: ZoneId = ZoneId.systemDefault(),
+        ): UUID {
+            val openSince = now.minusMillis(OPEN_WINDOW_MS)
+            val today = now.atZone(zone).toLocalDate()
+            val waitingOnMe = mutableListOf<Pair<UUID, Instant>>()
+            val revealedToday = mutableListOf<Pair<UUID, Instant>>()
+            val waitingOnPartner = mutableListOf<Pair<UUID, Instant>>()
+            for ((question, answers) in responses.groupBy { it.questionId }) {
+                val mine = answers.firstOrNull { it.userId == me }
+                val theirs = answers.firstOrNull { it.userId != me }
+                when {
+                    mine == null && theirs != null && theirs.createdAt.isAfter(openSince) ->
+                        waitingOnMe += question to theirs.createdAt
+                    mine != null && theirs != null -> {
+                        val completed = maxOf(mine.createdAt, theirs.createdAt)
+                        if (completed.atZone(zone).toLocalDate() == today) revealedToday += question to completed
+                    }
+                    mine != null && theirs == null && mine.createdAt.isAfter(openSince) ->
+                        waitingOnPartner += question to mine.createdAt
+                }
+            }
+            for (candidates in listOf(waitingOnMe, revealedToday, waitingOnPartner)) {
+                candidates.maxByOrNull { it.second }?.let { return it.first }
+            }
+            return dayQuestion
+        }
     }
 }

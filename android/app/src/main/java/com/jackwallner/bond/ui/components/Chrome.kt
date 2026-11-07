@@ -90,6 +90,9 @@ class SheetController {
 
     fun isPresented(id: String): Boolean = stack.any { it.id == id && !it.closing }
 
+    /** True while any sheet is up. Reads the stack, so a composable that calls it follows sheets opening and leaving. */
+    val hasOpenSheet: Boolean get() = stack.any { !it.closing }
+
     fun dismiss(id: String) {
         val entry = stack.lastOrNull { it.id == id && !it.closing } ?: return
         close(entry)

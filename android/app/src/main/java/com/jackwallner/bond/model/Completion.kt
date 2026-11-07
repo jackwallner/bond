@@ -49,10 +49,20 @@ fun ReminderDto.currentCompletionEvent(
     events: List<ReminderEventDto>,
     now: Instant = Instant.now(),
     zone: ZoneId = ZoneId.systemDefault(),
-): ReminderEventDto? {
+): ReminderEventDto? = currentCompletionEvents(events, now, zone).firstOrNull()
+
+/**
+ * Every acted event covering the current period, which is what an undo removes:
+ * both partners can mark a shared reminder done, and any one left keeps it done.
+ */
+fun ReminderDto.currentCompletionEvents(
+    events: List<ReminderEventDto>,
+    now: Instant = Instant.now(),
+    zone: ZoneId = ZoneId.systemDefault(),
+): List<ReminderEventDto> {
     val acted = events.filter { it.reminderId == id && it.actedAt != null }
-    val periodStart = currentPeriodStart(now, zone) ?: return acted.firstOrNull()
-    return acted.firstOrNull { !(it.actedAt ?: it.firedAt).isBefore(periodStart) }
+    val periodStart = currentPeriodStart(now, zone) ?: return acted
+    return acted.filter { !(it.actedAt ?: it.firedAt).isBefore(periodStart) }
 }
 
 /**

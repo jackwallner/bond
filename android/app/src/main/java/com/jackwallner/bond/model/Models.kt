@@ -129,6 +129,27 @@ data class ReminderDto(
         }
 }
 
+/**
+ * This row with another copy's schedule: what `reschedule_reminder` changes on a
+ * reminder the partner wrote, and nothing else.
+ */
+fun ReminderDto.withSchedule(other: ReminderDto): ReminderDto = copy(
+    triggerType = other.triggerType,
+    fireAt = other.fireAt,
+    rrule = other.rrule,
+    geofence = other.geofence,
+    windowStart = other.windowStart,
+    windowEnd = other.windowEnd,
+)
+
+/**
+ * The reminders this user sees: the ones they wrote and the ones addressed to
+ * them. The couple's rows are all readable, and the partner's own reminders
+ * (including the private ones) are not for this user (`ReminderDTO.visible`).
+ */
+fun List<ReminderDto>.visibleTo(user: UUID?): List<ReminderDto> =
+    if (user == null) emptyList() else filter { it.authorId == user || it.targetId == user }
+
 /** A row of `public.milestones`. `date` is a Postgres `date`, a calendar day with no zone. */
 data class MilestoneDto(
     val id: UUID,

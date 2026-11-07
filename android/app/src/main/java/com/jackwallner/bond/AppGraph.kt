@@ -24,6 +24,7 @@ import com.jackwallner.bond.data.SeedMode
 import com.jackwallner.bond.data.SharedPreferencesStore
 import com.jackwallner.bond.data.SubscriptionService
 import com.jackwallner.bond.data.SupabaseClient
+import com.jackwallner.bond.data.rebuildSchedule
 import com.jackwallner.bond.data.ThemeSettings
 import java.util.UUID
 import kotlinx.coroutines.MainScope
@@ -106,7 +107,7 @@ class AppGraph(context: Context) {
     fun rescheduleNotifications() {
         if (seed.enabled) return
         val me = auth.currentUserId ?: return
-        notifications.reschedule(me, reminders.reminders, events.events)
+        rebuildSchedule(notifications, me, reminders, events)
     }
 
     /**

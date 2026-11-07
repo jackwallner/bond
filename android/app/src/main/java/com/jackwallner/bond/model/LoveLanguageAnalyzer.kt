@@ -29,6 +29,12 @@ class LoveLanguageAnalyzer(
 
     private val reminderMap: Map<UUID, ReminderDto> by lazy { reminders.associateBy { it.id } }
 
+    val reminderCount: Int get() = reminders.size
+    val partnerReminderCount: Int get() = reminders.count { it.authorId != it.targetId }
+    fun repeatingReminderCount(now: Instant = Instant.now()): Int = reminders.count { it.repeatsOnSchedule(now, zone) }
+    val eventCount: Int get() = events.size
+    val actedEventCount: Int get() = events.count { it.actedAt != null }
+
     fun reminderCounts(): List<Pair<LoveLanguage, Int>> {
         val tally = reminders.groupingBy { it.loveLanguage }.eachCount()
         return LoveLanguage.entries.map { it to (tally[it] ?: 0) }
@@ -212,5 +218,24 @@ class LoveLanguageAnalyzer(
             }
         }
         return longest
+    }
+
+    companion object {
+        /**
+         * The analysis one user may see: the reminders they wrote or that are
+         * addressed to them, and only those reminders' events. The partner's own
+         * reminders are readable to the couple but private to the partner.
+         */
+        fun visibleTo(
+            user: UUID?,
+            reminders: List<ReminderDto>,
+            events: List<ReminderEventDto>,
+            zone: ZoneId = ZoneId.systemDefault(),
+            locale: Locale = Locale.getDefault(),
+        ): LoveLanguageAnalyzer {
+            val visible = reminders.visibleTo(user)
+            val ids = visible.map { it.id }.toSet()
+            return LoveLanguageAnalyzer(visible, events.filter { it.reminderId in ids }, zone, locale)
+        }
     }
 }

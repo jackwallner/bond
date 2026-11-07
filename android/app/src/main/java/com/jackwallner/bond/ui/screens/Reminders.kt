@@ -77,9 +77,10 @@ import com.jackwallner.bond.model.ReminderDto
 import com.jackwallner.bond.model.ReminderTrigger
 import com.jackwallner.bond.model.StarterChip
 import com.jackwallner.bond.model.StarterChips
-import com.jackwallner.bond.model.currentCompletionEvent
+import com.jackwallner.bond.model.currentCompletionEvents
 import com.jackwallner.bond.model.isCompleted
 import com.jackwallner.bond.model.repeatsOnSchedule
+import com.jackwallner.bond.model.visibleTo
 import com.jackwallner.bond.ui.Formats
 import com.jackwallner.bond.ui.LocalGraph
 import com.jackwallner.bond.ui.components.BText
@@ -127,7 +128,9 @@ class ReminderActions(private val graph: AppGraph, private val scope: CoroutineS
         toggling.add(reminder.id)
         scope.launch {
             try {
-                runCatching { graph.events.createEvent(reminder.id, coupleId) }
+                // Only a saved completion is a positive moment: an offline tap changes
+                // nothing, so it must not move the review counter either.
+                if (!graph.events.markDone(reminder, coupleId)) return@launch
                 graph.rescheduleNotifications()
                 graph.review.recordPositiveMoment()
                 graph.positiveMoments += 1
@@ -139,11 +142,11 @@ class ReminderActions(private val graph: AppGraph, private val scope: CoroutineS
 
     fun uncomplete(reminder: ReminderDto) {
         if (reminder.id in toggling) return
-        val event = reminder.currentCompletionEvent(graph.events.events) ?: return
+        if (reminder.currentCompletionEvents(graph.events.events).isEmpty()) return
         toggling.add(reminder.id)
         scope.launch {
             try {
-                runCatching { graph.events.deleteEvent(event) }
+                runCatching { graph.events.undoCompletion(reminder) }
                 graph.rescheduleNotifications()
             } finally {
                 toggling.remove(reminder.id)
@@ -160,6 +163,16 @@ class ReminderActions(private val graph: AppGraph, private val scope: CoroutineS
 }
 
 private enum class HomeRoute { CHECK_IN, HANDLED }
+
+/**
+ * The reminder a tapped notification opens now, or null to keep it pending. Never
+ * while a sheet is up: the tap would be consumed with nothing opened, and a form
+ * left open for another reminder must not be swapped under its owner.
+ */
+fun reminderToOpen(id: UUID?, reminders: List<ReminderDto>, whilePresenting: Boolean): ReminderDto? {
+    if (id == null || whilePresenting) return null
+    return reminders.firstOrNull { it.id == id }
+}
 
 fun SheetController.presentEditor(existing: ReminderDto?, prefill: StarterChip? = null) {
     present("editor", Detent.LARGE) { dismiss -> ReminderEditorSheet(existing, prefill, onClose = dismiss) }
@@ -196,9 +209,11 @@ fun ReminderListScreen() {
         if (!pairing.solo && pairing.coupleId != null && !graph.seed.enabled) graph.checkIn.loadTodaysQuestion()
         maybeShowNotificationPrimer(graph, sheets)
     }
-    LaunchedEffect(graph.pendingReminderId, repo.reminders) {
-        val id = graph.pendingReminderId ?: return@LaunchedEffect
-        val match = repo.reminders.firstOrNull { it.id == id } ?: return@LaunchedEffect
+    // A banner tapped while a sheet was up waits for it to close, so it never lands on an open form.
+    val sheetOpen = sheets.hasOpenSheet
+    LaunchedEffect(graph.pendingReminderId, repo.reminders, sheetOpen) {
+        val match = reminderToOpen(graph.pendingReminderId, repo.reminders, whilePresenting = sheetOpen)
+            ?: return@LaunchedEffect
         graph.pendingReminderId = null
         route = null
         sheets.presentEditor(match)
@@ -220,7 +235,7 @@ fun ReminderListScreen() {
     }
 
     val now = Instant.now()
-    val visible = if (me == null) emptyList() else repo.reminders.filter { it.authorId == me || it.targetId == me }
+    val visible = repo.reminders.visibleTo(me)
     val active = visible.filter { it.repeatsOnSchedule() || !actions.isActedOn(it) }
     val partnerRequests = if (me == null || pairing.solo) emptyList() else sortByNext(active.filter { it.authorId != me }, now)
     val mine = active.filter { it.authorId == me }
@@ -710,7 +725,7 @@ private fun HandledRemindersScreen(actions: ReminderActions, onBack: () -> Unit)
     val sheets = LocalSheets.current
     val me = graph.auth.currentUserId
     val handled = graph.reminders.reminders
-        .filter { it.authorId == me || it.targetId == me }
+        .visibleTo(me)
         .filter { !it.repeatsOnSchedule() && it.isCompleted(graph.events.events) }
         .sortedByDescending { it.createdAt ?: Instant.MIN }
     Column(Modifier.fillMaxSize().testTag("screen.handled")) {

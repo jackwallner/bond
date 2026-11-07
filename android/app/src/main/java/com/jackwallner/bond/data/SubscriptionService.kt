@@ -8,6 +8,7 @@ import androidx.compose.runtime.setValue
 import com.jackwallner.bond.BuildConfig
 import com.revenuecat.purchases.CacheFetchPolicy
 import com.revenuecat.purchases.CustomerInfo
+import com.revenuecat.purchases.EntitlementInfo
 import com.revenuecat.purchases.LogLevel
 import com.revenuecat.purchases.Offering
 import com.revenuecat.purchases.Package
@@ -41,6 +42,12 @@ object Membership {
     const val NAME = "Little Gestures"
     const val PLUS = "Little Gestures+"
     const val ENTITLEMENT_ID = "Husband & Wife Reminder - Bond Pro"
+
+    /**
+     * When the subscription began. `latestPurchaseDate` moves with every renewal,
+     * so "since" read as the last charge.
+     */
+    fun since(original: Instant?, latest: Instant?): Instant? = original ?: latest
 }
 
 /** `BondPackageKind`: the sort order of the plan list (lifetime, yearly, monthly). */
@@ -447,9 +454,13 @@ class SubscriptionService(
         val active = info.entitlements.active.values
         val entitlement = info.entitlements[Membership.ENTITLEMENT_ID]?.takeIf { it.isActive } ?: active.firstOrNull()
         activeProductId = entitlement?.productIdentifier?.substringBefore(":")
-        premiumSince = entitlement?.latestPurchaseDate?.toInstant()
+        premiumSince = info.entitlements[Membership.ENTITLEMENT_ID]?.let(::memberSince)
+            ?: active.mapNotNull(::memberSince).minOrNull()
         isPremium = active.isNotEmpty() || info.activeSubscriptions.isNotEmpty() || reviewAccess.isGranted
     }
+
+    private fun memberSince(entitlement: EntitlementInfo): Instant? =
+        Membership.since(entitlement.originalPurchaseDate?.toInstant(), entitlement.latestPurchaseDate?.toInstant())
 
     private fun planInfo(pkg: Package): PlanInfo {
         val product = pkg.product

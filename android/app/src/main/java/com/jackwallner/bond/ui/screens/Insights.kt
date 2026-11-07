@@ -40,7 +40,6 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.jackwallner.bond.model.LoveLanguage
 import com.jackwallner.bond.model.LoveLanguageAnalyzer
-import com.jackwallner.bond.model.repeatsOnSchedule
 import com.jackwallner.bond.ui.LocalGraph
 import com.jackwallner.bond.ui.components.BText
 import com.jackwallner.bond.ui.components.GroupRow
@@ -66,13 +65,11 @@ fun InsightsScreen() {
     val graph = LocalGraph.current
     val sheets = LocalSheets.current
     LaunchedEffect(Unit) { graph.events.refresh() }
-    val reminders = graph.reminders.reminders
-    val events = graph.events.events
-    val analyzer = LoveLanguageAnalyzer(reminders, events)
+    val analyzer = LoveLanguageAnalyzer.visibleTo(graph.auth.currentUserId, graph.reminders.reminders, graph.events.events)
 
     Column(Modifier.fillMaxSize().testTag("screen.insights")) {
         TopBar("Insights", large = true)
-        if (reminders.isEmpty()) {
+        if (analyzer.reminderCount == 0) {
             Unavailable(
                 Icons.Rounded.BarChart, "No data yet",
                 "Create reminders and mark them done to see your relationship analytics.",
@@ -133,13 +130,13 @@ fun InsightsScreen() {
                 val total = counts.sumOf { it.second }
                 SummaryRow("Total reminders", total)
                 RowDivider()
-                SummaryRow("For partner", reminders.count { it.authorId != it.targetId })
+                SummaryRow("For partner", analyzer.partnerReminderCount)
                 RowDivider()
-                SummaryRow("Repeating", reminders.count { it.repeatsOnSchedule() })
+                SummaryRow("Repeating", analyzer.repeatingReminderCount())
                 RowDivider()
-                SummaryRow("Total actions", events.size)
+                SummaryRow("Total actions", analyzer.eventCount)
                 RowDivider()
-                SummaryRow("Actions completed", events.count { it.actedAt != null })
+                SummaryRow("Actions completed", analyzer.actedEventCount)
             }
         }
     }
