@@ -53,18 +53,13 @@ final class WatchConnectivitySender: NSObject {
         if session.isReachable {
             return await sendNow(data: data) ? .confirmed : .failed
         }
-        do {
-            try session.updateApplicationContext(
-                [WatchPayload.createReminderKey: data]
-            )
-            log.info("Queued reminder via application context (background)")
-            // No reply on this path - the phone confirms only when it wakes.
-            return .queued
-        } catch {
-            lastError = error.localizedDescription
-            log.error("Failed to send via context: \(error.localizedDescription)")
-            return .failed
-        }
+        // A queued transfer, not the application context: the context keeps
+        // only its latest value, so a second reminder sent before the phone
+        // woke replaced the first.
+        session.transferUserInfo([WatchPayload.createReminderKey: data])
+        log.info("Queued reminder via user info transfer (background)")
+        // No reply on this path - the phone confirms only when it wakes.
+        return .queued
     }
 
     private nonisolated func sendNow(data: Data) async -> Bool {

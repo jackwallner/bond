@@ -168,6 +168,14 @@ extension WatchConnectivityBridge: WCSessionDelegate {
         }
     }
 
+    /// Background path for current watch builds: every queued reminder
+    /// arrives, in order. The application context above is for older ones.
+    nonisolated func session(_ session: WCSession, didReceiveUserInfo userInfo: [String: Any] = [:]) {
+        if let data = userInfo[WatchPayload.createReminderKey] as? Data {
+            handleCreatePayload(data)
+        }
+    }
+
     nonisolated func session(
         _ session: WCSession, didReceiveMessage message: [String: Any],
         replyHandler: @escaping ([String: Any]) -> Void
