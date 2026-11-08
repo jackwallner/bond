@@ -45,6 +45,22 @@ enum TriggerKind: String, CaseIterable, Identifiable {
         case .location, .randomWindow: true
         }
     }
+
+    init(_ trigger: ReminderTrigger) {
+        switch trigger {
+        case .oneTime: self = .oneTime
+        case .recurring: self = .recurring
+        case .location: self = .location
+        case .randomWindow, .randomRecurring: self = .randomWindow
+        }
+    }
+
+    /// Whether choosing `kind` needs Little Gestures+. The kind a reminder
+    /// already has never does: a free user opening a partner's place or
+    /// surprise reminder, or their own from a lapsed subscription, keeps it.
+    static func needsUnlock(_ kind: TriggerKind, existing: TriggerKind?, isPremium: Bool) -> Bool {
+        kind.isPremium && !isPremium && kind != existing
+    }
 }
 
 /// The default place name of a location reminder. The stored label is always

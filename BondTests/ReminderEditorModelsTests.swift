@@ -32,6 +32,31 @@ struct TriggerKindTests {
     @Test func allCases() {
         #expect(TriggerKind.allCases.count == 4)
     }
+
+    @Test func kindOfEachTrigger() {
+        let now = Date.now
+        let place = Geofence(latitude: 1, longitude: 2, radiusMeters: 200, label: "Home")
+        #expect(TriggerKind(.oneTime(fireAt: now)) == .oneTime)
+        #expect(TriggerKind(.recurring(rrule: "FREQ=DAILY", nextFire: now)) == .recurring)
+        #expect(TriggerKind(.location(geofence: place, onEntry: true)) == .location)
+        #expect(TriggerKind(.randomWindow(start: now, end: now)) == .randomWindow)
+        #expect(TriggerKind(.randomRecurring(start: now, end: now)) == .randomWindow)
+    }
+
+    // Presubmit review 2026-11-08: opening a partner's place reminder on a free
+    // phone raised the paywall and turned it into a one-time reminder on Save.
+    @Test func aFreeUserKeepsTheKindTheReminderAlreadyHas() {
+        #expect(!TriggerKind.needsUnlock(.location, existing: .location, isPremium: false))
+        #expect(!TriggerKind.needsUnlock(.randomWindow, existing: .randomWindow, isPremium: false))
+    }
+
+    @Test func aFreeUserChoosingAPlusKindIsAskedToUnlock() {
+        #expect(TriggerKind.needsUnlock(.location, existing: nil, isPremium: false))
+        #expect(TriggerKind.needsUnlock(.randomWindow, existing: .oneTime, isPremium: false))
+        #expect(TriggerKind.needsUnlock(.location, existing: .randomWindow, isPremium: false))
+        #expect(!TriggerKind.needsUnlock(.location, existing: nil, isPremium: true))
+        #expect(!TriggerKind.needsUnlock(.recurring, existing: nil, isPremium: false))
+    }
 }
 
 // MARK: - State machine audit 2026-11-06: B5, a banner tapped while the editor is open
