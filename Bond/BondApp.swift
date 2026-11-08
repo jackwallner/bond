@@ -205,6 +205,7 @@ struct BondApp: App {
             await pairingService.loadCouple()
         }
         await catchUpReminders()
+        await WatchConnectivityBridge.shared.deliverPending()
         await PushRegistrar.shared.refresh()
     }
 
@@ -370,6 +371,7 @@ struct RootView: View {
             }
             await pairing.loadCouple()
             isAppBootstrapped = true
+            await WatchConnectivityBridge.shared.deliverPending()
         }
         .onChange(of: supabase.isAuthenticated) { _, authenticated in
             guard authenticated, isAppBootstrapped else { return }
