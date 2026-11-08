@@ -203,7 +203,10 @@ final class DailyCheckInService {
             ]
             try await supabase.client
                 .from("question_responses")
-                .upsert(payload, ignoreDuplicates: false)
+                // The table is unique on these, not on the id the payload
+                // leaves out: without the target a repeat round's answer was
+                // a fresh insert that the earlier round's row rejected.
+                .upsert(payload, onConflict: "question_id,couple_id,user_id", ignoreDuplicates: false)
                 .execute()
 
             log.info("Submitted response for question \(question.id)")
