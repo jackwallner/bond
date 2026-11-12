@@ -12,6 +12,13 @@ struct UnfoldedSplit: Equatable, Sendable {
     /// Narrowest pane that still fits the compact Reminders and Insights layouts.
     static let minimumPaneWidth: CGFloat = 360
 
+    /// True for the regular width of a foldable phone. An iPad is regular wide
+    /// too, but it has no fold: it keeps one column, centred (`ReadableColumn`).
+    @MainActor
+    static func isRegular(_ sizeClass: UserInterfaceSizeClass?) -> Bool {
+        sizeClass == .regular && UIDevice.current.userInterfaceIdiom != .pad
+    }
+
     /// - Parameters:
     ///   - width: the container's width.
     ///   - fold: the vertical fold's leading and trailing edge in the same
@@ -285,7 +292,7 @@ private struct UnfoldedLeadingPane<Trailing: View>: ViewModifier {
 
     private var split: UnfoldedSplit? {
         guard enabled else { return nil }
-        return UnfoldedSplit.make(width: geometry.width, isRegularWidth: horizontalSizeClass == .regular, fold: geometry.fold)
+        return UnfoldedSplit.make(width: geometry.width, isRegularWidth: UnfoldedSplit.isRegular(horizontalSizeClass), fold: geometry.fold)
     }
 
     func body(content: Content) -> some View {
@@ -344,7 +351,7 @@ private struct UnfoldedSplitEnvironment: ViewModifier {
         content
             .environment(\.isUnfoldedSplit, UnfoldedSplit.make(
                 width: geometry.width,
-                isRegularWidth: horizontalSizeClass == .regular,
+                isRegularWidth: UnfoldedSplit.isRegular(horizontalSizeClass),
                 fold: geometry.fold
             ) != nil)
             .onGeometryChange(for: PaneGeometry.self) { proxy in

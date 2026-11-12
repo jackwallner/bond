@@ -98,6 +98,17 @@ struct BondApp: App {
     var body: some Scene {
         WindowGroup {
             #if DEBUG
+            captureRoot
+            #else
+            bondRoot
+            #endif
+        }
+    }
+
+    #if DEBUG
+    @ViewBuilder
+    private var captureRoot: some View {
+        Group {
             if let mode = PaywallScreenshotMode.current {
                 PaywallScreenshotHarness(mode: mode)
                     .environment(supabase)
@@ -110,11 +121,15 @@ struct BondApp: App {
             } else {
                 bondRoot
             }
-            #else
-            bondRoot
-            #endif
+        }
+        .task {
+            guard CaptureOrientation.wantsLandscape, UIDevice.current.userInterfaceIdiom == .pad else { return }
+            try? await Task.sleep(for: .seconds(1))
+            let scene = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first
+            scene?.requestGeometryUpdate(.iOS(interfaceOrientations: .landscapeRight))
         }
     }
+    #endif
 
     @ViewBuilder
     private var bondRoot: some View {
@@ -253,14 +268,17 @@ struct RootView: View {
             switch currentDestination {
             case .intentSetup:
                 IntentSetupView()
+                    .readablePage()
                     .unfoldedLeadingPane { UnfoldedBrandPanel() }
                     .transition(reduceMotion ? .opacity : .opacity.combined(with: .move(edge: .trailing)))
             case .inviteWelcome:
                 InviteWelcomeView()
+                    .readablePage()
                     .unfoldedLeadingPane { UnfoldedBrandPanel() }
                     .transition(reduceMotion ? .opacity : .opacity.combined(with: .move(edge: .trailing)))
             case .inviteeIntake:
                 IntentSetupView(mode: .invitee)
+                    .readablePage()
                     .unfoldedLeadingPane { UnfoldedBrandPanel() }
                     .transition(reduceMotion ? .opacity : .opacity.combined(with: .move(edge: .trailing)))
             case .pairingSuccess:
@@ -277,6 +295,7 @@ struct RootView: View {
                         pairing.justPaired = false
                     }
                 }
+                .readablePage()
                 .unfoldedLeadingPane { UnfoldedBrandPanel() }
                 .transition(.opacity)
             case .home:
@@ -603,7 +622,7 @@ struct MainTabView: View {
     private var split: UnfoldedSplit? {
         UnfoldedSplit.make(
             width: paneGeometry.width,
-            isRegularWidth: horizontalSizeClass == .regular,
+            isRegularWidth: UnfoldedSplit.isRegular(horizontalSizeClass),
             fold: paneGeometry.fold
         )
     }
@@ -624,6 +643,7 @@ struct MainTabView: View {
             // the whole display and then shrinking.
             if paneGeometry.width > 0 {
                 tabs
+                    .readableColumn()
                     .frame(maxWidth: split?.primaryWidth ?? .infinity, maxHeight: .infinity)
             }
             if let split {

@@ -97,7 +97,7 @@ targets:
         INFOPLIST_FILE: Bond/Info.plist
         CODE_SIGN_ENTITLEMENTS: Bond/Bond.entitlements
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
-        TARGETED_DEVICE_FAMILY: "1"
+        TARGETED_DEVICE_FAMILY: "1,2"
     dependencies:
       - package: Supabase
         product: Supabase
@@ -138,6 +138,7 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: com.jackwallner.bond.widgets
         INFOPLIST_FILE: BondWidgets/Info.plist
         CODE_SIGN_ENTITLEMENTS: BondWidgets/BondWidgets.entitlements
+        TARGETED_DEVICE_FAMILY: "1,2"
 
   # The paywall purchase probe. Its own target and scheme: the app's own test
   # action activates StoreKit Testing, and this has to reach RevenueCat's Test

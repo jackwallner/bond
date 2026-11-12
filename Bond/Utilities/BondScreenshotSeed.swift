@@ -276,4 +276,10 @@ enum DuoScreen {
         return arguments[index + 1]
     }
 }
+
+/// `-BondLandscape`: asks the window scene for landscape once it is on screen,
+/// since a capture run cannot rotate the device. iPad only; iPhone stays portrait.
+enum CaptureOrientation {
+    static let wantsLandscape = ProcessInfo.processInfo.arguments.contains("-BondLandscape")
+}
 #endif
