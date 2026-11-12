@@ -1,16 +1,16 @@
 # Best Love Language App for Couples: 5 Compared 2026
 
-> Five love language and couples apps compared for iPhone: quiz, reminders, daily questions, account needs and price model, with ratings as of October 2026.
+> Five love language and couples apps compared for iPhone: quiz, reminders, daily questions, account needs and price model, with ratings as of November 2026.
 
 Web page: https://jackwallner.com/ios/bond/best-love-language-app.html
 
-## Best love language app for couples (October 2026)
+## Best love language app for couples (November 2026)
 
-By [Jack Wallner](https://jackwallner.com/). Last updated October 28, 2026.
+By [Jack Wallner](https://jackwallner.com/). Last updated November 11, 2026.
 
 There is no single best love language app, because the five here do different jobs. Best for love-language reminders you can use without your partner or an account: Little Gestures. Best for a love language quiz and partner nudges: Love Nudge. Best for daily questions you both answer: Paired. Best for expert-led lessons: Evergreen. Best for tending family and friends as well as a partner: Kindest.
 
-**How we compared.** I read each App Store listing and pulled its rating, update date and supported devices from Apple's public lookup on October 12, 2026 (US storefront). I also opened Love Nudge, Evergreen, Kindest and Little Gestures to see the first minutes before any payment. Love Nudge and Evergreen both asked for an account before showing any content. Paired is described from its listing only. Jack Wallner makes Little Gestures: Couples Care, so read its entries with that in mind.
+**How we compared.** I read each App Store listing and pulled its rating, update date and supported devices from Apple's public lookup on November 11, 2026 (US storefront). I also opened Love Nudge, Evergreen, Kindest and Little Gestures to see the first minutes before any payment. Love Nudge and Evergreen both asked for an account before showing any content. Paired is described from its listing only. Jack Wallner makes Little Gestures: Couples Care, so read its entries with that in mind.
 
 ## How do the love language apps compare?
 
@@ -18,13 +18,13 @@ Little Gestures works even if your partner never installs it, Love Nudge follows
 
 | App | Best for | Price model | Apple Watch | iPad | Account | Rating (count) | Last updated |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Little Gestures: Couples Care | Love-language reminders and date countdowns, even if your partner never installs it | Free + subscription | Yes | Yes | No account to use; Sign in with Apple only to pair | No ratings yet | Oct 1, 2026 |
-| Love Nudge | A Chapman-based love language profile and partner nudges | Free + one-time in-app purchase (per listing) | No | Yes | Yes, email account on the first screen (checked) | 4.58 (18,417) | Jul 19, 2024 |
-| Paired: Couples & Relationship | Daily questions you both answer, plus date tracking | Free + subscription | No | Yes | Yes, per listing | 4.72 (209,030) | Oct 9, 2026 |
-| Evergreen: Relationship Growth | Expert lessons, quizzes and a daily question | Free + subscription | No | Yes | Yes, sign-up after the intro quiz (checked) | 4.82 (54,620) | Sep 5, 2026 |
-| Kindest: Relationship Tracker | Tracking care for any relationship, not only a partner | Free + subscription | No | Yes | No account | 4.33 (3) | Jan 2, 2026 |
+| Little Gestures: Couples Care | Love-language reminders and date countdowns, even if your partner never installs it | Free + subscription or lifetime purchase | Yes | No (iPhone only) | No account to use; Sign in with Apple only to pair | No ratings yet | Nov 8, 2026 |
+| Love Nudge | A Chapman-based love language profile and partner nudges | Free + one-time in-app purchase (per listing) | No | No (iPhone only) | Yes, email account on the first screen (checked) | 4.58 (18,442) | Jul 19, 2024 |
+| Paired: Couples & Relationship | Daily questions you both answer, plus date tracking | Free + subscription | No | No (iPhone only) | Yes, per listing | 4.72 (210,772) | Nov 5, 2026 |
+| Evergreen: Relationship Growth | Expert lessons, quizzes and a daily question | Free + subscription | No | Yes | Yes, sign-up after the intro quiz (checked) | 4.82 (54,796) | Sep 5, 2026 |
+| Kindest: Relationship Tracker | Tracking care for any relationship, not only a partner | Free + subscription | No | No (iPhone only) | No account | 4.33 (3) | Jan 2, 2026 |
 
-Ratings, update dates and device support come from Apple's App Store lookup on October 12, 2026. Little Gestures is new and has no ratings yet. Love Nudge's listing offers a one-time purchase for its learning content; the others use subscriptions.
+Ratings, update dates and device support come from Apple's App Store lookup on November 11, 2026. Little Gestures is new and has no ratings yet. An iPad "No (iPhone only)" means the listing has no iPad version. Love Nudge's listing offers a one-time purchase for its learning content; Little Gestures also offers a lifetime purchase, and the rest use subscriptions.
 
 ## Little Gestures: Couples Care
 
@@ -75,7 +75,7 @@ Not for Little Gestures, where your own reminders work alone. Love Nudge and Pai
 
 ### Which couples app has the most ratings?
 
-Paired: Couples & Relationship, with more than 209,000 US ratings as of October 12, 2026. Evergreen has more than 54,000.
+Paired: Couples & Relationship, with more than 210,000 US ratings as of November 11, 2026. Evergreen has more than 54,000.
 
 ### Do these apps need an account?
 
