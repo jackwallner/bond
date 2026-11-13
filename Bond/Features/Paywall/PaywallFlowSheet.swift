@@ -41,8 +41,7 @@ struct PaywallFlowSheet: View {
                 )
             }
         }
-        .presentationDetents(showFullPaywall ? [.large] : [.medium, .large])
-        .presentationDragIndicator(.visible)
+        .modifier(PaywallSheetPresentation(showFullPaywall: showFullPaywall))
         .task {
             if purchases.products.isEmpty {
                 await purchases.fetchProducts()
@@ -86,6 +85,32 @@ struct PaywallFlowSheet: View {
                     showFullPaywall = true
                 }
             }
+        }
+    }
+}
+
+
+/// Phones show the offer as a half sheet. iPad shows it as a centred form sheet
+/// that keeps its own proportions, and the full plans as a large one.
+struct PaywallSheetPresentation: ViewModifier {
+    let showFullPaywall: Bool
+
+    @ViewBuilder
+    func body(content: Content) -> some View {
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            if showFullPaywall {
+                content
+                    .presentationSizing(.page)
+                    .presentationDragIndicator(.visible)
+            } else {
+                content
+                    .presentationSizing(.fitted)
+                    .presentationDragIndicator(.visible)
+            }
+        } else {
+            content
+                .presentationDetents(showFullPaywall ? [.large] : [.medium, .large])
+                .presentationDragIndicator(.visible)
         }
     }
 }

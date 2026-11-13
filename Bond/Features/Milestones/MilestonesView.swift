@@ -19,6 +19,7 @@ struct MilestonesView: View {
                 }
             }
             .navigationTitle("Milestones")
+            .columnTitle()
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {

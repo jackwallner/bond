@@ -48,6 +48,7 @@ struct ReminderListView: View {
                 }
             }
             .navigationTitle(BondBrand.name)
+            .columnTitle()
             // Keep large reminder rows clear of the floating tab bar.
             .safeAreaInset(edge: .bottom, alignment: .trailing) {
                 if !isUnfoldedSplit {
@@ -117,6 +118,10 @@ struct ReminderListView: View {
                 await eventsRepo.refresh()
                 hasLoadedOnce = true
                 openReminderFromNotification(router.pendingReminderId)
+                #if DEBUG
+                // Capture runs can't tap: `-DuoScreen templates` opens the sheet.
+                if DuoScreen.launchValue == "templates" { isTemplatesPresented = true }
+                #endif
                 await repo.subscribeRealtime()
                 // Don't let rescheduling fire the bare system prompt here - the
                 // primer below explains *why* first, then requests. Without this

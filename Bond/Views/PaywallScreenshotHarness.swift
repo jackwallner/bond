@@ -48,7 +48,21 @@ struct PaywallScreenshotHarness: View {
         }
     }
 
-    private func trialBackdrop<Content: View>(@ViewBuilder content: () -> Content) -> some View {
+    @ViewBuilder
+    private func trialBackdrop<Content: View>(@ViewBuilder content: @escaping () -> Content) -> some View {
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            // iPad presents the offer as the real system sheet.
+            Color.bondSurface.ignoresSafeArea()
+                .sheet(isPresented: .constant(true)) {
+                    content()
+                        .modifier(PaywallSheetPresentation(showFullPaywall: false))
+                }
+        } else {
+            phoneTrialBackdrop(content)
+        }
+    }
+
+    private func phoneTrialBackdrop<Content: View>(_ content: () -> Content) -> some View {
         ZStack {
             Color.bondSurface.ignoresSafeArea()
             Color.black.opacity(0.12).ignoresSafeArea()

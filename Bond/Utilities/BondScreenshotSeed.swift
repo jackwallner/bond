@@ -267,7 +267,7 @@ enum BondScreenshotSeed {
 }
 
 /// `-DuoScreen <surface>`: the surface a capture run opens at launch
-/// (reminders, checkin, milestones, insights, settings or editor), read once.
+/// (reminders, checkin, milestones, insights, settings, editor or templates), read once.
 enum DuoScreen {
     static let launchValue = value(in: ProcessInfo.processInfo.arguments)
 

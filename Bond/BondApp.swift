@@ -253,14 +253,17 @@ struct RootView: View {
             switch currentDestination {
             case .intentSetup:
                 IntentSetupView()
+                    .readablePage()
                     .unfoldedLeadingPane { UnfoldedBrandPanel() }
                     .transition(reduceMotion ? .opacity : .opacity.combined(with: .move(edge: .trailing)))
             case .inviteWelcome:
                 InviteWelcomeView()
+                    .readablePage()
                     .unfoldedLeadingPane { UnfoldedBrandPanel() }
                     .transition(reduceMotion ? .opacity : .opacity.combined(with: .move(edge: .trailing)))
             case .inviteeIntake:
                 IntentSetupView(mode: .invitee)
+                    .readablePage()
                     .unfoldedLeadingPane { UnfoldedBrandPanel() }
                     .transition(reduceMotion ? .opacity : .opacity.combined(with: .move(edge: .trailing)))
             case .pairingSuccess:
@@ -277,6 +280,7 @@ struct RootView: View {
                         pairing.justPaired = false
                     }
                 }
+                .readablePage()
                 .unfoldedLeadingPane { UnfoldedBrandPanel() }
                 .transition(.opacity)
             case .home:
@@ -603,7 +607,7 @@ struct MainTabView: View {
     private var split: UnfoldedSplit? {
         UnfoldedSplit.make(
             width: paneGeometry.width,
-            isRegularWidth: horizontalSizeClass == .regular,
+            isRegularWidth: UnfoldedSplit.isRegular(horizontalSizeClass),
             fold: paneGeometry.fold
         )
     }
@@ -624,6 +628,7 @@ struct MainTabView: View {
             // the whole display and then shrinking.
             if paneGeometry.width > 0 {
                 tabs
+                    .readableColumn()
                     .frame(maxWidth: split?.primaryWidth ?? .infinity, maxHeight: .infinity)
             }
             if let split {

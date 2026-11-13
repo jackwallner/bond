@@ -15,6 +15,7 @@ struct ReminderTemplatesView: View {
                 }
             }
             .navigationTitle("Templates")
+            .columnTitle()
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Done") { dismiss() }

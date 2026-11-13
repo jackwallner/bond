@@ -29,6 +29,7 @@ struct StatsView: View {
                 }
             }
             .navigationTitle("Insights")
+            .columnTitle()
             .paywallSheet(isPresented: $isPaywallPresented)
             .task { await eventsRepo.refresh() }
         }

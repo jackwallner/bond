@@ -31,6 +31,7 @@ struct DailyCheckInView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color.bondBackgroundGradient.ignoresSafeArea())
             .navigationTitle("Check-In")
+            .columnTitle()
             .paywallSheet(isPresented: $isPaywallPresented)
             .task {
                 if !pairing.solo {

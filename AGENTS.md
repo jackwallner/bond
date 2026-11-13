@@ -89,6 +89,9 @@ phased plan are in the `project_bond` memory and `project-docs/marketing/aso-pla
 - `.claude/rules/iphone-duo.md` (`MainTabView`, `UnfoldedSplit`): the
   unfolded iPhone Duo's Reminders | Insights split, fold-safe sheets and
   its capture recipe.
+- `.claude/rules/ipad-layout.md` (`ReadableColumn`, `UnfoldedSplit`, `BondApp`,
+  `project.yml`): the universal build, why iPad skips the Duo split, the
+  centred 700/560 pt columns and the iPad capture recipe.
 - `.claude/rules/launch-and-schedule.md` (`BondApp`, the reminder, milestone and
   pairing services): what a failed fetch may and may not clear, when milestones
   load, and calendar-day milestone math.
