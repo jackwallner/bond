@@ -239,7 +239,7 @@ struct SettingsView: View {
                     Spacer()
                     Text("Version \(appVersion) (build \(appBuild))")
                         .font(.bond(.footnote))
-                        .foregroundStyle(.tertiary)
+                        .foregroundStyle(.bondTextSecondary)
                     Spacer()
                 }
             }
