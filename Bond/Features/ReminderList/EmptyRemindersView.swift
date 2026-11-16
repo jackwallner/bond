@@ -106,8 +106,10 @@ struct EmptyRemindersView: View {
                     }
                     .font(.bond(.footnote, weight: .bold))
                     .foregroundStyle(Color.bondAccent)
+                    .frame(minWidth: 44, minHeight: 44)
+                    .contentShape(Rectangle())
                 }
-                .padding(.top, BondSpacing.base)
+                .padding(.top, BondSpacing.xs)
 
                 Spacer()
             }

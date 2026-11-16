@@ -109,6 +109,11 @@ final class ReleaseJourneysUITests: XCTestCase {
         if let typed = field.value as? String, title.hasPrefix(typed), typed != title {
             field.typeText(String(title.dropFirst(typed.count)))
         }
+        if let typed = field.value as? String, typed != title {
+            // A garbled keystroke on a loaded host: clear the field and type it again.
+            field.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: typed.count + 2))
+            field.typeText(title)
+        }
         XCTAssertEqual(field.value as? String, title, "title was not entered completely")
         // The keyboard covers the schedule rows, and the oracles would measure
         // them through its blur; judge the form with the keyboard away.
