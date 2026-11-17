@@ -8,6 +8,10 @@ final class WatchConnectivityBridge: NSObject {
     private weak var repository: ReminderRepository?
     private weak var supabase: SupabaseService?
     private weak var pairing: PairingService?
+    /// Reminders the watch queued while the phone app was closed. The context
+    /// arrives as the app starts, before the account and couple have loaded,
+    /// so they wait here for `deliverPending()` instead of being dropped.
+    private var pendingCreates: [WatchPayload.CreateReminder] = []
 
     private override init() {
         super.init()
@@ -33,6 +37,24 @@ final class WatchConnectivityBridge: NSObject {
         ) else { return }
 
         Task { @MainActor in
+            guard isReady else {
+                pendingCreates.append(payload)
+                return
+            }
+            _ = await createReminder(from: payload)
+        }
+    }
+
+    private var isReady: Bool {
+        supabase?.currentUserId != nil && pairing?.coupleId != nil && repository != nil
+    }
+
+    /// Saves what the watch queued before the account and couple were loaded.
+    func deliverPending() async {
+        guard isReady, !pendingCreates.isEmpty else { return }
+        let queued = pendingCreates
+        pendingCreates = []
+        for payload in queued {
             _ = await createReminder(from: payload)
         }
     }
@@ -142,6 +164,14 @@ extension WatchConnectivityBridge: WCSessionDelegate {
         _ session: WCSession, didReceiveApplicationContext applicationContext: [String: Any]
     ) {
         if let data = applicationContext[WatchPayload.createReminderKey] as? Data {
+            handleCreatePayload(data)
+        }
+    }
+
+    /// Background path for current watch builds: every queued reminder
+    /// arrives, in order. The application context above is for older ones.
+    nonisolated func session(_ session: WCSession, didReceiveUserInfo userInfo: [String: Any] = [:]) {
+        if let data = userInfo[WatchPayload.createReminderKey] as? Data {
             handleCreatePayload(data)
         }
     }

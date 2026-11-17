@@ -83,7 +83,8 @@ struct ReminderEditorView: View {
                         }
                     }
                     .onChange(of: triggerKind) { _, newKind in
-                        if newKind.isPremium && !store.isPremium {
+                        // Also runs when hydrate() loads the reminder's own kind.
+                        if TriggerKind.needsUnlock(newKind, existing: existingKind, isPremium: store.isPremium) {
                             triggerKind = lastFreeTriggerKind
                             isPaywallPresented = true
                         } else if !newKind.isPremium {
@@ -154,6 +155,10 @@ struct ReminderEditorView: View {
     private var isPartnerRequest: Bool {
         guard let existing, let me = supabase.currentUserId else { return false }
         return existing.authorId != me
+    }
+
+    private var existingKind: TriggerKind? {
+        existing?.trigger.map(TriggerKind.init)
     }
 
     private var navigationTitle: String {
@@ -510,7 +515,7 @@ struct ReminderEditorView: View {
         case .partner: partnerId ?? me
         }
 
-        if triggerKind.isPremium && !store.isPremium {
+        if TriggerKind.needsUnlock(triggerKind, existing: existingKind, isPremium: store.isPremium) {
             isPaywallPresented = true
             return
         }

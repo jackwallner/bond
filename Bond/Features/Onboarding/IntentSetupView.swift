@@ -167,6 +167,10 @@ struct IntentSetupView: View {
     @State private var showRestoreResult = false
     @State private var purchaseError: String?
     @State private var showFallbackPaywall = false
+    /// Focus areas picked on this step, saved when it is confirmed. Saving each
+    /// tap marked the invitee's intake done (RootView reads any focus area as
+    /// done) and dropped them on home at their first pick.
+    @State private var focusDraft: Set<FocusArea> = []
     @FocusState private var nameFocused: Bool
     @Environment(\.dynamicTypeSize) private var typeSize
 
@@ -259,6 +263,7 @@ struct IntentSetupView: View {
         // Don't carry a stale error in from a previous failed attempt.
         .onAppear {
             pairing.lastError = nil
+            if focusDraft.isEmpty { focusDraft = prefs.focusAreas }
             // Warm the offerings so the trial step has live price/trial copy
             // the instant the user arrives (bootstrap usually beat us here,
             // but a cold/slow launch might not have).
@@ -418,7 +423,7 @@ struct IntentSetupView: View {
     private var canContinue: Bool {
         switch step {
         case 0: !nameTrimmed.isEmpty
-        case 3: !prefs.focusAreas.isEmpty
+        case 3: !focusDraft.isEmpty
         default: true
         }
     }
@@ -438,6 +443,7 @@ struct IntentSetupView: View {
         case 2:
             step = 3
         case 3:
+            prefs.focusAreas = focusDraft
             // The invitee flow finishes here (partner already known, no solo
             // couple to create). The solo flow gets the trial step next.
             if mode == .invitee {
@@ -647,18 +653,18 @@ struct IntentSetupView: View {
                         symbol: area.symbol,
                         title: area.title,
                         description: area.subtitle,
-                        tint: prefs.focusAreas.contains(area) ? .bondAccent : .secondary,
+                        tint: focusDraft.contains(area) ? .bondAccent : .secondary,
                         trailing: {
-                            if prefs.focusAreas.contains(area) {
+                            if focusDraft.contains(area) {
                                 Image(systemName: "checkmark.circle.fill")
                                     .foregroundStyle(Color.bondAccent)
                             }
                         },
                         action: {
-                            if prefs.focusAreas.contains(area) {
-                                prefs.focusAreas.remove(area)
+                            if focusDraft.contains(area) {
+                                focusDraft.remove(area)
                             } else {
-                                prefs.focusAreas.insert(area)
+                                focusDraft.insert(area)
                             }
                         }
                     )
