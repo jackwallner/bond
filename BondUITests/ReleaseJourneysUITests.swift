@@ -223,11 +223,14 @@ final class ReleaseJourneysUITests: XCTestCase {
     /// the scroll indicator has faded, not mid-scroll with a row under the bar.
     private func restAtListEnd(_ app: XCUIApplication) {
         for _ in 0..<3 { QA.swipe(visibleList(app), .up) }
-        sleep(3)
+        sleep(5)
     }
 
     private func scrollToTop(_ app: XCUIApplication) {
         for _ in 0..<8 { QA.swipe(visibleList(app), .down) }
+        // A fast swipe leaves momentum and a bounce running; let the list stop
+        // before the checkpoint's recording starts.
+        sleep(3)
     }
 
     /// A tab bar button. The unfolded Duo's floating bar is not always a
