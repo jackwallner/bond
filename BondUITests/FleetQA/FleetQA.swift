@@ -1264,8 +1264,9 @@ extension QA {
     }
 
     /// Puts exactly `text` in a field or text view: taps it (scrolling it clear
-    /// first), waits for keyboard focus, deletes what was there, types, and checks
-    /// the field reads back `text`, clearing and typing once more if it does not.
+    /// first), waits for keyboard focus, deletes what was there, types it a character
+    /// at a time, and checks the field reads back `text`, clearing and typing once
+    /// more if it does not.
     /// Pass `verify: false` for a field that formats what it shows.
     static func type(_ text: String, into field: XCUIElement, in app: XCUIApplication, replacing: Bool = true,
                      verify: Bool = true, file: StaticString = #filePath, line: UInt = #line) {
@@ -1277,7 +1278,9 @@ extension QA {
         let checks = verify && field.elementType != .secureTextField
         for attempt in 0..<2 {
             if replacing || attempt > 0 { clear(field) }
-            field.typeText(text)
+            // One keystroke at a time: typed as one string, SwiftUI's binding often missed the
+            // last character while the field drew it, so Save stored "QA Teste" (iOS 27, Nov 2026).
+            for character in text { field.typeText(String(character)) }
             guard checks else { return }
             if reads(field) == text { return }
         }

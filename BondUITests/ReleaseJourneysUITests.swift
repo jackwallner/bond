@@ -75,7 +75,7 @@ final class ReleaseJourneysUITests: XCTestCase {
     func test03ReturnVisitWithInterruption() {
         continueAfterFailure = false
         let app = launchSeeded()
-        tab("Milestones", in: app).tap()
+        QA.openTab(app, "Milestones", "Meilensteine")
         QA.checkpoint(app, "milestones-before-interruption")
 
         QA.interrupt(app)
@@ -104,16 +104,7 @@ final class ReleaseJourneysUITests: XCTestCase {
         localized(app.buttons, "Add reminder", "Erinnerung hinzufügen").tap()
         let field = localized(app.textFields, "Title", "Titel")
         XCTAssertTrue(field.waitForExistence(timeout: 15), "editor never opened")
-        field.tap()
-        field.typeText(title)
-        if let typed = field.value as? String, title.hasPrefix(typed), typed != title {
-            field.typeText(String(title.dropFirst(typed.count)))
-        }
-        if let typed = field.value as? String, typed != title {
-            // A garbled keystroke on a loaded host: clear the field and type it again.
-            field.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: typed.count + 2))
-            field.typeText(title)
-        }
+        QA.type(title, into: field, in: app)
         XCTAssertEqual(field.value as? String, title, "title was not entered completely")
         // The keyboard covers the schedule rows, and the oracles would measure
         // them through its blur; judge the form with the keyboard away.
@@ -237,8 +228,7 @@ final class ReleaseJourneysUITests: XCTestCase {
     /// `tabBars` element, so fall back to the button by label.
     private func tab(_ name: String, in app: XCUIApplication) -> XCUIElement {
         let german = ["Reminders": "Erinnerungen", "Check-In": "Check-in", "Milestones": "Meilensteine", "Insights": "Einblicke", "Settings": "Einstellungen"][name] ?? name
-        let bar = localized(app.tabBars.buttons, name, german)
-        return bar.exists ? bar : localized(app.buttons, name, german)
+        return QA.tab(app, name, german)
     }
 
     private func launchSeeded() -> XCUIApplication {
