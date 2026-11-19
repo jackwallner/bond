@@ -1,1 +1,1 @@
-Little Gestures est désormais disponible en français, portugais, espagnol, arabe, allemand, vietnamien et russe. Cette version comprend aussi des corrections et des améliorations.
+Corrections et améliorations des rappels et de la synchronisation avec l'Apple Watch.

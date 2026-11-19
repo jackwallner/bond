@@ -1,1 +1,1 @@
-Little Gestures finns nu på franska, portugisiska, spanska, arabiska, tyska, vietnamesiska och ryska. Innehåller även korrigeringar och förbättringar.
+Rättningar och förbättringar av påminnelser och synkronisering med Apple Watch.
