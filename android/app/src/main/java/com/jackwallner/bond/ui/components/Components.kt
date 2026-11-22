@@ -127,7 +127,7 @@ fun PrimaryButton(
             .alpha(if (enabled) (if (pressed) 0.92f else 1f) else 0.55f)
             .clickable(interactionSource = interaction, indication = null, enabled = active, role = Role.Button, onClick = onClick)
             .heightIn(min = 52.dp)
-            .padding(horizontal = Spacing.l)
+            .padding(horizontal = Spacing.l, vertical = Spacing.s)
             .then(if (tag != null) Modifier.testTag(tag) else Modifier)
             .semantics { contentDescription = title },
         contentAlignment = Alignment.Center,
@@ -137,7 +137,7 @@ fun PrimaryButton(
         } else {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(Spacing.s)) {
                 icon?.let { Icon(it, null, tint = Color.White) }
-                BText(title, BondType.headline, Color.White, maxLines = 1)
+                BText(title, BondType.headline, Color.White, align = TextAlign.Center)
             }
         }
     }
