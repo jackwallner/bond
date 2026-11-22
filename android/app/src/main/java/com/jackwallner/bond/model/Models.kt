@@ -36,6 +36,24 @@ enum class TriggerKind(val title: String, val subtitle: String, val isPremium: B
      * the kind for a new reminder; an existing one created on iPhone keeps it.
      */
     val availableOnAndroid: Boolean get() = this != LOCATION
+
+    companion object {
+        /** The kind a stored trigger belongs to; both random flavours are the surprise kind. */
+        fun of(trigger: ReminderTrigger): TriggerKind = when (trigger) {
+            is ReminderTrigger.OneTime -> ONE_TIME
+            is ReminderTrigger.Recurring -> RECURRING
+            is ReminderTrigger.Location -> LOCATION
+            is ReminderTrigger.RandomWindow, is ReminderTrigger.RandomRecurring -> RANDOM_WINDOW
+        }
+
+        /**
+         * Whether choosing [kind] needs Little Gestures+. The kind a reminder already
+         * has never does: a free user opening a partner's surprise reminder, or their
+         * own from a lapsed subscription, keeps it.
+         */
+        fun needsUnlock(kind: TriggerKind, existing: TriggerKind?, isPremium: Boolean): Boolean =
+            kind.isPremium && !isPremium && kind != existing
+    }
 }
 
 data class Geofence(

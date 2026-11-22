@@ -141,8 +141,10 @@ fun ReminderEditorSheet(existing: ReminderDto?, prefill: StarterChip?, onClose: 
         TriggerKind.ONE_TIME, TriggerKind.RECURRING -> true
     }
 
+    val existingKind = existing?.trigger?.let(TriggerKind::of)
+
     fun selectKind(newKind: TriggerKind) {
-        if (newKind.isPremium && !store.isPremium) {
+        if (TriggerKind.needsUnlock(newKind, existingKind, store.isPremium)) {
             kind = lastFreeKind
             sheets.presentPaywall()
         } else {
@@ -159,7 +161,7 @@ fun ReminderEditorSheet(existing: ReminderDto?, prefill: StarterChip?, onClose: 
             return
         }
         val targetId = if (target == ReminderTarget.ME) self else pairing.partnerProfile?.id ?: self
-        if (kind.isPremium && !store.isPremium) {
+        if (TriggerKind.needsUnlock(kind, existingKind, store.isPremium)) {
             sheets.presentPaywall()
             return
         }
