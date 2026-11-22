@@ -84,13 +84,7 @@ class MainActivity : ComponentActivity() {
         if (!graph.isAppBootstrapped || graph.seed.enabled) return
         // Play purchases can take a moment to reach RevenueCat, and a solo user may
         // have been paired while away (there is no realtime feed on Android).
-        graph.scope.launch {
-            graph.subscriptions.refresh()
-            graph.pairing.loadCouple()
-            graph.reminders.refresh()
-            graph.events.refresh()
-            graph.rescheduleNotifications()
-        }
+        graph.scope.launch { graph.catchUpOnResume() }
     }
 
     /** Invite links and tapped reminder notifications. */

@@ -206,6 +206,8 @@ fun ReminderListScreen() {
         reload()
         hasLoadedOnce = true
         graph.rescheduleNotifications()
+        // The Milestones tab is not the only reader: its pings are laid down from this list.
+        graph.milestones.refresh()
         if (!pairing.solo && pairing.coupleId != null && !graph.seed.enabled) graph.checkIn.loadTodaysQuestion()
         maybeShowNotificationPrimer(graph, sheets)
     }
@@ -258,7 +260,7 @@ fun ReminderListScreen() {
             TopBar(com.jackwallner.bond.data.Membership.NAME, large = true)
             PullToRefreshBox(
                 isRefreshing = refreshing,
-                onRefresh = { scope.launch { refreshing = true; reload(); refreshing = false } },
+                onRefresh = { scope.launch { refreshing = true; graph.catchUp(); refreshing = false } },
                 modifier = Modifier.weight(1f),
             ) {
                 when {

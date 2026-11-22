@@ -24,6 +24,7 @@ import com.jackwallner.bond.data.SeedMode
 import com.jackwallner.bond.data.SharedPreferencesStore
 import com.jackwallner.bond.data.SubscriptionService
 import com.jackwallner.bond.data.SupabaseClient
+import com.jackwallner.bond.data.catchUpReminders
 import com.jackwallner.bond.data.rebuildSchedule
 import com.jackwallner.bond.data.ThemeSettings
 import java.util.UUID
@@ -81,6 +82,36 @@ class AppGraph(context: Context) {
     var initialTab: String? = null
     /** Bumped on every activity resume, for screens that re-read system state. */
     var resumeTick by mutableIntStateOf(0)
+
+    init {
+        // Pairing or unpairing moves reminders and milestones between couples: re-arm at
+        // once, so an ended pairing silences the partner's reminders now, not on next resume.
+        pairing.onRelationshipChange = {
+            milestones.refresh()
+            catchUp()
+        }
+    }
+
+    /** Re-reads reminders and completions and re-arms the alarms (pull to refresh, resume, a changed pairing). */
+    suspend fun catchUp() {
+        if (seed.enabled) return
+        catchUpReminders(notifications, auth.currentUserId, reminders, events)
+    }
+
+    /**
+     * Everything that can change while the app is away: Play purchases, the couple (a
+     * solo user may have been paired, a paired one unpaired, a failed launch lookup
+     * still has none), then the reminders, completions and milestones.
+     */
+    suspend fun catchUpOnResume() {
+        if (!isAppBootstrapped || seed.enabled) return
+        subscriptions.refresh()
+        val loaded = pairing.loadCouple()
+        // A retry that now finds the couple leaves "Couldn't connect" without a tap.
+        initialLoadFailed = !loaded && pairing.coupleId == null
+        catchUp()
+        milestones.refresh()
+    }
 
     suspend fun bootstrap() {
         if (seed.enabled) {

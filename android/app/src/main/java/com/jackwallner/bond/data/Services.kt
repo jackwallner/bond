@@ -158,10 +158,27 @@ class PairingService(
     var deferredInviteCode by mutableStateOf<String?>(null)
 
     /**
+     * Called when a lookup finds the app's couple changed under it: another
+     * couple, or the same one turned solo or paired. The app sets it at launch to
+     * re-read what moved with it (the partner's reminders, the shared milestones)
+     * and re-arm the alarms. The inviter keeps the couple id when unpairing, so
+     * watching the id alone would miss it.
+     */
+    var onRelationshipChange: suspend () -> Unit = {}
+
+    /**
      * Reads the couple row. Returns false on a transport failure, in which case
      * the previous state is kept rather than pretending there is no couple.
      */
     suspend fun loadCouple(): Boolean {
+        val before = coupleId to solo
+        val loaded = lookUpCouple()
+        // The first lookup of a launch (or after sign-out) has nothing to compare with.
+        if (loaded && before.first != null && (coupleId to solo) != before) onRelationshipChange()
+        return loaded
+    }
+
+    private suspend fun lookUpCouple(): Boolean {
         if (seed.enabled) return true
         val me = auth.currentUserId ?: return false
         return try {

@@ -56,7 +56,7 @@ private fun inZone(zone: ZoneId, year: Int, month: Int, day: Int, hour: Int = 0,
     LocalDateTime.of(year, month, day, hour, minute).atZone(zone).toInstant()
 
 /** A Supabase client over a recording fake transport, signed in as a stored session. */
-private class Backend {
+internal class Backend {
     data class Call(val method: String, val url: String, val body: String?)
 
     val calls = mutableListOf<Call>()
