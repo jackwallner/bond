@@ -134,6 +134,9 @@ fun IntentSetupScreen(mode: IntentMode) {
     val scope = rememberCoroutineScope()
     var step by remember { mutableIntStateOf(if (mode == IntentMode.INVITEE) 2 else 0) }
     var name by remember { mutableStateOf(prefs.partnerName) }
+    // Picked on step 3 and saved when it is confirmed: a saved focus area reads as a finished
+    // intake (`destination()`), so saving each tap dropped the invitee on home at the first pick.
+    var focusDraft by remember { mutableStateOf(prefs.focusAreas) }
     var isFinishing by remember { mutableStateOf(false) }
     var isPurchasing by remember { mutableStateOf(false) }
     var isRestoring by remember { mutableStateOf(false) }
@@ -187,8 +190,10 @@ fun IntentSetupScreen(mode: IntentMode) {
             }
             2 -> step = 3
             3 -> if (mode == IntentMode.INVITEE) {
+                prefs.updateFocusAreas(focusDraft)
                 scope.launch { finish() }
             } else {
+                prefs.updateFocusAreas(focusDraft)
                 // Seeing this page counts as the post-onboarding offer, bought or not.
                 graph.flags.hasShownPostOnboardingPaywall = true
                 store.trackPaywallImpression("onboarding_personalized_plan", oncePerSession = true)
@@ -227,7 +232,7 @@ fun IntentSetupScreen(mode: IntentMode) {
 
     val canContinue = when (step) {
         0 -> trimmed.isNotEmpty()
-        3 -> prefs.focusAreas.isNotEmpty()
+        3 -> focusDraft.isNotEmpty()
         else -> true
     }
     val continueTitle = when (step) {
@@ -254,7 +259,7 @@ fun IntentSetupScreen(mode: IntentMode) {
                     })
                     1 -> CommitStep(displayName)
                     2 -> LoveLanguageStep(displayName)
-                    3 -> FocusAreasStep(displayName)
+                    3 -> FocusAreasStep(displayName, focusDraft) { area -> focusDraft = if (area in focusDraft) focusDraft - area else focusDraft + area }
                     else -> TrialStepContent(displayName, introEligible && trialPlan?.trialDays != null)
                 }
             }
@@ -415,8 +420,7 @@ private fun LoveLanguageStep(displayName: String) {
 }
 
 @Composable
-private fun FocusAreasStep(displayName: String) {
-    val prefs = LocalGraph.current.prefs
+private fun FocusAreasStep(displayName: String, selected: Set<FocusArea>, onToggle: (FocusArea) -> Unit) {
     val colors = Bond.colors
     Column(verticalArrangement = Arrangement.spacedBy(Spacing.xl)) {
         ScreenHeader(
@@ -426,13 +430,13 @@ private fun FocusAreasStep(displayName: String) {
         )
         Column(Modifier.padding(horizontal = Spacing.base), verticalArrangement = Arrangement.spacedBy(Spacing.m)) {
             FocusArea.entries.forEach { area ->
-                val on = area in prefs.focusAreas
+                val on = area in selected
                 ChoiceCard(
                     area.icon, area.title, area.subtitle,
                     tint = if (on) colors.accent else colors.inkSecondary,
                     tag = "intent.area.${area.raw}",
                     trailing = { if (on) Icon(Icons.Rounded.CheckCircle, null, tint = colors.accent) },
-                ) { prefs.toggleFocusArea(area) }
+                ) { onToggle(area) }
             }
         }
     }
