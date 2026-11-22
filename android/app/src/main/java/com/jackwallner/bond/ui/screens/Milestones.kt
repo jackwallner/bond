@@ -45,6 +45,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.jackwallner.bond.model.MilestoneDto
 import com.jackwallner.bond.model.capitalizedWords
+import com.jackwallner.bond.model.daysUntilNextOccurrence
 import com.jackwallner.bond.model.nextOccurrence
 import com.jackwallner.bond.ui.Formats
 import com.jackwallner.bond.ui.LocalGraph
@@ -135,8 +136,8 @@ fun MilestonesScreen() {
 @Composable
 private fun MilestoneRow(milestone: MilestoneDto, next: LocalDate, now: Instant, zone: ZoneId, onClick: () -> Unit) {
     val colors = Bond.colors
-    // Whole days from now to the occurrence's midnight, like the iOS calendar diff.
-    val days = maxOf(0L, (next.atStartOfDay(zone).toInstant().epochSecond - now.epochSecond) / 86_400)
+    // Whole calendar days, like the iOS midnight-to-midnight diff.
+    val days = milestone.daysUntilNextOccurrence(now, zone)
     Row(
         Modifier.fillMaxWidth().clickable(onClick = onClick).padding(horizontal = Spacing.base, vertical = 10.dp)
             .testTag("milestone.row.${milestone.label ?: milestone.kind}"),

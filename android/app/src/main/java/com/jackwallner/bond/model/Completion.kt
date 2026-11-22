@@ -68,14 +68,17 @@ fun ReminderDto.currentCompletionEvents(
 /**
  * `MilestoneDTO.nextOccurrence`: this year's anniversary of [MilestoneDto.date],
  * or next year's once it has passed. Feb 29 rolls to Mar 1 in other years.
- * The result is local midnight, compared against [reference] as an instant.
+ * The result is a calendar date, compared with the reference's local date: the
+ * milestone's own day is still "today" from 00:01 on, so a rebuild that morning
+ * keeps its 9 AM ping and the list reads 0 days instead of jumping a year ahead.
  */
 fun MilestoneDto.nextOccurrence(
     reference: Instant = Instant.now(),
     zone: ZoneId = ZoneId.systemDefault(),
 ): LocalDate {
     if (!recur) return date
-    val year = reference.atZone(zone).year
+    val today = reference.atZone(zone).toLocalDate()
+    val year = today.year
     fun onYear(y: Int): LocalDate =
         if (date.monthValue == 2 && date.dayOfMonth == 29 && !java.time.Year.isLeap(y.toLong())) {
             LocalDate.of(y, 3, 1)
@@ -86,9 +89,19 @@ fun MilestoneDto.nextOccurrence(
     // Foundation keeps the Mar 1 substitution when it advances the year, so a
     // Feb 29 that rolled forward stays Mar 1 next year too.
     val rolled = thisYear.monthValue == 3 && date.monthValue == 2
-    return if (thisYear.atStartOfDay(zone).toInstant().isBefore(reference)) {
+    return if (thisYear.isBefore(today)) {
         if (rolled) LocalDate.of(year + 1, 3, 1) else onYear(year + 1)
     } else {
         thisYear
     }
 }
+
+/**
+ * Calendar days from [reference] to the next occurrence: 0 on the day itself, 1
+ * the day before. Whole days between local dates, so the time of day and DST
+ * changes never shift the count.
+ */
+fun MilestoneDto.daysUntilNextOccurrence(
+    reference: Instant = Instant.now(),
+    zone: ZoneId = ZoneId.systemDefault(),
+): Long = maxOf(0L, java.time.temporal.ChronoUnit.DAYS.between(reference.atZone(zone).toLocalDate(), nextOccurrence(reference, zone)))
