@@ -76,7 +76,7 @@ Put them on a rotation. The hard part is rarely knowing what to do. It is rememb
 
 ## How does Little Gestures help?
 
-Little Gestures is a free iPhone app with an Apple Watch companion. You set reminders under the five headings (words of affirmation, acts of service, gifts, quality time and touch) so a small gesture does not slip through a busy week. The reminders are yours, so your partner does not need to install anything. You can add a reminder by voice from your watch, and an optional Bond+ upgrade adds insights that show which languages you lean on and which are drifting. The app has no ads and does not sell your data. It is not affiliated with or endorsed by Gary Chapman or the publishers of his books. [See the Little Gestures app page](https://jackwallner.com/ios/bond/).
+Little Gestures is a free iPhone app with an Apple Watch companion. You set reminders under the five headings (words of affirmation, acts of service, gifts, quality time and touch) so a small gesture does not slip through a busy week. The reminders are yours, so your partner does not need to install anything. You can add a reminder by voice from your watch, and an optional Little Gestures+ upgrade adds insights that show which languages you lean on and which are drifting. The app has no ads and does not sell your data. It is not affiliated with or endorsed by Gary Chapman or the publishers of his books. [See the Little Gestures app page](https://jackwallner.com/ios/bond/).
 
 ## Frequently asked questions
 

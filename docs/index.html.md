@@ -12,11 +12,11 @@ iPhone · Apple Watch · Widgets
 
 [Download on the App Store](https://apps.apple.com/us/app/little-gestures-couples-care/id6768514177?pt=128748779&ct=jw-bond-home&mt=8)
 
-Now on the App Store · Free to start, Bond+ when you’re ready
+Now on the App Store · Free to start, Little Gestures+ when you’re ready
 
 ## What does Little Gestures do?
 
-It sets reminders around your partner's love language, keeps your milestones on a shared timeline, and gives you a daily check-in to answer together. No ads, no social network. Free to start, with Bond+ for check-ins, insights, and templates.
+It sets reminders around your partner's love language, keeps your milestones on a shared timeline, and gives you a daily check-in to answer together. No ads, no social network. Free to start, with Little Gestures+ for check-ins, insights, and templates.
 
 ### Love-language nudges
 
@@ -34,19 +34,19 @@ Send a universal link. Your partner taps it and you’re paired. No usernames or
 
 One question a day. You each reply; answers appear once you’ve both responded.
 
-Included with Bond+
+Included with Little Gestures+
 
 ### Love-language balance
 
 See which languages you lean on, what’s drifting, and how your habits trend over time.
 
-Included with Bond+
+Included with Little Gestures+
 
 ### Location & surprise
 
 Geofenced nudges when you arrive home, plus curated templates for date nights and long distance.
 
-Included with Bond+
+Included with Little Gestures+
 
 ### On your wrist
 
@@ -90,17 +90,17 @@ Only you and your partner. Your reminders and milestones sync securely between t
 
 ## More info
 
-What Bond+ includes and how it’s built.
+What Little Gestures+ includes and how it’s built.
 
 ### The pitch
 
 Most “couples apps” feel like another social feed. Little Gestures stays focused on helping two people remember thoughtful gestures, celebrate milestones, and check in once a day.
 
-The free tier covers core reminders and milestones. Bond+ is for couples who want daily check-ins, insights, smart location reminders, and template packs.
+The free tier covers core reminders and milestones. Little Gestures+ is for couples who want daily check-ins, insights, smart location reminders, and template packs.
 
-### Bond+
+### Little Gestures+
 
-Bond+ is available monthly, yearly, or as a one-time lifetime purchase. Subscription plans include a free trial when eligible. Bond+ includes Daily Check-In, love-language insights, smart & location reminders, and curated templates. Manage subscriptions anytime in Apple subscription settings. Prices are shown in the app before you buy and vary by region.
+Little Gestures+ is available monthly, yearly, or as a one-time lifetime purchase. Subscription plans include a free trial when eligible. Little Gestures+ includes Daily Check-In, love-language insights, smart & location reminders, and curated templates. Manage subscriptions anytime in Apple subscription settings. Prices are shown in the app before you buy and vary by region.
 
 ### Specs
 
@@ -118,7 +118,7 @@ Yes. Little Gestures lets you set reminders around the five love languages (word
 
 ## Is Little Gestures free?
 
-Yes, it is free to download. You can build your own love-language reminders and milestones for free, and the optional Bond+ upgrade adds daily check-ins, insights, location reminders and template packs. Prices are shown in the app before you buy and vary by region.
+Yes, it is free to download. You can build your own love-language reminders and milestones for free, and the optional Little Gestures+ upgrade adds daily check-ins, insights, location reminders and template packs. Prices are shown in the app before you buy and vary by region.
 
 ## Does my partner need the app too?
 
@@ -130,7 +130,7 @@ Little Gestures keeps anniversaries, first dates and other milestones on one sha
 
 ## Does it work for long-distance couples?
 
-Yes. Reminders, milestones and the daily check-in do not depend on being in the same place, and Bond+ includes curated templates for long distance and date nights.
+Yes. Reminders, milestones and the daily check-in do not depend on being in the same place, and Little Gestures+ includes curated templates for long distance and date nights.
 
 ## Does it work on Apple Watch?
 
@@ -142,6 +142,6 @@ You sign in with Apple, or start anonymously and upgrade to a full account later
 
 ## Be more intentional together
 
-Free to start · Bond+ when you’re ready for more
+Free to start · Little Gestures+ when you’re ready for more
 
 [Download on the App Store](https://apps.apple.com/us/app/little-gestures-couples-care/id6768514177?pt=128748779&ct=jw-bond-home&mt=8)

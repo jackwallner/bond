@@ -17,9 +17,9 @@ Bond helps couples stay intentional with love-language reminders, shared milesto
 
 - Sign in with Apple: one tap, no password to remember.
 - Share your invite link from the Pairing screen; your partner taps it to connect.
-- Create reminders, log milestones, and try Daily Check-In when you have Bond+.
+- Create reminders, log milestones, and try Daily Check-In when you have Little Gestures+.
 
-## Bond+ Subscriptions
+## Little Gestures+ Subscriptions
 
 - Purchases and free trials are handled by Apple. Use **Restore purchases** on the paywall or in Settings if premium features don’t appear right away.
 - Manage or cancel anytime: **Settings > [your name] > Subscriptions**, or Bond Settings > Manage subscription.
