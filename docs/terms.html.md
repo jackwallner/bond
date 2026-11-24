@@ -20,9 +20,9 @@ relationship tools. Pairing is user-controlled. Do not use the app to
 monitor, threaten, impersonate, or access a partner without their
 permission.
 
-## Bond+ purchases
+## Little Gestures+ purchases
 
-Bond+ is offered as monthly and yearly auto-renewing subscriptions and a
+Little Gestures+ is offered as monthly and yearly auto-renewing subscriptions and a
 one-time lifetime purchase. Prices, periods, and any trial are shown
 before purchase and may vary by region. A free trial or introductory
 offer is available only to eligible accounts when Apple displays it.

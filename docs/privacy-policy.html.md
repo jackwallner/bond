@@ -21,13 +21,13 @@ selected content.
 - Location information when you enable location-based reminders or
   relationship features. Bond uses it for the enabled feature and does
   not continuously track your location.
-- Purchase and entitlement information needed to provide Bond+.
+- Purchase and entitlement information needed to provide Little Gestures+.
 
 ## How we use and share it
 
 Supabase hosts account and shared app data so your paired devices can
 sync. Apple provides authentication and payments. RevenueCat verifies
-Bond+ purchases and may process an anonymous app user ID, transaction
+Little Gestures+ purchases and may process an anonymous app user ID, transaction
 and entitlement information, and limited technical context. These
 providers process data to provide their services, not for our
 advertising. We do not sell personal information and do not use
