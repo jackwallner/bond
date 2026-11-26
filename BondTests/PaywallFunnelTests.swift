@@ -259,3 +259,76 @@ struct AskToBuyOutcomeTests {
         #expect(!completed)
     }
 }
+
+// MARK: - Remote config: trial_cta and the off switches
+
+@MainActor
+struct RemoteConfigTests {
+    private let controlOnboarding = String(localized: "Try Little Gestures+ Free")
+
+    @Test func missingNonStringAndUnknownValuesAreControl() {
+        #expect(TrialCTA.from(metadata: nil) == .sevenDay)
+        #expect(TrialCTA.from(metadata: [:]) == .sevenDay)
+        #expect(TrialCTA.from(metadata: ["trial_cta": 7]) == .sevenDay)
+        #expect(TrialCTA.from(metadata: ["trial_cta": true]) == .sevenDay)
+        #expect(TrialCTA.from(metadata: ["trial_cta": "nope"]) == .sevenDay)
+        #expect(TrialCTA.from(metadata: ["trial_cta": "MY"]) == .sevenDay)
+        #expect(TrialCTA.from(metadata: ["other": "my"]) == .sevenDay)
+    }
+
+    @Test func eachKnownValueIsItsArm() {
+        #expect(TrialCTA.from(metadata: ["trial_cta": "seven_day"]) == .sevenDay)
+        #expect(TrialCTA.from(metadata: ["trial_cta": "my"]) == .my)
+        #expect(TrialCTA.from(metadata: ["trial_cta": "your"]) == .your)
+        #expect(TrialCTA.metadataKey == "trial_cta")
+        #expect(TrialCTA.allCases.map(\.rawValue) == ["seven_day", "my", "your"])
+    }
+
+    @Test func controlIsExactlyTodaysCopyOnEverySurface() {
+        // Onboarding, offer sheet and plan screen with a known trial length.
+        #expect(TrialCTA.sevenDay.title(trialEligible: true, otherwise: "x") == "Try Little Gestures+ Free")
+        #expect(TrialCTA.sevenDay.title(trialEligible: true, otherwise: "x") == controlOnboarding)
+        // Plan screen, eligible but StoreKit gave no length.
+        #expect(TrialCTA.sevenDay.title(trialEligible: true, lengthKnown: false, otherwise: "x") == "Start Free Trial")
+    }
+
+    @Test func eachArmHasItsTitle() {
+        for lengthKnown in [true, false] {
+            #expect(TrialCTA.my.title(trialEligible: true, lengthKnown: lengthKnown, otherwise: "x") == "Start My Free Trial")
+            #expect(TrialCTA.your.title(trialEligible: true, lengthKnown: lengthKnown, otherwise: "x") == "Start Your Free Trial")
+        }
+    }
+
+    @Test func anIneligibleAccountIsNeverPromisedATrial() {
+        for arm in TrialCTA.allCases {
+            #expect(arm.title(trialEligible: false, otherwise: "Get Little Gestures+") == "Get Little Gestures+")
+            #expect(arm.title(trialEligible: false, lengthKnown: false, otherwise: "Unlock Little Gestures+") == "Unlock Little Gestures+")
+        }
+    }
+
+    @Test func theOfferSheetFollowsTheArm() {
+        func sheet(_ arm: TrialCTA, _ phrase: String?) -> TrialOfferSheet {
+            TrialOfferSheet(
+                isSolo: true, trialPeriodPhrase: phrase, priceLabel: "$19.99", isPurchasing: false,
+                errorMessage: nil, trialCTA: arm, onStartTrial: {}, onSeeAllPlans: {}, onDismiss: {}
+            )
+        }
+        #expect(sheet(.sevenDay, "7 days").ctaTitle == "Try Little Gestures+ Free")
+        #expect(sheet(.my, "7 days").ctaTitle == "Start My Free Trial")
+        #expect(sheet(.your, "7 days").ctaTitle == "Start Your Free Trial")
+        for arm in TrialCTA.allCases {
+            #expect(sheet(arm, nil).ctaTitle == "Unlock Little Gestures+")
+        }
+    }
+
+    @Test func theSwitchIsOnUnlessTheValueIsOff() {
+        let key = "rating_prompt"
+        #expect(RemoteConfig.isOn(.ratingPrompt, in: nil))
+        #expect(RemoteConfig.isOn(.ratingPrompt, in: [:]))
+        #expect(RemoteConfig.isOn(.ratingPrompt, in: [key: "on"]))
+        #expect(RemoteConfig.isOn(.ratingPrompt, in: [key: false]))
+        #expect(RemoteConfig.isOn(.ratingPrompt, in: [key: "OFF"]))
+        #expect(!RemoteConfig.isOn(.ratingPrompt, in: [key: "off"]))
+        #expect(RemoteSwitch.ratingPrompt.rawValue == key)
+    }
+}

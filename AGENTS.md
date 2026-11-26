@@ -76,6 +76,13 @@ phased plan are in the `project_bond` memory and `project-docs/marketing/aso-pla
   iPhone Duo a system sheet sits across the fold; `unfoldedSheet`
   (`UnfoldedSplit.swift`) keeps the form in one pane there and is an
   ordinary sheet everywhere else.
+- **Wording tests go through RevenueCat offering metadata `trial_cta`**
+  (`seven_day` control, `my`, `your`; `TrialCTA` in `PurchasesService.swift`),
+  read from `offerings.current`. A key a switch reads (`rating_prompt`, "off"
+  pauses the star prompt) must be set the same on every offering. DEBUG pins a
+  key with `-bond.rc.<key> <value>`.
+- **Ask to Buy is `PurchaseState.awaitingApproval`**, shown as a calm line and
+  never an error; the customer-info stream unlocks on approval.
 - **Review funnel:** the positive moment is marking a reminder done (swipe Done
   / Handled), never a cold launch, onboarding, pairing success or a paywall
   sheet. Details and the copy: `docs/review-prompt.md`.

@@ -324,11 +324,11 @@ struct PaywallView: View {
     private var ctaTitle: String {
         guard let package = selectedPackage else { return String(localized: "Continue") }
         if package.bondPackageKind == .lifetime { return String(localized: "Unlock Lifetime") }
-        if purchases.isEligibleForIntroOffer(package), let days = package.bondTrialDays {
-            return String(localized: "Try Little Gestures+ Free")
-        }
-        if purchases.isEligibleForIntroOffer(package) { return String(localized: "Start Free Trial") }
-        return String(localized: "Get Little Gestures+")
+        return purchases.trialCTA.title(
+            trialEligible: purchases.isEligibleForIntroOffer(package),
+            lengthKnown: package.bondTrialDays != nil,
+            otherwise: String(localized: "Get Little Gestures+")
+        )
     }
 
     private var ctaSubline: String? {

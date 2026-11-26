@@ -60,6 +60,9 @@ final class PurchasesService {
     /// as a fallback unlock signal when the named entitlement doesn't resolve.
     private(set) var knownProductIds: Set<String> = []
     private(set) var isLoadingProducts = false
+    /// The current offering's metadata (a running RevenueCat Experiment's
+    /// variant included), the source of every remote switch and wording test.
+    private(set) var remoteMetadata: [String: Any]?
     private(set) var purchaseInFlight = false
     private(set) var introEligibility: [String: Bool] = [:]
     var lastError: String?
@@ -163,6 +166,7 @@ final class PurchasesService {
         do {
             let offerings = try await Purchases.shared.offerings()
             products = offerings.bondPaywallOffering?.bondSortedPackages ?? []
+            remoteMetadata = offerings.current?.metadata
             // Remember every Bond+ product id we've ever seen offered. `apply`
             // uses this to treat ownership of a known product as premium even
             // when the dashboard entitlement mapping is the broken link.
@@ -190,6 +194,14 @@ final class PurchasesService {
         introEligibility = result.mapValues { $0.status == .eligible }
     }
 
+    /// The trial button wording this customer sees (control when no offering
+    /// has loaded, which is also every simulator run).
+    var trialCTA: TrialCTA { TrialCTA.from(metadata: remoteMetadata) }
+
+    func isOn(_ remoteSwitch: RemoteSwitch) -> Bool {
+        RemoteConfig.isOn(remoteSwitch, in: remoteMetadata)
+    }
+
     func isEligibleForIntroOffer(_ package: Package) -> Bool {
         guard package.bondIntroOfferLabel != nil else { return false }
         // Default to false until RevenueCat confirms eligibility, so the paywall
@@ -215,8 +227,10 @@ final class PurchasesService {
     /// has to background the app before reading anything back.
     func syncConversionAttributes() {
         guard Purchases.isConfigured else { return }
-        let attributes = ConversionDiagnostics.subscriberAttributes
+        var attributes = ConversionDiagnostics.subscriberAttributes
         guard !attributes.isEmpty else { return }
+        // The wording arm this customer saw, so a test reads by attribute too.
+        attributes[TrialCTA.metadataKey] = trialCTA.rawValue
         Purchases.shared.attribution.setAttributes(attributes)
     }
 
@@ -510,6 +524,79 @@ final class PurchasesService {
             activeSubs: \(info.activeSubscriptions.count))
             """)
     }
+}
+
+// MARK: - Remote config
+
+/// What RevenueCat can change without a release, read from the current
+/// offering's metadata (a running Experiment's variant included). Every
+/// variant ships in the binary; a missing, non-string or unknown value is the
+/// control, which is what the app shipped before. Keys a switch reads must be
+/// set the same on every offering, or an Experiment arm would flip them as a
+/// side effect. Wording tests go through the offering metadata key `trial_cta`.
+///
+/// DEBUG builds can pin any key for captures: `-bond.rc.<key> <value>`.
+enum TrialCTA: String, CaseIterable, Sendable {
+    static let metadataKey = "trial_cta"
+
+    /// Control: "Try Little Gestures+ Free" (the free week), as shipped.
+    case sevenDay = "seven_day"
+    case my
+    case your
+
+    static func from(metadata: [String: Any]?) -> TrialCTA {
+        RemoteConfig.value(metadataKey, in: metadata, default: .sevenDay)
+    }
+
+    /// The trial button's title. A customer whose Apple Account already used
+    /// its free week gets `otherwise`, each surface's own plain upgrade label
+    /// (3.1.2), whatever the arm. `lengthKnown` is false only on the plan
+    /// screen when StoreKit gave no trial length, where the control reads
+    /// "Start Free Trial".
+    func title(trialEligible: Bool, lengthKnown: Bool = true, otherwise: @autoclosure () -> String) -> String {
+        guard trialEligible else { return otherwise() }
+        switch self {
+        case .sevenDay:
+            return lengthKnown ? String(localized: "Try Little Gestures+ Free") : String(localized: "Start Free Trial")
+        case .my: return String(localized: "Start My Free Trial")
+        case .your: return String(localized: "Start Your Free Trial")
+        }
+    }
+}
+
+/// Remote off switches, for what is worth pausing without a release. On
+/// unless the metadata says "off".
+enum RemoteSwitch: String, CaseIterable, Sendable {
+    /// Apple's rating prompt after marking a reminder done.
+    case ratingPrompt = "rating_prompt"
+}
+
+enum RemoteConfig {
+    /// The value for `key`, or `fallback` when it is missing, not a string,
+    /// or not one of the shipped variants.
+    static func value<T: RawRepresentable>(_ key: String, in metadata: [String: Any]?, default fallback: T) -> T
+    where T.RawValue == String {
+        #if DEBUG
+        if let pinned = launchOverride(key).flatMap(T.init(rawValue:)) { return pinned }
+        #endif
+        guard let raw = metadata?[key] as? String else { return fallback }
+        return T(rawValue: raw) ?? fallback
+    }
+
+    static func isOn(_ remoteSwitch: RemoteSwitch, in metadata: [String: Any]?) -> Bool {
+        #if DEBUG
+        if let pinned = launchOverride(remoteSwitch.rawValue) { return pinned != "off" }
+        #endif
+        return (metadata?[remoteSwitch.rawValue] as? String) != "off"
+    }
+
+    #if DEBUG
+    private static func launchOverride(_ key: String) -> String? {
+        let args = ProcessInfo.processInfo.arguments
+        guard let index = args.firstIndex(of: "-bond.rc.\(key)"), index + 1 < args.count else { return nil }
+        return args[index + 1]
+    }
+    #endif
 }
 
 #if DEBUG

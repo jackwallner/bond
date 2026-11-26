@@ -10,6 +10,8 @@ struct TrialOfferSheet: View {
     let errorMessage: String?
     /// Ask to Buy is waiting on a parent: a calm line, never an error.
     var awaitingApproval = false
+    /// The button wording arm (remote config). Control unless set.
+    var trialCTA = TrialCTA.from(metadata: nil)
     let onStartTrial: () -> Void
     let onSeeAllPlans: () -> Void
     let onDismiss: () -> Void
@@ -116,7 +118,7 @@ struct TrialOfferSheet: View {
                 }
 
                 BondPrimaryButton(
-                    title: trialCTATitle,
+                    title: ctaTitle,
                     isLoading: isPurchasing,
                     action: onStartTrial
                 )
@@ -153,10 +155,10 @@ struct TrialOfferSheet: View {
         .background(Color.bondSurface)
     }
 
-    private var trialCTATitle: String {
-        if trialPeriodPhrase != nil {
-            return String(localized: "Try Little Gestures+ Free")
-        }
-        return String(localized: "Unlock Little Gestures+")
+    var ctaTitle: String {
+        trialCTA.title(
+            trialEligible: trialPeriodPhrase != nil,
+            otherwise: String(localized: "Unlock Little Gestures+")
+        )
     }
 }

@@ -37,6 +37,7 @@ struct PaywallFlowSheet: View {
                     isPurchasing: isPurchasing,
                     errorMessage: errorMessage,
                     awaitingApproval: awaitingApproval,
+                    trialCTA: purchases.trialCTA,
                     onStartTrial: startTrialPurchase,
                     onSeeAllPlans: { showFullPaywall = true },
                     onDismiss: onClose

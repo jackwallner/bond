@@ -492,10 +492,10 @@ struct IntentSetupView: View {
     /// honor for a previously-subscribed Apple ID).
     private var trialCTATitle: String {
         if isPendingPurchase { return String(localized: "Purchase pending") }
-        if introEligible {
-            return String(localized: "Try Little Gestures+ Free")
-        }
-        return String(localized: "Get Little Gestures+")
+        return store.trialCTA.title(
+            trialEligible: introEligible,
+            otherwise: String(localized: "Get Little Gestures+")
+        )
     }
 
     private var trialDisclosure: String? {

@@ -492,6 +492,7 @@ struct RootView: View {
               !showReviewPrompt,
               !showPostPairPaywall,
               !showPostOnboardingPaywall,
+              store.isOn(.ratingPrompt),
               ReviewPromptTracker.shouldShowAfterPositiveMoment(hasCompletedSetup: hasCompletedSetup)
         else { return }
 
@@ -504,6 +505,7 @@ struct RootView: View {
                   !showReviewPrompt,
                   !showPostPairPaywall,
                   !showPostOnboardingPaywall,
+                  store.isOn(.ratingPrompt),
                   ReviewPromptTracker.shouldShowAfterPositiveMoment(hasCompletedSetup: hasCompletedSetup)
             else { return }
             // Apple's own prompt, asked of everyone who qualifies. No
