@@ -10,6 +10,7 @@ Developer notes and historical audits for this repository. The published site re
 - [state-machines-2026-11-06.md](audits/state-machines-2026-11-06.md): state machine audit: 16 bugs (6 proved by test), repro suite alongside
 - [state-machines-2026-11-06-review.md](audits/state-machines-2026-11-06-review.md): independent review of that audit: 15 of 16 confirmed (5 major), B7 rejected, one missed check-in bug
 - [presubmit-review-2026-11-07.md](audits/presubmit-review-2026-11-07.md): 1.0.10 presubmit deep pass: 5 P1 fixed (editor gate, invitee intake, two watch hand-offs, repeated check-in answers), 3 P2 open
+- [rollout-2026-11-24.md](audits/rollout-2026-11-24.md): Ask to Buy shows waiting for approval, and the `trial_cta` remote config reader
 
 ## Marketing
 
