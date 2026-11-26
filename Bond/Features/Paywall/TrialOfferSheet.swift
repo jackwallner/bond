@@ -8,6 +8,8 @@ struct TrialOfferSheet: View {
     let priceLabel: String?
     let isPurchasing: Bool
     let errorMessage: String?
+    /// Ask to Buy is waiting on a parent: a calm line, never an error.
+    var awaitingApproval = false
     let onStartTrial: () -> Void
     let onSeeAllPlans: () -> Void
     let onDismiss: () -> Void
@@ -85,6 +87,12 @@ struct TrialOfferSheet: View {
                 }
             }
 
+            if awaitingApproval {
+                Text(PurchaseState.awaitingApprovalMessage)
+                    .font(.bond(.footnote))
+                    .foregroundStyle(.bondTextSecondary)
+                    .multilineTextAlignment(.center)
+            }
             if let errorMessage {
                 Text(errorMessage)
                     .font(.bond(.footnote))

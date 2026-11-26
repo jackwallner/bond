@@ -136,7 +136,9 @@ enum OnboardingPurchaseRecovery {
         restore: () async -> Void
     ) async -> Bool {
         switch result {
-        case .cancelled:
+        case .cancelled, .awaitingApproval:
+            // Ask to Buy has nothing to restore yet; approval unlocks through
+            // the customer-info stream.
             return false
         case .purchased:
             return isPremium()
@@ -348,7 +350,13 @@ struct IntentSetupView: View {
     }
 
     private var continueForFreeButton: some View {
-        Button { Task { await finish() } } label: {
+        Button {
+            // Leaving the offer drops any wait on it, so an approval that
+            // arrives later cannot finish setup a second time.
+            isPendingPurchase = false
+            purchaseError = nil
+            Task { await finish() }
+        } label: {
             Text("Continue for free")
                 .font(.bond(.subheadline, weight: .semibold))
                 .foregroundStyle(.bondTextSecondary)
@@ -513,6 +521,13 @@ struct IntentSetupView: View {
             defer { isPurchasing = false }
             do {
                 let result = try await store.purchase(package)
+                if case .awaitingApproval = result {
+                    // Calm and final: no restore, no error. Approval flips
+                    // `isPremium`, and the `onChange` above finishes setup.
+                    isPendingPurchase = true
+                    purchaseError = PurchaseState.awaitingApprovalMessage
+                    return
+                }
                 if case .pending = result {
                     isPendingPurchase = true
                     purchaseError = String(localized: "Finalizing your purchase…")

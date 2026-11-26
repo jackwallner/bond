@@ -27166,6 +27166,59 @@
         }
       }
     },
+    "Waiting for approval. Your purchase unlocks once it is approved.": {
+      "extractionState": "manual",
+      "localizations": {
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "في انتظار الموافقة. سيتم فتح الشراء بمجرد الموافقة عليه."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Warte auf Genehmigung. Dein Kauf wird freigeschaltet, sobald er genehmigt ist."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Waiting for approval. Your purchase unlocks once it is approved."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esperando aprobación. Tu compra se desbloqueará cuando se apruebe."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En attente d'approbation. Votre achat sera débloqué dès son approbation."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aguardando aprovação. Sua compra é liberada assim que for aprovada."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ожидается одобрение. Покупка откроется, как только её одобрят."
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Đang chờ phê duyệt. Giao dịch sẽ được mở khóa khi được phê duyệt."
+          }
+        }
+      }
+    },
     "Waiting on %@": {
       "extractionState": "manual",
       "localizations": {
@@ -29931,59 +29984,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nửa kia của bạn. Little Gestures giúp bạn luôn quan tâm đến người ấy."
-          }
-        }
-      }
-    },
-    "Your payment is pending approval. We'll unlock Little Gestures+ as soon as it clears.": {
-      "extractionState": "manual",
-      "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "دفعتك بانتظار الموافقة. سنفعّل Little Gestures+ فور الموافقة عليها."
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Deine Zahlung wartet noch auf Freigabe. Sobald sie durch ist, schalten wir Little Gestures+ frei."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Your payment is pending approval. We'll unlock Little Gestures+ as soon as it clears."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tu pago está pendiente de aprobación. Desbloquearemos Little Gestures+ en cuanto se confirme."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ton paiement attend d'être approuvé. On débloquera Little Gestures+ dès qu'il sera validé."
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Seu pagamento está aguardando aprovação. Vamos liberar o Little Gestures+ assim que for aprovado."
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Платёж ожидает подтверждения. Мы откроем Little Gestures+, как только он пройдёт."
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Giao dịch của bạn đang chờ phê duyệt. Chúng tôi sẽ mở khóa Little Gestures+ ngay khi hoàn tất."
           }
         }
       }

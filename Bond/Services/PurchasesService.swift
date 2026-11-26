@@ -5,7 +5,38 @@ import RevenueCat
 enum PurchaseState {
     case purchased
     case cancelled
+    /// Paid, but the entitlement has not reached this device yet.
     case pending
+    /// Ask to Buy: a parent has the request, and Apple finishes it later. The
+    /// customer-info stream unlocks Little Gestures+ when it is approved.
+    case awaitingApproval
+
+    /// The calm line every purchase surface shows for `awaitingApproval`.
+    static var awaitingApprovalMessage: String {
+        String(localized: "Waiting for approval. Your purchase unlocks once it is approved.")
+    }
+}
+
+extension PurchaseState {
+    /// The outcome an error stands for, when it is not a failure: Ask to Buy
+    /// waits for approval and a backed-out payment sheet is a cancel.
+    nonisolated static func outcome(for code: RevenueCat.ErrorCode) -> PurchaseState? {
+        switch code {
+        case .paymentPendingError: return .awaitingApproval
+        case .purchaseCancelledError: return .cancelled
+        default: return nil
+        }
+    }
+
+    /// The label for the purchase log: a pending approval is not an error.
+    nonisolated var logName: String {
+        switch self {
+        case .purchased: return "purchased"
+        case .cancelled: return "cancelled"
+        case .pending: return "syncing"
+        case .awaitingApproval: return "pending_approval"
+        }
+    }
 }
 
 @MainActor
@@ -235,11 +266,11 @@ final class PurchasesService {
             result = try await Purchases.shared.purchase(package: package)
         } catch let error as RevenueCat.ErrorCode {
             // RevenueCat can throw ErrorCode directly. A user backing out of
-            // Apple's payment sheet is a cancel, not a failure - surface no
-            // error and no Restore prompt.
-            if error == .purchaseCancelledError {
-                log.info("Purchase cancelled: source \(source)")
-                return .cancelled
+            // Apple's payment sheet is a cancel, and Ask to Buy is a wait for
+            // approval, not a failure - surface no error and no Restore prompt.
+            if let outcome = PurchaseState.outcome(for: error) {
+                log.info("Purchase \(outcome.logName): source \(source)")
+                return outcome
             }
             log.error("Purchase threw ErrorCode \(error.rawValue): \(error.localizedDescription)")
             // Some codes mean Apple accepted payment but RC couldn't attach it
@@ -247,7 +278,7 @@ final class PurchasesService {
             if await recoverFromKnownPurchaseError(error) {
                 return .purchased
             }
-            lastError = readablePurchaseError(error)
+            lastError = Self.readablePurchaseError(error)
             lastErrorSuggestsRestore = errorSuggestsRestore(error)
             throw error
         } catch {
@@ -259,14 +290,17 @@ final class PurchasesService {
             log.error("Purchase threw \(nsError.domain):\(nsError.code) - \(error.localizedDescription)")
             if nsError.domain == RevenueCat.ErrorCode.errorDomain,
                let code = RevenueCat.ErrorCode(rawValue: nsError.code) {
-                if code == .purchaseCancelledError { return .cancelled }
+                if let outcome = PurchaseState.outcome(for: code) {
+                    log.info("Purchase \(outcome.logName): source \(source)")
+                    return outcome
+                }
                 if await recoverFromKnownPurchaseError(code) {
                     return .purchased
                 }
-                lastError = readablePurchaseError(code)
+                lastError = Self.readablePurchaseError(code)
                 lastErrorSuggestsRestore = errorSuggestsRestore(code)
             } else {
-                lastError = readablePurchaseError(error)
+                lastError = Self.readablePurchaseError(error)
             }
             throw error
         }
@@ -346,15 +380,14 @@ final class PurchasesService {
         case .receiptAlreadyInUseError,
              .productAlreadyPurchasedError,
              .missingReceiptFileError,
-             .invalidReceiptError,
-             .paymentPendingError:
+             .invalidReceiptError:
             return true
         default:
             return false
         }
     }
 
-    private func readablePurchaseError(_ error: Error) -> String {
+    nonisolated static func readablePurchaseError(_ error: Error) -> String {
         if let code = error as? RevenueCat.ErrorCode {
             switch code {
             case .receiptAlreadyInUseError:
@@ -362,7 +395,7 @@ final class PurchasesService {
             case .productAlreadyPurchasedError:
                 return String(localized: "You already own this. Tap Restore to unlock it on this device.")
             case .paymentPendingError:
-                return String(localized: "Your payment is pending approval. We'll unlock Little Gestures+ as soon as it clears.")
+                return PurchaseState.awaitingApprovalMessage
             case .purchaseNotAllowedError:
                 return String(localized: "In-app purchases are restricted on this device.")
             case .networkError, .offlineConnectionError:

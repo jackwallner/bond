@@ -13,6 +13,7 @@ struct PaywallFlowSheet: View {
     @State private var showFullPaywall = false
     @State private var isPurchasing = false
     @State private var errorMessage: String?
+    @State private var awaitingApproval = false
 
     private var isSolo: Bool { pairing.solo || pairing.coupleId == nil }
 
@@ -35,6 +36,7 @@ struct PaywallFlowSheet: View {
                     priceLabel: trialPackage?.bondPriceLabel,
                     isPurchasing: isPurchasing,
                     errorMessage: errorMessage,
+                    awaitingApproval: awaitingApproval,
                     onStartTrial: startTrialPurchase,
                     onSeeAllPlans: { showFullPaywall = true },
                     onDismiss: onClose
@@ -42,6 +44,12 @@ struct PaywallFlowSheet: View {
             }
         }
         .modifier(PaywallSheetPresentation(showFullPaywall: showFullPaywall))
+        // An approved Ask to Buy unlocks through the customer-info stream while
+        // the offer is still up; close it then, no relaunch. (The plan screen
+        // closes itself.)
+        .onChange(of: purchases.isPremium) { _, isPremium in
+            if isPremium, !showFullPaywall { onClose() }
+        }
         .task {
             if purchases.products.isEmpty {
                 await purchases.fetchProducts()
@@ -62,6 +70,7 @@ struct PaywallFlowSheet: View {
             return
         }
         errorMessage = nil
+        awaitingApproval = false
         isPurchasing = true
         Task {
             defer { isPurchasing = false }
@@ -76,6 +85,8 @@ struct PaywallFlowSheet: View {
                         errorMessage = String(localized: "Payment went through but we're still syncing. Tap Restore on the next screen.")
                         showFullPaywall = true
                     }
+                case .awaitingApproval:
+                    awaitingApproval = true
                 case .cancelled:
                     break
                 }

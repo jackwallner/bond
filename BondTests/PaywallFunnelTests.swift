@@ -1,5 +1,6 @@
 import Testing
 import Foundation
+import RevenueCat
 @testable import Bond
 /// The fleet paywall record, checked in this app's own build.
 ///
@@ -201,5 +202,60 @@ struct MemberSinceTests {
         let renewed = Date(timeIntervalSince1970: 1_793_491_200)
         #expect(PurchasesService.memberSince(original: nil, latest: renewed) == renewed)
         #expect(PurchasesService.memberSince(original: nil, latest: nil) == nil)
+    }
+}
+
+// MARK: - Ask to Buy shows pending
+
+struct AskToBuyOutcomeTests {
+    @Test func askToBuyIsWaitingForApprovalNotAFailure() {
+        #expect(PurchaseState.outcome(for: .paymentPendingError) == .awaitingApproval)
+        // Waiting is distinct from "paid, still syncing" and from an error.
+        #expect(PurchaseState.awaitingApproval != .pending)
+        #expect(PurchaseState.awaitingApproval.logName == "pending_approval")
+        #expect(PurchaseState.pending.logName != PurchaseState.awaitingApproval.logName)
+    }
+
+    @Test func aBackedOutSheetIsStillACancel() {
+        #expect(PurchaseState.outcome(for: .purchaseCancelledError) == .cancelled)
+    }
+
+    @Test func otherErrorsAreNotOutcomes() {
+        for code in [ErrorCode.networkError, .offlineConnectionError, .purchaseNotAllowedError,
+                     .storeProblemError, .receiptAlreadyInUseError] {
+            #expect(PurchaseState.outcome(for: code) == nil)
+        }
+    }
+
+    @Test func networkErrorsReadAsTheTranslatedConnectionLine() {
+        let line = String(localized: "Network issue completing the purchase. Check your connection and try again.")
+        #expect(PurchasesService.readablePurchaseError(ErrorCode.networkError) == line)
+        #expect(PurchasesService.readablePurchaseError(ErrorCode.offlineConnectionError) == line)
+    }
+
+    @Test func otherErrorsKeepTheirCopy() {
+        #expect(PurchasesService.readablePurchaseError(ErrorCode.purchaseNotAllowedError)
+                == String(localized: "In-app purchases are restricted on this device."))
+        #expect(PurchasesService.readablePurchaseError(ErrorCode.productAlreadyPurchasedError)
+                == String(localized: "You already own this. Tap Restore to unlock it on this device."))
+    }
+
+    @Test func theWaitingCopyIsCalm() {
+        let message = PurchaseState.awaitingApprovalMessage
+        #expect(message == "Waiting for approval. Your purchase unlocks once it is approved.")
+        #expect(!message.lowercased().contains("error"))
+        #expect(!message.lowercased().contains("failed"))
+        // Even the legacy mapping of the code reads the same, never an error.
+        #expect(PurchasesService.readablePurchaseError(ErrorCode.paymentPendingError) == message)
+    }
+
+    @MainActor
+    @Test func onboardingDoesNotRestoreWhileWaitingForApproval() async {
+        var restored = false
+        let completed = await OnboardingPurchaseRecovery.resolve(
+            .awaitingApproval, isPremium: { true }, restore: { restored = true }
+        )
+        #expect(!restored)
+        #expect(!completed)
     }
 }

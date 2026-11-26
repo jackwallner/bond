@@ -27,6 +27,7 @@ struct PaywallView: View {
     @State private var isPurchasing = false
     @State private var errorMessage: String?
     @State private var statusMessage: String?
+    @State private var awaitingApproval = false
     @State private var restoreMessage: String?
     @State private var isRestoring = false
     /// Set when a purchase completes at StoreKit but the entitlement hasn't
@@ -232,6 +233,12 @@ struct PaywallView: View {
                         .multilineTextAlignment(.center)
                 }
             }
+            if awaitingApproval {
+                Text(PurchaseState.awaitingApprovalMessage)
+                    .font(.bond(.footnote))
+                    .foregroundStyle(.bondTextSecondary)
+                    .multilineTextAlignment(.center)
+            }
             if let errorMessage {
                 Text(errorMessage)
                     .font(.bond(.footnote))
@@ -371,6 +378,7 @@ struct PaywallView: View {
         statusMessage = nil
         restoreMessage = nil
         needsManualRestore = false
+        awaitingApproval = false
         isPurchasing = true
         Task {
             defer { isPurchasing = false }
@@ -394,6 +402,12 @@ struct PaywallView: View {
                         errorMessage = String(localized: "Your payment went through but we're still syncing it. Tap below to finish unlocking.")
                         needsManualRestore = true
                     }
+                case .awaitingApproval:
+                    // Ask to Buy: calm and final. No error, no Restore prompt,
+                    // and the button is released; the customer-info stream
+                    // unlocks and `onChange(of: isPremium)` closes this.
+                    statusMessage = nil
+                    awaitingApproval = true
                 case .cancelled:
                     statusMessage = nil
                 }
